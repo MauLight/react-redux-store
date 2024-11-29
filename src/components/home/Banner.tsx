@@ -54,13 +54,7 @@ const BannerContent = ({ children }: { children: ReactNode }) => {
 }
 
 
-export const Banner = (): ReactElement => {
-  const product = {
-    title: 'Into the unknown',
-    price: 1680,
-    discount: 1400,
-    image: 'https://res.cloudinary.com/maulight/image/upload/v1732918791/e-commerce/banner_1.webp'
-  }
+export const Banner = ({ product }: { product: ProductProps }): ReactElement => {
 
   return (
     <div className="relative w-full h-full min-h-[900px] flex flex-col items-center overflow-hidden">

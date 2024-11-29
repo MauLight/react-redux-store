@@ -12,7 +12,7 @@ function App({ state, dispatch }: AppProps) {
 
   return (
     <div className='min-h-screen bg-sym_gray-800'>
-      <Layout />
+      <Layout state={state} dispatch={dispatch} />
     </div>
   )
 }
