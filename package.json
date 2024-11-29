@@ -1,0 +1,55 @@
+{
+  "name": "symetria-template",
+  "version": "1.0.3",
+  "main": "main.tsx",
+  "type": "module",
+  "description": "This boilerplate offers a starting point for Symetria projects.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MauLight/symetria-template.git"
+  },
+  "author": {
+    "name": "Symetria"
+  },
+  "license": "MIT",
+  "scripts": {
+    "start": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "bin": {
+    "symetria": "./symetria.js"
+  },
+  "dependencies": {
+    "@axe-core/react": "^4.10.1",
+    "framer-motion": "^11.12.0",
+    "hamburger-react": "^2.5.1",
+    "ora": "^8.1.1",
+    "path": "^0.12.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.53.2",
+    "react-qr-code": "^2.0.15",
+    "react-router-dom": "^6.28.0",
+    "react-toastify": "^10.0.6",
+    "redux": "^5.0.1",
+    "yup": "^1.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.6",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0"
+  }
+}

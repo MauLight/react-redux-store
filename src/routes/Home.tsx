@@ -1,0 +1,25 @@
+
+//* Components
+import { TopBar } from "../components/home/TopBar"
+import { Banner } from "@/components/home/Banner"
+import { Banner2 } from "@/components/home/Banner2"
+
+
+function Home() {
+    return (
+        <div className='relative w-full h-full flex flex-col justify-center items-center overflow-y-scroll'>
+            {/* topbar */}
+            <TopBar />
+            <div className="w-full h-full overflow-scroll scrollbar-hide flex flex-col">
+                {/* banner */}
+                <Banner />
+                <Banner2 />
+                <div className="grid grid-cols-3">
+                </div>
+                <div className="w-full min-h-20 bg-[#10100e]"></div>
+            </div>
+        </div>
+    )
+}
+
+export default Home
