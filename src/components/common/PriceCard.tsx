@@ -4,7 +4,7 @@ import { type ReactNode } from "react"
 interface ProductProps {
     title: string
     price: number
-    discount: number
+    fullPrice: number
     image: string
 }
 
@@ -14,7 +14,8 @@ export const PriceCard = ({ product, dispatch }: { product: ProductProps, dispat
         const itemToAdd = {
             title: product.title,
             image: product.image,
-            price: product.discount
+            price: product.price,
+            fullPrice: product.fullPrice
         }
         dispatch(addItem(itemToAdd))
     }
@@ -25,7 +26,7 @@ export const PriceCard = ({ product, dispatch }: { product: ProductProps, dispat
                 <h1 className='text-[18px] uppercase neue antialiazed text-[#ffffff] leading-tight'>{product.title}</h1>
                 <div className="flex gap-x-2">
                     <p className='text-[12px] uppercase neue antialiazed text-[#ffffff]'>{`${product.price}$`}</p>
-                    <p className='text-[10px] uppercase neue antialiazed text-gray-100 line-through'>{`${product.discount}$`}</p>
+                    <p className='text-[10px] uppercase neue antialiazed text-gray-100 line-through'>{`${product.fullPrice}$`}</p>
                 </div>
             </div>
             <button onClick={handleAddItemToCart} className='h-[50px] w-[50px] z-50 rounded-full bg-gray-900 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70 flex justify-center items-center pb-1 cursor-pointer'>

@@ -14,8 +14,8 @@ export const loadHomeCollectionData = (data: HomeCollectionProps[]) => {
 const initialInventory = [
     {
         title: 'Into the unknown',
-        price: 1680,
-        discount: 1400,
+        price: 1400,
+        fullPrice: 1680,
         image: 'https://res.cloudinary.com/maulight/image/upload/v1732918791/e-commerce/banner_1.webp'
     }
 ]

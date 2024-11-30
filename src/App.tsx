@@ -1,5 +1,5 @@
 
-import { TopBar } from './components/home/TopBar'
+import { TopBar } from './components/common/TopBar'
 import Layout from './Layout'
 
 interface AppProps {
