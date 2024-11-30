@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@axe-core/react": "^4.10.1",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
     "framer-motion": "^11.12.0",
     "hamburger-react": "^2.5.1",
     "ora": "^8.1.1",

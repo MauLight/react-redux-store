@@ -1,7 +1,15 @@
 import Hamburger from 'hamburger-react'
 import { type ReactElement } from 'react'
 
-export const TopBar = (): ReactElement => {
+interface TopBarProps {
+  cart: Record<string, { price: number, quantity: number, image: string }>
+}
+
+export const TopBar = ({ cart }: TopBarProps): ReactElement => {
+
+  const cartItemsLength = Object.keys(cart).length
+
+
 
   return (
     <div className="w-full flex justify-center">
@@ -13,7 +21,11 @@ export const TopBar = (): ReactElement => {
           <div className="flex items-center gap-x-2">
             <button>
               <i className="relative fa-solid fa-lg text-[#ffffff] fa-cart-shopping cursor-pointer">
-                <span className="absolute -top-4 -right-2 w-4 h-4 bg-indigo-500 rounded-full flex justify-center items-center text-[10px] text-[#ffffff]">{1}</span>
+                {
+                  cartItemsLength !== null && cartItemsLength > 0 && (
+                    <span className="absolute -top-4 -right-2 w-4 h-4 bg-indigo-500 rounded-full flex justify-center items-center text-[10px] text-[#ffffff]">{cartItemsLength}</span>
+                  )
+                }
               </i>
             </button>
             <Hamburger color='#ffffff' size={25} direction='left' />

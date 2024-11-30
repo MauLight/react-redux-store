@@ -1,4 +1,5 @@
 import react from 'eslint-plugin-react'
+import jsxA11y from 'eslint-plugin-jsx-a11y'
 import globals from 'globals'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -22,6 +23,7 @@ export default [...compat.extends(
   ...love,
   plugins: {
     react,
+    jsxA11y
   },
 
   languageOptions: {
