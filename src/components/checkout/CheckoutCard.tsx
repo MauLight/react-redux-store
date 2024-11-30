@@ -9,6 +9,9 @@ interface CheckoutCardProps {
 export const CheckoutCard = ({ product, dispatch }: CheckoutCardProps): ReactElement => {
 
   const handleChangeQuantity = (type: number) => {
+    if (product.quantity === 1 && type !== 1) {
+      return
+    }
     const id = product.id
     const newQuantity = type === 1 ? product.quantity + 1 : product.quantity - 1
     dispatch(changeItemQuantity(id, newQuantity))

@@ -41,18 +41,17 @@ export const cartReducer = (cart = initialCart, action: any) => {
         case 'cart/changeItemQuantity': {
             const { id, newQuantity } = action.payload
             const itemToUpdate = cart.find(elem => elem.id === id)
+            if (itemToUpdate) {
+                const index = cart.indexOf(itemToUpdate as CartItemProps)
 
-            const updatedItem = {
-                ...itemToUpdate,
-                quantity: newQuantity
+                const updatedItem = {
+                    ...itemToUpdate,
+                    quantity: newQuantity
+                }
+
+                return cart.with(index, updatedItem)
             }
-
-            const filteredCart = cart.filter(elem => elem.id !== id)
-
-            return [
-                ...filteredCart,
-                updatedItem
-            ]
+            return cart
         }
 
         case 'cart/resetCart': {
