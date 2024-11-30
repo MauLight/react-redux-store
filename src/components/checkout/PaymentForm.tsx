@@ -3,6 +3,8 @@ import { SummaryCard } from './SummaryCard'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
+import { CartItemProps } from '@/features/cart/types'
+import { RotatingLines } from 'react-loader-spinner'
 
 const schemaPayment = Yup.object({
   email: Yup.string().email().required('Email is a required field.').matches(/^[\w-\\.]+@([\w-]+\.)+[\w-]{2,5}$/, 'Email must be a valid email address.'),
@@ -15,7 +17,7 @@ const schemaPayment = Yup.object({
 })
 
 interface PaymentFormProps {
-  cart: any
+  cart: CartItemProps[]
   totalWithVat: number
   setReadyToPay: React.Dispatch<React.SetStateAction<boolean>>
   setPaymentConfirmed: React.Dispatch<React.SetStateAction<boolean>>
@@ -171,13 +173,20 @@ export const PaymentForm = ({ cart, totalWithVat, setReadyToPay, setPaymentConfi
           <button type='submit' className='h-8 flex justify-center items-center bg-[#ffffff] hover:bg-indigo-500 active:bg-[#ffffff] px-2 uppercase text-[#10100e] mt-3 transition-all duration-200'>
             {
               confirmPayment ? (
-                <p>loading</p>
+                <RotatingLines
+                  width="18"
+                  strokeColor='#10100e'
+                />
               ) : (
                 'Pay'
               )
             }
           </button>
-          <button type='button' onClick={() => { setReadyToPay(false) }} className='h-8 hover:bg-red-600 active:bg-transparent px-2 uppercase text-[#ffffff] mt-3 transition-all duration-200 text-[12px] text-right'>Cancel</button>
+          {
+            !confirmPayment && (
+              <button type='button' onClick={() => { setReadyToPay(false) }} className='h-8 hover:bg-red-600 active:bg-transparent px-2 uppercase text-[#ffffff] mt-3 transition-all duration-200 text-[12px] text-right'>Cancel</button>
+            )
+          }
         </div>
       </form>
     </div>

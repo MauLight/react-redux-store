@@ -1,7 +1,10 @@
 import { type ReactElement } from 'react'
 
+//*types
+import { CartItemProps } from '@/features/cart/types'
+
 interface SummaryCardProps {
-  product: any
+  product: CartItemProps
 }
 
 export const SummaryCard = ({ product }: SummaryCardProps): ReactElement => {
@@ -17,7 +20,7 @@ export const SummaryCard = ({ product }: SummaryCardProps): ReactElement => {
             <h1 className='text-xl aktivLight text-[#ffffff] uppercase'>{product.title}</h1>
             <div className="flex">
               <h1 className='text-xl font-semiBold text-[#ffffff] uppercase'>{`${product.price}$`}</h1>
-              <h1 className='text-md aktivLight text-[#ffffff] uppercase line-through'>{`${product.discount}$`}</h1>
+              <h1 className='text-md aktivLight text-[#ffffff] uppercase line-through'>{`${product.fullPrice}$`}</h1>
             </div>
           </div>
         </div>

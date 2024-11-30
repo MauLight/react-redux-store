@@ -19,6 +19,12 @@ export const changeItemQuantity = (id: string, newQuantity: number) => {
     }
 }
 
+export const resetCart = () => {
+    return {
+        type: 'cart/resetCart'
+    }
+}
+
 const initialCart: CartItemProps[] = []
 
 export const cartReducer = (cart = initialCart, action: any) => {
@@ -27,10 +33,11 @@ export const cartReducer = (cart = initialCart, action: any) => {
             const { title, image, price, fullPrice } = action.payload
 
 
-            const newItem = { id: `cart-${uuidv4}`, price, fullPrice, quantity: 1, image, title }
+            const newItem = { id: `cart-${uuidv4()}`, price, fullPrice, quantity: 1, image, title }
 
             return [...cart, newItem]
         }
+
         case 'cart/changeItemQuantity': {
             const { id, newQuantity } = action.payload
             const itemToUpdate = cart.find(elem => elem.id === id)
@@ -46,6 +53,10 @@ export const cartReducer = (cart = initialCart, action: any) => {
                 ...filteredCart,
                 updatedItem
             ]
+        }
+
+        case 'cart/resetCart': {
+            return initialCart
         }
         default:
             return cart
