@@ -23,7 +23,7 @@ export const PriceCard = ({ product }: { product: ProductProps }): ReactNode => 
     }
 
     return (
-        <div className="flex justify-end items-center gap-x-10 px-5 py-3 border-t border-sym_gray-600 shadow-sm shadow-sym_gray-800 transition-all duration-300 bg-gray-800 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70 rounded-[20px]">
+        <div className="flex justify-end items-center gap-x-10 px-5 py-3 border-t border-sym_gray-600 shadow-sm shadow-sym_gray-800 transition-all duration-300 bg-[#10100e] bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70 rounded-[20px]">
             <div className="flex flex-col">
                 <h1 className='text-[18px] uppercase antialiazed text-[#ffffff] leading-tight'>{product.title}</h1>
                 <div className="flex gap-x-2">

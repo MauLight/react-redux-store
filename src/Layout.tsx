@@ -6,14 +6,14 @@ const Checkout = lazy(async () => await import('./routes/Checkout'))
 
 function Layout() {
     return (
-        <div>
+        <main>
             <Suspense fallback={<p>Loading...</p>}>
                 <Routes>
                     <Route path='/' element={<Home />} />
                     <Route path='/checkout' element={<Checkout />} />
                 </Routes>
             </Suspense>
-        </div>
+        </main>
     )
 }
 
