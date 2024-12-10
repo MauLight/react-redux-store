@@ -1,12 +1,9 @@
 import { v4 as uuidv4 } from 'uuid'
+import { createSlice } from '@reduxjs/toolkit'
 
-interface HomeCollectionProps {
-    name: string
-    price: number
-    img: string
-}
+import { ProductProps } from './types'
 
-export const loadHomeCollectionData = (data: HomeCollectionProps[]) => {
+export const loadHomeCollectionData = (data: ProductProps[]) => {
     return {
         type: 'inventory/loadData',
         payload: data,
@@ -44,12 +41,17 @@ const initialInventory = [
     },
 ]
 
-export const homeCollectionReducer = (homeCollection = initialInventory, action: { type: string, payload?: any }) => {
-    switch (action.type) {
-        case 'inventory/loadData': {
+export const homeCollectionSlice = createSlice({
+    name: 'home collection',
+    initialState: initialInventory,
+    reducers: {
+        loadData: (_state, action) => {
             return action.payload
         }
-        default:
-            return homeCollection
     }
-}
+})
+
+export const { loadData } = homeCollectionSlice.actions
+const homeCollectionReducer = homeCollectionSlice.reducer
+
+export default homeCollectionReducer

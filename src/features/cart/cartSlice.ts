@@ -1,61 +1,40 @@
 import { v4 as uuidv4 } from 'uuid'
+import { createSlice } from '@reduxjs/toolkit'
 
-interface CartItemProps { id: string, title: string, image: string, price: number, fullPrice: number, quantity: number }
-
-export const addItem = (itemToAdd: { title: string, image: string, price: number, fullPrice: number }) => {
-    return {
-        type: 'cart/addItem',
-        payload: itemToAdd
-    }
-}
-
-export const changeItemQuantity = (id: string, newQuantity: number) => {
-    return {
-        type: 'cart/changeItemQuantity',
-        payload: {
-            id,
-            newQuantity
-        }
-    }
-}
-
-export const resetCart = () => {
-    return {
-        type: 'cart/resetCart'
-    }
-}
+import { CartItemProps } from './types'
 
 const initialCart: CartItemProps[] = []
 
-export const cartReducer = (cart = initialCart, action: any) => {
-    switch (action.type) {
-        case 'cart/addItem': {
+export const cartSlice = createSlice({
+    name: 'cart',
+    initialState: initialCart,
+    reducers: {
+        addItem: (state, action) => {
             const { title, image, price, fullPrice } = action.payload
-
-
             const newItem = { id: `cart-${uuidv4()}`, price, fullPrice, quantity: 1, image, title }
-
-            return [...cart, newItem]
-        }
-
-        case 'cart/changeItemQuantity': {
+            state.push(newItem)
+        },
+        changeItemQuantity: (state, action) => {
             const { id, newQuantity } = action.payload
-            const itemToUpdate = cart.find(product => product.id === id)
+            console.log(newQuantity)
+            const itemToUpdate = state.find(product => product.id === id)
             if (itemToUpdate) {
                 const updatedItem = {
                     ...itemToUpdate,
                     quantity: newQuantity
                 }
 
-                return cart.map((product) => product.id === id ? updatedItem : product)
+                return state.map((product) => product.id === id ? updatedItem : product)
             }
-            return cart
-        }
-
-        case 'cart/resetCart': {
+            return state
+        },
+        resetCart: () => {
             return initialCart
         }
-        default:
-            return cart
     }
-}
+})
+
+export const { addItem, changeItemQuantity, resetCart } = cartSlice.actions
+const cartReducer = cartSlice.reducer
+
+export default cartReducer

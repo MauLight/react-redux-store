@@ -1,0 +1,1 @@
+export interface wishListProduct { id: string, productId: string }

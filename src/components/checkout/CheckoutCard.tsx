@@ -14,7 +14,7 @@ export const CheckoutCard = ({ product, dispatch }: CheckoutCardProps): ReactEle
     }
     const id = product.id
     const newQuantity = type === 1 ? product.quantity + 1 : product.quantity - 1
-    dispatch(changeItemQuantity(id, newQuantity))
+    dispatch(changeItemQuantity({ id, newQuantity }))
   }
 
   return (
