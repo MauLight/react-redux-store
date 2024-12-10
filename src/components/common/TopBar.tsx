@@ -1,3 +1,4 @@
+import useScroll from '@/hooks/useSroll'
 import { StoreProps } from '@/utils/types'
 import Hamburger from 'hamburger-react'
 import { type ReactElement } from 'react'
@@ -7,7 +8,7 @@ import { Link, useLocation } from 'react-router-dom'
 export const TopBar = (): ReactElement => {
 
   const cart = useSelector((state: StoreProps) => state.cart)
-
+  const yPosition = useScroll()
   const { pathname } = useLocation()
   const cartItemsLength = Object.keys(cart).length
   const topBarText = pathname.includes('checkout') ? 'text-sym-800' : 'text-[#ffffff]'
@@ -15,7 +16,7 @@ export const TopBar = (): ReactElement => {
 
   return (
     <div className="w-full flex justify-center">
-      <div className="absolute top-0 h-[50px] w-web bg-transparent z-20">
+      <div className={`fixed top-2 h-[50px] w-web px-3 rounded-[10px] z-50 ${yPosition > 50 ? 'bg-[#10100e] bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70' : 'bg-transparent'} transition-all duration-200`}>
         <div className="flex h-full w-full justify-between items-center">
           <div className="block">
             <h1 className={`neue-bold leading-none text-[18px] ${topBarText} antialiased`}>eMOTIONs</h1>
