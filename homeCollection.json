@@ -1,0 +1,32 @@
+{
+  "home": [
+    {
+      "id": "col-484d6936-64c6-47ae-ba0d-41a74177b446",
+      "title": "Into the unknown",
+      "price": 1400,
+      "fullPrice": 1680,
+      "image": "https://res.cloudinary.com/maulight/image/upload/v1732918791/e-commerce/banner_1.webp"
+    },
+    {
+      "id": "col-bb4ab7fb-5f48-4e70-9099-db22d3fa564e",
+      "title": "Radiant Skyline",
+      "price": 1400,
+      "fullPrice": 1680,
+      "image": "https://res.cloudinary.com/maulight/image/upload/v1732918603/e-commerce/home_3.webp"
+    },
+    {
+      "id": "col-51381472-9fca-47aa-adeb-4dcf53b29a68",
+      "title": "Face of the deep",
+      "price": 1400,
+      "fullPrice": 1680,
+      "image": "https://res.cloudinary.com/maulight/image/upload/v1732918602/e-commerce/home_1.webp"
+    },
+    {
+      "id": "col-1ff69ea5-5a2a-45f8-9b1e-28b9a474488e",
+      "title": "A vintage sunset",
+      "price": 1180,
+      "fullPrice": 1416,
+      "image": "https://res.cloudinary.com/maulight/image/upload/v1732918603/e-commerce/home_2.webp"
+    }
+  ]
+}

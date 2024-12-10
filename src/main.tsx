@@ -19,7 +19,7 @@ root.render(
 
   <Router>
     <Provider store={store}>
-      <App state={store.getState()} dispatch={store.dispatch} />
+      <App />
     </Provider>
   </Router>
 )
