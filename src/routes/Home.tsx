@@ -13,6 +13,7 @@ import { wishListProduct } from "@/features/wishList/types"
 import { useLayoutEffect } from "react"
 import { getHomeCollectionAsync } from "@/features/homeCollection/homeCollectionSlice"
 import HomeSkeleton from "@/components/home/HomeSkeleton"
+import { AppDispatch } from "@/store/store"
 
 interface StoreProps {
     cart: Array<ProductProps>
@@ -24,16 +25,14 @@ interface StoreProps {
 
 
 function Home() {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch<AppDispatch>()
     const products = useSelector((state: StoreProps) => state.homeCollection.collection)
     const product = products[0]
 
     const collection: ProductProps[] = products.slice(1)
 
     useLayoutEffect(() => {
-        console.log(products)
         if (products.length === 0) {
-            console.log('0. Here')
             dispatch(getHomeCollectionAsync())
         }
     }, [])
