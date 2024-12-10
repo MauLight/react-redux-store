@@ -14,9 +14,11 @@ export const cartSlice = createSlice({
             const newItem = { id: `cart-${uuidv4()}`, price, fullPrice, quantity: 1, image, title }
             state.push(newItem)
         },
+        removeItem: (state, action) => {
+            return state.filter(elem => elem.id !== action.payload)
+        },
         changeItemQuantity: (state, action) => {
             const { id, newQuantity } = action.payload
-            console.log(newQuantity)
             const itemToUpdate = state.find(product => product.id === id)
             if (itemToUpdate) {
                 const updatedItem = {
@@ -34,7 +36,7 @@ export const cartSlice = createSlice({
     }
 })
 
-export const { addItem, changeItemQuantity, resetCart } = cartSlice.actions
+export const { addItem, removeItem, changeItemQuantity, resetCart } = cartSlice.actions
 const cartReducer = cartSlice.reducer
 
 export default cartReducer

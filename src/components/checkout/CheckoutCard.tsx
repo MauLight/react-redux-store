@@ -1,4 +1,4 @@
-import { changeItemQuantity } from '@/features/cart/cartSlice'
+import { changeItemQuantity, removeItem } from '@/features/cart/cartSlice'
 import { type ReactElement } from 'react'
 
 interface CheckoutCardProps {
@@ -15,6 +15,11 @@ export const CheckoutCard = ({ product, dispatch }: CheckoutCardProps): ReactEle
     const id = product.id
     const newQuantity = type === 1 ? product.quantity + 1 : product.quantity - 1
     dispatch(changeItemQuantity({ id, newQuantity }))
+  }
+
+  function handleRemoveProduct(id: number) {
+    console.log(id)
+    dispatch(removeItem(id))
   }
 
   return (
@@ -42,10 +47,10 @@ export const CheckoutCard = ({ product, dispatch }: CheckoutCardProps): ReactEle
           </div>
         </div>
         <div className="w-full h-full flex justify-between item-end">
-          <div className="flex items-end gap-x-1 cursor-pointer">
+          <button onClick={() => { handleRemoveProduct(product.id) }} className="flex items-end gap-x-1 cursor-pointer">
             <i className="fa-solid fa-trash-can pb-[3.5px]"></i>
             <p className='text-[18px] pb-0 leading-none aktivLight text-[#10100e]'>Remove</p>
-          </div>
+          </button>
           <div className="flex items-end gap-x-1">
             <p className='text-[18px] pb-0 leading-none aktivLight text-[#10100e]'>Total</p>
             <p className='text-[18px] pb-0 leading-none aktiv text-[#10100e]'>{`${product.price}$`}</p>

@@ -9,8 +9,6 @@ interface AppProps {
 
 function App({ state, dispatch }: AppProps) {
 
-  console.log(state)
-
   return (
     <div className='min-h-screen bg-sym_gray-800'>
       <TopBar cart={state.cart} />

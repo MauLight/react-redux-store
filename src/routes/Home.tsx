@@ -12,7 +12,6 @@ function Home({ state, dispatch }: { state: any, dispatch: any }) {
 
     const collection: ProductProps[] = state.homeCollection.slice(1)
     const product = state.homeCollection[0]
-    console.log(product)
 
     return (
         <div className='relative w-full flex flex-col justify-center items-center overflow-y-scroll'>
@@ -30,7 +29,7 @@ function Home({ state, dispatch }: { state: any, dispatch: any }) {
                 <div className="grid grid-cols-3">
                     {
                         collection.length > 0 && collection.map(product => (
-                            <ProductCard product={product} dispatch={dispatch} />
+                            <ProductCard key={product.id} product={product} dispatch={dispatch} />
                         ))
                     }
                 </div>
