@@ -17,12 +17,12 @@ export const TopBar = (): ReactElement => {
   return (
     <div className="w-full flex justify-center">
       <div className={`fixed top-2 h-[50px] w-web px-3 rounded-[10px] z-50 ${yPosition > 50 ? 'bg-[#10100e] bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70' : 'bg-transparent'} transition-all duration-200`}>
-        <div className="flex h-full w-full justify-between items-center">
+        <nav className="flex h-full w-full justify-between items-center">
           <div className="block">
             <h1 className={`neue-bold leading-none text-[18px] ${topBarText} antialiased`}>eMOTIONs</h1>
           </div>
           <div className="flex items-center gap-x-2">
-            <Link to={'/checkout'}>
+            <Link aria-label='checkout' to={'/checkout'}>
               <i className={`relative fa-solid fa-lg ${topBarText} fa-cart-shopping cursor-pointer`}>
                 {
                   cartItemsLength !== null && cartItemsLength > 0 && (
@@ -33,7 +33,7 @@ export const TopBar = (): ReactElement => {
             </Link>
             <Hamburger color={topBarHamburgerColor} size={25} direction='left' />
           </div>
-        </div>
+        </nav>
       </div>
     </div>
   )

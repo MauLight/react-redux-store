@@ -16,7 +16,6 @@ export const loadHomeCollectionData = (data: ProductProps[]) => {
 export const getHomeCollectionAsync = createAsyncThunk(
     'homeCollection/getHomeCollection', async () => {
         const { data } = await axios.get(`${url}/home`)
-        console.log(data, '1. data')
         return data
     }
 )

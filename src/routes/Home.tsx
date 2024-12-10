@@ -41,7 +41,7 @@ function Home() {
         <>
             {
                 products.length > 0 ? (
-                    <div className='relative w-full flex flex-col justify-center items-center overflow-y-scroll'>
+                    <section className='relative w-full flex flex-col justify-center items-center overflow-y-scroll'>
                         <div className="w-full overflow-scroll scrollbar-hide flex flex-col">
                             <Banner>
                                 <div className="w-[1440px] h-[900px] flex justify-center items-center bg-[#fdfdfd] overflow-hidden">
@@ -62,7 +62,7 @@ function Home() {
                             </div>
                             <div className="w-full min-h-20 bg-[#10100e]"></div>
                         </div>
-                    </div>
+                    </section>
                 )
                     :
                     (
