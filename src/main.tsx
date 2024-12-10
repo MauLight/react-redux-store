@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter as Router } from 'react-router-dom'
 import store from './store/store.ts'
+import { Provider } from 'react-redux'
 import App from './App.tsx'
 import './index.css'
 
@@ -14,14 +15,12 @@ if (import.meta.env.DEV) {
 
 const root = createRoot(document.getElementById('root')!)
 
-const render = () => {
-  root.render(
+root.render(
 
-    <Router>
+  <Router>
+    <Provider store={store}>
       <App state={store.getState()} dispatch={store.dispatch} />
-    </Router>
-  )
-}
+    </Provider>
+  </Router>
+)
 
-render()
-store.subscribe(render)

@@ -1,12 +1,12 @@
+import { StoreProps } from '@/utils/types'
 import Hamburger from 'hamburger-react'
 import { type ReactElement } from 'react'
+import { useSelector } from 'react-redux'
 import { Link, useLocation } from 'react-router-dom'
 
-interface TopBarProps {
-  cart: Record<string, { price: number, quantity: number, image: string }>
-}
+export const TopBar = (): ReactElement => {
 
-export const TopBar = ({ cart }: TopBarProps): ReactElement => {
+  const cart = useSelector((state: StoreProps) => state.cart)
 
   const { pathname } = useLocation()
   const cartItemsLength = Object.keys(cart).length

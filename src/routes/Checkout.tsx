@@ -1,19 +1,23 @@
 import { useEffect, useState, type ReactElement } from 'react'
-import { XMarkIcon } from '@heroicons/react/20/solid'
-import { motion } from 'framer-motion'
-import { fadeIn } from '@/utils/functions'
 import { Link, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { motion } from 'framer-motion'
 
 //* Components
 import { PaymentForm } from '@/components/checkout/PaymentForm'
 import { CheckSummary } from '@/components/checkout/CheckSummary'
 import { CheckoutCard } from '@/components/checkout/CheckoutCard'
+import { XMarkIcon } from '@heroicons/react/20/solid'
 
 //* Types
-import { CartItemProps } from '@/features/cart/types'
 import { resetCart } from '@/features/cart/cartSlice'
+import { StoreProps } from '@/utils/types'
+import { fadeIn } from '@/utils/functions'
 
-const Checkout = ({ cart, dispatch }: { cart: CartItemProps[], dispatch: any }): ReactElement => {
+const Checkout = (): ReactElement => {
+    const cart = useSelector((state: StoreProps) => state.cart)
+    const dispatch = useDispatch()
+
     const navigate = useNavigate()
     const [readyToPay, setReadyToPay] = useState<boolean>(false)
     const [paymentConfirmed, setPaymentConfirmed] = useState<boolean>(false)

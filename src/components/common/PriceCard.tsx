@@ -1,5 +1,6 @@
 import { addItem } from "@/features/cart/cartSlice"
 import { type ReactNode } from "react"
+import { useDispatch } from "react-redux"
 
 interface ProductProps {
     title: string
@@ -8,7 +9,8 @@ interface ProductProps {
     image: string
 }
 
-export const PriceCard = ({ product, dispatch }: { product: ProductProps, dispatch: any }): ReactNode => {
+export const PriceCard = ({ product }: { product: ProductProps }): ReactNode => {
+    const dispatch = useDispatch()
 
     const handleAddItemToCart = () => {
         const itemToAdd = {
