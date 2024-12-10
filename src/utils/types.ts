@@ -12,6 +12,8 @@ export interface wishListProduct { id: string, productId: string }
 
 export interface StoreProps {
     cart: Array<ProductProps>
-    homeCollection: Array<ProductProps>
+    homeCollection: {
+        collection: Array<ProductProps>
+    }
     wishList: Array<wishListProduct>
 }

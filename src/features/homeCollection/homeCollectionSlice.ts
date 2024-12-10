@@ -1,5 +1,8 @@
-import { v4 as uuidv4 } from 'uuid'
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import axios from 'axios'
+
+const url = import.meta.env.VITE_BACKEND_URL
+console.log(url)
 
 import { ProductProps } from './types'
 
@@ -10,44 +13,47 @@ export const loadHomeCollectionData = (data: ProductProps[]) => {
     };
 };
 
-const initialInventory = [
-    {
-        id: `col-${uuidv4()}`,
-        title: 'Into the unknown',
-        price: 1400,
-        fullPrice: 1680,
-        image: 'https://res.cloudinary.com/maulight/image/upload/v1732918791/e-commerce/banner_1.webp'
-    },
-    {
-        id: `col-${uuidv4()}`,
-        title: 'Radiant Skyline',
-        price: 1400,
-        fullPrice: 1680,
-        image: 'https://res.cloudinary.com/maulight/image/upload/v1732918603/e-commerce/home_3.webp'
-    },
-    {
-        id: `col-${uuidv4()}`,
-        title: 'Face of the deep',
-        price: 1400,
-        fullPrice: 1680,
-        image: 'https://res.cloudinary.com/maulight/image/upload/v1732918602/e-commerce/home_1.webp'
-    },
-    {
-        id: `col-${uuidv4()}`,
-        title: 'A vintage sunset',
-        price: 1180,
-        fullPrice: 1416,
-        image: 'https://res.cloudinary.com/maulight/image/upload/v1732918603/e-commerce/home_2.webp'
-    },
-]
+export const getHomeCollectionAsync = createAsyncThunk(
+    'homeCollection/getHomeCollection', async () => {
+        const { data } = await axios.get(`${url}/home`)
+        console.log(data, '1. data')
+        return data
+    }
+)
 
 export const homeCollectionSlice = createSlice({
     name: 'home collection',
-    initialState: initialInventory,
+    initialState: {
+        collection: [] as ProductProps[],
+        isCollectionLoading: false,
+        collectionHasError: false
+    },
     reducers: {
         loadData: (_state, action) => {
             return action.payload
         }
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(
+                getHomeCollectionAsync.pending, (state, _action) => {
+                    state.collectionHasError = false
+                    state.isCollectionLoading = true
+                }
+            )
+            .addCase(
+                getHomeCollectionAsync.fulfilled, (state, action) => {
+                    state.collection = action.payload as ProductProps[]
+                    state.collectionHasError = false
+                    state.isCollectionLoading = false
+                }
+            )
+            .addCase(
+                getHomeCollectionAsync.rejected, (state, _action) => {
+                    state.collectionHasError = true
+                    state.isCollectionLoading = false
+                }
+            )
     }
 })
 
