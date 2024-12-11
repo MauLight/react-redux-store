@@ -61,7 +61,7 @@ function SignForm(): ReactNode {
                             errors.email !== undefined ? <small className='text-red-500'>{errors.email.message}</small> : null
                         }
                     </div>
-                    <div className="flex justify-center">
+                    <div className="flex justify-start">
                         {
                             errors.password !== undefined ? <small className='text-red-500'>{errors.password.message}</small> : null
                         }
