@@ -3,6 +3,7 @@ import { ProductProps } from '@/features/homeCollection/types'
 import { addItem } from '@/features/cart/cartSlice'
 import { addWishProduct } from '@/features/wishList/wishListSlice'
 import { useDispatch } from 'react-redux'
+import { toast } from 'react-toastify'
 
 interface ProductCardProps {
   product: ProductProps
@@ -19,8 +20,9 @@ export const ProductCard = ({ product }: ProductCardProps): ReactElement => {
       price: product.price,
       fullPrice: product.fullPrice
     }
-    console.log(itemToAdd)
+
     dispatch(addItem(itemToAdd))
+    toast.success('Item added to cart.')
   }
 
   const handleWishList = (id: string) => {
@@ -53,9 +55,9 @@ export const ProductCard = ({ product }: ProductCardProps): ReactElement => {
                 )
             }
           </button>
-          <div onClick={handleAddItemToCart} className='h-[50px] w-[50px] antialiased rounded-full bg-gray-900 border-t border-sym_gray-300 shadow-sm shadow-sym_gray-800 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70 flex justify-center items-center pb-1 cursor-pointer'>
-            <i className="fa-solid fa-bag-shopping text-[#ffffff]"></i>
-          </div>
+          <button onClick={handleAddItemToCart} className='h-[50px] w-[50px] antialiased rounded-full bg-gray-900 border-t border-sym_gray-300 shadow-sm shadow-sym_gray-800 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70 flex justify-center items-center pb-1 cursor-pointer text-[#ffffff] hover:text-indigo-500'>
+            <i className="fa-solid fa-bag-shopping"></i>
+          </button>
         </div>
       </div>
       <div className="absolute w-full h-full bg-[#10100e] opacity-0 group-hover:opacity-30 z-0 transition-all duration-200"></div>

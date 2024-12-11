@@ -20,11 +20,11 @@ export const TopBar = (): ReactElement => {
     <div className="fixed top-2 w-full flex justify-center z-50">
       <div className={`h-[50px] w-web px-3 rounded-[10px] ${yPosition > 50 ? 'bg-[#10100e] bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70' : 'bg-transparent'} transition-all duration-200`}>
         <nav className="flex h-full w-full justify-between items-center">
-          <div className="block">
+          <Link to={'/'} className="block">
             <h1 className={`neue-bold leading-none text-[18px] ${topBarText} antialiased cursor-pointer`}>eMOTIONs</h1>
-          </div>
+          </Link>
           <div className="flex items-center gap-x-8">
-            <div className="flex items-center gap-x-5">
+            <div className="flex items-center gap-x-8">
               <Link to={user ? '/profile' : '/sign'} className={`${topBarText} flex items-center gap-x-2 overflow-hidden`}>
                 <i className='fa-solid fa-user'></i>
                 <p>{user ? `${user.email}` : 'Sign in'}</p>
