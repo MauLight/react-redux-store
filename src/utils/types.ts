@@ -31,3 +31,8 @@ export interface NewUserProps {
     address: string
     password: string
 }
+
+export interface LoginProps {
+    email: string
+    password: string
+}

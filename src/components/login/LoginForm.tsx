@@ -1,8 +1,12 @@
-import { type ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from 'yup'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch } from '@/store/store'
+import { LoginProps, StoreProps } from '@/utils/types'
+import { postLoginAsync } from '@/features/userAuth/userAuthSlice'
 
 const schema = yup
     .object({
@@ -13,6 +17,11 @@ const schema = yup
 
 function LoginForm(): ReactNode {
     const navigate = useNavigate()
+    const dispatch = useDispatch<AppDispatch>()
+    const isLoading = useSelector((state: StoreProps) => state.userAuth.isLoading)
+    const hasError = useSelector((state: StoreProps) => state.userAuth.hasError)
+    const [error, setError] = useState<string>('')
+
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         defaultValues: {
             email: '',
@@ -21,7 +30,14 @@ function LoginForm(): ReactNode {
         resolver: yupResolver(schema)
     })
 
-    const handleLogin = (): void => {
+    const handleLogin = async ({ email, password }: LoginProps): Promise<void> => {
+        const user = {
+            email,
+            password
+        }
+
+        const response = await dispatch(postLoginAsync(user))
+        console.log(response, 'this is the response')
         reset()
         navigate('/')
     }
@@ -47,12 +63,17 @@ function LoginForm(): ReactNode {
                 <div className="flex flex-col">
                     <div className="flex justify-center">
                         {
-                            errors.email !== undefined ? <small className='text-red-500'>{errors.email.message}</small> : null
+                            errors.email !== undefined && <small className='text-red-500'>{errors.email.message}</small>
                         }
                     </div>
                     <div className="flex justify-center">
                         {
-                            errors.password !== undefined ? <small className='text-red-500'>{errors.password.message}</small> : null
+                            errors.password !== undefined && <small className='text-red-500'>{errors.password.message}</small>
+                        }
+                    </div>
+                    <div className="flex justify-center">
+                        {
+                            error && <small className='text-red-500'>{error}</small>
                         }
                     </div>
                 </div>
