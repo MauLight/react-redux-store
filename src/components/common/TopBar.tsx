@@ -25,7 +25,7 @@ export const TopBar = (): ReactElement => {
           </div>
           <div className="flex items-center gap-x-8">
             <div className="flex items-center gap-x-5">
-              <Link to={'/sign'} className={`${topBarText} flex items-center gap-x-2 overflow-hidden`}>
+              <Link to={user ? '/profile' : '/sign'} className={`${topBarText} flex items-center gap-x-2 overflow-hidden`}>
                 <i className='fa-solid fa-user'></i>
                 <p>{user ? `${user.email}` : 'Sign in'}</p>
               </Link>
