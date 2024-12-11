@@ -44,12 +44,12 @@ function Home() {
                     <section className='relative w-full flex flex-col justify-center items-center overflow-y-scroll'>
                         <div className="w-full overflow-scroll scrollbar-hide flex flex-col">
                             <Banner>
-                                <div className="w-[1440px] h-[900px] flex justify-center items-center bg-[#fdfdfd] overflow-hidden">
+                                <div className="w-full max-w-[1440px] h-[950px] flex justify-center items-center bg-[#fdfdfd] overflow-hidden">
                                     <BannerContent>
                                         <PriceCard product={product} />
                                     </BannerContent>
-                                    <img src='https://res.cloudinary.com/maulight/image/upload/v1732922082/e-commerce/kx2betzo07jrpgq9i077.webp' alt="banner" className='absolute -bottom-32 w-full object-none object-bottom z-10' />
-                                    <img src={product.image} alt="banner" className='absolute -bottom-32 w-full object-none object-bottom z-0' />
+                                    <img src='https://res.cloudinary.com/maulight/image/upload/v1732922082/e-commerce/kx2betzo07jrpgq9i077.webp' alt="banner" className='absolute  w-full h-full object-none object-bottom z-10' />
+                                    <img src={product.image} alt="banner" className='absolute  w-full h-full object-none object-bottom z-0' />
                                 </div>
                             </Banner>
                             <Banner2 />
