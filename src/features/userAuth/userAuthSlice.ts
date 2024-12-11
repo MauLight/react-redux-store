@@ -16,7 +16,7 @@ export const userAuthSlice = createSlice({
     initialState: {
         user: {},
         isLoading: false,
-        hasError: false
+        hasError: false,
     },
     reducers: {},
     extraReducers: (builder) => {

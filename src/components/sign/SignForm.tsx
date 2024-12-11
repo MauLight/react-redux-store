@@ -1,10 +1,13 @@
-import { useEffect, type ReactNode } from 'react'
-import { useForm } from 'react-hook-form'
-import { yupResolver } from "@hookform/resolvers/yup"
-import * as yup from 'yup'
+import { type ReactNode } from 'react'
+import { AppDispatch } from '@/store/store'
 import { useDispatch, useSelector } from 'react-redux'
 import { postNewUserAsync } from '@/features/userAuth/userAuthSlice'
-import { AppDispatch } from '@/store/store'
+
+import * as yup from 'yup'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from "@hookform/resolvers/yup"
+
+import { RotatingLines } from 'react-loader-spinner'
 import { NewUserProps, StoreProps } from '@/utils/types'
 
 const schema = yup
@@ -21,10 +24,15 @@ const schema = yup
 function SignForm(): ReactNode {
     const dispatch = useDispatch<AppDispatch>()
     const isLoading = useSelector((state: StoreProps) => state.userAuth.isLoading)
-    console.log(isLoading)
+    const hasError = useSelector((state: StoreProps) => state.userAuth.hasError)
+
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         defaultValues: {
+            firstname: '',
+            lastname: '',
+            address: '',
             email: '',
+            phone: undefined,
             password: '',
         },
         resolver: yupResolver(schema)
@@ -44,18 +52,28 @@ function SignForm(): ReactNode {
         reset()
     }
 
-    useEffect(() => {
-        console.log(errors)
-    }, [errors])
-
     return (
-        <header className="min-h-[400px] w-[350px] flex flex-col rounded-[10px] pt-8 gap-y-5 px-7 pb-5 bg-[#ffffff]">
+        <header className="min-h-[520px] w-[350px] flex flex-col rounded-[10px] pt-8 gap-y-5 px-7 pb-5 bg-[#ffffff]">
             <>
                 {
-                    isLoading ? (
-                        <p>Loading</p>
+                    isLoading && (
+                        <div className="h-full flex justify-center items-center">
+                            <RotatingLines
+                                width="40"
+                                strokeColor='#10100e'
+                            />
+                        </div>
                     )
-                        :
+                }
+                {
+                    hasError && (
+                        <div className="h-full flex justify-center items-center">
+                            <h2 className='text-[1rem] text-red-500 text-balance'>There was a problem on our end, please refresh the page and try again</h2>
+                        </div>
+                    )
+                }
+                {
+                    !isLoading && !hasError && (
                         (
                             <>
                                 <h1 className='font-body text-[#10100e] text-4xl text-center uppercase'>Welcome</h1>
@@ -96,6 +114,7 @@ function SignForm(): ReactNode {
                                 </div>
                             </>
                         )
+                    )
                 }
             </>
         </header>
