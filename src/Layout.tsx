@@ -1,5 +1,5 @@
-import { lazy, Suspense } from 'react'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { lazy, Suspense, useEffect } from 'react'
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom'
 import { TopBar } from './components/common/TopBar'
 
 const Sign = lazy(async () => await import('./routes/Sign'))
@@ -9,7 +9,16 @@ const Checkout = lazy(async () => await import('./routes/Checkout'))
 
 function Layout() {
     const { pathname } = useLocation()
+    const navigate = useNavigate()
     const hideTopbar = pathname.includes('sign') || pathname.includes('login')
+    const user = localStorage.getItem('store-user')
+
+    useEffect(() => {
+        if (!user) {
+            navigate('/login')
+        }
+    }, [])
+
     return (
         <main>
             {

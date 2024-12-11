@@ -1,11 +1,16 @@
-import { useEffect, type ReactNode } from 'react'
-import { useForm } from 'react-hook-form'
-import { yupResolver } from "@hookform/resolvers/yup"
-import * as yup from 'yup'
+import { useState, type ReactNode } from 'react'
+import { AppDispatch } from '@/store/store'
 import { useDispatch, useSelector } from 'react-redux'
 import { postNewUserAsync } from '@/features/userAuth/userAuthSlice'
-import { AppDispatch } from '@/store/store'
+import { toast } from 'react-toastify'
+
+import * as yup from 'yup'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from "@hookform/resolvers/yup"
+
+import { RotatingLines } from 'react-loader-spinner'
 import { NewUserProps, StoreProps } from '@/utils/types'
+import { useNavigate } from 'react-router-dom'
 
 const schema = yup
     .object({
@@ -19,18 +24,25 @@ const schema = yup
     .required()
 
 function SignForm(): ReactNode {
+    const navigate = useNavigate()
     const dispatch = useDispatch<AppDispatch>()
     const isLoading = useSelector((state: StoreProps) => state.userAuth.isLoading)
-    console.log(isLoading)
+    const hasError = useSelector((state: StoreProps) => state.userAuth.hasError)
+    const [error, setError] = useState<string>('')
+
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         defaultValues: {
+            firstname: '',
+            lastname: '',
+            address: '',
             email: '',
+            phone: undefined,
             password: '',
         },
         resolver: yupResolver(schema)
     })
 
-    const handleLogin = ({ firstname, lastname, email, phone, address, password }: NewUserProps): void => {
+    const handleLogin = async ({ firstname, lastname, email, phone, address, password }: NewUserProps): Promise<void> => {
 
         const newUser = {
             firstname,
@@ -40,22 +52,33 @@ function SignForm(): ReactNode {
             address,
             password
         }
-        dispatch(postNewUserAsync(newUser))
-        reset()
+        const response = await dispatch(postNewUserAsync(newUser))
+
+        if (response.payload.error) {
+            toast.error(response.payload.error)
+            setError(response.payload.error)
+        }
+        if (response.payload.message === 'User created succesfully.') {
+            navigate('/login')
+            reset()
+        }
     }
 
-    useEffect(() => {
-        console.log(errors)
-    }, [errors])
-
     return (
-        <header className="min-h-[400px] w-[350px] flex flex-col rounded-[10px] pt-8 gap-y-5 px-7 pb-5 bg-[#ffffff]">
+        <header className="min-h-[520px] w-[350px] flex flex-col rounded-[10px] pt-8 gap-y-5 px-7 pb-5 bg-[#ffffff]">
             <>
                 {
-                    isLoading ? (
-                        <p>Loading</p>
+                    isLoading && (
+                        <div className="h-full flex justify-center items-center">
+                            <RotatingLines
+                                width="40"
+                                strokeColor='#10100e'
+                            />
+                        </div>
                     )
-                        :
+                }
+                {
+                    !isLoading && (
                         (
                             <>
                                 <h1 className='font-body text-[#10100e] text-4xl text-center uppercase'>Welcome</h1>
@@ -91,11 +114,17 @@ function SignForm(): ReactNode {
                                                 errors.password !== undefined ? <small className='text-red-500'>{errors.password.message}</small> : null
                                             }
                                         </div>
+                                        <div className="flex justify-center">
+                                            {
+                                                hasError && <small className='text-red-500'>{error}</small>
+                                            }
+                                        </div>
                                     </div>
                                     <p className='text-center font-light text-[0.75rem] text-sym-gray-700 cursor-pointer uppercase'>Forgot password?</p>
                                 </div>
                             </>
                         )
+                    )
                 }
             </>
         </header>
