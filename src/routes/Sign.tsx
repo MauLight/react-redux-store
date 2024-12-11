@@ -12,7 +12,7 @@ function Signup(): ReactNode {
                 <SignForm />
                 <SignFooter />
             </div>
-            <video src={video} autoPlay loop className='absolute w-full object-cover' />
+            <video src={video} autoPlay loop className='absolute w-full h-full object-cover' />
         </section>
     )
 }
