@@ -6,26 +6,28 @@ import { useSelector } from 'react-redux'
 import { Link, useLocation } from 'react-router-dom'
 
 export const TopBar = (): ReactElement => {
-
+  const user = useSelector((state: StoreProps) => state.userAuth.user)
   const cart = useSelector((state: StoreProps) => state.cart)
   const yPosition = useScroll()
   const { pathname } = useLocation()
   const cartItemsLength = Object.keys(cart).length
-  const topBarText = pathname.includes('checkout') ? 'text-sym-800' : 'text-[#ffffff]'
+  const topBarText = pathname.includes('checkout') ? 'text-sym-800' : 'text-[#ffffff] hover:text-indigo-500 transition-color duration-200'
   const topBarHamburgerColor = pathname.includes('checkout') ? '#10100e' : '#ffffff'
+
+  console.log(user)
 
   return (
     <div className="fixed top-2 w-full flex justify-center z-50">
       <div className={`h-[50px] w-web px-3 rounded-[10px] ${yPosition > 50 ? 'bg-[#10100e] bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70' : 'bg-transparent'} transition-all duration-200`}>
         <nav className="flex h-full w-full justify-between items-center">
           <div className="block">
-            <h1 className={`neue-bold leading-none text-[18px] ${topBarText} antialiased`}>eMOTIONs</h1>
+            <h1 className={`neue-bold leading-none text-[18px] ${topBarText} antialiased cursor-pointer`}>eMOTIONs</h1>
           </div>
           <div className="flex items-center gap-x-8">
             <div className="flex items-center gap-x-5">
               <Link to={'/sign'} className={`${topBarText} flex items-center gap-x-2 overflow-hidden`}>
                 <i className='fa-solid fa-user'></i>
-                <p>Sign in</p>
+                <p>{user ? `${user.email}` : 'Sign in'}</p>
               </Link>
               <Link className={`${topBarText} flex items-center gap-x-2`} aria-label='checkout' to={'/checkout'}>
                 <i className='relative fa-solid fa-cart-shopping cursor-pointer'>
