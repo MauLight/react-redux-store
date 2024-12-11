@@ -1,0 +1,73 @@
+import { type ReactNode } from 'react'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from "@hookform/resolvers/yup"
+import * as yup from 'yup'
+
+const schema = yup
+    .object({
+        firstname: yup.string().required(),
+        lastname: yup.string().required(),
+        address: yup.string().required(),
+        phone: yup.string().required(),
+        email: yup.string().required(),
+        password: yup.string().required(),
+    })
+    .required()
+
+function SignForm(): ReactNode {
+    const { register, handleSubmit, reset, formState: { errors } } = useForm({
+        defaultValues: {
+            email: '',
+            password: '',
+        },
+        resolver: yupResolver(schema)
+    })
+
+    const handleLogin = (): void => {
+        reset()
+    }
+
+    return (
+        <header className="min-h-[400px] w-[350px] flex flex-col rounded-[10px] pt-8 gap-y-5 px-7 pb-5 bg-[#ffffff]">
+            <h1 className='font-body text-[#10100e] text-4xl text-center uppercase'>Welcome</h1>
+            <form onSubmit={handleSubmit(handleLogin)} className="flex flex-col gap-y-2 pt-5 text-[0.9rem]">
+                <div className="flex gap-x-2">
+                    <input {...register('firstname')} type='text' className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.firstname !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Firstname' />
+                    <input {...register('lastname')} type='text' className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.lastname !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Lastname' />
+                </div>
+                <input {...register('email')} type='text' className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.email !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Email' />
+                <input {...register('phone')} type='text' className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.phone !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Phone' />
+                <input {...register('address')} type='text' className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.address !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Address' />
+                <input {...register('password')} type='password' className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.password !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Password' />
+                <button type='submit' className='w-full h-10 font-body text-[16px] text-[#ffffff] bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e] mt-1 uppercase'>Log in</button>
+                <div className="flex justify-center items-center pt-2">
+                    <div className="w-full border-b border-gray-300"></div>
+                    <p className='text-[14px] font-body text-gray-500 px-5 uppercase'>or</p>
+                    <div className="w-full border-b border-gray-300"></div>
+                </div>
+            </form>
+            <div className="flex flex-col gap-y-2">
+                <div className="flex items-center justify-center gap-x-1 cursor-pointer">
+                    <i className="fa-brands fa-google text-[#4285f4]"></i>
+                    <p className='font-body text-[16px] text-[#4285f4]'>Continue with Google</p>
+                </div>
+                <div className="flex flex-col">
+                    <div className="flex justify-center">
+                        {
+                            errors.email !== undefined ? <small className='text-red-500'>{errors.email.message}</small> : null
+                        }
+                    </div>
+                    <div className="flex justify-center">
+                        {
+                            errors.password !== undefined ? <small className='text-red-500'>{errors.password.message}</small> : null
+                        }
+                    </div>
+                </div>
+                <p className='text-center font-light text-[0.75rem] text-sym-gray-700 cursor-pointer uppercase'>Forgot password?</p>
+            </div>
+        </header>
+    )
+}
+
+export default SignForm
+
