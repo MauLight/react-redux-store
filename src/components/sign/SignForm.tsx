@@ -1,7 +1,8 @@
-import { type ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { AppDispatch } from '@/store/store'
 import { useDispatch, useSelector } from 'react-redux'
 import { postNewUserAsync } from '@/features/userAuth/userAuthSlice'
+import { toast } from 'react-toastify'
 
 import * as yup from 'yup'
 import { useForm } from 'react-hook-form'
@@ -9,6 +10,7 @@ import { yupResolver } from "@hookform/resolvers/yup"
 
 import { RotatingLines } from 'react-loader-spinner'
 import { NewUserProps, StoreProps } from '@/utils/types'
+import { useNavigate } from 'react-router-dom'
 
 const schema = yup
     .object({
@@ -22,9 +24,11 @@ const schema = yup
     .required()
 
 function SignForm(): ReactNode {
+    const navigate = useNavigate()
     const dispatch = useDispatch<AppDispatch>()
     const isLoading = useSelector((state: StoreProps) => state.userAuth.isLoading)
     const hasError = useSelector((state: StoreProps) => state.userAuth.hasError)
+    const [error, setError] = useState<string>('')
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         defaultValues: {
@@ -38,7 +42,7 @@ function SignForm(): ReactNode {
         resolver: yupResolver(schema)
     })
 
-    const handleLogin = ({ firstname, lastname, email, phone, address, password }: NewUserProps): void => {
+    const handleLogin = async ({ firstname, lastname, email, phone, address, password }: NewUserProps): Promise<void> => {
 
         const newUser = {
             firstname,
@@ -48,8 +52,16 @@ function SignForm(): ReactNode {
             address,
             password
         }
-        dispatch(postNewUserAsync(newUser))
-        reset()
+        const response = await dispatch(postNewUserAsync(newUser))
+
+        if (response.payload.error) {
+            toast.error(response.payload.error)
+            setError(response.payload.error)
+        }
+        if (response.payload.message === 'User created succesfully.') {
+            navigate('/login')
+            reset()
+        }
     }
 
     return (
@@ -66,14 +78,7 @@ function SignForm(): ReactNode {
                     )
                 }
                 {
-                    hasError && (
-                        <div className="h-full flex justify-center items-center">
-                            <h2 className='text-[1rem] text-red-500 text-balance'>There was a problem on our end, please refresh the page and try again</h2>
-                        </div>
-                    )
-                }
-                {
-                    !isLoading && !hasError && (
+                    !isLoading && (
                         (
                             <>
                                 <h1 className='font-body text-[#10100e] text-4xl text-center uppercase'>Welcome</h1>
@@ -107,6 +112,11 @@ function SignForm(): ReactNode {
                                         <div className="flex justify-start">
                                             {
                                                 errors.password !== undefined ? <small className='text-red-500'>{errors.password.message}</small> : null
+                                            }
+                                        </div>
+                                        <div className="flex justify-center">
+                                            {
+                                                hasError && <small className='text-red-500'>{error}</small>
                                             }
                                         </div>
                                     </div>

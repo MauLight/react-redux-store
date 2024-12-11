@@ -1,13 +1,19 @@
 import { NewUserProps } from "@/utils/types"
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
-import axios from "axios"
+import axios, { AxiosError } from "axios"
+import { toast } from "react-toastify"
 
 const url = import.meta.env.VITE_BACKEND_URL2
 
 export const postNewUserAsync = createAsyncThunk(
-    'userAuth/postUser', async (user: NewUserProps) => {
-        const { data } = await axios.post(`${url}/user`, user)
-        return data
+    'userAuth/postUser', async (user: NewUserProps, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.post(`${url}/auth/create`, user)
+            toast.success('User created succesfully.')
+            return data
+        } catch (error) {
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
     }
 )
 
