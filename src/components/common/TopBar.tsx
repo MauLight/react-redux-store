@@ -15,18 +15,18 @@ export const TopBar = (): ReactElement => {
   const topBarHamburgerColor = pathname.includes('checkout') ? '#10100e' : '#ffffff'
 
   return (
-    <div className="w-full flex justify-center">
-      <div className={`fixed top-2 h-[50px] w-web px-3 rounded-[10px] z-50 ${yPosition > 50 ? 'bg-[#10100e] bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70' : 'bg-transparent'} transition-all duration-200`}>
+    <div className="fixed top-2 w-full flex justify-center z-50">
+      <div className={`h-[50px] w-web px-3 rounded-[10px] ${yPosition > 50 ? 'bg-[#10100e] bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70' : 'bg-transparent'} transition-all duration-200`}>
         <nav className="flex h-full w-full justify-between items-center">
           <div className="block">
             <h1 className={`neue-bold leading-none text-[18px] ${topBarText} antialiased`}>eMOTIONs</h1>
           </div>
           <div className="flex items-center gap-x-8">
             <div className="flex items-center gap-x-5">
-              <button className={`${topBarText} flex items-center gap-x-2 overflow-hidden`}>
+              <Link to={'/sign'} className={`${topBarText} flex items-center gap-x-2 overflow-hidden`}>
                 <i className='fa-solid fa-user'></i>
                 <p>Sign in</p>
-              </button>
+              </Link>
               <Link className={`${topBarText} flex items-center gap-x-2`} aria-label='checkout' to={'/checkout'}>
                 <i className='relative fa-solid fa-cart-shopping cursor-pointer'>
                   {
