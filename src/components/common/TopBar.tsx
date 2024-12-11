@@ -21,16 +21,23 @@ export const TopBar = (): ReactElement => {
           <div className="block">
             <h1 className={`neue-bold leading-none text-[18px] ${topBarText} antialiased`}>eMOTIONs</h1>
           </div>
-          <div className="flex items-center gap-x-2">
-            <Link aria-label='checkout' to={'/checkout'}>
-              <i className={`relative fa-solid fa-lg ${topBarText} fa-cart-shopping cursor-pointer`}>
-                {
-                  cartItemsLength !== null && cartItemsLength > 0 && (
-                    <span className="absolute -top-4 -right-2 w-4 h-4 bg-indigo-500 rounded-full flex justify-center items-center text-[10px] text-[#ffffff]">{cartItemsLength}</span>
-                  )
-                }
-              </i>
-            </Link>
+          <div className="flex items-center gap-x-8">
+            <div className="flex items-center gap-x-5">
+              <button className={`${topBarText} flex items-center gap-x-2 overflow-hidden`}>
+                <i className='fa-solid fa-user'></i>
+                <p>Sign in</p>
+              </button>
+              <Link className={`${topBarText} flex items-center gap-x-2`} aria-label='checkout' to={'/checkout'}>
+                <i className='relative fa-solid fa-cart-shopping cursor-pointer'>
+                  {
+                    cartItemsLength !== null && cartItemsLength > 0 && (
+                      <span className="absolute -top-4 -right-2 w-4 h-4 bg-indigo-500 rounded-full flex justify-center items-center text-[10px] text-[#ffffff]">{cartItemsLength}</span>
+                    )
+                  }
+                </i>
+                <p>Your cart</p>
+              </Link>
+            </div>
             <Hamburger color={topBarHamburgerColor} size={25} direction='left' />
           </div>
         </nav>
