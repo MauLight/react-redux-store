@@ -8,9 +8,9 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from 'yup'
 
-import { RotatingLines } from 'react-loader-spinner'
 import { LoginProps, StoreProps } from '@/utils/types'
 import { toast } from 'react-toastify'
+import Fallback from '../common/Fallback'
 
 const schema = yup
     .object({
@@ -75,12 +75,7 @@ function LoginForm(): ReactNode {
             <>
                 {
                     isLoading && (
-                        <div className="h-full flex justify-center items-center">
-                            <RotatingLines
-                                width="40"
-                                strokeColor='#10100e'
-                            />
-                        </div>
+                        <Fallback />
                     )
                 }
                 {

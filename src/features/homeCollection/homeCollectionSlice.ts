@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios, { AxiosError } from 'axios'
 
 const url = import.meta.env.VITE_BACKEND_URL
-console.log(url)
 
 import { ProductProps } from './types'
 
@@ -43,7 +42,6 @@ export const homeCollectionSlice = createSlice({
             )
             .addCase(
                 getHomeCollectionAsync.rejected, (state, _action) => {
-                    console.log('Rejected!')
                     state.collectionHasError = true
                     state.isCollectionLoading = false
                 }
