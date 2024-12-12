@@ -19,6 +19,8 @@ export interface StoreProps {
     cart: Array<ProductProps>
     homeCollection: {
         collection: Array<ProductProps>
+        collectionHasError: boolean
+        collectionIsLoading: boolean
     }
     wishList: Array<wishListProduct>
 }

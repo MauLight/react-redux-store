@@ -1,22 +1,20 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 
 const url = import.meta.env.VITE_BACKEND_URL
 console.log(url)
 
 import { ProductProps } from './types'
 
-export const loadHomeCollectionData = (data: ProductProps[]) => {
-    return {
-        type: 'inventory/loadData',
-        payload: data,
-    };
-};
-
 export const getHomeCollectionAsync = createAsyncThunk(
-    'homeCollection/getHomeCollection', async () => {
-        const { data } = await axios.get(`${url}/home`)
-        return data
+    'homeCollection/getHomeCollection', async (_, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.get(`${url}/home`)
+            return data
+        } catch (error) {
+            console.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
     }
 )
 
@@ -27,11 +25,7 @@ export const homeCollectionSlice = createSlice({
         isCollectionLoading: false,
         collectionHasError: false
     },
-    reducers: {
-        loadData: (_state, action) => {
-            return action.payload
-        }
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(
@@ -49,6 +43,7 @@ export const homeCollectionSlice = createSlice({
             )
             .addCase(
                 getHomeCollectionAsync.rejected, (state, _action) => {
+                    console.log('Rejected!')
                     state.collectionHasError = true
                     state.isCollectionLoading = false
                 }
@@ -56,7 +51,6 @@ export const homeCollectionSlice = createSlice({
     }
 })
 
-export const { loadData } = homeCollectionSlice.actions
 const homeCollectionReducer = homeCollectionSlice.reducer
 
 export default homeCollectionReducer

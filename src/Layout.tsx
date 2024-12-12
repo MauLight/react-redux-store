@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect } from 'react'
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom'
 import { TopBar } from './components/common/TopBar'
+import ErrorBoundary from './components/error/ErrorBoundary'
 
 const Sign = lazy(async () => await import('./routes/Sign'))
 const Login = lazy(async () => await import('./routes/Login'))
@@ -25,15 +26,17 @@ function Layout() {
             {
                 !hideTopbar && <TopBar />
             }
-            <Suspense fallback={<p>Loading...</p>}>
-                <Routes>
-                    <Route path='/' element={<Home />} />
-                    <Route path='/sign' element={<Sign />} />
-                    <Route path='/login' element={<Login />} />
-                    <Route path='/checkout' element={<Checkout />} />
-                    <Route path='*' element={<NotFound />} />
-                </Routes>
-            </Suspense>
+            <ErrorBoundary>
+                <Suspense fallback={<p>Loading...</p>}>
+                    <Routes>
+                        <Route path='/' element={<Home />} />
+                        <Route path='/sign' element={<Sign />} />
+                        <Route path='/login' element={<Login />} />
+                        <Route path='/checkout' element={<Checkout />} />
+                        <Route path='*' element={<NotFound />} />
+                    </Routes>
+                </Suspense>
+            </ErrorBoundary>
         </main>
     )
 }

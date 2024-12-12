@@ -14,8 +14,6 @@ export const TopBar = (): ReactElement => {
   const topBarText = pathname.includes('checkout') ? 'text-sym-800' : 'text-[#ffffff] hover:text-indigo-500 transition-color duration-200'
   const topBarHamburgerColor = pathname.includes('checkout') ? '#10100e' : '#ffffff'
 
-  console.log(user)
-
   return (
     <div className="fixed top-2 w-full flex justify-center z-50">
       <div className={`h-[50px] w-web px-3 rounded-[10px] ${yPosition > 50 ? 'bg-[#10100e] bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70' : 'bg-transparent'} transition-all duration-200`}>
