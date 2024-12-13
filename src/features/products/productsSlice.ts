@@ -30,7 +30,7 @@ export const postIndividualProductAsync = createAsyncThunk(
 export const productsSlice = createSlice({
     name: 'products',
     initialState: {
-        products: [],
+        products: [] as ProductProps[],
         productsAreLoading: false,
         productsHasError: false
     },
@@ -44,9 +44,10 @@ export const productsSlice = createSlice({
                 }
             )
             .addCase(
-                postProductsAsync.fulfilled, (state, _action) => {
+                postProductsAsync.fulfilled, (state, action) => {
                     state.productsAreLoading = false
                     state.productsHasError = false
+                    state.products = [...state.products, ...action.payload.products]
                 }
             )
             .addCase(
@@ -62,9 +63,10 @@ export const productsSlice = createSlice({
                 }
             )
             .addCase(
-                postIndividualProductAsync.fulfilled, (state, _action) => {
+                postIndividualProductAsync.fulfilled, (state, action) => {
                     state.productsAreLoading = false
                     state.productsHasError = false
+                    state.products = [...state.products, action.payload.product]
                 }
             )
             .addCase(
