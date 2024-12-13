@@ -1,16 +1,21 @@
 export interface ProductProps {
-    id: string
+    id?: string
+    description: string
     title: string
-    image: string
+    image?: string
     price: number
     fullPrice: number
-    quantity: number
-    rating?: number
+    rating: number
 }
 
 export interface wishListProduct { id: string, productId: string }
 
 export interface StoreProps {
+    inventory: {
+        products: ProductProps[]
+        productsAreLoading: boolean
+        productsHasError: boolean
+    }
     userAuth: {
         user: Record<string, any>
         isLoading: boolean

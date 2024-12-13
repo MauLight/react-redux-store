@@ -5,7 +5,7 @@ import { type ReactElement } from 'react'
 import { useSelector } from 'react-redux'
 import { Link, useLocation } from 'react-router-dom'
 
-export const TopBar = (): ReactElement => {
+const TopBar = (): ReactElement => {
   const user = useSelector((state: StoreProps) => state.userAuth.user)
   const cart = useSelector((state: StoreProps) => state.cart)
   const yPosition = useScroll()
@@ -44,4 +44,7 @@ export const TopBar = (): ReactElement => {
       </div>
     </div>
   )
+
 }
+
+export default TopBar

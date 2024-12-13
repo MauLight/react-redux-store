@@ -1,17 +1,15 @@
 import { useState, type ReactElement } from 'react'
-import { ProductProps } from '@/features/homeCollection/types'
 import { addItem } from '@/features/cart/cartSlice'
 import { addWishProduct } from '@/features/wishList/wishListSlice'
 import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
+import { ProductProps } from '@/utils/types'
 
-interface ProductCardProps {
-  product: ProductProps
-}
-
-export const ProductCard = ({ product }: ProductCardProps): ReactElement => {
+export const ProductCard = ({ product }: { product: ProductProps }): ReactElement => {
   const [wishListed, setWishListed] = useState<boolean>(false)
   const dispatch = useDispatch()
+
+  const image = /^(https?:\/\/)?((([a-zA-Z0-9$_.+!*'(),;?&=-]|%[0-9a-fA-F]{2})+:)*([a-zA-Z0-9$_.+!*'(),;?&=-]|%[0-9a-fA-F]{2})+@)?(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)|([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(:[0-9]+)?(\/([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)*(\?([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)?(#([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)?$/.test(product.image as string) ? product.image : 'https://dummyimage.com/400x600/000/fff'
 
   const handleAddItemToCart = () => {
     const itemToAdd = {
@@ -31,8 +29,8 @@ export const ProductCard = ({ product }: ProductCardProps): ReactElement => {
   }
 
   return (
-    <div className="group relative h-[700px] col-span-1 flex justify-center overflow-hidden">
-      <img src={product.image} alt="mock1" className="w-full h-full object-cover" />
+    <div className="group relative h-full col-span-1 flex justify-center overflow-hidden">
+      <img src={image} alt="mock1" className="w-full h-full object-cover" />
 
 
       <div className="w-full absolute bottom-5 flex justify-between px-5 z-10 transition-all duration-300">
@@ -44,7 +42,7 @@ export const ProductCard = ({ product }: ProductCardProps): ReactElement => {
           </div>
         </div>
         <div className="flex items-center gap-x-5">
-          <button onClick={() => { handleWishList(product.id) }}>
+          <button onClick={() => { handleWishList(product.id as string) }}>
             {
               wishListed ? (
                 <i className="fa-solid fa-heart text-indigo-500"></i>
