@@ -65,7 +65,7 @@ function IndividualProduct(): ReactNode {
 
     return (
         <>
-            <form onSubmit={handleSubmit(onSubmit)} className='w-full col-span-1 flex flex-col gap-y-5 px-5 py-10 bg-[#ffffff] rounded-[10px]'>
+            <form onSubmit={handleSubmit(onSubmit)} className='w-full col-span-2 flex flex-col gap-y-5 px-10 py-10 bg-[#ffffff] border-x border-sym_gray-400'>
                 <h1 className='text-[2rem] text-balance leading-tight uppercase'>Add your individual products here:</h1>
                 <div className='flex flex-col gap-y-5'>
                     <div className="flex flex-col gap-y-2">
