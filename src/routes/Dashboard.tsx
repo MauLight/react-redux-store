@@ -12,12 +12,13 @@ export default function Dashboard(): ReactNode {
 
     function handleSubmitJSON(e: React.FormEvent<HTMLFormElement>): void {
         e.preventDefault()
-        const products: string = JSON.stringify(data)
+        //const products: string = JSON.stringify(data)
+
 
         if (/^[\],:{}\s]*$/.test(data.replace(/\\["\\\/bfnrtu]/g, '@').
             replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
             replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
-            const response = dispatch(postProductsAsync(products))
+            const response = dispatch(postProductsAsync({ products: data }))
             toast.success('JSON posted succesfully.')
         } else {
             toast.error('This is not a valid JSON.')

@@ -1,11 +1,10 @@
 export interface ProductProps {
-    id: string
+    description: string
     title: string
     image: string
     price: number
     fullPrice: number
-    quantity: number
-    rating?: number
+    rating: number
 }
 
 export interface wishListProduct { id: string, productId: string }
