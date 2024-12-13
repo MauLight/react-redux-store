@@ -1,6 +1,5 @@
 import { postIndividualProductAsync } from '@/features/products/productsSlice'
 import { AppDispatch } from '@/store/store'
-import { ProductProps } from '@/utils/types'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useState, type ReactNode } from 'react'
 import { useForm } from 'react-hook-form'
@@ -119,8 +118,31 @@ function IndividualProduct(): ReactNode {
             {
                 confirmationDialogue && (
                     <Modal openModal={confirmationDialogue} handleOpenModal={() => { setConfirmationDialogue(!confirmationDialogue) }}>
-                        <p>some</p>
-                        <ProductCard product={getValues()} />
+                        <div className='flex gap-x-5'>
+                            <div className='min-w-[23rem] h-[33rem]'>
+                                <ProductCard product={getValues()} />
+                            </div>
+                            <div className="w-full h-[33rem] flex flex-col justify-between">
+                                <div className="flex flex-col gap-y-2">
+                                    <h1 className='text-[3rem] font-light text-balance uppercase'>{getValues().title}</h1>
+
+                                    <div className='flex justify-end gap-x-2'>
+                                        <p className='text-[3rem] text-end'>{`$${getValues().price}`}</p>
+                                        <p className='text-[3rem] font-light text-sym_gray-400 text-end'>us</p>
+                                    </div>
+                                    <button className='h-10 px-2 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e]'>Add to cart</button>
+                                    <div className="border-b border-sym_gray-600 mt-10 mb-5"></div>
+                                    <p className='font-light text-[1.2rem] tracking-tighter'>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p>
+                                </div>
+                                <div className="flex gap-x-[0.1rem] justify-end items-center text-sym_gray-500 grow">
+                                    <i className="fa-regular fa-star fa-lg"></i>
+                                    <i className="fa-regular fa-star fa-lg"></i>
+                                    <i className="fa-regular fa-star fa-lg"></i>
+                                    <i className="fa-regular fa-star fa-lg"></i>
+                                    <i className="fa-regular fa-star fa-lg"></i>
+                                </div>
+                            </div>
+                        </div>
                     </Modal>
                 )
             }
