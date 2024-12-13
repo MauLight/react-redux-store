@@ -4,6 +4,19 @@ import axios, { AxiosError } from "axios"
 
 const url = import.meta.env.VITE_PRODUCTS_BACKEND_URL
 
+export const getAllProductsAsync = createAsyncThunk(
+    'products/getAllProducts', async (_, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.get(`${url}/products`)
+            console.log(data)
+            return data
+        } catch (error) {
+            console.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
 export const postProductsAsync = createAsyncThunk(
     'products/postProducts', async (products: { products: string }, { rejectWithValue }) => {
         try {
@@ -71,6 +84,25 @@ export const productsSlice = createSlice({
             )
             .addCase(
                 postIndividualProductAsync.rejected, (state, _action) => {
+                    state.productsAreLoading = false
+                    state.productsHasError = true
+                }
+            )
+            .addCase(
+                getAllProductsAsync.pending, (state, _action) => {
+                    state.productsAreLoading = true
+                    state.productsHasError = false
+                }
+            )
+            .addCase(
+                getAllProductsAsync.fulfilled, (state, action) => {
+                    state.productsAreLoading = false
+                    state.productsHasError = false
+                    state.products = action.payload.products
+                }
+            )
+            .addCase(
+                getAllProductsAsync.rejected, (state, _action) => {
                     state.productsAreLoading = false
                     state.productsHasError = true
                 }

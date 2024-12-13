@@ -1,7 +1,8 @@
 export interface ProductProps {
+    id?: string
     description: string
     title: string
-    image: string
+    image?: string
     price: number
     fullPrice: number
     rating: number
@@ -10,6 +11,11 @@ export interface ProductProps {
 export interface wishListProduct { id: string, productId: string }
 
 export interface StoreProps {
+    inventory: {
+        products: ProductProps[]
+        productsAreLoading: boolean
+        productsHasError: boolean
+    }
     userAuth: {
         user: Record<string, any>
         isLoading: boolean

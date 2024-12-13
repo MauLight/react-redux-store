@@ -13,8 +13,8 @@ import { BannerContent } from "@/components/home/BannerContent"
 import video from '@/assets/video/Error.webm'
 
 //* Types
-import { StoreProps } from "@/utils/types"
-import { ProductProps } from "@/features/homeCollection/types"
+import { ProductProps, StoreProps } from "@/utils/types"
+
 
 function Home() {
     const dispatch = useDispatch<AppDispatch>()
@@ -67,7 +67,7 @@ function Home() {
                                 </div>
                             </Banner>
                             <Banner2 />
-                            <div className="grid grid-cols-3">
+                            <div className="grid grid-cols-3 h-[700px]">
                                 {
                                     collection.length > 0 && collection.map(product => (
                                         <ProductCard key={product.id} product={product} />

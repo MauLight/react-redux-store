@@ -7,7 +7,7 @@ interface ProductProps {
     title: string
     price: number
     fullPrice: number
-    image: string
+    image?: string
 }
 
 export const PriceCard = ({ product }: { product: ProductProps }): ReactNode => {
