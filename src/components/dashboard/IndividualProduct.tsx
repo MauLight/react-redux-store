@@ -37,6 +37,8 @@ function IndividualProduct(): ReactNode {
         setConfirmationDialogue(true)
     }
 
+    console.log(getValues().description.length)
+
     async function handlePostProduct() {
         const data = getValues()
 
@@ -63,55 +65,65 @@ function IndividualProduct(): ReactNode {
 
     return (
         <>
-            <form onSubmit={handleSubmit(onSubmit)} className='w-full col-span-1 flex flex-col px-5 pt-5 pb-2 gap-y-2 bg-[#ffffff] rounded-[10px]'>
-                <h1>Add your individual products here:</h1>
-                <input
-                    {...register('title')}
-                    type="text"
-                    className='h-10 px-2 border rounded-[5px] text-[1rem] placeholder-sym_gray-400 outline-none'
-                    placeholder='Title'
-                />
-                {errors.title && <small className="text-red-500">{errors.title.message}</small>}
+            <form onSubmit={handleSubmit(onSubmit)} className='w-full col-span-1 flex flex-col gap-y-5 px-5 py-10 bg-[#ffffff] rounded-[10px]'>
+                <h1 className='text-[2rem] text-balance leading-tight uppercase'>Add your individual products here:</h1>
+                <div className='flex flex-col gap-y-5'>
+                    <div className="flex flex-col gap-y-2">
+                        <input
+                            {...register('title')}
+                            type="text"
+                            className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.title !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                            placeholder='Title'
+                        />
+                        {errors.title && <small className="text-red-500">{errors.title.message}</small>}
+                    </div>
 
-                <input
-                    {...register('description')}
-                    type="text"
-                    className='h-10 px-2 border rounded-[5px] text-[1rem] placeholder-sym_gray-400 outline-none'
-                    placeholder='Description'
-                />
-                {errors.description && <small className="text-red-500">{errors.description.message}</small>}
+                    <div className="flex flex-col gap-y-2">
+                        <input
+                            {...register('description')}
+                            type="text"
+                            className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.description !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                            placeholder='Description'
+                        />
+                        {errors.description && <small className="text-red-500">{errors.description.message}</small>}
+                    </div>
 
-                <input
-                    {...register('price')}
-                    type="number"
-                    className='h-10 px-2 border rounded-[5px] text-[1rem] placeholder-sym_gray-400 outline-none'
-                    placeholder='Price'
-                />
-                {errors.price && <small className="text-red-500">{errors.price.message}</small>}
+                    <div className="flex flex-col gap-y-2">
+                        <input
+                            {...register('price')}
+                            type="number"
+                            className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.price !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                            placeholder='Price'
+                        />
+                        {errors.price && <small className="text-red-500">{errors.price.message}</small>}
+                    </div>
 
-                <input
-                    {...register('fullPrice')}
-                    type="number"
-                    className='h-10 px-2 border rounded-[5px] text-[1rem] placeholder-sym_gray-400 outline-none'
-                    placeholder='Full price'
-                />
-                {errors.fullPrice && <small className="text-red-500">{errors.fullPrice.message}</small>}
+                    <div className="flex flex-col gap-y-2">
+                        <input
+                            {...register('fullPrice')}
+                            type="number"
+                            className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.fullPrice !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                            placeholder='Full price'
+                        />
+                        {errors.fullPrice && <small className="text-red-500">{errors.fullPrice.message}</small>}
+                    </div>
 
-                <input
-                    {...register('image')}
-                    type="text"
-                    className='h-10 px-2 border rounded-[5px] text-[1rem] placeholder-sym_gray-400 outline-none'
-                    placeholder='Image'
-                />
-                {errors.image && <small className="text-red-500">{errors.image.message}</small>}
+                    <input
+                        {...register('image')}
+                        type="text"
+                        className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.image !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                        placeholder='Image'
+                    />
+                    {errors.image && <small className="text-red-500">{errors.image.message}</small>}
 
-                <input
-                    {...register('rating')}
-                    type="number"
-                    className='h-10 px-2 border rounded-[5px] text-[1rem] placeholder-sym_gray-400 outline-none'
-                    placeholder='Rating'
-                />
-                {errors.rating && <small className="text-red-500">{errors.rating.message}</small>}
+                    <input
+                        {...register('rating')}
+                        type="number"
+                        className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.rating !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                        placeholder='Rating'
+                    />
+                    {errors.rating && <small className="text-red-500">{errors.rating.message}</small>}
+                </div>
 
                 <button type="submit" className='h-10 bg-[#10100e] text-[#ffffff] mt-2'>Submit</button>
             </form>
@@ -134,7 +146,7 @@ function IndividualProduct(): ReactNode {
                                         </div>
                                         <button className='h-10 px-2 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e]'>Add to cart</button>
                                         <div className="border-b border-sym_gray-600 mt-10 mb-5"></div>
-                                        <p className='font-light text-[1.2rem] tracking-tighter'>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p>
+                                        <p className='font-light text-[1.2rem] tracking-tighter'>{getValues().description}</p>
                                     </div>
                                     <div className="flex justify-end items-center gap-x-2">
                                         <p className='font-light leading-none'>{'(0/5)'}</p>
@@ -149,8 +161,22 @@ function IndividualProduct(): ReactNode {
                                 </div>
                             </section>
                             <div className="border-b border-sym_gray-600 mb-5 mt-10"></div>
-                            <div className="flex justify-end items-center gap-x-5">
-                                <button className='h-10 px-5 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-red-500 active:bg-[#10100e]'>Cancel</button><button className='h-10 px-5 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e]'>Confirm</button>
+                            <div className="flex justify-between items-center gap-x-5">
+                                <div>
+                                    {
+                                        getValues().description.length < 200 && (
+                                            <p className='text-red-500 text-[0.8rem]'>Your description is too short, try adding more than 200 characters.</p>
+                                        )
+                                    }
+                                    {
+                                        !getValues().image && (
+                                            <p className='text-red-500 text-[0.8rem]'>A placeholder was added as image because you did not add a valid image url.</p>
+                                        )
+                                    }
+                                </div>
+                                <div className="flex gap-x-5">
+                                    <button onClick={() => { setConfirmationDialogue(false) }} className='h-10 px-5 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-red-500 active:bg-[#10100e]'>Cancel</button><button onClick={handlePostProduct} className='h-10 px-5 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e]'>Confirm</button>
+                                </div>
                             </div>
                         </>
                     </Modal>
