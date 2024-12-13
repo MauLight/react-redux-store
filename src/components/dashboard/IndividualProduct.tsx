@@ -21,6 +21,7 @@ export const productSchema = yup.object().shape({
 function IndividualProduct(): ReactNode {
     const dispatch: AppDispatch = useDispatch()
     const [confirmationDialogue, setConfirmationDialogue] = useState<boolean>(false)
+
     const { register, getValues, handleSubmit, reset, formState: { errors } } = useForm({
         defaultValues: {
             title: '',
@@ -36,8 +37,6 @@ function IndividualProduct(): ReactNode {
     const onSubmit = () => {
         setConfirmationDialogue(true)
     }
-
-    console.log(getValues().description.length)
 
     async function handlePostProduct() {
         const data = getValues()
@@ -59,8 +58,8 @@ function IndividualProduct(): ReactNode {
                 toast.error('There was an error with your request.')
             }
         }
-        console.log('Form submitted:', data)
         reset()
+        setConfirmationDialogue(false)
     }
 
     return (
@@ -69,60 +68,83 @@ function IndividualProduct(): ReactNode {
                 <h1 className='text-[2rem] text-balance leading-tight uppercase'>Add your individual products here:</h1>
                 <div className='flex flex-col gap-y-5'>
                     <div className="flex flex-col gap-y-2">
-                        <input
-                            {...register('title')}
-                            type="text"
-                            className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.title !== undefined ? 'ring-1 ring-red-500' : ''}`}
-                            placeholder='Title'
-                        />
+                        <div className="flex flex-col gap-y-1">
+                            <label className='text-[0.8rem]' htmlFor="description">Title</label>
+                            <input
+                                {...register('title')}
+                                type="text"
+                                className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.title !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                                placeholder='Title'
+                            />
+                        </div>
                         {errors.title && <small className="text-red-500">{errors.title.message}</small>}
                     </div>
 
                     <div className="flex flex-col gap-y-2">
-                        <input
-                            {...register('description')}
-                            type="text"
-                            className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.description !== undefined ? 'ring-1 ring-red-500' : ''}`}
-                            placeholder='Description'
-                        />
+                        <div className="flex flex-col gap-y-1">
+                            <label className='text-[0.8rem]' htmlFor="description">Description</label>
+                            <input
+                                {...register('description')}
+                                type="text"
+                                className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.description !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                                placeholder='Description'
+                            />
+                        </div>
                         {errors.description && <small className="text-red-500">{errors.description.message}</small>}
                     </div>
 
                     <div className="flex flex-col gap-y-2">
-                        <input
-                            {...register('price')}
-                            type="number"
-                            className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.price !== undefined ? 'ring-1 ring-red-500' : ''}`}
-                            placeholder='Price'
-                        />
+                        <div className="flex flex-col gap-y-1">
+                            <label className='text-[0.8rem]' htmlFor="description">Price</label>
+                            <input
+                                {...register('price')}
+                                type="number"
+                                className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.price !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                                placeholder='Price'
+                            />
+                        </div>
                         {errors.price && <small className="text-red-500">{errors.price.message}</small>}
                     </div>
 
                     <div className="flex flex-col gap-y-2">
-                        <input
-                            {...register('fullPrice')}
-                            type="number"
-                            className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.fullPrice !== undefined ? 'ring-1 ring-red-500' : ''}`}
-                            placeholder='Full price'
-                        />
+                        <div className="flex flex-col gap-y-1">
+                            <label className='text-[0.8rem]' htmlFor="description">Full price</label>
+                            <input
+                                {...register('fullPrice')}
+                                type="number"
+                                className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.fullPrice !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                                placeholder='Full price'
+                            />
+                        </div>
                         {errors.fullPrice && <small className="text-red-500">{errors.fullPrice.message}</small>}
                     </div>
 
-                    <input
-                        {...register('image')}
-                        type="text"
-                        className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.image !== undefined ? 'ring-1 ring-red-500' : ''}`}
-                        placeholder='Image'
-                    />
-                    {errors.image && <small className="text-red-500">{errors.image.message}</small>}
+                    <div className="flex flex-col gap-y-2">
+                        <div className="flex flex-col gap-y-1">
+                            <label className='text-[0.8rem]' htmlFor="description">Image</label>
+                            <input
+                                {...register('image')}
+                                type="text"
+                                className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.image !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                                placeholder='Image'
+                            />
+                        </div>
+                        {errors.image && <small className="text-red-500">{errors.image.message}</small>}
+                    </div>
 
-                    <input
-                        {...register('rating')}
-                        type="number"
-                        className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.rating !== undefined ? 'ring-1 ring-red-500' : ''}`}
-                        placeholder='Rating'
-                    />
-                    {errors.rating && <small className="text-red-500">{errors.rating.message}</small>}
+                    <div className="flex flex-col gap-y-2">
+                        <div className="flex flex-col gap-y-1">
+                            <label className='text-[0.8rem]' htmlFor="description">Rating</label>
+                            <input
+                                {...register('rating')}
+                                type="number"
+                                className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.rating !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                                placeholder='Rating'
+                            />
+                        </div>
+                        {errors.rating && <small className="text-red-500">{errors.rating.message}</small>}
+                    </div>
+
                 </div>
 
                 <button type="submit" className='h-10 bg-[#10100e] text-[#ffffff] mt-2'>Submit</button>
