@@ -26,7 +26,7 @@ export const Modal = ({ width, children, openModal, handleOpenModal }: ModalProp
         </TransitionChild>
 
         <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex lg:min-h-full py-20 w-full items-center justify-center p-4">
+          <div className="flex lg:min-h-full py-10 w-full items-center justify-center p-4">
             <TransitionChild
               as={Fragment}
               enter="ease-out duration-300"
