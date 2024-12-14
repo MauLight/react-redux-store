@@ -1,8 +1,13 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useState, type ReactNode } from 'react'
+import { useLocation } from 'react-router-dom'
+
 import { ProductCard } from './ProductCard'
 import { ProductProps } from '@/utils/types'
 
 export default function ProductDescription({ product }: { product: ProductProps }): ReactNode {
+    const { pathname } = useLocation()
+    const [isAdmin, setIsAdmin] = useState<boolean>(false)
+
     const [stars, setStars] = useState<ReactNode[]>([])
 
     function calculateRating(rating: number) {
@@ -20,6 +25,15 @@ export default function ProductDescription({ product }: { product: ProductProps 
 
         setStars(ratingArray)
     }
+
+    function handleRating(id: string) {
+        calculateRating(Number(id) + 1)
+        setIsAdmin(true)
+    }
+
+    useLayoutEffect(() => {
+        setIsAdmin(pathname.includes('admin'))
+    }, [])
 
     useEffect(() => {
         if (product !== undefined) {
@@ -50,10 +64,15 @@ export default function ProductDescription({ product }: { product: ProductProps 
                                 <p className='font-light leading-none'>{`(${product.rating}/5)`}</p>
                                 <div className="flex gap-x-[0.1rem] justify-end items-center text-sym_gray-500">
                                     {
-                                        stars.map((star: ReactNode) => (
+                                        isAdmin && stars.map((star: ReactNode) => (
                                             <>
                                                 {star}
                                             </>
+                                        ))
+                                    }
+                                    {
+                                        !isAdmin && Array.from({ length: 5 }).map((_, i) => (
+                                            <i key={i} onClick={() => { handleRating(String(i)) }} id={String(i)} className="fa-regular fa-star fa-lg"></i>
                                         ))
                                     }
                                 </div>
