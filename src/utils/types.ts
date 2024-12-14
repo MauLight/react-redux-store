@@ -5,7 +5,11 @@ export interface ProductProps {
     image?: string
     price: number
     fullPrice: number
-    rating: number
+    rating?: {
+        productId: string
+        ratings: Array<number>
+        averageRating: number
+    }
 }
 
 export interface wishListProduct { id: string, productId: string }

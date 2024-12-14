@@ -10,7 +10,7 @@ export default function DashboardCard({ product }: { product: ProductProps }): R
             <p className='text-balance truncate'>{product.price}</p>
             <p className='text-balance truncate'>{product.fullPrice}</p>
             <a target='_blank' aria-label='image' href={product.image} className='text-balance font-light truncate'>{product.image}</a>
-            <p className='text-balance truncate'>{product.rating}</p>
+            <p className='text-balance truncate'>{product.rating?.averageRating}</p>
         </div>
     )
 }

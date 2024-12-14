@@ -66,7 +66,7 @@ export default function ProductDescription({ product }: { product: ProductProps 
                                 <p className='font-light text-[1.2rem] tracking-tighter text-sym_gray-600'>{product.description}</p>
                             </div>
                             <div className="flex justify-end items-center gap-x-2">
-                                <p className='font-light leading-none'>{`(${product.rating}/5)`}</p>
+                                <p className='font-light leading-none'>{`(${stars.length}/5)`}</p>
                                 <div onMouseEnter={() => { setIsAdmin(false) }} onMouseLeave={handleRatingAnswer} className="flex gap-x-[0.1rem] justify-end items-center text-sym_gray-500">
                                     {
                                         isAdmin && stars.map((star: ReactNode, i) => (

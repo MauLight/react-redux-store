@@ -12,7 +12,7 @@ function IndividualProduct({ id }: { id: string | undefined }): ReactNode {
     const product = useSelector((state: StoreProps) => state.inventory.individualProduct)
 
     useEffect(() => {
-        if (id && !product.id) {
+        if (id) {
             dispatch(getProductById(id))
         }
     }, [])

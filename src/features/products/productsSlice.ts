@@ -1,6 +1,7 @@
 import { ProductProps } from "@/utils/types"
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import axios, { AxiosError } from "axios"
+import { toast } from "react-toastify"
 
 const url = import.meta.env.VITE_PRODUCTS_BACKEND_URL
 // const token = JSON.parse(localStorage.getItem('store-user') !== null ? localStorage.getItem('store-user') as string : '')
@@ -37,6 +38,7 @@ export const postProductsAsync = createAsyncThunk(
             return data
         } catch (error) {
             console.error((error as AxiosError).message)
+            toast.error((error as AxiosError).message)
             return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
         }
     }

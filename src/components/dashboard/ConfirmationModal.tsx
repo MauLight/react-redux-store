@@ -25,7 +25,7 @@ export default function ConfirmationModal({ product, setConfirmationDialogue, ha
     }
 
     useEffect(() => {
-        calculateRating(product.rating)
+        calculateRating(product.rating?.averageRating as number)
     }, [])
 
     return (
@@ -48,7 +48,7 @@ export default function ConfirmationModal({ product, setConfirmationDialogue, ha
                         <p className='font-light text-[1.2rem] tracking-tighter text-sym_gray-600'>{product.description}</p>
                     </div>
                     <div className="flex justify-end items-center gap-x-2">
-                        <p className='font-light leading-none'>{`(${product.rating}/5)`}</p>
+                        <p className='font-light leading-none'>{`(${product.rating?.averageRating}/5)`}</p>
                         <div className="flex gap-x-[0.1rem] justify-end items-center text-sym_gray-500">
                             {
                                 stars.map((star: ReactNode) => (

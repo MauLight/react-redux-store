@@ -13,7 +13,6 @@ export const productSchema = yup.object().shape({
     title: yup.string().required('Title is required'),
     description: yup.string().required('Description is required'),
     image: yup.string().url('Image must be a valid URL'),
-    rating: yup.number().min(0, 'Rating must be at least 0').max(5, 'Rating must be at most 5').required('Rating is required')
 })
 
 function IndividualProduct(): ReactNode {
@@ -27,8 +26,7 @@ function IndividualProduct(): ReactNode {
         defaultValues: {
             title: '',
             description: '',
-            image: '',
-            rating: 0
+            image: ''
         },
         resolver: yupResolver(productSchema)
     })
@@ -113,7 +111,7 @@ function IndividualProduct(): ReactNode {
                         </div>
                         {errors.image && <small className="text-red-500">{errors.image.message}</small>}
                     </div>
-
+                    {/* 
                     <div className="flex flex-col gap-y-2">
                         <div className="flex flex-col gap-y-1">
                             <label className='text-[0.8rem]' htmlFor="description">Rating</label>
@@ -125,7 +123,7 @@ function IndividualProduct(): ReactNode {
                             />
                         </div>
                         {errors.rating && <small className="text-red-500">{errors.rating.message}</small>}
-                    </div>
+                    </div> */}
 
                     <div className="flex flex-col gap-y-2">
                         <div className="flex flex-col gap-y-1">
