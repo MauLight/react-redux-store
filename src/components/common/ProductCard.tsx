@@ -4,6 +4,7 @@ import { addWishProduct } from '@/features/wishList/wishListSlice'
 import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { ProductProps } from '@/utils/types'
+import { Link } from 'react-router-dom'
 
 export const ProductCard = ({ product }: { product: ProductProps }): ReactElement => {
   const [wishListed, setWishListed] = useState<boolean>(false)
@@ -29,8 +30,8 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
   }
 
   return (
-    <div className="group relative h-full col-span-1 flex justify-center overflow-hidden">
-      <img src={image} alt="mock1" className="w-full h-full object-cover" />
+    <Link to={`/product/${product.id}`} className="group relative h-full col-span-1 flex justify-center overflow-hidden">
+      <img src={image} alt="product" className="w-full h-full object-cover" />
 
 
       <div className="w-full absolute bottom-5 flex justify-between px-5 z-10 transition-all duration-300">
@@ -42,7 +43,7 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
           </div>
         </div>
         <div className="flex items-center gap-x-5">
-          <button onClick={() => { handleWishList(product.id as string) }}>
+          <button aria-label='wishlist' onClick={() => { handleWishList(product.id as string) }}>
             {
               wishListed ? (
                 <i className="fa-solid fa-heart text-indigo-500"></i>
@@ -53,12 +54,12 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
                 )
             }
           </button>
-          <button onClick={handleAddItemToCart} className='h-[50px] w-[50px] antialiased rounded-full bg-gray-900 border-t border-sym_gray-300 shadow-sm shadow-sym_gray-800 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70 flex justify-center items-center pb-1 cursor-pointer text-[#ffffff] hover:text-indigo-500'>
+          <button aria-label='add to cart' onClick={handleAddItemToCart} className='h-[50px] w-[50px] antialiased rounded-full bg-gray-900 border-t border-sym_gray-300 shadow-sm shadow-sym_gray-800 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70 flex justify-center items-center pb-1 cursor-pointer text-[#ffffff] hover:text-indigo-500'>
             <i className="fa-solid fa-bag-shopping"></i>
           </button>
         </div>
       </div>
       <div className="absolute w-full h-full bg-[#10100e] opacity-0 group-hover:opacity-30 z-0 transition-all duration-200"></div>
-    </div>
+    </Link>
   )
 }

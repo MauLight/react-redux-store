@@ -13,6 +13,7 @@ export interface wishListProduct { id: string, productId: string }
 export interface StoreProps {
     inventory: {
         products: ProductProps[]
+        individualProduct: ProductProps
         productsAreLoading: boolean
         productsHasError: boolean
     }

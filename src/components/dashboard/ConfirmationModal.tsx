@@ -21,13 +21,13 @@ export default function ConfirmationModal({ product, setConfirmationDialogue, ha
             ratingArray.push(emptyStar)
         }
 
-        console.log(ratingArray)
         setStars(ratingArray)
     }
 
     useEffect(() => {
         calculateRating(product.rating)
     }, [])
+
     return (
         <>
             <h1 className='text-[2rem] text-balance uppercase'> Is the information correct?</h1>

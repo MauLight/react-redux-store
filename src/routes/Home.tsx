@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect } from "react"
+import { useLayoutEffect } from "react"
 import { AppDispatch } from "@/store/store"
 import { useDispatch, useSelector } from "react-redux"
 import { getHomeCollectionAsync } from "@/features/homeCollection/homeCollectionSlice"
@@ -35,10 +35,6 @@ function Home() {
             getCollection()
         }
     }, [])
-
-    useEffect(() => {
-        console.log(hasError)
-    }, [hasError])
 
     return (
         <>

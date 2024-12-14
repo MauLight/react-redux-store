@@ -3,12 +3,25 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import axios, { AxiosError } from "axios"
 
 const url = import.meta.env.VITE_PRODUCTS_BACKEND_URL
+// const token = JSON.parse(localStorage.getItem('store-user') !== null ? localStorage.getItem('store-user') as string : '')
 
 export const getAllProductsAsync = createAsyncThunk(
     'products/getAllProducts', async (_, { rejectWithValue }) => {
         try {
             const { data } = await axios.get(`${url}/products`)
-            console.log(data)
+            return data
+        } catch (error) {
+            console.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
+export const getProductById = createAsyncThunk(
+    'products/getProductById', async (id: string, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.get(`${url}/products/${id}`)
+            console.log(data, 'this is the individual product call')
             return data
         } catch (error) {
             console.error((error as AxiosError).message)
@@ -44,6 +57,7 @@ export const productsSlice = createSlice({
     name: 'products',
     initialState: {
         products: [] as ProductProps[],
+        individualProduct: {},
         productsAreLoading: false,
         productsHasError: false
     },
@@ -103,6 +117,25 @@ export const productsSlice = createSlice({
             )
             .addCase(
                 getAllProductsAsync.rejected, (state, _action) => {
+                    state.productsAreLoading = false
+                    state.productsHasError = true
+                }
+            )
+            .addCase(
+                getProductById.pending, (state, _action) => {
+                    state.productsAreLoading = true
+                    state.productsHasError = false
+                }
+            )
+            .addCase(
+                getProductById.fulfilled, (state, action) => {
+                    state.productsAreLoading = false
+                    state.productsHasError = false
+                    state.individualProduct = action.payload.product
+                }
+            )
+            .addCase(
+                getProductById.rejected, (state, _action) => {
                     state.productsAreLoading = false
                     state.productsHasError = true
                 }
