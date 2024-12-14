@@ -1,14 +1,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios, { AxiosError } from 'axios'
 
-const url = import.meta.env.VITE_BACKEND_URL
+const url = import.meta.env.VITE_PRODUCTS_BACKEND_URL
 
 import { ProductProps } from './types'
 
 export const getHomeCollectionAsync = createAsyncThunk(
     'homeCollection/getHomeCollection', async (_, { rejectWithValue }) => {
         try {
-            const { data } = await axios.get(`${url}/home`)
+            const { data } = await axios.get(`${url}/products`)
             return data
         } catch (error) {
             console.error((error as AxiosError).message)
@@ -35,7 +35,7 @@ export const homeCollectionSlice = createSlice({
             )
             .addCase(
                 getHomeCollectionAsync.fulfilled, (state, action) => {
-                    state.collection = action.payload as ProductProps[]
+                    state.collection = action.payload.products as ProductProps[]
                     state.collectionHasError = false
                     state.isCollectionLoading = false
                 }

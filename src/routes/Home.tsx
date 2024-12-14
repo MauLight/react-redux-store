@@ -1,4 +1,4 @@
-import { useLayoutEffect } from "react"
+import { useEffect, useLayoutEffect } from "react"
 import { AppDispatch } from "@/store/store"
 import { useDispatch, useSelector } from "react-redux"
 import { getHomeCollectionAsync } from "@/features/homeCollection/homeCollectionSlice"
@@ -36,6 +36,10 @@ function Home() {
         }
     }, [])
 
+    useEffect(() => {
+        console.log(hasError)
+    }, [hasError])
+
     return (
         <>
             {
@@ -47,7 +51,7 @@ function Home() {
                 hasError && (
                     <div className="relative w-screen h-screen flex justify-end items-center pr-20">
                         <div className="w-[15rem] flex z-20">
-                            <h1 className="text-[#ffffff] text-[3rem] text-balance uppercase leading-tight">We'll be back shortly...</h1>
+                            <h1 className="text-[#ffffff] text-[3rem] text-right text-balance uppercase leading-tight">We'll be back shortly</h1>
                         </div>
                         <video className="absolute top-0 left-0 w-full h-full object-cover" src={video} loop autoPlay muted />
                     </div>
@@ -60,7 +64,8 @@ function Home() {
                             <Banner>
                                 <div className="w-full max-w-[1440px] h-[950px] flex justify-center items-center bg-[#fdfdfd] overflow-hidden">
                                     <BannerContent>
-                                        <PriceCard product={product} />
+                                        <PriceCard product={pro
+                                            duct} />
                                     </BannerContent>
                                     <img src='https://res.cloudinary.com/maulight/image/upload/v1732922082/e-commerce/kx2betzo07jrpgq9i077.webp' alt="banner" className='absolute  w-full h-full object-none object-bottom z-10' />
                                     <img src={product.image} alt="banner" className='absolute  w-full h-full object-none object-bottom z-0' />
@@ -70,7 +75,9 @@ function Home() {
                             <div className="grid grid-cols-3 h-[700px]">
                                 {
                                     collection.length > 0 && collection.map(product => (
-                                        <ProductCard key={product.id} product={product} />
+                                        <div key={product.id} className="h-[700px]">
+                                            <ProductCard product={product} />
+                                        </div>
                                     ))
                                 }
                             </div>
