@@ -64,8 +64,7 @@ function Home() {
                             <Banner>
                                 <div className="w-full max-w-[1440px] h-[950px] flex justify-center items-center bg-[#fdfdfd] overflow-hidden">
                                     <BannerContent>
-                                        <PriceCard product={pro
-                                            duct} />
+                                        <PriceCard product={product} />
                                     </BannerContent>
                                     <img src='https://res.cloudinary.com/maulight/image/upload/v1732922082/e-commerce/kx2betzo07jrpgq9i077.webp' alt="banner" className='absolute  w-full h-full object-none object-bottom z-10' />
                                     <img src={product.image} alt="banner" className='absolute  w-full h-full object-none object-bottom z-0' />
