@@ -1,10 +1,33 @@
-import { Dispatch, ReactNode, SetStateAction } from 'react'
+import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from 'react'
 import { ProductCard } from '../common/ProductCard'
 import { ProductProps } from '@/utils/types'
 
 interface ConfirmationModalProps { product: ProductProps, setConfirmationDialogue: Dispatch<SetStateAction<boolean>>, handlePostProduct: () => void }
 
 export default function ConfirmationModal({ product, setConfirmationDialogue, handlePostProduct }: ConfirmationModalProps): ReactNode {
+
+    const [stars, setStars] = useState<ReactNode[]>([])
+
+    function calculateRating(rating: number) {
+        const ratingArray: ReactNode[] = []
+        const emptyStar = <i className="fa-regular fa-star fa-lg"></i>
+        const fullStar = <i className="fa-solid fa-star fa-lg"></i>
+
+        for (let i = 0; i < rating; i++) {
+            ratingArray.push(fullStar)
+        }
+
+        for (let i = 0; i < 5 - rating; i++) {
+            ratingArray.push(emptyStar)
+        }
+
+        console.log(ratingArray)
+        setStars(ratingArray)
+    }
+
+    useEffect(() => {
+        calculateRating(product.rating)
+    }, [])
     return (
         <>
             <h1 className='text-[2rem] text-balance uppercase'> Is the information correct?</h1>
@@ -25,13 +48,15 @@ export default function ConfirmationModal({ product, setConfirmationDialogue, ha
                         <p className='font-light text-[1.2rem] tracking-tighter text-sym_gray-600'>{product.description}</p>
                     </div>
                     <div className="flex justify-end items-center gap-x-2">
-                        <p className='font-light leading-none'>{'(0/5)'}</p>
+                        <p className='font-light leading-none'>{`(${product.rating}/5)`}</p>
                         <div className="flex gap-x-[0.1rem] justify-end items-center text-sym_gray-500">
-                            <i className="fa-regular fa-star fa-lg"></i>
-                            <i className="fa-regular fa-star fa-lg"></i>
-                            <i className="fa-regular fa-star fa-lg"></i>
-                            <i className="fa-regular fa-star fa-lg"></i>
-                            <i className="fa-regular fa-star fa-lg"></i>
+                            {
+                                stars.map((star: ReactNode) => (
+                                    <>
+                                        {star}
+                                    </>
+                                ))
+                            }
                         </div>
                     </div>
                 </div>
