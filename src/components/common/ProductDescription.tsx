@@ -28,7 +28,12 @@ export default function ProductDescription({ product }: { product: ProductProps 
 
     function handleRating(id: string) {
         calculateRating(Number(id) + 1)
-        setIsAdmin(true)
+    }
+
+    function handleRatingAnswer() {
+        if (stars.length > 0) {
+            setIsAdmin(true)
+        }
     }
 
     useLayoutEffect(() => {
@@ -62,17 +67,20 @@ export default function ProductDescription({ product }: { product: ProductProps 
                             </div>
                             <div className="flex justify-end items-center gap-x-2">
                                 <p className='font-light leading-none'>{`(${product.rating}/5)`}</p>
-                                <div className="flex gap-x-[0.1rem] justify-end items-center text-sym_gray-500">
+                                <div onMouseEnter={() => { setIsAdmin(false) }} onMouseLeave={handleRatingAnswer} className="flex gap-x-[0.1rem] justify-end items-center text-sym_gray-500">
                                     {
-                                        isAdmin && stars.map((star: ReactNode) => (
-                                            <>
+                                        isAdmin && stars.map((star: ReactNode, i) => (
+                                            <div className='' key={i}>
                                                 {star}
-                                            </>
+                                            </div>
                                         ))
                                     }
                                     {
                                         !isAdmin && Array.from({ length: 5 }).map((_, i) => (
-                                            <i key={i} onClick={() => { handleRating(String(i)) }} id={String(i)} className="fa-regular fa-star fa-lg"></i>
+                                            <div className='' key={i}>
+                                                <i key={i} onClick={() => { handleRating(String(i)) }} id={String(i)}
+                                                    className="fa-regular fa-star fa-lg"></i>
+                                            </div>
                                         ))
                                     }
                                 </div>
