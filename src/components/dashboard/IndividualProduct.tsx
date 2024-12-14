@@ -143,7 +143,7 @@ function IndividualProduct(): ReactNode {
 
                     <div className="flex flex-col gap-y-2">
                         <div className="flex flex-col gap-y-1">
-                            <label className='text-[0.8rem]' htmlFor="description">Discount</label>
+                            <label className='text-[0.8rem]' htmlFor="description">{'Discount (leave empty if no discount)'}</label>
                             <input
                                 value={percentage}
                                 onChange={({ target }) => { setPercentage(Number(target.value)) }}
@@ -181,14 +181,14 @@ function IndividualProduct(): ReactNode {
                                 </div>
                                 <div className="w-full h-[33rem] flex flex-col justify-between">
                                     <div className="flex flex-col">
-                                        <h2 className='text-[3rem] font-light text-sym_gray-600 text-balance uppercase'>{getValues().title}</h2>
+                                        <h2 className='text-[2.5rem] font-light text-sym_gray-600 text-balance uppercase'>{getValues().title}</h2>
                                         <div className='flex justify-end gap-x-2'>
                                             <p className='text-[3rem] text-end'>{`$${price}`}</p>
-                                            <p className='text-[2rem] str font-light text-sym_gray-200 text-end uppercase'>us</p>
+                                            <p className='text-[1.5rem] str font-light text-sym_gray-200 text-end uppercase line-through'>{fullPrice}</p>
                                         </div>
                                         <button className='h-10 px-2 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e]'>Add to cart</button>
                                         <div className="border-b border-sym_gray-600 mt-10 mb-5"></div>
-                                        <p className='font-light text-[1.2rem] tracking-tighter'>{getValues().description}</p>
+                                        <p className='font-light text-[1.2rem] tracking-tighter text-sym_gray-600'>{getValues().description}</p>
                                     </div>
                                     <div className="flex justify-end items-center gap-x-2">
                                         <p className='font-light leading-none'>{'(0/5)'}</p>
