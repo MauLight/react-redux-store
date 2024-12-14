@@ -1,12 +1,16 @@
 import { useEffect, useLayoutEffect, useState, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '@/store/store'
 
 import { ProductCard } from './ProductCard'
 import { ProductProps } from '@/utils/types'
+import { postProductRating } from '@/features/products/productsSlice'
 
 export default function ProductDescription({ product }: { product: ProductProps }): ReactNode {
     const { pathname } = useLocation()
     const [isAdmin, setIsAdmin] = useState<boolean>(false)
+    const dispatch: AppDispatch = useDispatch()
 
     const [stars, setStars] = useState<ReactNode[]>([])
 
@@ -27,6 +31,11 @@ export default function ProductDescription({ product }: { product: ProductProps 
     }
 
     function handleRating(id: string) {
+        const myRating = {
+            productId: product.id as string,
+            rating: Number(id) + 1
+        }
+        dispatch(postProductRating(myRating))
         calculateRating(Number(id) + 1)
     }
 
@@ -42,7 +51,7 @@ export default function ProductDescription({ product }: { product: ProductProps 
 
     useEffect(() => {
         if (product !== undefined) {
-            calculateRating(product.rating)
+            calculateRating(product.rating?.averageRating as number)
         }
     }, [])
 

@@ -22,7 +22,6 @@ export const getProductById = createAsyncThunk(
     'products/getProductById', async (id: string, { rejectWithValue }) => {
         try {
             const { data } = await axios.get(`${url}/products/${id}`)
-            console.log(data, 'this is the individual product call')
             return data
         } catch (error) {
             console.error((error as AxiosError).message)
@@ -43,10 +42,24 @@ export const postProductsAsync = createAsyncThunk(
         }
     }
 )
+
 export const postIndividualProductAsync = createAsyncThunk(
     'products/postIndividualProduct', async (product: ProductProps, { rejectWithValue }) => {
         try {
             const { data } = await axios.post(`${url}/products/one`, product)
+            return data
+        } catch (error) {
+            console.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
+export const postProductRating = createAsyncThunk(
+    'products/postProductRating', async (rating: { productId: string, rating: number }, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.post(`${url}/products/rate`, rating)
+            console.log(data)
             return data
         } catch (error) {
             console.error((error as AxiosError).message)
@@ -138,6 +151,24 @@ export const productsSlice = createSlice({
             )
             .addCase(
                 getProductById.rejected, (state, _action) => {
+                    state.productsAreLoading = false
+                    state.productsHasError = true
+                }
+            )
+            .addCase(
+                postProductRating.pending, (state, _action) => {
+                    state.productsAreLoading = true
+                    state.productsHasError = false
+                }
+            )
+            .addCase(
+                postProductRating.fulfilled, (state, _action) => {
+                    state.productsAreLoading = false
+                    state.productsHasError = false
+                }
+            )
+            .addCase(
+                postProductRating.rejected, (state, _action) => {
                     state.productsAreLoading = false
                     state.productsHasError = true
                 }
