@@ -50,6 +50,17 @@ export interface NewUserProps {
     password: string
 }
 
+export interface UserProps {
+    id: string
+    firstname: string
+    lastname: string
+    email: string
+    phone: number
+    address: string
+}
+
+export interface UserToBeUpdatedProps { firstname: string, lastname: string, address: string, phone: string }
+
 export interface LoginProps {
     email: string
     password: string

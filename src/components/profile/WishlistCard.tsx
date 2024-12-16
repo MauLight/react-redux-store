@@ -22,7 +22,7 @@ const WishlistCard = ({ product, userId }: CheckoutCardProps): ReactElement => {
     }
 
     return (
-        <div className="grid grid-cols-5 border-b border-[#10100e] pb-3 h-[220px]">
+        <section className="grid grid-cols-5 border-b border-[#10100e] pb-3 h-[220px]">
             <div className="col-span-1 border">
                 <img src={product.image} alt="mock1" className="w-full h-full object-cover" />
             </div>
@@ -47,7 +47,7 @@ const WishlistCard = ({ product, userId }: CheckoutCardProps): ReactElement => {
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     )
 }
 

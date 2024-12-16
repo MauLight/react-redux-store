@@ -1,4 +1,4 @@
-import { LoginProps, NewUserProps } from "@/utils/types"
+import { LoginProps, NewUserProps, UserToBeUpdatedProps } from "@/utils/types"
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import axios, { AxiosError } from "axios"
 import { toast } from "react-toastify"
@@ -32,10 +32,20 @@ export const postLoginAsync = createAsyncThunk(
 
 export const getUserByIdAsync = createAsyncThunk(
     'userAuth/getUserById', async (id: string, { rejectWithValue }) => {
-        console.log('2. start async')
         try {
             const { data } = await axios.get(`${url}/auth/${id}`)
-            console.log('3. data', data)
+            return data
+        } catch (error) {
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
+export const updateUserByIdAsync = createAsyncThunk(
+    'userAuth/updateUserById', async (updatedUser: UserToBeUpdatedProps, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.put(`${url}/auth/${user.id}`, updatedUser)
+            toast.success('User updated succesfully.')
             return data
         } catch (error) {
             return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
@@ -89,6 +99,19 @@ export const userAuthSlice = createSlice({
                 state.isLoading = false
             })
             .addCase(getUserByIdAsync.rejected, (state, _action) => {
+                state.hasError = true
+                state.isLoading = false
+            })
+            .addCase(updateUserByIdAsync.pending, (state, _action) => {
+                state.hasError = false
+                state.isLoading = true
+            })
+            .addCase(updateUserByIdAsync.fulfilled, (state, action) => {
+                state.userData = action.payload.updatedUser
+                state.hasError = false
+                state.isLoading = false
+            })
+            .addCase(updateUserByIdAsync.rejected, (state, _action) => {
                 state.hasError = true
                 state.isLoading = false
             })
