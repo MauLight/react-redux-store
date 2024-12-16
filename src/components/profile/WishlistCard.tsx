@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/store/store'
 import { ProductProps } from '@/utils/types'
 import { deleteFromWishlistAsync } from '@/features/wishList/wishListSlice'
+import { addItem } from '@/features/cart/cartSlice'
 
 interface CheckoutCardProps {
     product: ProductProps
@@ -13,8 +14,11 @@ const WishlistCard = ({ product, userId }: CheckoutCardProps): ReactElement => {
     const dispatch: AppDispatch = useDispatch()
 
     async function handleRemoveItemFromWishlist() {
-        const { payload } = await dispatch(deleteFromWishlistAsync({ userId, productId: product.id }))
-        console.log(payload)
+        await dispatch(deleteFromWishlistAsync({ userId, productId: product.id }))
+    }
+
+    function handleAddItemToCart() {
+        dispatch(addItem(product))
     }
 
     return (
@@ -32,7 +36,7 @@ const WishlistCard = ({ product, userId }: CheckoutCardProps): ReactElement => {
                         </div>
                     </div>
                     <div className="flex flex-col gap-y-2">
-                        <button onClick={() => { }} className="h-10 flex items-center gap-x-1 cursor-pointer text-[18px] px-2 leading-none text-[#ffffff] animated-background bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+                        <button onClick={handleAddItemToCart} className="h-10 flex items-center gap-x-1 cursor-pointer text-[18px] px-2 leading-none text-[#ffffff] animated-background bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
                             <i className='relative fa-solid fa-cart-shopping cursor-pointer' />
                             <p className='text-[18px] pb-0 leading-none'>Add to Cart</p>
                         </button>

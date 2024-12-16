@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid'
 import { createSlice } from '@reduxjs/toolkit'
 import { CartItemProps } from '@/utils/types'
 
@@ -9,8 +8,8 @@ export const cartSlice = createSlice({
     initialState: initialCart,
     reducers: {
         addItem: (state, action) => {
-            const { title, image, price, fullPrice } = action.payload
-            const newItem = { id: `cart-${uuidv4()}`, price, fullPrice, quantity: 1, image, title }
+            const { id, title, image, price, fullPrice } = action.payload
+            const newItem = { id, price, fullPrice, quantity: 1, image, title }
             state.push(newItem)
         },
         removeItem: (state, action) => {

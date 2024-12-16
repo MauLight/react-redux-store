@@ -15,14 +15,8 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
   const image = /^(https?:\/\/)?((([a-zA-Z0-9$_.+!*'(),;?&=-]|%[0-9a-fA-F]{2})+:)*([a-zA-Z0-9$_.+!*'(),;?&=-]|%[0-9a-fA-F]{2})+@)?(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)|([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(:[0-9]+)?(\/([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)*(\?([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)?(#([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)?$/.test(product.image as string) ? product.image : 'https://dummyimage.com/400x600/000/fff'
 
   const handleAddItemToCart = () => {
-    const itemToAdd = {
-      title: product.title,
-      image: product.image,
-      price: product.price,
-      fullPrice: product.fullPrice
-    }
 
-    dispatch(addItem(itemToAdd))
+    dispatch(addItem(product))
     toast.success('Item added to cart.')
   }
 
@@ -34,7 +28,7 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
   }
 
   return (
-    <Link to={`/product/${product.id}`} className="group relative h-full col-span-1 flex justify-center overflow-hidden">
+    <main className="group relative h-full col-span-1 flex justify-center overflow-hidden">
       <img src={image} alt="product" className="w-full h-full object-cover" />
 
 
@@ -63,7 +57,7 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
           </button>
         </div>
       </div>
-      <div className="absolute w-full h-full bg-[#10100e] opacity-0 group-hover:opacity-30 z-0 transition-all duration-200"></div>
-    </Link>
+      <Link to={`/product/${product.id}`} className="absolute w-full h-full bg-[#10100e] opacity-0 group-hover:opacity-30 z-0 transition-all duration-200"></Link>
+    </main>
   )
 }
