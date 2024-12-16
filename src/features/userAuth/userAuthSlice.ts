@@ -30,10 +30,22 @@ export const postLoginAsync = createAsyncThunk(
     }
 )
 
+export const getUserByIdAsync = createAsyncThunk(
+    'userAuth/getUserById', async (id: string, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.get(`${url}/auth/${id}`)
+            return data
+        } catch (error) {
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
 export const userAuthSlice = createSlice({
     name: 'userAuth',
     initialState: {
         user,
+        userData: {},
         isLoading: false,
         hasError: false,
     },
@@ -62,6 +74,19 @@ export const userAuthSlice = createSlice({
                 state.isLoading = false
             })
             .addCase(postLoginAsync.rejected, (state, _action) => {
+                state.hasError = true
+                state.isLoading = false
+            })
+            .addCase(getUserByIdAsync.pending, (state, _action) => {
+                state.hasError = false
+                state.isLoading = true
+            })
+            .addCase(getUserByIdAsync.fulfilled, (state, action) => {
+                state.userData = action.payload
+                state.hasError = false
+                state.isLoading = false
+            })
+            .addCase(getUserByIdAsync.rejected, (state, _action) => {
                 state.hasError = true
                 state.isLoading = false
             })
