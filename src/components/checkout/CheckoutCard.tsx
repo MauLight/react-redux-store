@@ -1,5 +1,6 @@
 import { changeItemQuantity, removeItem } from '@/features/cart/cartSlice'
 import { type ReactElement } from 'react'
+import { useLocation } from 'react-router-dom'
 
 interface CheckoutCardProps {
   product: any
@@ -7,6 +8,9 @@ interface CheckoutCardProps {
 }
 
 export const CheckoutCard = ({ product, dispatch }: CheckoutCardProps): ReactElement => {
+
+  const { pathname } = useLocation()
+  const isProfile = pathname.includes('profile')
 
   const handleChangeQuantity = (type: number) => {
     if (product.quantity === 1 && type !== 1) {
@@ -47,10 +51,20 @@ export const CheckoutCard = ({ product, dispatch }: CheckoutCardProps): ReactEle
           </div>
         </div>
         <div className="w-full h-full flex justify-between item-end">
-          <button onClick={() => { handleRemoveProduct(product.id) }} className="flex items-end gap-x-1 cursor-pointer">
-            <i className="fa-solid fa-trash-can pb-[3.5px]"></i>
-            <p className='text-[18px] pb-0 leading-none aktivLight text-[#10100e]'>Remove</p>
-          </button>
+          <div className="flex gap-x-5 items-end">
+            <button onClick={() => { handleRemoveProduct(product.id) }} className="h-10 flex items-center gap-x-1 py-1 cursor-pointer text-[#10100e] hover:text-red-600 transition-color duration-200">
+              <i className="fa-solid fa-trash-can pb-[3.5px]"></i>
+              <p className='text-[18px] pb-0 leading-none'>Remove</p>
+            </button>
+            {
+              isProfile && (
+                <button onClick={() => { handleRemoveProduct(product.id) }} className="h-10 flex items-center gap-x-1 cursor-pointer text-[18px] px-2 leading-none text-[#ffffff] bg-green-600">
+                  <i className="fa-solid fa-trash-can pb-[3.5px]"></i>
+                  <p className='text-[18px] pb-0 leading-none'>Add to Cart</p>
+                </button>
+              )
+            }
+          </div>
           <div className="flex items-end gap-x-1">
             <p className='text-[18px] pb-0 leading-none aktivLight text-[#10100e]'>Total</p>
             <p className='text-[18px] pb-0 leading-none aktiv text-[#10100e]'>{`${product.price}$`}</p>

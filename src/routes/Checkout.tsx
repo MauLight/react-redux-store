@@ -47,7 +47,7 @@ const Checkout = (): ReactElement => {
                                     variants={fadeIn('bottom', 0.1)}
                                     initial={'hidden'}
                                     whileInView={'show'}
-                                    className={`uppercase aktiv text-9xl ${readyToPay ? 'text-[#ffffff]' : 'text-[#10100e]'}`}>{readyToPay ? 'checkout' : 'your cart'}</motion.h1>
+                                    className={`uppercase text-9xl ${readyToPay ? 'text-[#ffffff]' : 'text-[#10100e]'}`}>{readyToPay ? 'checkout' : 'your cart'}</motion.h1>
                                 <Link to={'/'}>
                                     <XMarkIcon className='w-6 text-[#2E3D49] font-accent hover:rotate-90 hover:text-[#EA0C1D] transition-all duration-200' />
                                 </Link>
