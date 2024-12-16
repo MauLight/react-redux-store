@@ -59,7 +59,6 @@ export const postProductRating = createAsyncThunk(
     'products/postProductRating', async (rating: { productId: string, rating: number }, { rejectWithValue }) => {
         try {
             const { data } = await axios.post(`${url}/products/rate`, rating)
-            console.log(data)
             return data
         } catch (error) {
             console.error((error as AxiosError).message)

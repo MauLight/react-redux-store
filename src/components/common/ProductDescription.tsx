@@ -65,7 +65,7 @@ export default function ProductDescription({ product }: { product: ProductProps 
                         </div>
                         <div className="w-full h-[33rem] flex flex-col justify-between">
                             <div className="flex flex-col">
-                                <h2 className='text-[2.5rem] font-light text-sym_gray-600 text-balance uppercase'>{product.title}</h2>
+                                <h2 aria-label={product.title} className='text-[2.5rem] font-light text-sym_gray-600 text-balance uppercase'>{product.title}</h2>
                                 <div className='flex justify-end gap-x-2'>
                                     <p className='text-[3rem] text-end'>{`$${product.price}`}</p>
                                     <p className='text-[1.5rem] str font-light text-sym_gray-200 text-end uppercase line-through'>{product.fullPrice}</p>

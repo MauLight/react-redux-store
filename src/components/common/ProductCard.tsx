@@ -36,7 +36,7 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
 
       <div className="w-full absolute bottom-5 flex justify-between px-5 z-10 transition-all duration-300">
         <div className="flex flex-col">
-          <h1 className='text-[22px] uppercase neue antialiazed text-[#ffffff] leading-tight'>{product.title}</h1>
+          <h1 aria-label={product.title} className='text-[22px] uppercase neue antialiazed text-[#ffffff] leading-tight'>{product.title}</h1>
           <div className="flex gap-x-2">
             <p className='text-[16px] uppercase neue antialiazed text-[#ffffff]'>{`${product.price}$`}</p>
             <p className='text-[12px] uppercase neue antialiazed text-gray-100 line-through'>{`${product.fullPrice}$`}</p>
