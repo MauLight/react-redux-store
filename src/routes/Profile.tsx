@@ -1,4 +1,4 @@
-import { CheckoutCard } from '@/components/checkout/CheckoutCard'
+import WishlistCard from '@/components/profile/WishlistCard'
 import { ProductProps, StoreProps } from '@/utils/types'
 import { type ReactNode } from 'react'
 import { useSelector } from 'react-redux'
@@ -39,10 +39,10 @@ function Profile(): ReactNode {
             </section>
             <section className='w-[1440px] flex flex-col gap-y-5'>
                 <h1 className='text-[#ffffff] text-[2rem] uppercase'>Wishlist</h1>
-                <div className='py-10 px-5 border bg-[#ffffff]'>
+                <div className='flex flex-col gap-y-5 py-10 px-5 border bg-[#ffffff]'>
                     {
                         mockItems.map((product: ProductProps, i: number) => (
-                            <CheckoutCard dispatch={() => { }} key={i} product={{ ...product, quantity: 1 }} />
+                            <WishlistCard dispatch={() => { }} key={i} product={{ ...product, quantity: 1 }} />
                         ))
                     }
                 </div>

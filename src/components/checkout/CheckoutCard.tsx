@@ -58,8 +58,8 @@ export const CheckoutCard = ({ product, dispatch }: CheckoutCardProps): ReactEle
             </button>
             {
               isProfile && (
-                <button onClick={() => { handleRemoveProduct(product.id) }} className="h-10 flex items-center gap-x-1 cursor-pointer text-[18px] px-2 leading-none text-[#ffffff] bg-green-600">
-                  <i className="fa-solid fa-trash-can pb-[3.5px]"></i>
+                <button onClick={() => { handleRemoveProduct(product.id) }} className="h-10 flex items-center gap-x-1 cursor-pointer text-[18px] px-2 leading-none text-[#ffffff] animated-background bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+                  <i className='relative fa-solid fa-cart-shopping cursor-pointer' />
                   <p className='text-[18px] pb-0 leading-none'>Add to Cart</p>
                 </button>
               )
