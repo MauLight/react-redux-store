@@ -63,7 +63,7 @@ function Profile(): ReactNode {
                                 <div className='flex flex-col gap-y-5 py-10 px-5 border bg-[#ffffff]'>
                                     {
                                         wishlist.length > 0 && wishlist.map((product: ProductProps, i: number) => (
-                                            <WishlistCard dispatch={() => { }} key={i} product={{ ...product, quantity: 1 }} />
+                                            <WishlistCard userId={id} key={i} product={{ ...product, quantity: 1 }} />
                                         ))
                                     }
                                     {

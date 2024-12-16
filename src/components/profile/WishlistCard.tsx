@@ -1,11 +1,21 @@
 import { type ReactElement } from 'react'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '@/store/store'
+import { ProductProps } from '@/utils/types'
+import { deleteFromWishlistAsync } from '@/features/wishList/wishListSlice'
 
 interface CheckoutCardProps {
-    product: any
-    dispatch: any
+    product: ProductProps
+    userId: string
 }
 
-const WishlistCard = ({ product, dispatch }: CheckoutCardProps): ReactElement => {
+const WishlistCard = ({ product, userId }: CheckoutCardProps): ReactElement => {
+    const dispatch: AppDispatch = useDispatch()
+
+    async function handleRemoveItemFromWishlist() {
+        const { payload } = await dispatch(deleteFromWishlistAsync({ userId, productId: product.id }))
+        console.log(payload)
+    }
 
     return (
         <div className="grid grid-cols-5 border-b border-[#10100e] pb-3 h-[220px]">
@@ -26,7 +36,7 @@ const WishlistCard = ({ product, dispatch }: CheckoutCardProps): ReactElement =>
                             <i className='relative fa-solid fa-cart-shopping cursor-pointer' />
                             <p className='text-[18px] pb-0 leading-none'>Add to Cart</p>
                         </button>
-                        <button onClick={() => { }} className="h-10 flex items-center gap-x-1 py-1 cursor-pointer text-[#10100e] hover:text-red-600 transition-color duration-200">
+                        <button onClick={handleRemoveItemFromWishlist} className="h-10 flex items-center gap-x-1 py-1 cursor-pointer text-[#10100e] hover:text-red-600 transition-color duration-200">
                             <i className="fa-solid fa-trash-can pb-[3.5px]"></i>
                             <p className='text-[18px] pb-0 leading-none'>Remove</p>
                         </button>

@@ -9,7 +9,6 @@ export const postToWishlistAsync = createAsyncThunk(
         try {
             const { data } = await axios.post(`${url}/auth/wishlist`, wishlistItem)
             toast.success('Item added to wishlist.')
-            console.log(data)
             return data
         } catch (error) {
             toast.error((error as AxiosError).message)
@@ -19,11 +18,11 @@ export const postToWishlistAsync = createAsyncThunk(
 )
 
 export const deleteFromWishlistAsync = createAsyncThunk(
-    'wishlist/postToWishlist', async (wishlistItem: { userId: string, productId: string }, { rejectWithValue }) => {
+    'wishlist/deleteFromWishlist', async (wishlistItem: { userId: string, productId: string }, { rejectWithValue }) => {
         try {
             const { data } = await axios.post(`${url}/auth/wishlist/delete`, wishlistItem)
             toast.success('Item deleted from wishlist.')
-            return { data }
+            return data
         } catch (error) {
             toast.error((error as AxiosError).message)
             return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
@@ -40,7 +39,6 @@ export const wishListSlice = createSlice({
     },
     reducers: {
         postWishlistFromUser: (state, action) => {
-            console.log(action.payload, 'THIS IS THE PAYLOAD')
             state.wishlist = action.payload
         }
     },
@@ -62,7 +60,26 @@ export const wishListSlice = createSlice({
                 postToWishlistAsync.fulfilled, (state, action) => {
                     state.wishlist = action.payload.wishlist
                     state.isLoading = false
+                    state.hasError = false
+                }
+            )
+            .addCase(
+                deleteFromWishlistAsync.pending, (state, _action) => {
+                    state.isLoading = true
+                    state.hasError = false
+                }
+            )
+            .addCase(
+                deleteFromWishlistAsync.rejected, (state, _action) => {
+                    state.isLoading = false
                     state.hasError = true
+                }
+            )
+            .addCase(
+                deleteFromWishlistAsync.fulfilled, (state, action) => {
+                    state.wishlist = action.payload.wishlist
+                    state.isLoading = false
+                    state.hasError = false
                 }
             )
     }
