@@ -1,8 +1,8 @@
 export interface ProductProps {
-    id?: string
+    id: string
     description: string
     title: string
-    image?: string
+    image: string
     price: number
     fullPrice: number
     rating?: {
@@ -10,6 +10,7 @@ export interface ProductProps {
         ratings: Array<number>
         averageRating: number
     }
+    quantity?: number
 }
 
 export interface wishListProduct { id: string, productId: string }
@@ -27,7 +28,7 @@ export interface StoreProps {
         isLoading: boolean
         hasError: boolean
     }
-    cart: Array<ProductProps>
+    cart: Array<CartItemProps>
     homeCollection: {
         collection: Array<ProductProps>
         collectionHasError: boolean
@@ -48,4 +49,18 @@ export interface NewUserProps {
 export interface LoginProps {
     email: string
     password: string
+}
+
+export interface CartItemProps {
+    id: string
+    title: string
+    image: string
+    price: number
+    fullPrice: number
+    quantity: number
+    rating?: {
+        productId: string
+        ratings: Array<number>
+        averageRating: number
+    }
 }

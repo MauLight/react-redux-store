@@ -22,7 +22,6 @@ export const CheckoutCard = ({ product, dispatch }: CheckoutCardProps): ReactEle
   }
 
   function handleRemoveProduct(id: number) {
-    console.log(id)
     dispatch(removeItem(id))
   }
 
