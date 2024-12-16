@@ -1,24 +1,74 @@
-import { createSlice } from "@reduxjs/toolkit"
-import { wishListProduct } from "./types"
-import { v4 as uuidv4 } from 'uuid'
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import axios, { AxiosError } from "axios"
+import { toast } from "react-toastify"
 
-const initialState: Array<wishListProduct> = []
+const url = import.meta.env.VITE_USERS_BACKEND_URL
+
+export const postToWishlistAsync = createAsyncThunk(
+    'wishlist/postToWishlist', async (wishlistItem: { userId: string, productId: string }, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.post(`${url}/auth/wishlist`, wishlistItem)
+            toast.success('Item added to wishlist.')
+            console.log(data)
+            return data
+        } catch (error) {
+            toast.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
+export const deleteFromWishlistAsync = createAsyncThunk(
+    'wishlist/postToWishlist', async (wishlistItem: { userId: string, productId: string }, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.post(`${url}/auth/wishlist/delete`, wishlistItem)
+            toast.success('Item deleted from wishlist.')
+            return { data }
+        } catch (error) {
+            toast.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
 
 export const wishListSlice = createSlice({
     name: 'wishList',
-    initialState,
+    initialState: {
+        wishlist: [],
+        isLoading: false,
+        hasError: false
+    },
     reducers: {
-        addWishProduct: (state, action) => {
-            console.log('here!')
-            const newListedItem = { id: uuidv4(), productId: action.payload }
-            console.log(newListedItem)
-            return [...state, newListedItem]
-        },
-        removeWishProduct: (state, action) => state.filter(product => product.id !== action.payload)
+        postWishlistFromUser: (state, action) => {
+            console.log(action.payload, 'THIS IS THE PAYLOAD')
+            state.wishlist = action.payload
+        }
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(
+                postToWishlistAsync.pending, (state, _action) => {
+                    state.isLoading = true
+                    state.hasError = false
+                }
+            )
+            .addCase(
+                postToWishlistAsync.rejected, (state, _action) => {
+                    state.isLoading = false
+                    state.hasError = true
+                }
+            )
+            .addCase(
+                postToWishlistAsync.fulfilled, (state, action) => {
+                    state.wishlist = action.payload.wishlist
+                    state.isLoading = false
+                    state.hasError = true
+                }
+            )
     }
 })
 
-export const { addWishProduct, removeWishProduct } = wishListSlice.actions
+export const { postWishlistFromUser } = wishListSlice.actions
 const wishListReducer = wishListSlice.reducer
 
 export default wishListReducer

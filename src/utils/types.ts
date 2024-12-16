@@ -34,7 +34,11 @@ export interface StoreProps {
         collectionHasError: boolean
         collectionIsLoading: boolean
     }
-    wishList: Array<wishListProduct>
+    wishList: {
+        wishlist: Array<ProductProps>,
+        isLoading: boolean,
+        hasError: boolean
+    }
 }
 
 export interface NewUserProps {

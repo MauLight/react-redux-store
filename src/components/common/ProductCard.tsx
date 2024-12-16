@@ -1,14 +1,16 @@
 import { useState, type ReactElement } from 'react'
 import { addItem } from '@/features/cart/cartSlice'
-import { addWishProduct } from '@/features/wishList/wishListSlice'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import { ProductProps } from '@/utils/types'
+import { ProductProps, StoreProps } from '@/utils/types'
 import { Link } from 'react-router-dom'
+import { postToWishlistAsync } from '@/features/wishList/wishListSlice'
+import { AppDispatch } from '@/store/store'
 
 export const ProductCard = ({ product }: { product: ProductProps }): ReactElement => {
+  const dispatch: AppDispatch = useDispatch()
+  const user = useSelector((state: StoreProps) => state.userAuth.user)
   const [wishListed, setWishListed] = useState<boolean>(false)
-  const dispatch = useDispatch()
 
   const image = /^(https?:\/\/)?((([a-zA-Z0-9$_.+!*'(),;?&=-]|%[0-9a-fA-F]{2})+:)*([a-zA-Z0-9$_.+!*'(),;?&=-]|%[0-9a-fA-F]{2})+@)?(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)|([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(:[0-9]+)?(\/([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)*(\?([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)?(#([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)?$/.test(product.image as string) ? product.image : 'https://dummyimage.com/400x600/000/fff'
 
@@ -24,9 +26,11 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
     toast.success('Item added to cart.')
   }
 
-  const handleWishList = (id: string) => {
-    dispatch(addWishProduct(id))
-    setWishListed(!wishListed)
+  const handleWishList = async (id: string) => {
+    const { payload } = await dispatch(postToWishlistAsync({ userId: user.id, productId: id }))
+    if (payload.message) {
+      setWishListed(true)
+    }
   }
 
   return (

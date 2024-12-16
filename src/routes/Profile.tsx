@@ -1,47 +1,32 @@
+import { useEffect, useLayoutEffect, type ReactNode } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch } from '@/store/store'
+import { getUserByIdAsync } from '@/features/userAuth/userAuthSlice'
+
 import Fallback from '@/components/common/Fallback'
 import WishlistCard from '@/components/profile/WishlistCard'
-import { getUserByIdAsync } from '@/features/userAuth/userAuthSlice'
-import { AppDispatch } from '@/store/store'
-import { ProductProps, StoreProps } from '@/utils/types'
-import { useLayoutEffect, type ReactNode } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import video from '@/assets/video/empty.webm'
 
-const mockItems = [
-    {
-        id: '1',
-        description: "col-484d6936-64c6-47ae-ba0d-41a74177b446",
-        title: "Into the unknown",
-        price: 1400,
-        fullPrice: 1680,
-        image: "https://res.cloudinary.com/maulight/image/upload/v1732918791/e-commerce/banner_1.webp"
-    },
-    {
-        id: '2',
-        description: "col-484d6936-64c6-47ae-ba0d-41a74177b446",
-        title: "Into the unknown",
-        price: 1400,
-        fullPrice: 1680,
-        image: "https://res.cloudinary.com/maulight/image/upload/v1732918791/e-commerce/banner_1.webp"
-    },
-    {
-        id: '3',
-        description: "col-484d6936-64c6-47ae-ba0d-41a74177b446",
-        title: "Into the unknown",
-        price: 1400,
-        fullPrice: 1680,
-        image: "https://res.cloudinary.com/maulight/image/upload/v1732918791/e-commerce/banner_1.webp"
-    }
-]
+import { ProductProps, StoreProps } from '@/utils/types'
+import { postWishlistFromUser } from '@/features/wishList/wishListSlice'
+
 
 function Profile(): ReactNode {
     const dispatch: AppDispatch = useDispatch()
     const id = useSelector((state: StoreProps) => state.userAuth.user.id)
     const user = useSelector((state: StoreProps) => state.userAuth.userData)
+    const wishlist = useSelector((state: StoreProps) => state.wishList.wishlist)
     const isLoading = useSelector((state: StoreProps) => state.userAuth.isLoading)
 
     useLayoutEffect(() => {
         dispatch(getUserByIdAsync(id))
     }, [])
+
+    useEffect(() => {
+        if (user.wishlist) {
+            dispatch(postWishlistFromUser(user.wishlist))
+        }
+    }, [user])
 
     return (
         <main className='w-screen min-h-screen flex flex-col items-center gap-y-20 pt-44 pb-20'>
@@ -77,9 +62,19 @@ function Profile(): ReactNode {
                                 <h1 className='text-[#ffffff] text-[3rem] uppercase'>Wishlist</h1>
                                 <div className='flex flex-col gap-y-5 py-10 px-5 border bg-[#ffffff]'>
                                     {
-                                        mockItems.map((product: ProductProps, i: number) => (
+                                        wishlist.length > 0 && wishlist.map((product: ProductProps, i: number) => (
                                             <WishlistCard dispatch={() => { }} key={i} product={{ ...product, quantity: 1 }} />
                                         ))
+                                    }
+                                    {
+                                        wishlist.length === 0 && (
+                                            <div className='relative'>
+                                                <div className="absolute top-0 left-0 w-full h-full flex justify-center items-end pb-20 z-10">
+                                                    <h1 className='text-[2rem]'>It's a little empty in here...</h1>
+                                                </div>
+                                                <video className='w-full object-cover' autoPlay loop muted src={video} />
+                                            </div>
+                                        )
                                     }
                                 </div>
                             </section>
