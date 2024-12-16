@@ -4,6 +4,6 @@ export interface CartItemProps {
     image: string
     price: number
     fullPrice: number
-    quantity: number
+    quantity?: number
     rating?: number
 }

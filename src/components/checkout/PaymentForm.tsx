@@ -3,8 +3,8 @@ import { SummaryCard } from './SummaryCard'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
-import { CartItemProps } from '@/features/cart/types'
 import { RotatingLines } from 'react-loader-spinner'
+import { CartItemProps } from '@/utils/types'
 
 const schemaPayment = Yup.object({
   email: Yup.string().email().required('Email is a required field.').matches(/^[\w-\\.]+@([\w-]+\.)+[\w-]{2,5}$/, 'Email must be a valid email address.'),

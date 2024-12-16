@@ -1,17 +1,14 @@
 import { type ReactElement } from 'react'
 
-//*types
-import { CartItemProps } from '@/features/cart/types'
-
 interface SummaryCardProps {
-  product: CartItemProps
+  product: any
 }
 
 export const SummaryCard = ({ product }: SummaryCardProps): ReactElement => {
 
   return (
     <div className="grid grid-cols-8 border-b border-[#10100e] pb-3">
-      <div className="col-span-1 border">
+      <div className="col-span-1 w-[80px] h-[80px] overflow-hidden border">
         <img src={product.image} alt="product" className="w-[80px] h-[80px] object-cover" />
       </div>
       <div className="col-span-6 h-full flex flex-col justify-start items-between px-5">

@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import axios, { AxiosError } from "axios"
 import { toast } from "react-toastify"
 
-const url = import.meta.env.VITE_BACKEND_URL2
+const url = import.meta.env.VITE_USERS_BACKEND_URL
 const user = localStorage.getItem('store-user') ? JSON.parse(localStorage.getItem('store-user') as string) : {}
 
 export const postNewUserAsync = createAsyncThunk(
@@ -30,10 +30,24 @@ export const postLoginAsync = createAsyncThunk(
     }
 )
 
+export const getUserByIdAsync = createAsyncThunk(
+    'userAuth/getUserById', async (id: string, { rejectWithValue }) => {
+        console.log('2. start async')
+        try {
+            const { data } = await axios.get(`${url}/auth/${id}`)
+            console.log('3. data', data)
+            return data
+        } catch (error) {
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
 export const userAuthSlice = createSlice({
     name: 'userAuth',
     initialState: {
         user,
+        userData: {},
         isLoading: false,
         hasError: false,
     },
@@ -62,6 +76,19 @@ export const userAuthSlice = createSlice({
                 state.isLoading = false
             })
             .addCase(postLoginAsync.rejected, (state, _action) => {
+                state.hasError = true
+                state.isLoading = false
+            })
+            .addCase(getUserByIdAsync.pending, (state, _action) => {
+                state.hasError = false
+                state.isLoading = true
+            })
+            .addCase(getUserByIdAsync.fulfilled, (state, action) => {
+                state.userData = action.payload.user
+                state.hasError = false
+                state.isLoading = false
+            })
+            .addCase(getUserByIdAsync.rejected, (state, _action) => {
                 state.hasError = true
                 state.isLoading = false
             })
