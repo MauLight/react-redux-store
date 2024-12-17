@@ -155,13 +155,22 @@ function Profile(): ReactNode {
                     )
                 }
                 <Modal openModal={isOpen} handleOpenModal={() => { setIsOpen(!isOpen) }}>
-                    <>
-                        <p>Here!</p>
+                    <main className='flex flex-col gap-y-5'>
+                        <p className='text-[1.5rem]'>Please confirm your information before submitting:</p>
+                        <section>
+                            <div className="flex gap-x-1">
+                                <p className='text-[2rem]'>{getValues().firstname}</p>
+                                <p className='text-[2rem]'>{getValues().lastname}</p>
+                            </div>
+                            <p className='text-[1rem] text-sym_gray-400 font-light'>{getValues().email}</p>
+                            <p className='text-[1rem] text-sym_gray-400 font-light'>{getValues().address}</p>
+                            <p className='text-[1rem] text-sym_gray-400 font-light'>{getValues().phone}</p>
+                        </section>
                         <div className="w-full flex justify-end gap-x-2 mt-5">
                             <button onClick={handleIsEditing} className='h-10 px-5 w-[100px] bg-[#10100e] text-[#ffffff] hover:bg-red-500 transition-color duration-200'>Cancel</button>
                             <button onClick={handlePostUpdate} className='h-10 px-5 w-[100px] bg-[#10100e] text-[#ffffff] hover:bg-indigo-500 transition-color duration-200'>Save</button>
                         </div>
-                    </>
+                    </main>
                 </Modal>
             </>
 
