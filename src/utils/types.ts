@@ -84,3 +84,9 @@ export interface CartItemProps {
         averageRating: number
     }
 }
+
+export interface TransactionProps {
+    sessionId: string
+    amount: number
+    returnUrl?: string
+}

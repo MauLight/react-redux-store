@@ -26,7 +26,7 @@ export const CheckoutCard = ({ product, dispatch }: CheckoutCardProps): ReactEle
   }
 
   return (
-    <div className="grid grid-cols-5 border-b border-[#10100e] pb-3 h-[220px]">
+    <div key={product.id} className="grid grid-cols-5 border-b border-[#10100e] pb-3 h-[220px]">
       <div className="col-span-1 border">
         <img src={product.image} alt="mock1" className="w-full h-full object-cover" />
       </div>

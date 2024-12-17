@@ -15,6 +15,7 @@ const AdminLogin = lazy(async () => await import('./routes/AdminLogin'))
 const Dashboard = lazy(async () => await import('./routes/Dashboard'))
 const Checkout = lazy(async () => await import('./routes/Checkout'))
 const NotFound = lazy(async () => await import('./routes/NotFound'))
+const Confirmation = lazy(async () => await import('@/routes/Confirmation'))
 
 function Layout() {
     const { pathname } = useLocation()
@@ -48,6 +49,7 @@ function Layout() {
                         <Route path='/admin/login' element={<AdminLogin />} />
                         <Route path='/admin/dashboard' element={<Dashboard />} />
                         <Route path='/checkout' element={<Checkout />} />
+                        <Route path='/confirmation' element={<Confirmation />} />
                         <Route path='*' element={<NotFound />} />
                     </Routes>
                 </Suspense>

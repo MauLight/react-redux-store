@@ -78,7 +78,7 @@ const Checkout = (): ReactElement => {
                                                 <div className="col-span-3">
                                                     {
                                                         cart.map((product) => (
-                                                            <CheckoutCard dispatch={dispatch} product={product} key={product.id} />
+                                                            <CheckoutCard dispatch={dispatch} product={product} />
                                                         ))
                                                     }
                                                 </div>

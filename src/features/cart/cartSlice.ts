@@ -1,15 +1,16 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { CartItemProps } from '@/utils/types'
 import axios, { AxiosError } from 'axios'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { CartItemProps, TransactionProps } from '@/utils/types'
 
 const url = import.meta.env.VITE_TRANSBANK_BACKEND_URL
+const returnUrl = 'http://localhost:3000/confirmation'
 
 const initialCart: CartItemProps[] = []
 
 export const createTransbankTransactionAsync = createAsyncThunk(
-    'cart/createTransbankTransaction', async (paymentInformation, { rejectWithValue }) => {
+    'cart/createTransbankTransaction', async (paymentInformation: TransactionProps, { rejectWithValue }) => {
         try {
-            const { data } = await axios.post(`${url}/transbank`, paymentInformation)
+            const { data } = await axios.post(`${url}/transbank`, { ...paymentInformation, returnUrl })
             return data
         } catch (error) {
             console.error((error as AxiosError).message)

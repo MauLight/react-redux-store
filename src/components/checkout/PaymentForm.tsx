@@ -4,7 +4,8 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 import { RotatingLines } from 'react-loader-spinner'
-import { CartItemProps } from '@/utils/types'
+import { CartItemProps, StoreProps } from '@/utils/types'
+import { useSelector } from 'react-redux'
 
 const schemaPayment = Yup.object({
   email: Yup.string().email().required('Email is a required field.').matches(/^[\w-\\.]+@([\w-]+\.)+[\w-]{2,5}$/, 'Email must be a valid email address.'),
@@ -30,14 +31,15 @@ const cardTypes = {
 }
 
 export const PaymentForm = ({ cart, totalWithVat, setReadyToPay, setPaymentConfirmed }: PaymentFormProps) => {
-  const { register, reset, handleSubmit, setValue, formState: { errors } } = useForm({
+
+  const transbank = useSelector((state: StoreProps) => state.cart.transbank)
+
+  const { register, reset, setValue, formState: { errors } } = useForm({
     defaultValues: {
       email: ''
     },
     resolver: yupResolver(schemaPayment)
   })
-
-  console.log(cart, 'this is the cart')
 
   const [cardNumber, setCardNumber] = useState<string>('')
   const [cardType, setCardType] = useState<ReactElement>(<i className='fa-solid fa-credit-card'></i>)
@@ -74,14 +76,9 @@ export const PaymentForm = ({ cart, totalWithVat, setReadyToPay, setPaymentConfi
 
   }
 
-  const handleSubmitForm = () => {
-    setConfirmPayment(true)
-    setTimeout(() => {
-      reset()
-      setPaymentConfirmed(true)
-      setConfirmPayment(false)
-    }, 5000)
-  }
+  useEffect(() => {
+    console.log(transbank)
+  }, [])
 
   useEffect(() => {
     getCardType(cardNumber)
@@ -119,13 +116,10 @@ export const PaymentForm = ({ cart, totalWithVat, setReadyToPay, setPaymentConfi
           }
         </div>
       </div>
-      <form onSubmit={handleSubmit(handleSubmitForm)} className={`flex flex-col gap-y-4 w-[400px] rounded-[20px] min-h-[400px] ${Object.keys(errors).length === 0 ? 'pt-8' : 'pt-0'}`}>
+      <section className={`flex flex-col gap-y-4 w-[400px] rounded-[20px] min-h-[400px] ${Object.keys(errors).length === 0 ? 'pt-8' : 'pt-0'}`}>
         <div className="flex flex-col">
           <label className='text-[#ffffff] font-aktiv text-[12px]' htmlFor="email">Email</label>
           <input {...register('email')} id='email' type="email" className='h-8 border bg-transparent text-[#ffffff] px-2 ring-0 focus:ring-0 focus:outline-none' />
-          {
-            errors.email !== undefined && errors.email.message !== undefined ? <small className='text-red-500'>{errors.email.message[0].toUpperCase() + errors.email.message.slice(1)}</small> : null
-          }
         </div>
 
         <div className="relative flex flex-col">
@@ -140,55 +134,40 @@ export const PaymentForm = ({ cart, totalWithVat, setReadyToPay, setPaymentConfi
           <div className="absolute top-6 left-2 text-[#ffffff]">
             {cardType}
           </div>
-          {
-            errors.cardNumber !== undefined && errors.cardNumber.message !== undefined ? <small className='text-red-500'>{errors.cardNumber.message[0].toUpperCase() + errors.cardNumber.message.slice(1)}</small> : null
-          }
-          {
-            errors.expDate !== undefined && errors.expDate.message !== undefined ? <small className='text-red-500'>{errors.expDate.message[0].toUpperCase() + errors.expDate.message.slice(1)}</small> : null
-          }
-          {
-            errors.cvc !== undefined && errors.cvc.message !== undefined ? <small className='text-red-500'>{errors.cvc.message[0].toUpperCase() + errors.cvc.message.slice(1)}</small> : null
-          }
         </div>
 
         <div className="flex flex-col">
           <label className='text-[#ffffff] font-aktiv text-[12px]' htmlFor="holder">Cardholder name</label>
           <input id='holder' type="text" {...register('cardHolder')} className='h-8 border bg-transparent text-[#ffffff] px-2 ring-0 focus:ring-0 focus:outline-none' />
-          {
-            errors.cardHolder !== undefined && errors.cardHolder.message !== undefined ? <small className='text-red-500'>{errors.cardHolder.message[0].toUpperCase() + errors.cardHolder.message.slice(1)}</small> : null
-          }
         </div>
         <div className="flex flex-col">
           <label className='text-[#ffffff] font-aktiv text-[12px]' htmlFor="holder">Country or region</label>
           <input {...register('country')} id='holder' type="text" className='h-8 border bg-transparent text-[#ffffff] px-2 ring-0 focus:ring-0 focus:outline-none' />
           <input {...register('zip')} placeholder='zip' id='holder' type="text" className='h-8 border-x border-b bg-transparent text-[#ffffff] px-2 ring-0 focus:ring-0 focus:outline-none' />
-          {
-            errors.country !== undefined && errors.country.message !== undefined ? <small className='text-red-500'>{errors.country.message[0].toUpperCase() + errors.country.message.slice(1)}</small> : null
-          }
-          {
-            errors.zip !== undefined && errors.zip.message !== undefined ? <small className='text-red-500'>{errors.zip.message[0].toUpperCase() + errors.zip.message.slice(1)}</small> : null
-          }
         </div>
         <div className="flex flex-col">
-          <button type='submit' className='h-8 flex justify-center items-center bg-[#ffffff] hover:bg-indigo-500 active:bg-[#ffffff] px-2 uppercase text-[#10100e] mt-3 transition-all duration-200'>
-            {
-              confirmPayment ? (
-                <RotatingLines
-                  width="18"
-                  strokeColor='#10100e'
-                />
-              ) : (
-                'Pay'
-              )
-            }
-          </button>
+          <form method="post" action={transbank.url}>
+            <input type="hidden" name="token_ws" value={transbank.token} />
+            <button type='submit' className='w-full h-8 flex justify-center items-center bg-[#ffffff] hover:bg-indigo-500 active:bg-[#ffffff] px-2 uppercase text-[#10100e] mt-3 transition-all duration-200'>
+              {
+                confirmPayment ? (
+                  <RotatingLines
+                    width="18"
+                    strokeColor='#10100e'
+                  />
+                ) : (
+                  'Pay'
+                )
+              }
+            </button>
+          </form>
           {
             !confirmPayment && (
               <button type='button' onClick={() => { setReadyToPay(false) }} className='h-8 hover:bg-red-600 active:bg-transparent px-2 uppercase text-[#ffffff] mt-3 transition-all duration-200 text-[12px] text-right'>Cancel</button>
             )
           }
         </div>
-      </form>
+      </section>
     </div>
   )
 }
