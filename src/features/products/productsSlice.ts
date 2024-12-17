@@ -30,6 +30,19 @@ export const getProductById = createAsyncThunk(
     }
 )
 
+export const deleteProductById = createAsyncThunk(
+    'products/deleteProductById', async (id: string, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.delete(`${url}/products/${id}`)
+            toast.success('Product deleted succesfully.')
+            return data
+        } catch (error) {
+            console.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
 export const postProductsAsync = createAsyncThunk(
     'products/postProducts', async (products: { products: string }, { rejectWithValue }) => {
         try {
@@ -150,6 +163,25 @@ export const productsSlice = createSlice({
             )
             .addCase(
                 getProductById.rejected, (state, _action) => {
+                    state.productsAreLoading = false
+                    state.productsHasError = true
+                }
+            )
+            .addCase(
+                deleteProductById.pending, (state, _action) => {
+                    state.productsAreLoading = true
+                    state.productsHasError = false
+                }
+            )
+            .addCase(
+                deleteProductById.fulfilled, (state, action) => {
+                    state.productsAreLoading = false
+                    state.productsHasError = false
+                    state.products = action.payload.products
+                }
+            )
+            .addCase(
+                deleteProductById.rejected, (state, _action) => {
                     state.productsAreLoading = false
                     state.productsHasError = true
                 }

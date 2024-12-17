@@ -19,7 +19,7 @@ export default function Dashboard(): ReactNode {
     return (
         <section className='w-screen flex flex-col gap-y-10 bg-[#ffffff] pb-20'>
             <div className='flex flex-col py-10'>
-                <div className='h-20 w-full grid grid-cols-8 gap-x-5 px-10 border-b bg-[#10100e] text-[#ffffff] content-center overflow-x-scroll'>
+                <div className='h-20 w-full grid grid-cols-9 gap-x-5 px-10 border-b bg-[#10100e] text-[#ffffff] content-center overflow-x-scroll'>
                     <p className='text-balance truncate uppercase'>Id</p>
                     <p className='text-balance truncate uppercase'>Title</p>
                     <p className='col-span-2 text-balance truncate uppercase'>Description</p>
@@ -27,6 +27,7 @@ export default function Dashboard(): ReactNode {
                     <p className='text-balance truncate uppercase'>FullPrice</p>
                     <p className='text-balance truncate uppercase'>Image</p>
                     <p className='text-balance truncate uppercase'>Rating</p>
+                    <p className='text-balance truncate uppercase'>Action</p>
                 </div>
                 {
                     products.length > 0 && products.map((product: ProductProps) => (
@@ -36,7 +37,6 @@ export default function Dashboard(): ReactNode {
             </div>
             <div className='grid grid-cols-7 border-y border-sym_gray-400'>
                 <IndividualProduct />
-
                 <ProductsByJSON />
             </div>
         </section>
