@@ -51,7 +51,7 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
                     <h1 className='text-[#ffffff] text-[5rem] animated-background bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 inline-block text-transparent bg-clip-text'>{title}</h1>
                 </header>
                 <nav></nav>
-                <section className="w-[1440px] h-full grid grid-cols-3">
+                <section className="w-full min-web:w-[1440px] h-full grid grid-cols-2 min-[1440px]:grid-cols-3">
                     {
                         [...products, ...products, ...products].map((product, i) => (
                             <ProductCard key={`${product.id}-${id}-${i}`} product={product} />
@@ -59,7 +59,7 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
                     }
                 </section>
             </div>
-            <video autoPlay muted loop src={video} className='absolute top-0 left-0 w-full h-screen object-cover opacity-30'></video>
+            <video autoPlay muted loop src={video} className='absolute top-0 left-0 w-screen h-screen object-cover opacity-30'></video>
         </main>
     )
 }
