@@ -28,11 +28,11 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
   }
 
   return (
-    <section className="group relative h-full min-h-[450px] col-span-1 overflow-hidden">
-      <img src={image} alt="product" className="w-full h-full object-cover" />
+    <section className="group relative sm:h-full sm:min-h-[450px] col-span-1 overflow-hidden">
+      <img src={image} alt="product" className="w-full sm:h-full object-cover" />
 
 
-      <div className="w-full absolute bottom-5 flex justify-between px-5 z-10 transition-all duration-300">
+      <div className="w-full absolute bottom-5 hidden sm:flex justify-between px-5 z-10 transition-all duration-300">
         <div className="flex flex-col">
           <h1 aria-label={product.title} className='text-[1rem] min-[400px]:text-[22px] uppercase neue antialiazed text-[#ffffff] leading-tight'>{product.title}</h1>
           <div className="flex gap-x-2">
@@ -57,7 +57,8 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
           </button>
         </div>
       </div>
-      <Link to={`/product/${product.id}`} className="absolute w-full h-full bg-[#10100e] opacity-0 group-hover:opacity-30 z-0 transition-all duration-200"></Link>
+
+      <Link to={`/product/${product.id}`} className="absolute top-0 left-0 w-full sm:h-full bg-[#10100e] opacity-0 group-hover:opacity-30 z-0 transition-all duration-200"></Link>
     </section>
   )
 }
