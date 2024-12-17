@@ -28,7 +28,7 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
   }
 
   return (
-    <main className="group relative h-full min-h-[450px] col-span-1 flex justify-center overflow-hidden">
+    <section className="group relative h-full min-h-[450px] col-span-1 flex justify-center overflow-hidden">
       <img src={image} alt="product" className="w-full h-full object-cover" />
 
 
@@ -58,6 +58,6 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
         </div>
       </div>
       <Link to={`/product/${product.id}`} className="absolute w-full h-full bg-[#10100e] opacity-0 group-hover:opacity-30 z-0 transition-all duration-200"></Link>
-    </main>
+    </section>
   )
 }

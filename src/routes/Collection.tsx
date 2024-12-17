@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react'
 import { ProductCard } from '@/components/common/ProductCard'
 import video from '@/assets/video/Alien.webm'
+import { v4 as uuid } from 'uuid'
 
 interface CollectionProps {
     title: string
@@ -42,6 +43,7 @@ const products = [
 ];
 
 export default function Collection({ title = 'Collection' }: CollectionProps): ReactNode {
+    const id = uuid()
     return (
         <main className='relative w-screen min-h-screen flex flex-col justify-center items-center pb-20'>
             <div className='z-20'>
@@ -51,8 +53,8 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
                 <nav></nav>
                 <section className="w-[1440px] h-full grid grid-cols-3">
                     {
-                        [...products, ...products, ...products].map((product) => (
-                            <ProductCard key={product.id} product={product} />
+                        [...products, ...products, ...products].map((product, i) => (
+                            <ProductCard key={`${product.id}-${id}-${i}`} product={product} />
                         ))
                     }
                 </section>
