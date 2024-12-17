@@ -49,11 +49,11 @@ const TopBar = (): ReactElement => {
       <div className={`absolute top-0 ${hamburgerIsOpen ? 'right-0' : '-right-[300px]'} h-screen w-[300px] bg-[#ffffff] z-20 transition-all duration-200 shadow-md`}>
         <XMarkIcon onClick={() => { setHamburgerIsOpen(false) }} className='w-6 ml-auto mr-5 mt-5 text-[#2E3D49] font-accent hover:rotate-90 hover:text-[#EA0C1D] transition-all duration-200' />
         <div className="h-full flex flex-col py-10 px-5 gap-y-2">
-          <Link to={user ? '/profile' : '/sign'} className={`text-[#10100e] hover:text-indigo-500 text-[2rem] transition-color duration-200 flex items-center gap-x-2`}>
+          <Link onClick={() => { setHamburgerIsOpen(false) }} to={user ? '/profile' : '/sign'} className={`text-[#10100e] hover:text-indigo-500 text-[2rem] transition-color duration-200 flex items-center gap-x-2`}>
             <i className='fa-solid fa-user'></i>
             <p className='truncate'>{user ? `${user.email}` : 'Sign in'}</p>
           </Link>
-          <Link className={`text-[#10100e] hover:text-indigo-500 text-[2rem] transition-color duration-200 flex items-center gap-x-2`} aria-label='checkout' to={'/checkout'}>
+          <Link onClick={() => { setHamburgerIsOpen(false) }} className={`text-[#10100e] hover:text-indigo-500 text-[2rem] transition-color duration-200 flex items-center gap-x-2`} aria-label='checkout' to={'/checkout'}>
             <i className='relative fa-solid fa-cart-shopping cursor-pointer'>
               {
                 cartItemsLength !== null && cartItemsLength > 0 && (
