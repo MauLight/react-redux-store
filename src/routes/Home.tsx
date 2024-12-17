@@ -67,7 +67,7 @@ function Home() {
                                 </div>
                             </Banner>
                             <Banner2 />
-                            <div className="grid grid-cols-3 h-[700px]">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3 h-[700px]">
                                 {
                                     collection.length > 0 && collection.map(product => (
                                         <div key={product.id} className="h-[700px]">
