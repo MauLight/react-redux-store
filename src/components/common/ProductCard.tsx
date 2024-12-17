@@ -28,7 +28,7 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
   }
 
   return (
-    <main className="group relative h-full col-span-1 flex justify-center overflow-hidden">
+    <main className="group relative h-full min-h-[450px] col-span-1 flex justify-center overflow-hidden">
       <img src={image} alt="product" className="w-full h-full object-cover" />
 
 

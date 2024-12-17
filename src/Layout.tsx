@@ -9,6 +9,7 @@ const Sign = lazy(async () => await import('./routes/Sign'))
 const Login = lazy(async () => await import('./routes/Login'))
 const Home = lazy(async () => await import('./routes/Home'))
 const Profile = lazy(async () => await import('./routes/Profile'))
+const Collection = lazy(async () => await import('./routes/Collection'))
 const IndividualProduct = lazy(async () => await import('./routes/IndividualProduct'))
 const AdminLogin = lazy(async () => await import('./routes/AdminLogin'))
 const Dashboard = lazy(async () => await import('./routes/Dashboard'))
@@ -42,6 +43,7 @@ function Layout() {
                         <Route path='/sign' element={<Sign />} />
                         <Route path='/login' element={<Login />} />
                         <Route path='/profile' element={<Profile />} />
+                        <Route path='/collection' element={<Collection title='Surreal Collection' />} />
                         <Route path='/product/:id' element={<IndividualProduct id={productId ? productId : undefined} />} />
                         <Route path='/admin/login' element={<AdminLogin />} />
                         <Route path='/admin/dashboard' element={<Dashboard />} />
