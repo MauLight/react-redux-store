@@ -11,7 +11,7 @@ export const BannerContent = ({ children }: { children: ReactNode }) => {
                     variants={fadeIn('top', 0.2)}
                     initial={'hidden'}
                     whileInView={'show'}
-                    className='text-[240px] leading-none uppercase animated-background bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 inline-block text-transparent bg-clip-text z-10'>Emotions</motion.h1>
+                    className='text-[4rem] min-[400px]:text-[5rem] sm:text-[9rem] lg:text-[240px] leading-none uppercase animated-background bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 inline-block text-transparent bg-clip-text z-10'>Emotions</motion.h1>
                 <div
                     className="w-full flex justify-between mt-2 px-5 z-20">
                     <p className='text-[16px] neue text-[#ffffff] z-10 uppercase'>Captured</p>
