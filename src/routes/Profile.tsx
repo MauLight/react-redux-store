@@ -92,10 +92,10 @@ function Profile(): ReactNode {
                 {
                     !isLoading && user && (
                         <main>
-                            <header className='w-[1440px] text-[#ffffff] flex flex-col gap-y-2 tracking-tight uppercase'>
+                            <header className='w-full min-[1440px]:w-[1440px] text-[#ffffff] flex flex-col gap-y-2 tracking-tight uppercase'>
                                 <div className='flex'>
                                     <div className='flex flex-col items-end gap-y-5'>
-                                        <h1 className='w-full text-left text-9xl animated-background bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 inline-block text-transparent bg-clip-text'>Profile</h1>
+                                        <h1 className='w-full text-left text-[4rem] min-[530px]:text-9xl animated-background bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 inline-block text-transparent bg-clip-text'>Profile</h1>
                                         {
                                             isEditing ? (
                                                 <form className='text-[#ffffff]' onSubmit={handleSubmit(handleOpenConfirmation)}>
@@ -131,7 +131,7 @@ function Profile(): ReactNode {
                                 </div>
                                 <div className="w-full border-b border-sym_gray-50 mt-20"></div>
                             </header>
-                            <section className='w-[1440px] flex flex-col gap-y-5 pt-10'>
+                            <section className='w-full min-[1440px]:w-[1440px] flex flex-col gap-y-5 pt-10'>
                                 <h1 className='text-[#ffffff] text-[3rem] uppercase'>Wishlist</h1>
                                 <div className='flex flex-col gap-y-5 py-10 px-5 border bg-[#ffffff]'>
                                     {
