@@ -26,21 +26,21 @@ export const CheckoutCard = ({ product, dispatch }: CheckoutCardProps): ReactEle
   }
 
   return (
-    <div key={product.id} className="grid grid-cols-5 border-b border-[#10100e] pb-3 h-[220px]">
+    <div key={product.id} className="grid grid-cols-5 border-b border-[#10100e] pb-3 lg:h-[220px]">
       <div className="col-span-1 border">
-        <img src={product.image} alt="mock1" className="w-full h-full object-cover" />
+        <img src={product.image} alt="product" className="w-full h-full object-cover" />
       </div>
       <div className="col-span-4 h-full flex flex-col justify-start items-between px-5">
         <div className="w-full flex justify-between">
           <div className="flex flex-col">
-            <h1 className='text-xl aktivLight text-[#10100e] uppercase'>{product.title}</h1>
+            <h1 className='text-[1rem] lg:text-xl text-[#10100e] uppercase'>{product.title}</h1>
             <div className="flex">
               <h1 className='text-xl font-semiBold text-[#10100e] uppercase'>{`${product.price}$`}</h1>
-              <h1 className='text-md aktivLight text-[#10100e] uppercase line-through'>{`${product.fullPrice}$`}</h1>
+              <h1 className='text-[1rem] lg:text-md text-[#10100e] uppercase line-through'>{`${product.fullPrice}$`}</h1>
             </div>
           </div>
           <div className="flex flex-col">
-            <h1 className='text-xl aktivLight text-[#10100e] uppercase'>Qty</h1>
+            <h1 className='text-[1rem] lg:text-xl text-[#10100e] uppercase'>Qty</h1>
             <div className='flex items-center justify-between border border-[#10100e] w-[80px] h-10 px-2'>{product.quantity}
               <div className="h-full flex flex-col py-3 justify-between">
                 <i onClick={() => { handleChangeQuantity(1) }} className="fa-solid fa-sm fa-plus hover:text-indigo-500"></i>
@@ -65,8 +65,8 @@ export const CheckoutCard = ({ product, dispatch }: CheckoutCardProps): ReactEle
             }
           </div>
           <div className="flex items-end gap-x-1">
-            <p className='text-[18px] pb-0 leading-none aktivLight text-[#10100e]'>Total</p>
-            <p className='text-[18px] pb-0 leading-none aktiv text-[#10100e]'>{`${product.price}$`}</p>
+            <p className='pb-0 text-[1rem] leading-none text-[#10100e]'>Total</p>
+            <p className='text-[1rem] pb-0 leading-none text-[#10100e]'>{`${product.price}$`}</p>
           </div>
         </div>
       </div>
