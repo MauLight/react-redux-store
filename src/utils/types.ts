@@ -28,7 +28,12 @@ export interface StoreProps {
         isLoading: boolean
         hasError: boolean
     }
-    cart: Array<CartItemProps>
+    cart: {
+        cart: Array<CartItemProps>,
+        transbank: Record<string, any>
+        isLoading: boolean
+        hasError: boolean
+    }
     homeCollection: {
         collection: Array<ProductProps>
         collectionHasError: boolean

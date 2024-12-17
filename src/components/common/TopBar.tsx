@@ -7,7 +7,7 @@ import { Link, useLocation } from 'react-router-dom'
 
 const TopBar = (): ReactElement => {
   const user = useSelector((state: StoreProps) => state.userAuth.user)
-  const cart = useSelector((state: StoreProps) => state.cart)
+  const cart = useSelector((state: StoreProps) => state.cart.cart)
   const yPosition = useScroll()
   const { pathname } = useLocation()
   const cartItemsLength = Object.keys(cart).length

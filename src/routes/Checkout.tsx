@@ -15,7 +15,7 @@ import { StoreProps } from '@/utils/types'
 import { fadeIn } from '@/utils/functions'
 
 const Checkout = (): ReactElement => {
-    const cart = useSelector((state: StoreProps) => state.cart)
+    const cart = useSelector((state: StoreProps) => state.cart.cart)
     const dispatch = useDispatch()
 
     const navigate = useNavigate()

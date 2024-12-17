@@ -1,36 +1,78 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { CartItemProps } from '@/utils/types'
+import axios, { AxiosError } from 'axios'
+
+const url = import.meta.env.VITE_TRANSBANK_BACKEND_URL
 
 const initialCart: CartItemProps[] = []
 
+export const createTransbankTransactionAsync = createAsyncThunk(
+    'cart/createTransbankTransaction', async (paymentInformation, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.post(`${url}/transbank`, paymentInformation)
+            return data
+        } catch (error) {
+            console.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
 export const cartSlice = createSlice({
     name: 'cart',
-    initialState: initialCart,
+    initialState: {
+        cart: initialCart,
+        transbank: {} as Record<string, any>,
+        isLoading: false,
+        hasError: false
+    },
     reducers: {
         addItem: (state, action) => {
             const { id, title, image, price, fullPrice } = action.payload
             const newItem = { id, price, fullPrice, quantity: 1, image, title }
-            state.push(newItem)
+            state.cart.push(newItem)
         },
         removeItem: (state, action) => {
-            return state.filter(elem => elem.id !== action.payload)
+            state.cart = state.cart.filter(elem => elem.id !== action.payload)
         },
         changeItemQuantity: (state, action) => {
             const { id, newQuantity } = action.payload
-            const itemToUpdate = state.find(product => product.id === id)
+            const itemToUpdate = state.cart.find(product => product.id === id)
             if (itemToUpdate) {
                 const updatedItem = {
                     ...itemToUpdate,
                     quantity: newQuantity
                 }
 
-                return state.map((product) => product.id === id ? updatedItem : product)
+                state.cart = state.cart.map((product) => product.id === id ? updatedItem : product)
             }
             return state
         },
-        resetCart: () => {
-            return initialCart
+        resetCart: (state) => {
+            state.cart = initialCart
         }
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(
+                createTransbankTransactionAsync.pending, (state, _action) => {
+                    state.isLoading = true
+                    state.hasError = false
+                }
+            )
+            .addCase(
+                createTransbankTransactionAsync.rejected, (state, _action) => {
+                    state.isLoading = false
+                    state.hasError = true
+                }
+            )
+            .addCase(
+                createTransbankTransactionAsync.fulfilled, (state, action) => {
+                    state.isLoading = false
+                    state.hasError = true
+                    state.transbank = action.payload as Record<string, any>
+                }
+            )
     }
 })
 
