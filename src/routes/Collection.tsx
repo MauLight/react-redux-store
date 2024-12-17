@@ -46,12 +46,12 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
     const id = uuid()
     return (
         <main className='relative w-screen min-h-screen flex flex-col justify-center items-center pb-20'>
-            <div className='z-20'>
-                <header className='w-[1440px] h-[30rem] flex justify-start items-center'>
-                    <h1 className='text-[#ffffff] text-[5rem] animated-background bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 inline-block text-transparent bg-clip-text'>{title}</h1>
+            <div className='z-20 min-[1440px]:w-web'>
+                <header className='h-[30rem] flex justify-start items-center max-[1440px]:px-10'>
+                    <h1 className='text-[#ffffff] text-[3rem] md:text-[5rem] animated-background bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 inline-block text-transparent bg-clip-text'>{title}</h1>
                 </header>
                 <nav></nav>
-                <section className="w-full min-web:w-[1440px] h-full grid grid-cols-2 min-[1440px]:grid-cols-3">
+                <section className="w-full min-web:w-[1440px] h-full grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3">
                     {
                         [...products, ...products, ...products].map((product, i) => (
                             <ProductCard key={`${product.id}-${id}-${i}`} product={product} />
