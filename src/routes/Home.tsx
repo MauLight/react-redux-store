@@ -55,7 +55,7 @@ function Home() {
             }
             {
                 !isLoading && product !== undefined && (
-                    <section className='relative w-full flex flex-col justify-center items-center overflow-y-scroll'>
+                    <section className='relative w-full flex flex-col justify-center items-center overflow-y-scroll pb-20'>
                         <div className="w-full overflow-scroll scrollbar-hide flex flex-col">
                             <Banner>
                                 <div className="w-full max-w-[1440px] h-[950px] flex justify-center items-center bg-[#fdfdfd] overflow-hidden">
