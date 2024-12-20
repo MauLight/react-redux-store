@@ -59,7 +59,7 @@ export default function ProductDescription({ product }: { product: ProductProps 
     useEffect(() => {
         setTimeout(() => {
             setLoading(false)
-        }, 120)
+        }, 150)
     }, [])
 
     return (
