@@ -23,7 +23,7 @@ function IndividualProduct({ id }: { id: string | undefined }): ReactNode {
                 <div className="lg:w-2/3 bg-[#ffffff] p-10">
                     {
                         product !== undefined && (
-                            <ProductDescription product={product} />
+                            <ProductDescription key={product.id} product={product} />
                         )
                     }
                 </div>

@@ -2,16 +2,16 @@ import { useEffect, useLayoutEffect, useState, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/store/store'
-
-import { ProductCard } from './ProductCard'
 import { ProductProps } from '@/utils/types'
 import { postProductRating } from '@/features/products/productsSlice'
+import Fallback from './Fallback'
 
 export default function ProductDescription({ product }: { product: ProductProps }): ReactNode {
     const { pathname } = useLocation()
     const [isAdmin, setIsAdmin] = useState<boolean>(false)
     const dispatch: AppDispatch = useDispatch()
 
+    const [loading, setLoading] = useState<boolean>(true)
     const [stars, setStars] = useState<ReactNode[]>([])
 
     function calculateRating(rating: number) {
@@ -55,13 +55,29 @@ export default function ProductDescription({ product }: { product: ProductProps 
         }
     }, [])
 
+
+    useEffect(() => {
+        setTimeout(() => {
+            setLoading(false)
+        }, 120)
+    }, [])
+
     return (
         <>
+            {loading && (
+                <div className='lg:min-w-[23rem] sm:h-[33rem]'>
+                    <Fallback />
+                </div>
+            )}
             {
-                product !== undefined && (
+                product !== undefined && !loading && (
                     <section className='lg:flex gap-x-5'>
                         <div className='lg:min-w-[23rem] sm:h-[33rem]'>
-                            <ProductCard product={product} />
+                            <img
+                                src={product.image}
+                                alt="product"
+                                className="w-full sm:h-full object-cover"
+                            />
                         </div>
                         <div className="w-full sm:h-[33rem] flex flex-col justify-between">
                             <div className="flex flex-col">

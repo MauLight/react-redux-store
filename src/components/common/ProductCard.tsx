@@ -9,13 +9,13 @@ import { toast } from 'react-toastify'
 import { ProductProps, StoreProps } from '@/utils/types'
 
 export const ProductCard = ({ product }: { product: ProductProps }): ReactElement => {
+  const user = useSelector((state: StoreProps) => state.userAuth.user)
   const dispatch: AppDispatch = useDispatch()
+
   const { pathname } = useLocation()
   const isCollection = !pathname.includes('product')
-  const user = useSelector((state: StoreProps) => state.userAuth.user)
-  const [wishListed, setWishListed] = useState<boolean>(false)
 
-  const image = /^(https?:\/\/)?((([a-zA-Z0-9$_.+!*'(),;?&=-]|%[0-9a-fA-F]{2})+:)*([a-zA-Z0-9$_.+!*'(),;?&=-]|%[0-9a-fA-F]{2})+@)?(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)|([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(:[0-9]+)?(\/([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)*(\?([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)?(#([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)?$/.test(product.image as string) ? product.image : 'https://dummyimage.com/400x600/000/fff'
+  const [wishListed, setWishListed] = useState<boolean>(false)
 
   const handleAddItemToCart = () => {
 
@@ -32,8 +32,8 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
 
   return (
     <section className="group relative sm:h-full sm:min-h-[450px] col-span-1 overflow-hidden">
-      <img src={image} alt="product" className="w-full sm:h-full object-cover" />
 
+      <img key={product.id} src={product.image} alt="product" className="w-full sm:h-full object-cover" />
 
       {
         isCollection && (
