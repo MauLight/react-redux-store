@@ -17,8 +17,9 @@ export const CheckSummary = ({ numberOfProducts, total, taxes, totalWithTaxes, s
   const dispatch: AppDispatch = useDispatch()
   async function handleTransbankCreateTransaction() {
     const sessionId = `session-${Date.now().toString()}-${uuid()}`
+    const paymentInformation = { amount: totalWithTaxes, sessionId }
 
-    const { payload } = await dispatch(createTransbankTransactionAsync({ amount: totalWithTaxes, sessionId }))
+    const { payload } = await dispatch(createTransbankTransactionAsync(paymentInformation))
     console.log(payload)
   }
   const handleCheckout = async () => {

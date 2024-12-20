@@ -81,7 +81,7 @@ function LoginForm(): ReactNode {
                 {
                     !isLoading && (
                         <>
-                            <h1 className='font-body text-[#10100e] text-4xl text-center uppercase'>Admin</h1>
+                            <h1 className='font-body text-[#10100e] text-4xl text-center uppercase'>{isAdmin ? 'Admin' : 'Login'}</h1>
                             <form onSubmit={isAdmin ? handleSubmit(handleAdminLogin) : handleSubmit(handleLogin)} className="flex flex-col gap-y-2 pt-5 text-[0.9rem]">
                                 <input {...register('email')} type='text' className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.email !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Email' />
                                 <input {...register('password')} type='password' className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.password !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Password' />

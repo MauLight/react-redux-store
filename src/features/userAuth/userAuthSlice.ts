@@ -5,6 +5,7 @@ import { toast } from "react-toastify"
 
 const url = import.meta.env.VITE_USERS_BACKEND_URL
 const user = localStorage.getItem('store-user') ? JSON.parse(localStorage.getItem('store-user') as string) : {}
+const token = user.token
 
 export const postNewUserAsync = createAsyncThunk(
     'userAuth/postUser', async (user: NewUserProps, { rejectWithValue }) => {
@@ -33,7 +34,12 @@ export const postLoginAsync = createAsyncThunk(
 export const getUserByIdAsync = createAsyncThunk(
     'userAuth/getUserById', async (id: string, { rejectWithValue }) => {
         try {
-            const { data } = await axios.get(`${url}/auth/${id}`)
+            const { data } = await axios.get(`${url}/user/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
             return data
         } catch (error) {
             return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
@@ -44,7 +50,12 @@ export const getUserByIdAsync = createAsyncThunk(
 export const updateUserByIdAsync = createAsyncThunk(
     'userAuth/updateUserById', async (updatedUser: UserToBeUpdatedProps, { rejectWithValue }) => {
         try {
-            const { data } = await axios.put(`${url}/auth/${user.id}`, updatedUser)
+            const { data } = await axios.put(`${url}/user/${user.id}`, updatedUser, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
             toast.success('User updated succesfully.')
             return data
         } catch (error) {

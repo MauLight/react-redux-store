@@ -4,13 +4,20 @@ import { CartItemProps, TransactionProps } from '@/utils/types'
 
 const url = import.meta.env.VITE_TRANSBANK_BACKEND_URL
 const returnUrl = 'http://localhost:3000/confirmation'
+const user = localStorage.getItem('store-user') ? JSON.parse(localStorage.getItem('store-user') as string) : {}
+const token = user.token
 
 const initialCart: CartItemProps[] = []
 
 export const createTransbankTransactionAsync = createAsyncThunk(
     'cart/createTransbankTransaction', async (paymentInformation: TransactionProps, { rejectWithValue }) => {
         try {
-            const { data } = await axios.post(`${url}/transbank`, { ...paymentInformation, returnUrl })
+            const { data } = await axios.post(`${url}/transbank`, { ...paymentInformation, returnUrl }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
             return data
         } catch (error) {
             console.error((error as AxiosError).message)
