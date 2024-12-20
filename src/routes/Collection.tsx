@@ -26,8 +26,8 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
     }
 
     async function handleSortProductsByPrice(order: string) {
-        const { payload } = await dispatch(getProductSortedByPriceAsync({ order }))
-        console.log(payload)
+        await dispatch(getProductSortedByPriceAsync({ order }))
+        setOpenSortMenu(false)
     }
 
 
@@ -53,18 +53,27 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
                 <header className='h-[30rem] flex justify-start items-center max-[1440px]:px-10'>
                     <h1 className='text-[#ffffff] text-[2rem] min-[350px]:text-[3rem] md:text-[5rem] animated-background bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 inline-block text-transparent bg-clip-text'>{title}</h1>
                 </header>
-                <nav className='flex items-center gap-x-5 h-[60px]'>
-                    <div className='relative h-full'>
-                        <button onClick={handleOpenSortMenu} className='h-full w-[200px] border px-2 uppercase text-[#ffffff] transition-all duration-200 bg-transparent hover:bg-indigo-500 active:bg-[#10100e]'>Sort by price</button>
-                        {
-                            openSortMenu &&
-                            <div className="absolute top-[60px] left-0 w-full flex flex-col bg-[#ffffff] z-20">
-                                <button onClick={() => { handleSortProductsByPrice('asc') }} className='h-[60px] hover:text-indigo-500 transition-color duration-200'>Low to Hight</button>
-                                <button onClick={() => { handleSortProductsByPrice('des') }} className='h-[60px] hover:text-indigo-500 transition-color duration-200'>Hight to Low</button>
-                            </div>
-                        }
-                    </div>
-                </nav>
+                <section className="w-full min-web:w-[1440px] h-full grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3 gap-5">
+                    <div className='col-span-1'></div>
+                    <div className='col-span-1'></div>
+                    <div className='col-span-1 hidden sm:max-[1440px]:flex'></div>
+                    <nav className='col-span-1 flex justify-end items-center h-[60px]'>
+                        <div className='group w-full relative h-full'>
+                            <i className="absolute top-8 left-3 fa-xl fa-solid fa-magnifying-glass text-sym_gray-300"></i>
+                            <input className='h-full w-full min-[1440px]:w-[267px] outline-none border-none pl-[50px] pr-2 bg-transparent text-[#ffffff] group-hover:bg-[#ffffff] group-hover:text-[#10100e] focus:bg-[#ffffff] focus:text-[#10100e]' type="text" />
+                        </div>
+                        <div className='group relative h-full'>
+                            <button onClick={handleOpenSortMenu} className='h-full w-[200px] px-2 uppercase text-[#ffffff] transition-all duration-200 bg-transparent border border-transparent group-hover:bg-indigo-500 group-hover:border-indigo-500'>Sort by price</button>
+                            {
+                                openSortMenu &&
+                                <div className="absolute top-[60px] left-0 w-full flex flex-col bg-[#ffffff] z-20">
+                                    <button onClick={() => { handleSortProductsByPrice('asc') }} className='h-[60px] hover:text-indigo-500 transition-color duration-200'>Low to Hight</button>
+                                    <button onClick={() => { handleSortProductsByPrice('des') }} className='h-[60px] hover:text-indigo-500 transition-color duration-200'>Hight to Low</button>
+                                </div>
+                            }
+                        </div>
+                    </nav>
+                </section>
                 {
                     !loading ? (
                         <section className="w-full min-web:w-[1440px] h-full grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3 gap-5">
