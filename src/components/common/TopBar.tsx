@@ -12,7 +12,7 @@ const TopBar = (): ReactElement => {
   const yPosition = useScroll()
   const { pathname } = useLocation()
   const cartItemsLength = Object.keys(cart).length
-  const topBarText = pathname.includes('checkout') ? 'text-sym-800' : 'text-[#ffffff] hover:text-indigo-500 transition-color duration-200'
+  const topBarText = pathname.includes('checkout') ? 'text-sym-800 bg-[#ffffff]' : 'text-[#ffffff] hover:text-indigo-500 transition-color duration-200'
   const topBarHamburgerColor = pathname.includes('checkout') ? '#10100e' : '#ffffff'
 
   const [hamburgerIsOpen, setHamburgerIsOpen] = useState<boolean>(false)
