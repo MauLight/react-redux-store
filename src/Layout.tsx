@@ -20,7 +20,7 @@ const Confirmation = lazy(async () => await import('@/routes/Confirmation'))
 function Layout() {
     const { pathname } = useLocation()
     const navigate = useNavigate()
-    const hideTopbar = pathname.includes('sign') || pathname.includes('login') || pathname.includes('admin')
+    const hideTopbar = pathname.includes('sign') || pathname.includes('login') || pathname.includes('admin') || pathname.includes('confirmation')
     const user = localStorage.getItem('store-user')
 
     const matchId = useMatch('/product/:id')

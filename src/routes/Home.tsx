@@ -63,7 +63,7 @@ function Home() {
                                         <PriceCard product={product} />
                                     </BannerContent>
                                     <img src='https://res.cloudinary.com/maulight/image/upload/v1732922082/e-commerce/kx2betzo07jrpgq9i077.webp' alt="banner" className='absolute  w-full h-full object-none object-bottom z-10' />
-                                    <img src={product.image} alt="banner" className='absolute  w-full h-full object-none object-bottom z-0' />
+                                    <img src={product.image} alt="banner" className='absolute w-full h-full object-none object-bottom z-0' />
                                 </div>
                             </Banner>
                             <Banner2 />

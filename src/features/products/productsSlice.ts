@@ -4,7 +4,6 @@ import axios, { AxiosError } from "axios"
 import { toast } from "react-toastify"
 
 const url = import.meta.env.VITE_PRODUCTS_BACKEND_URL
-// const token = JSON.parse(localStorage.getItem('store-user') !== null ? localStorage.getItem('store-user') as string : '')
 
 export const getAllProductsAsync = createAsyncThunk(
     'products/getAllProducts', async (_, { rejectWithValue }) => {
