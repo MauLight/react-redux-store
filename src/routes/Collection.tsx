@@ -4,7 +4,7 @@ import video from '@/assets/video/Alien.webm'
 import { useDispatch, useSelector } from 'react-redux'
 import { StoreProps } from '@/utils/types'
 import { AppDispatch } from '@/store/store'
-import { getAllProductsAsync, getProductSortedByPriceAsync } from '@/features/products/productsSlice'
+import { getAllProductsAsync, getProductsBySearchWordAsync, getProductSortedByPriceAsync } from '@/features/products/productsSlice'
 
 interface CollectionProps {
     title: string
@@ -14,6 +14,8 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
     const dispatch: AppDispatch = useDispatch()
     const products = useSelector((state: StoreProps) => state.inventory.products)
     const sortedCollection = useSelector((state: StoreProps) => state.inventory.sortedProducts)
+
+    const [inputValue, setInputValue] = useState<string>('')
     const [loading, setLoading] = useState<boolean>(true)
     const [openSortMenu, setOpenSortMenu] = useState<boolean>(false)
 
@@ -28,6 +30,14 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
     async function handleSortProductsByPrice(order: string) {
         await dispatch(getProductSortedByPriceAsync({ order }))
         setOpenSortMenu(false)
+    }
+
+    interface HandleSubmitSearchEvent extends React.KeyboardEvent<HTMLInputElement> { }
+
+    async function handleSubmitSearch(e: HandleSubmitSearchEvent): Promise<void> {
+        if (e.key === 'Enter') {
+            await dispatch(getProductsBySearchWordAsync(inputValue))
+        }
     }
 
 
@@ -60,7 +70,7 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
                     <nav className='col-span-1 flex justify-end items-center h-[60px]'>
                         <div className='group w-full relative h-full'>
                             <i className="absolute top-8 left-3 fa-xl fa-solid fa-magnifying-glass text-sym_gray-300"></i>
-                            <input className='h-full w-full min-[1440px]:w-[267px] outline-none border-none pl-[50px] pr-2 bg-transparent text-[#ffffff] group-hover:bg-[#ffffff] group-hover:text-[#10100e] focus:bg-[#ffffff] focus:text-[#10100e]' type="text" />
+                            <input value={inputValue} onChange={({ target }) => { setInputValue(target.value) }} onKeyDown={handleSubmitSearch} className='h-full w-full min-[1440px]:w-[267px] outline-none border-none pl-[50px] pr-2 bg-transparent text-[#ffffff] group-hover:bg-[#ffffff] group-hover:text-[#10100e] focus:bg-[#ffffff] focus:text-[#10100e]' type="text" />
                         </div>
                         <div className='group relative h-full'>
                             <button onClick={handleOpenSortMenu} className='h-full w-[200px] px-2 uppercase text-[#ffffff] transition-all duration-200 bg-transparent border border-transparent group-hover:bg-indigo-500 group-hover:border-indigo-500'>Sort by price</button>

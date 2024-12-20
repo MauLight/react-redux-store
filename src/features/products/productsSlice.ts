@@ -41,6 +41,20 @@ export const getProductSortedByPriceAsync = createAsyncThunk(
     }
 )
 
+//GET /products/search?searchWord=example
+
+export const getProductsBySearchWordAsync = createAsyncThunk(
+    'products/getProductsBySearchWord', async (searchWord: string, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.get(`${url}/products/search?searchWord=${searchWord}`)
+            return data
+        } catch (error) {
+            console.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
 export const deleteProductById = createAsyncThunk(
     'products/deleteProductById', async (id: string, { rejectWithValue }) => {
         try {
@@ -175,6 +189,25 @@ export const productsSlice = createSlice({
             )
             .addCase(
                 getProductSortedByPriceAsync.rejected, (state, _action) => {
+                    state.productsAreLoading = false
+                    state.productsHasError = true
+                }
+            )
+            .addCase(
+                getProductsBySearchWordAsync.pending, (state, _action) => {
+                    state.productsAreLoading = true
+                    state.productsHasError = false
+                }
+            )
+            .addCase(
+                getProductsBySearchWordAsync.fulfilled, (state, action) => {
+                    state.productsAreLoading = false
+                    state.productsHasError = false
+                    state.sortedProducts = action.payload.products
+                }
+            )
+            .addCase(
+                getProductsBySearchWordAsync.rejected, (state, _action) => {
                     state.productsAreLoading = false
                     state.productsHasError = true
                 }
