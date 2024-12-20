@@ -2,16 +2,16 @@ import { useEffect, useLayoutEffect, useState, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/store/store'
-
-import { ProductCard } from './ProductCard'
 import { ProductProps } from '@/utils/types'
 import { postProductRating } from '@/features/products/productsSlice'
+import Fallback from './Fallback'
 
 export default function ProductDescription({ product }: { product: ProductProps }): ReactNode {
     const { pathname } = useLocation()
     const [isAdmin, setIsAdmin] = useState<boolean>(false)
     const dispatch: AppDispatch = useDispatch()
 
+    const [loading, setLoading] = useState<boolean>(true)
     const [stars, setStars] = useState<ReactNode[]>([])
 
     function calculateRating(rating: number) {
@@ -55,20 +55,36 @@ export default function ProductDescription({ product }: { product: ProductProps 
         }
     }, [])
 
+
+    useEffect(() => {
+        setTimeout(() => {
+            setLoading(false)
+        }, 150)
+    }, [])
+
     return (
         <>
+            {loading && (
+                <div className='lg:min-w-[23rem] sm:h-[33rem]'>
+                    <Fallback />
+                </div>
+            )}
             {
-                product !== undefined && (
-                    <section className='flex gap-x-5'>
-                        <div className='min-w-[23rem] h-[33rem]'>
-                            <ProductCard product={product} />
+                product !== undefined && !loading && (
+                    <section className='lg:flex gap-x-5'>
+                        <div className='lg:min-w-[23rem] sm:h-[33rem]'>
+                            <img
+                                src={product.image}
+                                alt="product"
+                                className="w-full sm:h-full object-cover"
+                            />
                         </div>
-                        <div className="w-full h-[33rem] flex flex-col justify-between">
+                        <div className="w-full sm:h-[33rem] flex flex-col justify-between">
                             <div className="flex flex-col">
-                                <h2 aria-label={product.title} className='text-[2.5rem] font-light text-sym_gray-600 text-balance uppercase'>{product.title}</h2>
+                                <h2 aria-label={product.title} className='text-[1.5rem] min-[500px]:text-[2.5rem] font-light text-sym_gray-600 text-balance uppercase'>{product.title}</h2>
                                 <div className='flex justify-end gap-x-2'>
-                                    <p className='text-[3rem] text-end'>{`$${product.price}`}</p>
-                                    <p className='text-[1.5rem] str font-light text-sym_gray-200 text-end uppercase line-through'>{product.fullPrice}</p>
+                                    <p className='text-[1.5rem] min-[500px]:text-[3rem] text-end'>{`$${product.price}`}</p>
+                                    <p className='text-[1rem] min-[500px]:text-[1.5rem] str font-light text-sym_gray-200 text-end uppercase line-through'>{product.fullPrice}</p>
                                 </div>
                                 <button className='h-10 px-2 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e]'>Add to cart</button>
                                 <div className="border-b border-sym_gray-600 mt-10 mb-5"></div>

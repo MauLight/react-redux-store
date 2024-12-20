@@ -1,10 +1,15 @@
-import { type ReactNode } from 'react'
+import { useLayoutEffect, type ReactNode } from 'react'
 import video from '@/assets/video/Sign_video.webm'
 import LoginForm from '@/components/login/LoginForm'
 import LoginFooter from '@/components/login/LoginFooter'
+import { useSelector } from 'react-redux'
+import { StoreProps } from '@/utils/types'
+import { useNavigate } from 'react-router-dom'
 
 
 function Login(): ReactNode {
+    const user = useSelector((state: StoreProps) => state.userAuth.user)
+    const navigate = useNavigate()
 
     return (
         <section className='relative w-full h-screen flex items-center justify-center overflow-hidden'>

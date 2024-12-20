@@ -4,7 +4,6 @@ import axios, { AxiosError } from "axios"
 import { toast } from "react-toastify"
 
 const url = import.meta.env.VITE_PRODUCTS_BACKEND_URL
-// const token = JSON.parse(localStorage.getItem('store-user') !== null ? localStorage.getItem('store-user') as string : '')
 
 export const getAllProductsAsync = createAsyncThunk(
     'products/getAllProducts', async (_, { rejectWithValue }) => {
@@ -22,6 +21,18 @@ export const getProductById = createAsyncThunk(
     'products/getProductById', async (id: string, { rejectWithValue }) => {
         try {
             const { data } = await axios.get(`${url}/products/${id}`)
+            return data
+        } catch (error) {
+            console.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
+export const getProductSortedByPriceAsync = createAsyncThunk(
+    'products/getProductSortedByPrice', async ({ order, min, max }: { order: string, min?: number, max?: number }, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.get(`${url}/products/sorted-price/${order}?minPrice=${min}&maxPrice=${max}`)
             return data
         } catch (error) {
             console.error((error as AxiosError).message)
@@ -85,6 +96,7 @@ export const productsSlice = createSlice({
     initialState: {
         products: [] as ProductProps[],
         individualProduct: {},
+        sortedProducts: [] as ProductProps[],
         productsAreLoading: false,
         productsHasError: false
     },
@@ -144,6 +156,25 @@ export const productsSlice = createSlice({
             )
             .addCase(
                 getAllProductsAsync.rejected, (state, _action) => {
+                    state.productsAreLoading = false
+                    state.productsHasError = true
+                }
+            )
+            .addCase(
+                getProductSortedByPriceAsync.pending, (state, _action) => {
+                    state.productsAreLoading = true
+                    state.productsHasError = false
+                }
+            )
+            .addCase(
+                getProductSortedByPriceAsync.fulfilled, (state, action) => {
+                    state.productsAreLoading = false
+                    state.productsHasError = false
+                    state.sortedProducts = action.payload.products
+                }
+            )
+            .addCase(
+                getProductSortedByPriceAsync.rejected, (state, _action) => {
                     state.productsAreLoading = false
                     state.productsHasError = true
                 }

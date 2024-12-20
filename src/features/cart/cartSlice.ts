@@ -4,13 +4,37 @@ import { CartItemProps, TransactionProps } from '@/utils/types'
 
 const url = import.meta.env.VITE_TRANSBANK_BACKEND_URL
 const returnUrl = 'http://localhost:3000/confirmation'
+const user = localStorage.getItem('store-user') ? JSON.parse(localStorage.getItem('store-user') as string) : {}
+const token = user.token
 
 const initialCart: CartItemProps[] = []
 
 export const createTransbankTransactionAsync = createAsyncThunk(
     'cart/createTransbankTransaction', async (paymentInformation: TransactionProps, { rejectWithValue }) => {
         try {
-            const { data } = await axios.post(`${url}/transbank`, { ...paymentInformation, returnUrl })
+            const { data } = await axios.post(`${url}/transbank`, { ...paymentInformation, returnUrl }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            return data
+        } catch (error) {
+            console.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
+export const getConfirmationFromTransbankAsync = createAsyncThunk(
+    'cart/getConfirmationFromTransbank', async (confirmationData: { token: string, buyOrder: string }, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.post(`${url}/transbank/confirm`, confirmationData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
             return data
         } catch (error) {
             console.error((error as AxiosError).message)
@@ -72,6 +96,29 @@ export const cartSlice = createSlice({
                     state.isLoading = false
                     state.hasError = true
                     state.transbank = action.payload as Record<string, any>
+                }
+            )
+            .addCase(
+                getConfirmationFromTransbankAsync.pending, (state, _action) => {
+                    state.isLoading = true
+                    state.hasError = false
+                }
+            )
+            .addCase(
+                getConfirmationFromTransbankAsync.rejected, (state, _action) => {
+                    state.isLoading = false
+                    state.hasError = true
+                }
+            )
+            .addCase(
+                getConfirmationFromTransbankAsync.fulfilled, (state, action) => {
+                    if (action.payload.status === 'AUTHORIZED') {
+                        state.isLoading = false
+                        state.hasError = false
+                    } else {
+                        state.isLoading = false
+                        state.hasError = true
+                    }
                 }
             )
     }
