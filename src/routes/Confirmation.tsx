@@ -12,9 +12,6 @@ export default function Confirmation(): ReactNode {
     const token = searchParams.get('token_ws')
     const buyOrder = localStorage.getItem('marketplace-order')
 
-    console.log(buyOrder)
-    console.log(token)
-
     const dispatch: AppDispatch = useDispatch()
     const isLoading = useSelector((state: StoreProps) => state.cart.isLoading)
     const hasError = useSelector((state: StoreProps) => state.cart.hasError)
@@ -23,6 +20,7 @@ export default function Confirmation(): ReactNode {
         if (token && buyOrder) {
             const { payload } = await dispatch(getConfirmationFromTransbankAsync({ token, buyOrder }))
             if (payload.status === 'AUTHORIZED') {
+                localStorage.removeItem('marketplace-cart')
                 setTimeout(() => {
                     navigate('/')
                 }, 3000)

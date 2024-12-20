@@ -35,7 +35,6 @@ export const getConfirmationFromTransbankAsync = createAsyncThunk(
                     'Content-Type': 'application/json'
                 }
             })
-            console.log(data, 'the data')
             return data
         } catch (error) {
             console.error((error as AxiosError).message)
