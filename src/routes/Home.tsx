@@ -1,7 +1,6 @@
 import { useLayoutEffect } from "react"
 import { AppDispatch } from "@/store/store"
 import { useDispatch, useSelector } from "react-redux"
-import { getHomeCollectionAsync } from "@/features/homeCollection/homeCollectionSlice"
 
 //* Components
 import { Banner } from "@/components/home/Banner"
@@ -14,11 +13,12 @@ import video from '@/assets/video/Error.webm'
 
 //* Types
 import { ProductProps, StoreProps } from "@/utils/types"
+import { getAllProductsAsync } from "@/features/products/productsSlice"
 
 
 function Home() {
     const dispatch = useDispatch<AppDispatch>()
-    const products = useSelector((state: StoreProps) => state.homeCollection.collection)
+    const products = useSelector((state: StoreProps) => state.inventory.products)
     const isLoading = useSelector((state: StoreProps) => state.homeCollection.collectionIsLoading)
     const hasError = useSelector((state: StoreProps) => state.homeCollection.collectionHasError)
     const product = products[0]
@@ -26,7 +26,7 @@ function Home() {
     const collection: ProductProps[] = products.slice(1)
 
     async function getCollection() {
-        const { payload } = await dispatch(getHomeCollectionAsync())
+        const { payload } = await dispatch(getAllProductsAsync())
         return payload
     }
 
