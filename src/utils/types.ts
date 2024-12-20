@@ -19,6 +19,7 @@ export interface StoreProps {
     inventory: {
         products: ProductProps[]
         individualProduct: ProductProps
+        sortedProducts: ProductProps[]
         productsAreLoading: boolean
         productsHasError: boolean
     }

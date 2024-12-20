@@ -4,7 +4,7 @@ import video from '@/assets/video/Alien.webm'
 import { useDispatch, useSelector } from 'react-redux'
 import { StoreProps } from '@/utils/types'
 import { AppDispatch } from '@/store/store'
-import { getAllProductsAsync } from '@/features/products/productsSlice'
+import { getAllProductsAsync, getProductSortedByPriceAsync } from '@/features/products/productsSlice'
 
 interface CollectionProps {
     title: string
@@ -13,11 +13,23 @@ interface CollectionProps {
 export default function Collection({ title = 'Collection' }: CollectionProps): ReactNode {
     const dispatch: AppDispatch = useDispatch()
     const products = useSelector((state: StoreProps) => state.inventory.products)
+    const sortedCollection = useSelector((state: StoreProps) => state.inventory.sortedProducts)
     const [loading, setLoading] = useState<boolean>(true)
+    const [openSortMenu, setOpenSortMenu] = useState<boolean>(false)
 
     async function getCollection() {
         await dispatch(getAllProductsAsync())
     }
+
+    function handleOpenSortMenu() {
+        setOpenSortMenu(!openSortMenu)
+    }
+
+    async function handleSortProductsByPrice(order: string) {
+        const { payload } = await dispatch(getProductSortedByPriceAsync({ order }))
+        console.log(payload)
+    }
+
 
     useLayoutEffect(() => {
         if (products.length === 0) {
@@ -41,12 +53,28 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
                 <header className='h-[30rem] flex justify-start items-center max-[1440px]:px-10'>
                     <h1 className='text-[#ffffff] text-[2rem] min-[350px]:text-[3rem] md:text-[5rem] animated-background bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 inline-block text-transparent bg-clip-text'>{title}</h1>
                 </header>
-                <nav></nav>
+                <nav className='flex items-center gap-x-5 h-[60px]'>
+                    <div className='relative h-full'>
+                        <button onClick={handleOpenSortMenu} className='h-full w-[200px] border px-2 uppercase text-[#ffffff] transition-all duration-200 bg-transparent hover:bg-indigo-500 active:bg-[#10100e]'>Sort by price</button>
+                        {
+                            openSortMenu &&
+                            <div className="absolute top-[60px] left-0 w-full flex flex-col bg-[#ffffff] z-20">
+                                <button onClick={() => { handleSortProductsByPrice('asc') }} className='h-[60px] hover:text-indigo-500 transition-color duration-200'>Low to Hight</button>
+                                <button onClick={() => { handleSortProductsByPrice('des') }} className='h-[60px] hover:text-indigo-500 transition-color duration-200'>Hight to Low</button>
+                            </div>
+                        }
+                    </div>
+                </nav>
                 {
                     !loading ? (
                         <section className="w-full min-web:w-[1440px] h-full grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3 gap-5">
                             {
-                                products.map((product) => (
+                                sortedCollection.length > 0 && sortedCollection.map((product) => (
+                                    <ProductCard key={`${product.image + product.id}`} product={product} />
+                                ))
+                            }
+                            {
+                                sortedCollection.length === 0 && products.map((product) => (
                                     <ProductCard key={`${product.image + product.id}`} product={product} />
                                 ))
                             }
