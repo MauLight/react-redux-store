@@ -24,11 +24,13 @@
   "dependencies": {
     "@axe-core/react": "^4.10.1",
     "@codemirror/lang-javascript": "^6.2.2",
+    "@googlemaps/js-api-loader": "^1.16.8",
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^3.9.1",
     "@reduxjs/toolkit": "^2.4.0",
     "@uiw/react-codemirror": "^4.23.6",
+    "@vis.gl/react-google-maps": "^1.4.2",
     "axios": "^1.7.9",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "framer-motion": "^11.12.0",

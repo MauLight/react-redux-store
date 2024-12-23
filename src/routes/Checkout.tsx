@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactElement } from 'react'
+import { useEffect, type ReactElement } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
@@ -8,17 +8,23 @@ import { PaymentForm } from '@/components/checkout/PaymentForm'
 import { CheckSummary } from '@/components/checkout/CheckSummary'
 import { CheckoutCard } from '@/components/checkout/CheckoutCard'
 import { XMarkIcon } from '@heroicons/react/20/solid'
+import { APIProvider, Map, MapCameraChangedEvent } from '@vis.gl/react-google-maps'
 
 //* Types
 import { ProductProps, StoreProps } from '@/utils/types'
 import { fadeIn } from '@/utils/functions'
+
+const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
+const mapId = import.meta.env.VITE_GOOGLE_MAPS_MAP_ID
+
+console.log(apiKey, 'This is the key')
 
 const Checkout = (): ReactElement => {
     const cart = useSelector((state: StoreProps) => state.cart.cart)
     const localCart: ProductProps[] = JSON.parse(localStorage.getItem('marketplace-cart') || '[]')
     const dispatch = useDispatch()
 
-    const [readyToPay, setReadyToPay] = useState<boolean>(false)
+    const readyToPay = useSelector((state: StoreProps) => state.cart.readyToPay)
     const total = cart.length > 0 ? cart.reduce((acc: number, curr: any) => acc + (curr.price * curr.quantity), 0) : localCart.reduce((acc: number, curr: any) => acc + (curr.price * curr.quantity), 0)
     const vat = Math.floor(((total / 100) * 19))
     const totalWithVat = total + vat
@@ -57,7 +63,20 @@ const Checkout = (): ReactElement => {
 
                     {
                         readyToPay ? (
-                            <PaymentForm cart={cart} totalWithVat={totalWithVat} setReadyToPay={setReadyToPay} />
+                            <APIProvider onLoad={() => { console.log('Maps loaded.') }} apiKey={apiKey}>
+                                <PaymentForm cart={cart} totalWithVat={totalWithVat}>
+                                    <>
+                                        <Map
+                                            mapId={mapId}
+                                            defaultZoom={13}
+                                            defaultCenter={{ lat: -33.860664, lng: 151.208138 }}
+                                            onCameraChanged={(ev: MapCameraChangedEvent) =>
+                                                console.log('camera changed:', ev.detail.center, 'zoom:', ev.detail.zoom)
+                                            }>
+                                        </Map>
+                                    </>
+                                </PaymentForm>
+                            </APIProvider>
                         )
                             :
                             (
@@ -75,7 +94,7 @@ const Checkout = (): ReactElement => {
                                         }
                                     </div>
                                     <div className="col-span-2 xl:col-span-1">
-                                        <CheckSummary setReadyToPay={setReadyToPay} numberOfProducts={Object.values(cart).length} total={total} taxes={vat} totalWithTaxes={totalWithVat} />
+                                        <CheckSummary numberOfProducts={Object.values(cart).length} total={total} taxes={vat} totalWithTaxes={totalWithVat} />
                                     </div>
                                 </div>
                             )

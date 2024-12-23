@@ -1,17 +1,19 @@
-import React from 'react'
+import { ReactNode } from 'react'
 import { SummaryCard } from './SummaryCard'
 import { CartItemProps, StoreProps } from '@/utils/types'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { setNotReadyToPay } from '@/features/cart/cartSlice'
 
 interface PaymentFormProps {
   cart: CartItemProps[]
   totalWithVat: number
-  setReadyToPay: React.Dispatch<React.SetStateAction<boolean>>
+  children: ReactNode
 }
 
-export const PaymentForm = ({ cart, totalWithVat, setReadyToPay }: PaymentFormProps) => {
+export const PaymentForm = ({ cart, totalWithVat, children }: PaymentFormProps) => {
 
   const transbank = useSelector((state: StoreProps) => state.cart.transbank)
+  const dispatch = useDispatch()
 
   return (
     <main className="w-full flex justify-between">
@@ -20,7 +22,10 @@ export const PaymentForm = ({ cart, totalWithVat, setReadyToPay }: PaymentFormPr
           <h1 className='text-[#ffffff] aktivLight text-[38px] uppercase'>Total</h1>
           <h1 className='text-[#ffffff] aktiv text-[38px] uppercase'>{totalWithVat}$</h1>
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col min-h-[400px]">
+          {
+            children
+          }
           {
             cart.map((product, i) => (
               <SummaryCard product={product} key={i} />
@@ -40,7 +45,7 @@ export const PaymentForm = ({ cart, totalWithVat, setReadyToPay }: PaymentFormPr
               Pay
             </button>
           </form>
-          <button type='button' onClick={() => { setReadyToPay(false) }} className='h-8 hover:bg-red-600 active:bg-transparent px-2 uppercase text-[#ffffff] mt-3 transition-all duration-200 text-[12px] text-right'>Cancel</button>
+          <button type='button' onClick={() => { dispatch(setNotReadyToPay()) }} className='h-8 hover:bg-red-600 active:bg-transparent px-2 uppercase text-[#ffffff] mt-3 transition-all duration-200 text-[12px] text-right'>Cancel</button>
         </div>
       </section>
     </main>

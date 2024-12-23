@@ -47,6 +47,7 @@ export const cartSlice = createSlice({
     name: 'cart',
     initialState: {
         cart: initialCart,
+        readyToPay: false,
         transbank: {} as Record<string, any>,
         isLoading: false,
         hasError: false
@@ -75,6 +76,12 @@ export const cartSlice = createSlice({
         },
         resetCart: (state) => {
             state.cart = initialCart
+        },
+        setReadyToPay: (state) => {
+            state.readyToPay = true
+        },
+        setNotReadyToPay: (state) => {
+            state.readyToPay = false
         }
     },
     extraReducers: (builder) => {
@@ -124,7 +131,7 @@ export const cartSlice = createSlice({
     }
 })
 
-export const { addItem, removeItem, changeItemQuantity, resetCart } = cartSlice.actions
+export const { addItem, removeItem, changeItemQuantity, resetCart, setReadyToPay, setNotReadyToPay } = cartSlice.actions
 const cartReducer = cartSlice.reducer
 
 export default cartReducer

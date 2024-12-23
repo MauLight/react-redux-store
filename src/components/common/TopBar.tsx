@@ -9,10 +9,12 @@ import { Link, useLocation } from 'react-router-dom'
 const TopBar = (): ReactElement => {
   const user = useSelector((state: StoreProps) => state.userAuth.user)
   const cart = useSelector((state: StoreProps) => state.cart.cart)
+  const readyToPay = useSelector((state: StoreProps) => state.cart.readyToPay)
   const yPosition = useScroll()
   const { pathname } = useLocation()
   const cartItemsLength = Object.keys(cart).length
-  const topBarText = pathname.includes('checkout') ? 'text-sym-800 bg-[#ffffff]' : 'text-[#ffffff] hover:text-indigo-500 transition-color duration-200'
+
+  const topBarText = pathname.includes('checkout') && !readyToPay ? 'text-sym-800 bg-[#ffffff]' : 'text-[#ffffff] hover:text-indigo-500 transition-color duration-200'
   const topBarHamburgerColor = pathname.includes('checkout') ? '#10100e' : '#ffffff'
 
   const [hamburgerIsOpen, setHamburgerIsOpen] = useState<boolean>(false)
