@@ -22,7 +22,7 @@ export const PaymentForm = ({ cart, totalWithVat, children }: PaymentFormProps) 
           <h1 className='text-[#ffffff] aktivLight text-[38px] uppercase'>Total</h1>
           <h1 className='text-[#ffffff] aktiv text-[38px] uppercase'>{totalWithVat}$</h1>
         </div>
-        <div className="flex flex-col min-h-[400px]">
+        <div className="relative flex flex-col min-h-[400px]">
           {
             children
           }
