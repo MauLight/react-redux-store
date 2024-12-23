@@ -17,48 +17,50 @@ import { fadeIn } from '@/utils/functions'
 const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
 const mapId = import.meta.env.VITE_GOOGLE_MAPS_MAP_ID
 
-const geocodeAddress = (address: string, callback: (results: google.maps.GeocoderResult[], status: google.maps.GeocoderStatus) => void) => {
-    const geocoder = new google.maps.Geocoder()
-    geocoder.geocode({ address }, (results, status) => {
-        if (results) {
-            return callback(results, status)
-        }
-        return null
-    })
-}
+// const geocodeAddress = (address: string, callback: (results: google.maps.GeocoderResult[], status: google.maps.GeocoderStatus) => void) => {
+//     const geocoder = new google.maps.Geocoder()
+//     geocoder.geocode({ address }, (results, status) => {
+//         if (results) {
+//             return callback(results, status)
+//         }
+//         return null
+//     })
+// }
 
 const Checkout = (): ReactElement => {
     const cart = useSelector((state: StoreProps) => state.cart.cart)
     const localCart: ProductProps[] = JSON.parse(localStorage.getItem('marketplace-cart') || '[]')
     const dispatch = useDispatch()
 
-    //*Google maps state
-    const [address, setAddress] = useState<string>('')
-    const [zoom, setZoom] = useState<number>(13)
-    const [geocodeResult, setGeocodeResult] = useState<{ lat: number, lng: number } | null>(null)
-
+    //* Cart state
     const readyToPay = useSelector((state: StoreProps) => state.cart.readyToPay)
     const total = cart.length > 0 ? cart.reduce((acc: number, curr: any) => acc + (curr.price * curr.quantity), 0) : localCart.reduce((acc: number, curr: any) => acc + (curr.price * curr.quantity), 0)
     const vat = Math.floor(((total / 100) * 19))
     const totalWithVat = total + vat
 
-    const handleGeocode = (e: React.KeyboardEvent<HTMLInputElement>): void => {
-        if (e.key === 'Enter') {
-            geocodeAddress(address, (results: google.maps.GeocoderResult[], status: google.maps.GeocoderStatus): void => {
-                if (status === 'OK') {
-                    const newGeoLocation = {
-                        lat: results[0].geometry.location.lat(),
-                        lng: results[0].geometry.location.lng()
-                    }
-                    setGeocodeResult(newGeoLocation)
-                    setZoom(18)
-                    console.log(newGeoLocation, 'This is the new geolocation.')
-                } else {
-                    console.error('Geocode was not successful for the following reason: ' + status);
-                }
-            });
-        }
-    }
+    //* Google maps state
+    const [zoom, setZoom] = useState<number>(13)
+    const [geocodeResult, setGeocodeResult] = useState<{ lat: number, lng: number } | null>(null)
+    const [selectedPlace, setSelectedPlace] = useState<google.maps.places.PlaceResult | null>(null)
+
+
+    // const handleGeocode = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    //     if (e.key === 'Enter') {
+    //         geocodeAddress(address, (results: google.maps.GeocoderResult[], status: google.maps.GeocoderStatus): void => {
+    //             if (status === 'OK') {
+    //                 const newGeoLocation = {
+    //                     lat: results[0].geometry.location.lat(),
+    //                     lng: results[0].geometry.location.lng()
+    //                 }
+    //                 setGeocodeResult(newGeoLocation)
+    //                 setZoom(18)
+    //                 console.log(newGeoLocation, 'This is the new geolocation.')
+    //             } else {
+    //                 console.error('Geocode was not successful for the following reason: ' + status);
+    //             }
+    //         });
+    //     }
+    // }
 
     const handleCameraChanged = (ev: MapCameraChangedEvent) => {
         setZoom(ev.detail.zoom)
@@ -71,9 +73,20 @@ const Checkout = (): ReactElement => {
         }
     }, [])
 
+    useEffect(() => {
+        if (selectedPlace !== null && selectedPlace.geometry !== undefined && selectedPlace.geometry.location !== undefined) {
+            const newGeoLocation = {
+                lat: selectedPlace.geometry.location.lat(),
+                lng: selectedPlace.geometry.location.lng()
+            }
+            setGeocodeResult(newGeoLocation)
+            setZoom(18)
+        }
+    }, [selectedPlace])
+
     return (
         <div className={`min-[500px]:max-[1440px]:px-10 w-full flex justify-center ${readyToPay ? 'bg-[#10100e]' : 'gap-y-10 bg-[#fdfdfd]'}`}>
-            <div className={`w-web h-screen flex flex-col justify-center overflow-y-scroll transition-color duration-200 ${readyToPay ? 'bg-[#10100e]' : 'gap-y-10 bg-[#fdfdfd]'}`}>
+            <div className={`w-web flex flex-col justify-center overflow-y-scroll transition-color duration-200 ${readyToPay ? 'bg-[#10100e] min-h-screen' : 'gap-y-10 bg-[#fdfdfd] h-screen'}`}>
                 <div className="h-[100px]"></div>
                 <div className="flex flex-col gap-y-5">
                     <div className="flex justify-between items-start">
@@ -100,15 +113,13 @@ const Checkout = (): ReactElement => {
                     {
                         readyToPay ? (
                             <APIProvider onLoad={() => { console.log('Maps loaded.') }} apiKey={apiKey}>
-                                <PaymentForm cart={cart} totalWithVat={totalWithVat}>
+                                <PaymentForm setSelectedPlace={setSelectedPlace} cart={cart} totalWithVat={totalWithVat}>
                                     <>
-                                        <input onKeyDown={handleGeocode} value={address} onChange={({ target }) => { setAddress(target.value) }} className="absolute z-20 top-0 left-0 w-full h-10 outline-none px-2" />
-
                                         <Map
-                                            center={geocodeResult}
                                             zoom={zoom}
                                             mapId={mapId}
                                             defaultZoom={13}
+                                            center={geocodeResult}
                                             defaultCenter={{ lat: -33.44888970000001, lng: 289.3307345 }}
                                             onCameraChanged={handleCameraChanged}>
                                             {geocodeResult && <AdvancedMarker position={geocodeResult} />}
