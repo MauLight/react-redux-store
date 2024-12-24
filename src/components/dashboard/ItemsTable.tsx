@@ -1,21 +1,12 @@
 import { type ReactNode } from 'react'
-import { atom, selector, useRecoilValue, useSetRecoilState } from 'recoil'
+import { selector, useRecoilValue, useSetRecoilState } from 'recoil'
+import { currentPageState, productsListState } from '@/utils/recoil'
+import { useFetchProducts } from '@/hooks/useFetchProductList'
 
 import DashboardCard from './DashboardCard'
 import { ProductProps } from '@/utils/types'
-import { useFetchProducts } from '@/hooks/useFetchProductList'
 
 const pageSize = 10
-
-const productsListState = atom<ProductProps[]>({
-    key: 'ProductList',
-    default: []
-})
-
-const currentPageState = atom<number>({
-    key: 'currentPageState',
-    default: 1
-})
 
 const paginatedProductsSelector = selector({
     key: 'paginatedProductsSelector',

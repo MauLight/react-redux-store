@@ -14,13 +14,30 @@ import video from '@/assets/video/Error.webm'
 //* Types
 import { ProductProps, StoreProps } from "@/utils/types"
 import { getAllProductsAsync } from "@/features/products/productsSlice"
+import { selector, useRecoilValue } from "recoil"
+import { currentPageState, productsListState } from "@/utils/recoil"
+import { infiniteScrollFetch } from "@/hooks/useFetchProductList"
 
+const pageSize = 7
+
+const paginatedProductsSelector = selector({
+    key: 'paginatedProductsSelector',
+    get: async ({ get }) => {
+        const products = get(productsListState)
+        const currentPage = get(currentPageState)
+        return products.slice(0, currentPage * pageSize)
+    }
+})
 
 function Home() {
     const dispatch = useDispatch<AppDispatch>()
-    const products = useSelector((state: StoreProps) => state.inventory.products)
     const isLoading = useSelector((state: StoreProps) => state.homeCollection.collectionIsLoading)
     const hasError = useSelector((state: StoreProps) => state.homeCollection.collectionHasError)
+
+    const products = useRecoilValue(paginatedProductsSelector)
+
+    infiniteScrollFetch()
+
     const product = products[0]
 
     const collection: ProductProps[] = products.slice(1)
