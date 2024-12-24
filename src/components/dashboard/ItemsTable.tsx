@@ -1,29 +1,57 @@
-import { type ReactNode, useLayoutEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { ProductProps, StoreProps } from '@/utils/types'
-import { getAllProductsAsync } from '@/features/products/productsSlice'
-import { AppDispatch } from '@/store/store'
+import { type ReactNode } from 'react'
+import { atom, selector, useRecoilValue, useSetRecoilState } from 'recoil'
 
 import DashboardCard from './DashboardCard'
+import { ProductProps } from '@/utils/types'
+import { useFetchProducts } from '@/hooks/useFetchProductList'
+
+const pageSize = 10
+
+const productsListState = atom<ProductProps[]>({
+    key: 'ProductList',
+    default: []
+})
+
+const currentPageState = atom<number>({
+    key: 'currentPageState',
+    default: 1
+})
+
+const paginatedProductsSelector = selector({
+    key: 'paginatedProductsSelector',
+    get: async ({ get }) => {
+        const products = get(productsListState)
+        const currentPage = get(currentPageState)
+        return products.slice(0, currentPage * pageSize)
+    }
+})
 
 export default function ItemsTable(): ReactNode {
-    const dispatch: AppDispatch = useDispatch()
-    const products = useSelector((state: StoreProps) => state.inventory.products)
+    const products = useRecoilValue(paginatedProductsSelector)
+    const setCurrentPage = useSetRecoilState(currentPageState)
+    const currentPage = useRecoilValue(currentPageState)
 
-    useLayoutEffect(() => {
-        if (products.length === 0) {
-            dispatch(getAllProductsAsync())
-        }
-    }, [])
+    useFetchProducts(currentPage, pageSize)
+
+    function loadMore() {
+        setCurrentPage((prev) => prev + 1)
+    }
 
     return (
         <div className='flex flex-col py-10'>
             <Tableheader />
             {
-                products.length > 0 && products.map((product: ProductProps) => (
+                products.length > 0 ? products.map((product: ProductProps) => (
                     <DashboardCard key={product.id} product={product} />
                 ))
+                    :
+                    (
+                        <p>No items to display.</p>
+                    )
             }
+            <button onClick={loadMore} className="w-full h-10 px-5 border-b bg-[#ffffff] text-[#10100e] hover:bg-[#10100e] hover:text-[#ffffff] transition-color duration-200">
+                Load More
+            </button>
         </div>
     )
 }
