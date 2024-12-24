@@ -1,18 +1,17 @@
-import { Dispatch, SetStateAction, type ReactElement } from 'react'
+import { type ReactElement } from 'react'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/store/store'
 import { v4 as uuid } from 'uuid'
-import { createTransbankTransactionAsync } from '@/features/cart/cartSlice'
+import { createTransbankTransactionAsync, setReadyToPay } from '@/features/cart/cartSlice'
 
 interface CheckSummaryProps {
   numberOfProducts: number
   total: number
   taxes: number
   totalWithTaxes: number
-  setReadyToPay: Dispatch<SetStateAction<boolean>>
 }
 
-export const CheckSummary = ({ numberOfProducts, total, taxes, totalWithTaxes, setReadyToPay }: CheckSummaryProps): ReactElement => {
+export const CheckSummary = ({ numberOfProducts, total, taxes, totalWithTaxes }: CheckSummaryProps): ReactElement => {
 
   const dispatch: AppDispatch = useDispatch()
   async function handleTransbankCreateTransaction() {
@@ -25,7 +24,7 @@ export const CheckSummary = ({ numberOfProducts, total, taxes, totalWithTaxes, s
   const handleCheckout = async () => {
     if (totalWithTaxes > 0) {
       await handleTransbankCreateTransaction()
-      setReadyToPay(true)
+      dispatch(setReadyToPay())
     }
   }
 

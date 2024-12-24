@@ -1,10 +1,9 @@
-import { useEffect, useState, type ReactElement } from 'react'
+import { useEffect, type ReactElement } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
 
 //* Components
-import { PaymentForm } from '@/components/checkout/PaymentForm'
 import { CheckSummary } from '@/components/checkout/CheckSummary'
 import { CheckoutCard } from '@/components/checkout/CheckoutCard'
 import { XMarkIcon } from '@heroicons/react/20/solid'
@@ -12,13 +11,15 @@ import { XMarkIcon } from '@heroicons/react/20/solid'
 //* Types
 import { ProductProps, StoreProps } from '@/utils/types'
 import { fadeIn } from '@/utils/functions'
+import GoogleMapsAPI from '@/components/checkout/GoogleMapsAPI'
 
 const Checkout = (): ReactElement => {
     const cart = useSelector((state: StoreProps) => state.cart.cart)
     const localCart: ProductProps[] = JSON.parse(localStorage.getItem('marketplace-cart') || '[]')
     const dispatch = useDispatch()
 
-    const [readyToPay, setReadyToPay] = useState<boolean>(false)
+    //* Cart state
+    const readyToPay = useSelector((state: StoreProps) => state.cart.readyToPay)
     const total = cart.length > 0 ? cart.reduce((acc: number, curr: any) => acc + (curr.price * curr.quantity), 0) : localCart.reduce((acc: number, curr: any) => acc + (curr.price * curr.quantity), 0)
     const vat = Math.floor(((total / 100) * 19))
     const totalWithVat = total + vat
@@ -31,7 +32,7 @@ const Checkout = (): ReactElement => {
 
     return (
         <div className={`min-[500px]:max-[1440px]:px-10 w-full flex justify-center ${readyToPay ? 'bg-[#10100e]' : 'gap-y-10 bg-[#fdfdfd]'}`}>
-            <div className={`w-web h-screen flex flex-col justify-center overflow-y-scroll transition-color duration-200 ${readyToPay ? 'bg-[#10100e]' : 'gap-y-10 bg-[#fdfdfd]'}`}>
+            <div className={`w-web flex flex-col justify-center overflow-y-scroll transition-color duration-200 ${readyToPay ? 'bg-[#10100e] min-h-screen' : 'gap-y-10 bg-[#fdfdfd] h-screen'}`}>
                 <div className="h-[100px]"></div>
                 <div className="flex flex-col gap-y-5">
                     <div className="flex justify-between items-start">
@@ -54,10 +55,9 @@ const Checkout = (): ReactElement => {
                     }
                 </div>
                 <>
-
                     {
                         readyToPay ? (
-                            <PaymentForm cart={cart} totalWithVat={totalWithVat} setReadyToPay={setReadyToPay} />
+                            <GoogleMapsAPI vat={vat} totalWithVat={totalWithVat} />
                         )
                             :
                             (
@@ -75,7 +75,7 @@ const Checkout = (): ReactElement => {
                                         }
                                     </div>
                                     <div className="col-span-2 xl:col-span-1">
-                                        <CheckSummary setReadyToPay={setReadyToPay} numberOfProducts={Object.values(cart).length} total={total} taxes={vat} totalWithTaxes={totalWithVat} />
+                                        <CheckSummary numberOfProducts={Object.values(cart).length} total={total} taxes={vat} totalWithTaxes={totalWithVat} />
                                     </div>
                                 </div>
                             )

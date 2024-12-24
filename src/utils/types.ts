@@ -31,6 +31,7 @@ export interface StoreProps {
     }
     cart: {
         cart: Array<CartItemProps>,
+        readyToPay: boolean
         transbank: Record<string, any>
         isLoading: boolean
         hasError: boolean
