@@ -1,5 +1,6 @@
 import { useMapsLibrary } from "@vis.gl/react-google-maps"
 import { useEffect, useRef, useState } from "react"
+import TransbankForm from "./TransbankForm"
 
 interface PlaceAutocompleteProps {
     onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void
@@ -7,6 +8,7 @@ interface PlaceAutocompleteProps {
 
 
 const PlaceAutocomplete = ({ onPlaceSelect }: PlaceAutocompleteProps) => {
+
     const [placeAutocomplete, setPlaceAutocomplete] = useState<google.maps.places.Autocomplete | null>(null)
     const [address, setAddress] = useState<{ street: string, city: string, region: string, country: string, zip: string } | null>(null)
     const [billingAddress, setBillingAddress] = useState<{ street: string, city: string, region: string, country: string, zip: string } | null>(null)
@@ -40,10 +42,9 @@ const PlaceAutocomplete = ({ onPlaceSelect }: PlaceAutocompleteProps) => {
             onPlaceSelect(fetchedAddress)
             if (fetchedAddress.formatted_address !== undefined) {
                 const commaSeparated = fetchedAddress.formatted_address.split(',')
-
                 const newAddress = {
                     street: commaSeparated[0],
-                    city: commaSeparated[1].trim().split(' ')[1],
+                    city: commaSeparated[1].trim().split(' ').length > 2 ? `${commaSeparated[1].trim().split(' ')[1]} ${commaSeparated[1].trim().split(' ')[2]}` : commaSeparated[1].trim().split(' ')[1],
                     region: commaSeparated[2],
                     country: commaSeparated[3].trim(),
                     zip: commaSeparated[1].trim().split(' ')[0]
@@ -129,6 +130,7 @@ const PlaceAutocomplete = ({ onPlaceSelect }: PlaceAutocompleteProps) => {
                                     <input onChange={({ target }) => { setBillingAddress({ ...billingAddress, zip: target.value }) }} value={billingAddress.zip} id="zip" className="w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500" />
                                 </div>
                             </div>
+                            <TransbankForm />
                         </div>
                     </>
                 )

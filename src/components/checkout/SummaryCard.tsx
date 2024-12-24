@@ -7,20 +7,13 @@ interface SummaryCardProps {
 export const SummaryCard = ({ product }: SummaryCardProps): ReactElement => {
 
   return (
-    <div className="grid grid-cols-8 border-b border-[#10100e] pb-3">
-      <div className="col-span-1 w-[80px] h-[80px] overflow-hidden border">
-        <img src={product.image} alt="product" className="w-[80px] h-[80px] object-cover" />
+    <div className="w-full grid grid-cols-8 border-b border-sym_gray-400 items-center pb-2">
+      <div className="col-span-1 w-[40px] h-[40px] overflow-hidden border">
+        <img src={product.image} alt="product" className="w-[40px] h-[40px] object-cover" />
       </div>
-      <div className="col-span-6 h-full flex flex-col justify-start items-between px-5">
-        <div className="w-full flex justify-between">
-          <div className="flex flex-col">
-            <h1 className='text-xl aktivLight text-[#ffffff] uppercase'>{product.title}</h1>
-            <div className="flex">
-              <h1 className='text-xl font-semiBold text-[#ffffff] uppercase'>{`${product.price}$`}</h1>
-              <h1 className='text-md aktivLight text-[#ffffff] uppercase line-through'>{`${product.fullPrice}$`}</h1>
-            </div>
-          </div>
-        </div>
+      <div className="col-span-7 h-full flex justify-between items-center">
+        <h1 className='text-[1rem] text-[#ffffff] uppercase'>{product.title}</h1>
+        <h1 className='text-[1rem] font-semiBold text-[#ffffff] uppercase'>{`${product.price}$`}</h1>
       </div>
     </div>
   )
