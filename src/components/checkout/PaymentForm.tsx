@@ -26,7 +26,7 @@ export const PaymentForm = ({ cart, vat, totalWithVat, children, selectedPlace, 
           }
         </div>
         <div className="autocomplete-control">
-          <PlaceAutocomplete onPlaceSelect={setSelectedPlace} />
+          <PlaceAutocomplete selectedPlace={selectedPlace as PlaceResult} onPlaceSelect={setSelectedPlace} />
         </div>
       </section>
       <section className='flex flex-col gap-y-4 w-[400px] rounded-[20px] min-h-[400px] pt-0'>

@@ -4,10 +4,11 @@ import TransbankForm from "./TransbankForm"
 
 interface PlaceAutocompleteProps {
     onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void
+    selectedPlace: google.maps.places.PlaceResult
 }
 
 
-const PlaceAutocomplete = ({ onPlaceSelect }: PlaceAutocompleteProps) => {
+const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompleteProps) => {
 
     const [placeAutocomplete, setPlaceAutocomplete] = useState<google.maps.places.Autocomplete | null>(null)
     const [address, setAddress] = useState<{ street: string, city: string, region: string, country: string, zip: string } | null>(null)
@@ -130,7 +131,7 @@ const PlaceAutocomplete = ({ onPlaceSelect }: PlaceAutocompleteProps) => {
                                     <input onChange={({ target }) => { setBillingAddress({ ...billingAddress, zip: target.value }) }} value={billingAddress.zip} id="zip" className="w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500" />
                                 </div>
                             </div>
-                            <TransbankForm />
+                            <TransbankForm selectedPlace={selectedPlace} />
                         </div>
                     </>
                 )
