@@ -38,7 +38,7 @@ export default function ItemsTable(): ReactNode {
     }
 
     return (
-        <div className='flex flex-col py-10'>
+        <div className='flex flex-col'>
             <Tableheader />
             {
                 products.length > 0 ? products.map((product: ProductProps) => (

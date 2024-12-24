@@ -18,12 +18,16 @@ export default function Dashboard(): ReactNode {
     // })
 
     return (
-        <section className='w-screen flex flex-col gap-y-10 bg-[#ffffff] pb-20'>
+        <main className='w-screen flex flex-col items-center bg-[#ffffff] pb-20'>
+            <header className='w-full max-w-[1440px] flex flex-col gap-y-5 py-10'>
+                <h1 className='text-[3rem] text-[#10100e] uppercase'>Admin dashboard</h1>
+                <nav className='h-10 w-full bg-[#10100e] rounded-[10px]'></nav>
+            </header>
             <ItemsTable />
             <div className='grid grid-cols-7 border-y border-sym_gray-400'>
                 <IndividualProduct />
                 <ProductsByJSON />
             </div>
-        </section>
+        </main>
     )
 }
