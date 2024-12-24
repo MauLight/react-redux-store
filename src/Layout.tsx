@@ -39,7 +39,7 @@ function Layout() {
                         <Route path='/collection' element={<Collection title='Surreal Collection' />} />
                         <Route path='/product/:id' element={<IndividualProduct id={productId ? productId : undefined} />} />
                         <Route path='/admin/login' element={<AdminLogin />} />
-                        <Route path='/admin/dashboard' element={<Dashboard />} />
+                        <Route path='/admin' element={<Dashboard />} />
                         <Route path='/checkout' element={<Checkout />} />
                         <Route path='/confirmation' element={<Confirmation />} />
                         <Route path='*' element={<NotFound />} />
