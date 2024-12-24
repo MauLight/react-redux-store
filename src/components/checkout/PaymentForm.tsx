@@ -10,11 +10,12 @@ interface PaymentFormProps {
   cart: CartItemProps[]
   totalWithVat: number
   children: ReactNode
+  selectedPlace: PlaceResult | null
   setSelectedPlace: (place: PlaceResult | null) => void
   vat: number
 }
 
-export const PaymentForm = ({ cart, vat, totalWithVat, children, setSelectedPlace }: PaymentFormProps) => {
+export const PaymentForm = ({ cart, vat, totalWithVat, children, selectedPlace, setSelectedPlace }: PaymentFormProps) => {
 
   return (
     <main className="w-full flex justify-between">
@@ -48,7 +49,7 @@ export const PaymentForm = ({ cart, vat, totalWithVat, children, setSelectedPlac
             <h1 className='text-[#ffffff] text-[1rem] uppercase'>{vat}$ VAT</h1>
           </div>
         </div>
-        <TransbankForm />
+        <TransbankForm selectedPlace={selectedPlace} />
       </section>
     </main>
   )

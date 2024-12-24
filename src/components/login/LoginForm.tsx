@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { AppDispatch } from '@/store/store'
 import { useDispatch, useSelector } from 'react-redux'
 import { postLoginAsync } from '@/features/userAuth/userAuthSlice'
@@ -22,7 +22,11 @@ const schema = yup
 function LoginForm(): ReactNode {
     const navigate = useNavigate()
     const { pathname } = useLocation()
+    const [searchParams] = useSearchParams()
+    const comesFromCheckout = Boolean(searchParams.get('checkout'))
     const isAdmin = pathname.includes('admin')
+
+    console.log(Boolean(comesFromCheckout))
 
     const dispatch = useDispatch<AppDispatch>()
     const isLoading = useSelector((state: StoreProps) => state.userAuth.isLoading)
@@ -50,7 +54,11 @@ function LoginForm(): ReactNode {
             return
         }
         reset()
-        navigate('/')
+        if (comesFromCheckout) {
+            navigate('/checkout')
+        } else {
+            navigate('/')
+        }
     }
     const handleAdminLogin = async ({ email, password }: LoginProps): Promise<void> => {
         const user = {

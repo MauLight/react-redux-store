@@ -3,7 +3,9 @@ import { StoreProps } from '@/utils/types'
 import { type ReactNode } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-export default function TransbankForm(): ReactNode {
+interface PlaceResult { }
+
+export default function TransbankForm({ selectedPlace }: { selectedPlace: PlaceResult | null }): ReactNode {
     const transbank = useSelector((state: StoreProps) => state.cart.transbank)
     const dispatch = useDispatch()
 
@@ -11,7 +13,7 @@ export default function TransbankForm(): ReactNode {
         <div className="flex flex-col">
             <form method="post" action={transbank.url}>
                 <input type="hidden" name="token_ws" value={transbank.token} />
-                <button type='submit' className='w-full h-8 flex justify-center items-center bg-[#ffffff] hover:bg-indigo-500 active:bg-[#ffffff] px-2 uppercase text-[#10100e] mt-3 transition-all duration-200'>
+                <button disabled={selectedPlace === null} type='submit' className={`w-full h-8 flex justify-center items-center px-2 uppercase text-[#10100e] mt-3 transition-all duration-200 ${!selectedPlace ? 'bg-sym_gray-100 cursor-not-allowed' : 'bg-[#ffffff] hover:bg-indigo-500 active:bg-[#ffffff]'}`}>
                     Pay
                 </button>
             </form>

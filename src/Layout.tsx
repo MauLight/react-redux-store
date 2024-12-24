@@ -1,5 +1,5 @@
-import { lazy, Suspense, useEffect } from 'react'
-import { Routes, Route, useLocation, useNavigate, useMatch } from 'react-router-dom'
+import { lazy, Suspense } from 'react'
+import { Routes, Route, useLocation, useMatch } from 'react-router-dom'
 
 import TopBar from './components/common/TopBar'
 import ErrorBoundary from './components/error/ErrorBoundary'
@@ -19,18 +19,10 @@ const Confirmation = lazy(async () => await import('@/routes/Confirmation'))
 
 function Layout() {
     const { pathname } = useLocation()
-    const navigate = useNavigate()
     const hideTopbar = pathname.includes('sign') || pathname.includes('login') || pathname.includes('admin') || pathname.includes('confirmation')
-    const user = localStorage.getItem('store-user')
 
     const matchId = useMatch('/product/:id')
     const productId = matchId?.params.id
-
-    useEffect(() => {
-        if (!user) {
-            navigate('/login')
-        }
-    }, [])
 
     return (
         <main>

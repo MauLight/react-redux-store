@@ -37,7 +37,13 @@ export default function GoogleMapsAPI({ vat, totalWithVat }: GoogleMapsAPIProps)
 
     return (
         <APIProvider onLoad={() => { console.log('Maps loaded.') }} apiKey={apiKey}>
-            <PaymentForm vat={vat} setSelectedPlace={setSelectedPlace} cart={cart} totalWithVat={totalWithVat}>
+            <PaymentForm
+                vat={vat}
+                selectedPlace={selectedPlace}
+                setSelectedPlace={setSelectedPlace}
+                cart={cart}
+                totalWithVat={totalWithVat}
+            >
                 <>
                     <Map
                         zoom={zoom}

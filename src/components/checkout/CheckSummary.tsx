@@ -1,8 +1,11 @@
 import { type ReactElement } from 'react'
-import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/store/store'
-import { v4 as uuid } from 'uuid'
+import { useDispatch, useSelector } from 'react-redux'
 import { createTransbankTransactionAsync, setReadyToPay } from '@/features/cart/cartSlice'
+
+import { v4 as uuid } from 'uuid'
+import { StoreProps } from '@/utils/types'
+import { useNavigate } from 'react-router-dom'
 
 interface CheckSummaryProps {
   numberOfProducts: number
@@ -14,6 +17,9 @@ interface CheckSummaryProps {
 export const CheckSummary = ({ numberOfProducts, total, taxes, totalWithTaxes }: CheckSummaryProps): ReactElement => {
 
   const dispatch: AppDispatch = useDispatch()
+  const user = useSelector((state: StoreProps) => state.userAuth.user)
+  const navigate = useNavigate()
+
   async function handleTransbankCreateTransaction() {
     const sessionId = `session-${Date.now().toString()}-${uuid()}`
     const paymentInformation = { amount: totalWithTaxes, sessionId }
@@ -22,7 +28,10 @@ export const CheckSummary = ({ numberOfProducts, total, taxes, totalWithTaxes }:
     localStorage.setItem('marketplace-order', payload.buyOrder)
   }
   const handleCheckout = async () => {
-    if (totalWithTaxes > 0) {
+    if (!user.token) {
+      navigate('login?checkout=true')
+    }
+    if (totalWithTaxes > 0 && user.token) {
       await handleTransbankCreateTransaction()
       dispatch(setReadyToPay())
     }
