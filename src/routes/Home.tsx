@@ -3,13 +3,13 @@ import { AppDispatch } from "@/store/store"
 import { useDispatch, useSelector } from "react-redux"
 
 //* Components
+import video from '@/assets/video/Error.webm'
 import { Banner } from "@/components/home/Banner"
 import { Banner2 } from "@/components/home/Banner2"
 import { PriceCard } from "@/components/common/PriceCard"
 import HomeSkeleton from "@/components/home/HomeSkeleton"
 import { ProductCard } from "@/components/common/ProductCard"
 import { BannerContent } from "@/components/home/BannerContent"
-import video from '@/assets/video/Error.webm'
 
 //* Types
 import { ProductProps, StoreProps } from "@/utils/types"
