@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { Provider } from 'react-redux'
+import { RecoilRoot } from 'recoil'
 
 import store from './store/store.ts'
 import App from './App.tsx'
@@ -20,7 +21,9 @@ root.render(
 
   <Router>
     <Provider store={store}>
-      <App />
+      <RecoilRoot>
+        <App />
+      </RecoilRoot>
     </Provider>
   </Router>
 )
