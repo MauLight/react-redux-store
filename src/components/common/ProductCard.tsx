@@ -4,8 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { postToWishlistAsync } from '@/features/wishList/wishListSlice'
 import { addItem } from '@/features/cart/cartSlice'
 import { AppDispatch } from '@/store/store'
-
-import { toast } from 'react-toastify'
 import { ProductProps, StoreProps } from '@/utils/types'
 
 export const ProductCard = ({ product }: { product: ProductProps }): ReactElement => {
@@ -20,7 +18,6 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
   const handleAddItemToCart = () => {
 
     dispatch(addItem(product))
-    toast.success('Item added to cart.')
   }
 
   const handleWishList = async (id: string) => {

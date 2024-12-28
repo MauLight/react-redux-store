@@ -26,8 +26,6 @@ function LoginForm(): ReactNode {
     const comesFromCheckout = Boolean(searchParams.get('checkout'))
     const isAdmin = pathname.includes('admin')
 
-    console.log(Boolean(comesFromCheckout))
-
     const dispatch = useDispatch<AppDispatch>()
     const isLoading = useSelector((state: StoreProps) => state.userAuth.isLoading)
     const hasError = useSelector((state: StoreProps) => state.userAuth.hasError)

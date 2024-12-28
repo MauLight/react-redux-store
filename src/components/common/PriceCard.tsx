@@ -1,7 +1,6 @@
 import { type ReactNode } from "react"
 import { useDispatch } from "react-redux"
 import { addItem } from "@/features/cart/cartSlice"
-import { toast } from "react-toastify"
 
 interface ProductProps {
     title: string
@@ -21,7 +20,6 @@ export const PriceCard = ({ product }: { product: ProductProps }): ReactNode => 
             fullPrice: product.fullPrice
         }
         dispatch(addItem(itemToAdd))
-        toast.success('Item added to cart.')
     }
 
     return (

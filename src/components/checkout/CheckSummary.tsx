@@ -1,7 +1,7 @@
 import { type ReactElement } from 'react'
 import { AppDispatch } from '@/store/store'
 import { useDispatch, useSelector } from 'react-redux'
-import { createTransbankTransactionAsync, setReadyToPay } from '@/features/cart/cartSlice'
+import { createTransbankTransactionAsync, resetCart, setReadyToPay } from '@/features/cart/cartSlice'
 
 import { v4 as uuid } from 'uuid'
 import { StoreProps } from '@/utils/types'
@@ -29,12 +29,18 @@ export const CheckSummary = ({ numberOfProducts, total, taxes, totalWithTaxes }:
   }
   const handleCheckout = async () => {
     if (!user.token) {
-      navigate('login?checkout=true')
+      navigate('/login?checkout=true')
     }
     if (totalWithTaxes > 0 && user.token) {
       await handleTransbankCreateTransaction()
       dispatch(setReadyToPay())
     }
+  }
+
+  const handleClearCart = () => {
+    dispatch(resetCart())
+    localStorage.removeItem('marketplace-cart')
+    navigate('/')
   }
 
   return (
@@ -71,6 +77,7 @@ export const CheckSummary = ({ numberOfProducts, total, taxes, totalWithTaxes }:
           <i className="fa-brands fa-xl fa-cc-stripe text-[#10100e]"></i>
         </div>
       </div>
+      <button className='mt-5 px-5 h-10 border hover:border-transparent hover:bg-red-600 hover:text-[#ffffff] transition-color duration-200' onClick={handleClearCart}>Clear cart</button>
     </div>
   )
 }

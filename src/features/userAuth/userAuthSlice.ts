@@ -33,6 +33,9 @@ export const postLoginAsync = createAsyncThunk(
 
 export const getUserByIdAsync = createAsyncThunk(
     'userAuth/getUserById', async (id: string, { rejectWithValue }) => {
+        if (!id) {
+            return
+        }
         try {
             const { data } = await axios.get(`${url}/user/${id}`, {
                 headers: {

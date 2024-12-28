@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { CartItemProps, TransactionProps } from '@/utils/types'
+import { toast } from 'react-toastify'
 
 const url = import.meta.env.VITE_TRANSBANK_BACKEND_URL
 const returnUrl = 'http://localhost:3000/confirmation'
@@ -55,8 +56,13 @@ export const cartSlice = createSlice({
     reducers: {
         addItem: (state, action) => {
             const { id, title, image, price, fullPrice } = action.payload
+
+            const wasAdded = state.cart.find((product) => product.id === id)
+            if (wasAdded) return
+
             const newItem = { id, price, fullPrice, quantity: 1, image, title }
             state.cart.push(newItem)
+            toast.success('Item added to cart.')
         },
         removeItem: (state, action) => {
             state.cart = state.cart.filter(elem => elem.id !== action.payload)

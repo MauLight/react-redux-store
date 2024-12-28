@@ -1,10 +1,13 @@
 import { useEffect, useLayoutEffect, useState, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+
+import { addItem } from '@/features/cart/cartSlice'
 import { AppDispatch } from '@/store/store'
+import { useDispatch } from 'react-redux'
+
+import Fallback from './Fallback'
 import { ProductProps } from '@/utils/types'
 import { postProductRating } from '@/features/products/productsSlice'
-import Fallback from './Fallback'
 
 export default function ProductDescription({ product }: { product: ProductProps }): ReactNode {
     const { pathname } = useLocation()
@@ -44,6 +47,17 @@ export default function ProductDescription({ product }: { product: ProductProps 
             setIsAdmin(true)
         }
     }
+
+    const handleAddItemToCart = () => {
+        const itemToAdd = {
+            title: product.title,
+            image: product.image,
+            price: product.price,
+            fullPrice: product.fullPrice
+        }
+        dispatch(addItem(itemToAdd))
+    }
+
 
     useLayoutEffect(() => {
         setIsAdmin(pathname.includes('admin'))
@@ -86,7 +100,7 @@ export default function ProductDescription({ product }: { product: ProductProps 
                                     <p className='text-[1.5rem] min-[500px]:text-[3rem] text-end'>{`$${product.price}`}</p>
                                     <p className='text-[1rem] min-[500px]:text-[1.5rem] str font-light text-sym_gray-200 text-end uppercase line-through'>{product.fullPrice}</p>
                                 </div>
-                                <button className='h-10 px-2 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e]'>Add to cart</button>
+                                <button onClick={handleAddItemToCart} className='h-10 px-2 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e]'>Add to cart</button>
                                 <div className="border-b border-sym_gray-600 mt-10 mb-5"></div>
                                 <p className='font-light text-[1.2rem] tracking-tighter text-sym_gray-600'>{product.description}</p>
                             </div>
