@@ -114,7 +114,11 @@ export const productsSlice = createSlice({
         productsAreLoading: false,
         productsHasError: false
     },
-    reducers: {},
+    reducers: {
+        clearSortedProducts: (state) => {
+            state.sortedProducts = []
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(
@@ -270,6 +274,6 @@ export const productsSlice = createSlice({
             )
     }
 })
-
+export const { clearSortedProducts } = productsSlice.actions
 const productsReducer = productsSlice.reducer
 export default productsReducer

@@ -30,7 +30,7 @@ export const createTransbankTransactionAsync = createAsyncThunk(
 export const getConfirmationFromTransbankAsync = createAsyncThunk(
     'cart/getConfirmationFromTransbank', async (confirmationData: { token: string, buyOrder: string }, { rejectWithValue }) => {
         try {
-            const { data } = await axios.post(`${url}/transbank/confirm`, confirmationData, {
+            const { data } = await axios.post(`${url}/transbank/confirm`, { ...confirmationData, userId: user.id }, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
