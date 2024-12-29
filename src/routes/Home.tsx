@@ -72,8 +72,8 @@ function Home() {
             }
             {
                 !isLoading && product !== undefined && (
-                    <section className='relative w-full flex flex-col justify-center items-center overflow-y-scroll pb-20'>
-                        <div className="w-full overflow-scroll scrollbar-hide flex flex-col">
+                    <section className='relative w-full flex flex-col justify-center items-center pb-20'>
+                        <div className="w-full flex flex-col">
                             <Banner>
                                 <div className="w-full max-w-[1440px] h-[950px] flex justify-center items-center bg-[#fdfdfd] overflow-hidden">
                                     <BannerContent>
@@ -84,7 +84,7 @@ function Home() {
                                 </div>
                             </Banner>
                             <Banner2 />
-                            <div className="grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3 h-[700px]">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3">
                                 {
                                     collection.length > 0 && collection.map(product => (
                                         <div key={product.id} className="h-[700px]">

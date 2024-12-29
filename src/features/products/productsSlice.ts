@@ -17,6 +17,18 @@ export const getAllProductsAsync = createAsyncThunk(
     }
 )
 
+export const getProductsByRangeAsync = createAsyncThunk(
+    'products/getProductsByRange', async ({ page, rangeSize }: { page: number, rangeSize?: number }, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.get(`${url}/products/by-range?page=${page}&rangeSize=${rangeSize}`)
+            return data
+        } catch (error) {
+            console.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
 export const getProductById = createAsyncThunk(
     'products/getProductById', async (id: string, { rejectWithValue }) => {
         try {
@@ -40,8 +52,6 @@ export const getProductSortedByPriceAsync = createAsyncThunk(
         }
     }
 )
-
-//GET /products/search?searchWord=example
 
 export const getProductsBySearchWordAsync = createAsyncThunk(
     'products/getProductsBySearchWord', async (searchWord: string, { rejectWithValue }) => {
@@ -109,6 +119,14 @@ export const productsSlice = createSlice({
     name: 'products',
     initialState: {
         products: [] as ProductProps[],
+
+        rangeProducts: {
+            products: [] as ProductProps[],
+            totalProducts: 0,
+            totalPages: 0,
+            currentPage: 0,
+        },
+
         individualProduct: {},
         sortedProducts: [] as ProductProps[],
         productsAreLoading: false,
@@ -174,6 +192,28 @@ export const productsSlice = createSlice({
             )
             .addCase(
                 getAllProductsAsync.rejected, (state, _action) => {
+                    state.productsAreLoading = false
+                    state.productsHasError = true
+                }
+            )
+            .addCase(
+                getProductsByRangeAsync.pending, (state, _action) => {
+                    state.productsAreLoading = true
+                    state.productsHasError = false
+                }
+            )
+            .addCase(
+                getProductsByRangeAsync.fulfilled, (state, action) => {
+                    state.productsAreLoading = false
+                    state.productsHasError = false
+                    state.rangeProducts.products = action.payload.products
+                    state.rangeProducts.totalProducts = action.payload.totalProducts
+                    state.rangeProducts.totalPages = action.payload.totalPages
+                    state.rangeProducts.currentPage = action.payload.currentPage
+                }
+            )
+            .addCase(
+                getProductsByRangeAsync.rejected, (state, _action) => {
                     state.productsAreLoading = false
                     state.productsHasError = true
                 }

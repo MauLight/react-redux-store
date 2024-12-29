@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { Routes, Route, useLocation, useMatch } from 'react-router-dom'
 
 import TopBar from './components/common/TopBar'
@@ -23,9 +23,30 @@ function Layout() {
 
     const matchId = useMatch('/product/:id')
     const productId = matchId?.params.id
+    const [showScrollButton, setShowScrollButton] = useState<boolean>(false)
+
+    function scrollToTop() {
+        console.log('here', window.scrollY)
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        })
+    }
+
+    useEffect(() => {
+        function handleScroll() {
+            setShowScrollButton(window.scrollY > 1000)
+        }
+
+        window.addEventListener('scroll', handleScroll)
+        return () => {
+            removeEventListener('scroll', handleScroll)
+        }
+
+    }, [])
 
     return (
-        <main>
+        <main className='relative'>
             {
                 !hideTopbar && <TopBar />
             }
@@ -46,6 +67,13 @@ function Layout() {
                     </Routes>
                 </Suspense>
             </ErrorBoundary>
+            {
+                showScrollButton && (
+                    <button onClick={scrollToTop} className='fixed bottom-10 right-10 w-[50px] h-[50px] rounded-full border bg-[#ffffff]'>
+                        <i className="fa-solid fa-arrow-up"></i>
+                    </button>
+                )
+            }
         </main>
     )
 }

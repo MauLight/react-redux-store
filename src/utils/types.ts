@@ -18,6 +18,12 @@ export interface wishListProduct { id: string, productId: string }
 export interface StoreProps {
     inventory: {
         products: ProductProps[]
+        rangeProducts: {
+            products: ProductProps[]
+            totalProducts: number
+            totalPages: number
+            currentPage: number
+        }
         individualProduct: ProductProps
         sortedProducts: ProductProps[]
         productsAreLoading: boolean

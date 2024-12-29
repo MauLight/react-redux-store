@@ -3,11 +3,18 @@ import axios, { AxiosError } from "axios"
 import { toast } from "react-toastify"
 
 const url = import.meta.env.VITE_USERS_BACKEND_URL
+const user = localStorage.getItem('store-user') ? JSON.parse(localStorage.getItem('store-user') as string) : {}
+const token = user.token
 
 export const postToWishlistAsync = createAsyncThunk(
     'wishlist/postToWishlist', async (wishlistItem: { userId: string, productId: string }, { rejectWithValue }) => {
         try {
-            const { data } = await axios.post(`${url}/auth/wishlist`, wishlistItem)
+            const { data } = await axios.post(`${url}/wishlist`, wishlistItem, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
             toast.success('Item added to wishlist.')
             return data
         } catch (error) {
@@ -20,7 +27,13 @@ export const postToWishlistAsync = createAsyncThunk(
 export const deleteFromWishlistAsync = createAsyncThunk(
     'wishlist/deleteFromWishlist', async (wishlistItem: { userId: string, productId: string }, { rejectWithValue }) => {
         try {
-            const { data } = await axios.post(`${url}/auth/wishlist/delete`, wishlistItem)
+            const { data } = await axios.post(`${url}/wishlist/delete`, wishlistItem, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+
             toast.success('Item deleted from wishlist.')
             return data
         } catch (error) {

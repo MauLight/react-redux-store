@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { atom, useRecoilValue, useSetRecoilState } from 'recoil'
-import { getAllProductsAsync } from '@/features/products/productsSlice'
+import { getAllProductsAsync, getProductsByRangeAsync } from '@/features/products/productsSlice'
 import { AppDispatch } from '@/store/store'
-import { ProductProps } from '@/utils/types';
+import { ProductProps, StoreProps } from '@/utils/types';
 import { currentPageState } from '@/utils/recoil';
 
 const productsListState = atom<ProductProps[]>({
@@ -27,13 +27,18 @@ export const useFetchProducts = (currentPage: number, pageSize: number) => {
 
 export const infiniteScrollFetch = () => {
     const dispatch: AppDispatch = useDispatch()
+    const currPage = useSelector((state: StoreProps) => state.inventory.rangeProducts.currentPage)
+    const totalPages = useSelector((state: StoreProps) => state.inventory.rangeProducts.totalPages)
     const setProducts = useSetRecoilState(productsListState)
     const setCurrentPage = useSetRecoilState(currentPageState)
     const currentPage = useRecoilValue(currentPageState)
 
     useEffect(() => {
+        if (currPage === totalPages && currPage !== 0) {
+            return
+        }
         const fetchProducts = async () => {
-            const { payload } = await dispatch(getAllProductsAsync())
+            const { payload } = await dispatch(getProductsByRangeAsync({ page: currentPage, rangeSize: 9 }))
             setProducts((prevProducts) => [...prevProducts, ...payload.products])
         }
 
