@@ -1,5 +1,5 @@
 import { useEffect, type ReactElement } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
 
@@ -14,6 +14,7 @@ import { fadeIn } from '@/utils/functions'
 import GoogleMapsAPI from '@/components/checkout/GoogleMapsAPI'
 
 const Checkout = (): ReactElement => {
+    const navigate = useNavigate()
     const cart = useSelector((state: StoreProps) => state.cart.cart)
     const localCart: ProductProps[] = JSON.parse(localStorage.getItem('marketplace-cart') || '[]')
     const dispatch = useDispatch()
@@ -29,6 +30,13 @@ const Checkout = (): ReactElement => {
             localStorage.setItem('marketplace-cart', JSON.stringify(cart))
         }
     }, [])
+
+    useEffect(() => {
+        if (cart.length === 0) {
+            localStorage.removeItem('marketplace-cart')
+            navigate('/')
+        }
+    }, [cart])
 
     return (
         <div className={`min-[500px]:max-[1440px]:px-10 w-full flex justify-center ${readyToPay ? 'bg-[#10100e]' : 'gap-y-10 bg-[#fdfdfd]'}`}>
