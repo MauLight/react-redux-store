@@ -1,6 +1,10 @@
 import { useMapsLibrary } from "@vis.gl/react-google-maps"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import TransbankForm from "./TransbankForm"
+import { useDispatch, useSelector } from "react-redux"
+import { StoreProps } from "@/utils/types"
+import { getUserByIdAsync } from "@/features/userAuth/userAuthSlice"
+import { AppDispatch } from "@/store/store"
 
 interface PlaceAutocompleteProps {
     onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void
@@ -10,10 +14,14 @@ interface PlaceAutocompleteProps {
 
 const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompleteProps) => {
 
+    const dispatch: AppDispatch = useDispatch()
+    const id = useSelector((state: StoreProps) => state.userAuth.user).id
+    const user = useSelector((state: StoreProps) => state.userAuth.userData)
     const [placeAutocomplete, setPlaceAutocomplete] = useState<google.maps.places.Autocomplete | null>(null)
     const [address, setAddress] = useState<{ street: string, city: string, region: string, country: string, zip: string } | null>(null)
     const [billingAddress, setBillingAddress] = useState<{ street: string, city: string, region: string, country: string, zip: string } | null>(null)
 
+    console.log(user)
     const shippingFormRef = useRef<HTMLDivElement>(null)
 
     function scrollToElement() {
@@ -24,6 +32,14 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
 
     const inputRef = useRef<HTMLInputElement>(null)
     const places = useMapsLibrary('places')
+
+    useLayoutEffect(() => {
+        dispatch(getUserByIdAsync(id))
+    }, [])
+
+    useEffect(() => {
+        setAddress(user.address)
+    }, [user])
 
     useEffect(() => {
         if (!places || !inputRef.current) return

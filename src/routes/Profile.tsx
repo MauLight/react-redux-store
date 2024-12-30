@@ -15,11 +15,27 @@ import { postWishlistFromUser } from '@/features/wishList/wishListSlice'
 import { Modal } from '@/components/common/Modal'
 import { toast } from 'react-toastify'
 
+interface OpenConfirmationProps {
+    firstname: string
+    lastname: string
+    email: string
+    phone: string
+    street: string
+    city: string
+    state: string
+    country: string
+    zipcode: string
+}
+
 const schema = yup
     .object({
         firstname: yup.string().required(),
         lastname: yup.string().required(),
-        address: yup.string().required(),
+        street: yup.string().required(),
+        city: yup.string().required(),
+        state: yup.string().required(),
+        country: yup.string().required(),
+        zipcode: yup.string().required(),
         email: yup.string().email().required(),
         phone: yup.string().required(),
     })
@@ -37,8 +53,13 @@ function Profile(): ReactNode {
         defaultValues: {
             firstname: '',
             lastname: '',
-            address: '',
+            street: '',
+            city: '',
+            state: '',
+            country: '',
             phone: '',
+            zipcode: '',
+            email: ''
         },
         resolver: yupResolver(schema)
     })
@@ -46,17 +67,17 @@ function Profile(): ReactNode {
     const [isEditing, setIsEditing] = useState<boolean>(false)
     const [isOpen, setIsOpen] = useState<boolean>(false)
 
-    function handleIsEditing() {
-        setIsEditing(!isEditing)
+    function handleCancelConfirmation() {
+        setIsOpen(false)
+        setIsEditing(false)
     }
 
-    function handleOpenConfirmation({ firstname, lastname, address, phone }: { firstname: string, lastname: string, address: string, phone: string }) {
+    function handleOpenConfirmation({ firstname, lastname, street, city, state, country, zipcode, phone, email }: OpenConfirmationProps) {
 
-        if (!firstname || !lastname || !address || !phone) {
+        if (!firstname || !lastname || !street || !phone || !city || !state || !country || !email || !zipcode) {
             toast.error('You must provide all the values.')
             return
         }
-
         setIsOpen(true)
     }
 
@@ -98,17 +119,30 @@ function Profile(): ReactNode {
                                         <h1 className='w-full text-left text-[4rem] min-[530px]:text-9xl animated-background bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 inline-block text-transparent bg-clip-text'>Profile</h1>
                                         {
                                             isEditing ? (
-                                                <form className='text-[#ffffff]' onSubmit={handleSubmit(handleOpenConfirmation)}>
+                                                <form className='text-[#ffffff] w-full flex flex-col gap-y-3' onSubmit={handleSubmit(handleOpenConfirmation)}>
                                                     <div className="flex gap-x-2 gap-y-2">
                                                         <input {...register('firstname')} type='text' className={`w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.firstname !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Firstname' />
                                                         <input {...register('lastname')} type='text' className={`w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.lastname !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Lastname' />
                                                     </div>
                                                     <input {...register('email')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.email !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Email' />
-                                                    <input {...register('address')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.address !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Address' />
                                                     <input {...register('phone')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.phone !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Phone' />
+
+                                                    <div className="flex gap-x-2 gap-y-2">
+                                                        <input {...register('street')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.street !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Street' />
+                                                        <input {...register('city')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.city !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='City' />
+                                                    </div>
+                                                    <div className="flex gap-x-2 gap-y-2">
+                                                        <input {...register('state')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.state !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='State' />
+                                                        <input {...register('country')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.country !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Country' />
+                                                    </div>
+                                                    <div className="flex gap-x-5 gap-y-2">
+                                                        <div className='w-full'></div>
+                                                        <input {...register('zipcode')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.country !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Zipcode' />
+                                                    </div>
+
                                                     <div className="w-full flex justify-end gap-x-2 mt-5">
-                                                        <button onClick={handleIsEditing} className='h-10 px-5 w-[100px] bg-[#ffffff] text-[#10100e] hover:bg-red-500 transition-color duration-200'>Cancel</button>
-                                                        <button onClick={() => handleOpenConfirmation(getValues())} className='h-10 px-5 w-[100px] bg-[#ffffff] text-[#10100e] hover:bg-indigo-500 transition-color duration-200'>Save</button>
+                                                        <button onClick={() => { setIsEditing(false) }} className='h-10 px-5 w-[100px] bg-[#ffffff] text-[#10100e] hover:bg-red-500 transition-color duration-200'>Cancel</button>
+                                                        <button disabled={Object.keys(errors).length > 0} onClick={() => handleOpenConfirmation(getValues())} className={`h-10 px-5 w-[100px] transition-color duration-200 ${Object.keys(errors).length > 0 ? 'cursor-not-allowed bg-sym_gray-300' : 'bg-[#ffffff] text-[#10100e] hover:bg-indigo-500 '}`}>Save</button>
                                                     </div>
                                                 </form>
                                             )
@@ -120,9 +154,13 @@ function Profile(): ReactNode {
                                                             <p className='text-[2rem]'>{user.lastname}</p>
                                                         </div>
                                                         <p className='text-[1rem] text-sym_gray-100 font-light'>{user.email}</p>
-                                                        <p className='text-[1rem] text-sym_gray-100 font-light'>{user.address}</p>
+                                                        <p className='text-[1rem] text-sym_gray-100 font-light'>{user.street}</p>
+                                                        <p className='text-[1rem] text-sym_gray-100 font-light'>{user.city}</p>
+                                                        <p className='text-[1rem] text-sym_gray-100 font-light'>{user.state}</p>
+                                                        <p className='text-[1rem] text-sym_gray-100 font-light'>{user.country}</p>
+                                                        <p className='text-[1rem] text-sym_gray-100 font-light'>{user.zipcode}</p>
                                                         <p className='text-[1rem] text-sym_gray-100 font-light'>{user.phone}</p>
-                                                        <button onClick={handleIsEditing} className='mt-5 hover:text-indigo-500 transition-color duration-200'>Edit Profile</button>
+                                                        <button onClick={() => { setIsEditing(false) }} className='mt-5 hover:text-indigo-500 transition-color duration-200'>Edit Profile</button>
                                                     </div>
                                                 )
                                         }
@@ -157,17 +195,23 @@ function Profile(): ReactNode {
                 <Modal openModal={isOpen} handleOpenModal={() => { setIsOpen(!isOpen) }}>
                     <main className='flex flex-col gap-y-5'>
                         <p className='text-[1.5rem]'>Please confirm your information before submitting:</p>
-                        <section>
-                            <div className="flex gap-x-1">
-                                <p className='text-[2rem]'>{getValues().firstname}</p>
-                                <p className='text-[2rem]'>{getValues().lastname}</p>
+                        <div className="flex gap-x-1">
+                            <p className='text-[2rem]'>{getValues().firstname}</p>
+                            <p className='text-[2rem]'>{getValues().lastname}</p>
+                        </div>
+                        <section className='flex flex-col items-center gap-y-5'>
+                            <div className="flex flex-col gap-y-1">
+                                <p className='text-[1rem] text-sym_gray-400 font-light'>{getValues().email}</p>
+                                <p className='text-[1rem] text-sym_gray-400 font-light'>{getValues().phone}</p>
+                                <p className='text-[1rem] text-sym_gray-400 font-light'>{getValues().street}</p>
+                                <p className='text-[1rem] text-sym_gray-400 font-light'>{getValues().city}</p>
+                                <p className='text-[1rem] text-sym_gray-400 font-light'>{getValues().state}</p>
+                                <p className='text-[1rem] text-sym_gray-400 font-light'>{getValues().country}</p>
+                                <p className='text-[1rem] text-sym_gray-400 font-light'>{getValues().zipcode}</p>
                             </div>
-                            <p className='text-[1rem] text-sym_gray-400 font-light'>{getValues().email}</p>
-                            <p className='text-[1rem] text-sym_gray-400 font-light'>{getValues().address}</p>
-                            <p className='text-[1rem] text-sym_gray-400 font-light'>{getValues().phone}</p>
                         </section>
                         <div className="w-full flex justify-end gap-x-2 mt-5">
-                            <button onClick={handleIsEditing} className='h-10 px-5 w-[100px] bg-[#10100e] text-[#ffffff] hover:bg-red-500 transition-color duration-200'>Cancel</button>
+                            <button onClick={handleCancelConfirmation} className='h-10 px-5 w-[100px] bg-[#10100e] text-[#ffffff] hover:bg-red-500 transition-color duration-200'>Cancel</button>
                             <button onClick={handlePostUpdate} className='h-10 px-5 w-[100px] bg-[#10100e] text-[#ffffff] hover:bg-indigo-500 transition-color duration-200'>Save</button>
                         </div>
                     </main>
