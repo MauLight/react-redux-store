@@ -17,6 +17,7 @@ import { getAllProductsAsync } from "@/features/products/productsSlice"
 import { selector, useRecoilValue } from "recoil"
 import { currentPageState, productsListState } from "@/utils/recoil"
 import { infiniteScrollFetch } from "@/hooks/useFetchProductList"
+import Carousel from "@/components/home/Carousel"
 
 const pageSize = 7
 
@@ -83,6 +84,7 @@ function Home() {
                                     <img src={product.image} alt="banner" className='absolute w-full h-full object-none object-bottom z-0' />
                                 </div>
                             </Banner>
+                            <Carousel />
                             <Banner2 />
                             <div className="grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3">
                                 {
