@@ -72,7 +72,15 @@ export interface UserProps {
     address: string
 }
 
-export interface UserToBeUpdatedProps { firstname: string, lastname: string, address: string, phone: string }
+export interface UserToBeUpdatedProps {
+    firstname: string,
+    lastname: string,
+    street: string,
+    city: string,
+    state: string,
+    country: string,
+    phone: string
+}
 
 export interface LoginProps {
     email: string
