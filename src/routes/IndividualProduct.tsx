@@ -20,7 +20,7 @@ function IndividualProduct({ id }: { id: string | undefined }): ReactNode {
     return (
         <div className='relative w-screen h-screen flex justify-center items-center sm:max-lg:pt-[350px]'>
             <div className="w-[1440px] z-20">
-                <div className="lg:w-2/3 bg-[#ffffff] p-10">
+                <div className=" bg-[#ffffff] p-10">
                     {
                         product !== undefined && (
                             <ProductDescription key={product.id} product={product} />

@@ -1,5 +1,7 @@
 import { useEffect, useLayoutEffect, useState, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
+import InnerImageZoom from 'react-inner-image-zoom'
+import 'react-inner-image-zoom/lib/InnerImageZoom/styles.min.css'
 
 import { addItem } from '@/features/cart/cartSlice'
 import { AppDispatch } from '@/store/store'
@@ -58,7 +60,6 @@ export default function ProductDescription({ product }: { product: ProductProps 
         dispatch(addItem(itemToAdd))
     }
 
-
     useLayoutEffect(() => {
         setIsAdmin(pathname.includes('admin'))
     }, [])
@@ -85,13 +86,16 @@ export default function ProductDescription({ product }: { product: ProductProps 
             )}
             {
                 product !== undefined && !loading && (
-                    <section className='lg:flex gap-x-5'>
-                        <div className='lg:min-w-[23rem] sm:h-[33rem]'>
-                            <img
-                                src={product.image}
-                                alt="product"
-                                className="w-full sm:h-full object-cover"
-                            />
+                    <section className='lg:flex gap-x-5 min-h-[33rem]'>
+                        <div>
+                            <InnerImageZoom hideHint={true} zoomPreload={true} zoomType='hover' src={product.image} zoomSrc={product.image} />
+                            <div className="flex justify-center gap-x-2 mt-5">
+                                {
+                                    Array.from({ length: 4 }).map((_, i) => (
+                                        <img src={product.image} key={i} className='w-20 h-20 border border-sym_gray-200'></img>
+                                    ))
+                                }
+                            </div>
                         </div>
                         <div className="w-full sm:h-[33rem] flex flex-col justify-between">
                             <div className="flex flex-col">
