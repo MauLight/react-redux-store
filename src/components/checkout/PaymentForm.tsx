@@ -49,7 +49,7 @@ export const PaymentForm = ({ cart, vat, totalWithVat, children, selectedPlace, 
             <h1 className='text-[#ffffff] text-[1rem] uppercase'>{vat}$ VAT</h1>
           </div>
         </div>
-        <TransbankForm selectedPlace={selectedPlace} />
+        <TransbankForm placeFromUser selectedPlace={selectedPlace} />
       </section>
     </main>
   )

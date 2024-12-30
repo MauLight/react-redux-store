@@ -5,12 +5,12 @@ import { useDispatch, useSelector } from 'react-redux'
 
 interface PlaceResult { }
 
-export default function TransbankForm({ selectedPlace }: { selectedPlace: PlaceResult | null }): ReactNode {
+export default function TransbankForm({ selectedPlace, placeFromUser }: { selectedPlace: PlaceResult | null, placeFromUser: boolean }): ReactNode {
     const [isDisabled, setIsDisabled] = useState<boolean>(true)
     const transbank = useSelector((state: StoreProps) => state.cart.transbank)
 
     useEffect(() => {
-        if (selectedPlace !== null) {
+        if (selectedPlace !== null || placeFromUser) {
             setIsDisabled(false)
         }
     }, [selectedPlace])
@@ -21,7 +21,7 @@ export default function TransbankForm({ selectedPlace }: { selectedPlace: PlaceR
         <div className="flex flex-col">
             <form method="post" action={transbank.url}>
                 <input type="hidden" name="token_ws" value={transbank.token} />
-                <button disabled={isDisabled} type='submit' className={`w-full h-8 flex justify-center items-center px-2 uppercase text-[#10100e] mt-3 transition-all duration-200 ${!selectedPlace ? 'bg-sym_gray-100 cursor-not-allowed' : 'bg-[#ffffff] hover:bg-indigo-500 active:bg-[#ffffff]'}`}>
+                <button disabled={isDisabled} type='submit' className={`w-full h-8 flex justify-center items-center px-2 uppercase text-[#10100e] mt-3 transition-all duration-200 ${selectedPlace || placeFromUser ? 'bg-[#ffffff] hover:bg-indigo-500 active:bg-[#ffffff]' : 'bg-sym_gray-100 cursor-not-allowed'}`}>
                     Pay
                 </button>
             </form>

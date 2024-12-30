@@ -18,10 +18,11 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
     const id = useSelector((state: StoreProps) => state.userAuth.user).id
     const user = useSelector((state: StoreProps) => state.userAuth.userData)
     const [placeAutocomplete, setPlaceAutocomplete] = useState<google.maps.places.Autocomplete | null>(null)
-    const [address, setAddress] = useState<{ street: string, city: string, region: string, country: string, zip: string } | null>(null)
-    const [billingAddress, setBillingAddress] = useState<{ street: string, city: string, region: string, country: string, zip: string } | null>(null)
+    const [address, setAddress] = useState<{ street: string, city: string, state: string, country: string, zip: string } | null>(null)
+    const [billingAddress, setBillingAddress] = useState<{ street: string, city: string, state: string, country: string, zip: string } | null>(null)
 
-    console.log(user)
+    const [placeFromUser, setPlaceFromUser] = useState<boolean>(false)
+
     const shippingFormRef = useRef<HTMLDivElement>(null)
 
     function scrollToElement() {
@@ -38,7 +39,23 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
     }, [])
 
     useEffect(() => {
-        setAddress(user.address)
+        setAddress({
+            street: user.street,
+            city: user.city,
+            state: user.state,
+            country: user.country,
+            zip: user.zipcode
+        })
+
+        setBillingAddress({
+            street: user.street,
+            city: user.city,
+            state: user.state,
+            country: user.country,
+            zip: user.zipcode
+        })
+
+        setPlaceFromUser(true)
     }, [user])
 
     useEffect(() => {
@@ -62,7 +79,7 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
                 const newAddress = {
                     street: commaSeparated[0],
                     city: commaSeparated[1].trim().split(' ').length > 2 ? `${commaSeparated[1].trim().split(' ')[1]} ${commaSeparated[1].trim().split(' ')[2]}` : commaSeparated[1].trim().split(' ')[1],
-                    region: commaSeparated[2],
+                    state: commaSeparated[2],
                     country: commaSeparated[3].trim(),
                     zip: commaSeparated[1].trim().split(' ')[0]
                 }
@@ -101,8 +118,8 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
                             </div>
                             <div className="w-full grid grid-cols-2 gap-x-5">
                                 <div className="">
-                                    <label className="text-[#ffffff] text-[1rem]" htmlFor="region">Region</label>
-                                    <input onChange={({ target }) => { setAddress({ ...address, region: target.value }) }} value={address.region} id="region" className="w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500" />
+                                    <label className="text-[#ffffff] text-[1rem]" htmlFor="state">state</label>
+                                    <input onChange={({ target }) => { setAddress({ ...address, state: target.value }) }} value={address.state} id="state" className="w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500" />
                                 </div>
                                 <div className="">
                                     <label className="text-[#ffffff] text-[1rem]" htmlFor="country">Country</label>
@@ -132,8 +149,8 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
                             </div>
                             <div className="w-full grid grid-cols-2 gap-x-5">
                                 <div className="">
-                                    <label className="text-[#ffffff] text-[1rem]" htmlFor="region">Region</label>
-                                    <input onChange={({ target }) => { setBillingAddress({ ...billingAddress, region: target.value }) }} value={billingAddress.region} id="region" className="w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500" />
+                                    <label className="text-[#ffffff] text-[1rem]" htmlFor="state">state</label>
+                                    <input onChange={({ target }) => { setBillingAddress({ ...billingAddress, state: target.value }) }} value={billingAddress.state} id="state" className="w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500" />
                                 </div>
                                 <div className="">
                                     <label className="text-[#ffffff] text-[1rem]" htmlFor="country">Country</label>
@@ -147,7 +164,7 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
                                     <input onChange={({ target }) => { setBillingAddress({ ...billingAddress, zip: target.value }) }} value={billingAddress.zip} id="zip" className="w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500" />
                                 </div>
                             </div>
-                            <TransbankForm selectedPlace={selectedPlace} />
+                            <TransbankForm placeFromUser={placeFromUser} selectedPlace={selectedPlace} />
                         </div>
                     </>
                 )
