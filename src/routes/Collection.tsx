@@ -18,6 +18,8 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
     const [inputValue, setInputValue] = useState<string>('')
     const [loading, setLoading] = useState<boolean>(true)
     const [openSortMenu, setOpenSortMenu] = useState<boolean>(false)
+    const [focusX, setFocusX] = useState<boolean>(false)
+    const [isInputFocused, setIsInputFocused] = useState<boolean>(false)
 
     async function getCollection() {
         await dispatch(getAllProductsAsync())
@@ -77,10 +79,18 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
                             <i className="absolute top-8 left-3 fa-xl fa-solid fa-magnifying-glass text-sym_gray-300"></i>
                             {
                                 inputValue.length > 0 && (
-                                    <i onClick={handleClearInput} className="absolute top-[23px] right-2 fa-regular fa-circle-xmark text-[#ffffff] group-hover:text-[#10100e]"></i>
+                                    <i onClick={handleClearInput} className={`absolute top-[23px] right-2 fa-regular fa-circle-xmark ${focusX ? 'text-[#10100e]' : 'text-[#ffffff]'}`}></i>
                                 )
                             }
-                            <input value={inputValue} onChange={({ target }) => { setInputValue(target.value) }} onKeyDown={handleSubmitSearch} className='h-full w-full min-[1440px]:w-[267px] outline-none border-none pl-[50px] pr-2 bg-transparent text-[#ffffff] group-hover:bg-[#ffffff] group-hover:text-[#10100e] focus:bg-[#ffffff] focus:text-[#10100e]' type="text" />
+                            <input
+                                onFocus={() => { setFocusX(true); setIsInputFocused(true) }}
+                                onBlur={() => { setFocusX(false); setIsInputFocused(false) }}
+                                onMouseEnter={() => { setFocusX(true) }}
+                                onMouseLeave={() => { !isInputFocused && setFocusX(false) }}
+                                value={inputValue}
+                                onChange={({ target }) => { setInputValue(target.value) }}
+                                onKeyDown={handleSubmitSearch}
+                                className='h-full w-full min-[1440px]:w-[267px] outline-none border-none pl-[50px] pr-2 bg-transparent text-[#ffffff] group-hover:bg-[#ffffff] group-hover:text-[#10100e] focus:bg-[#ffffff] focus:text-[#10100e]' type="text" />
                         </div>
                         <div className='group relative h-full'>
                             <button onClick={handleOpenSortMenu} className='h-full w-[200px] px-2 uppercase text-[#ffffff] transition-all duration-200 bg-transparent border border-transparent group-hover:bg-indigo-500 group-hover:border-indigo-500'>Sort by price</button>

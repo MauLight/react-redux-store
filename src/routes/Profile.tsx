@@ -160,7 +160,7 @@ function Profile(): ReactNode {
                                                         <p className='text-[1rem] text-sym_gray-100 font-light'>{user.country}</p>
                                                         <p className='text-[1rem] text-sym_gray-100 font-light'>{user.zipcode}</p>
                                                         <p className='text-[1rem] text-sym_gray-100 font-light'>{user.phone}</p>
-                                                        <button onClick={() => { setIsEditing(false) }} className='mt-5 hover:text-indigo-500 transition-color duration-200'>Edit Profile</button>
+                                                        <button onClick={() => { setIsEditing(!isEditing) }} className='mt-5 hover:text-indigo-500 transition-color duration-200'>Edit Profile</button>
                                                     </div>
                                                 )
                                         }

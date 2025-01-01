@@ -3,8 +3,9 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import TransbankForm from "./TransbankForm"
 import { useDispatch, useSelector } from "react-redux"
 import { StoreProps } from "@/utils/types"
-import { getUserByIdAsync } from "@/features/userAuth/userAuthSlice"
+import { getUserByIdAsync, updateUserByIdAsync } from "@/features/userAuth/userAuthSlice"
 import { AppDispatch } from "@/store/store"
+import { RotatingLines } from "react-loader-spinner"
 
 interface PlaceAutocompleteProps {
     onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void
@@ -17,11 +18,13 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
     const dispatch: AppDispatch = useDispatch()
     const id = useSelector((state: StoreProps) => state.userAuth.user).id
     const user = useSelector((state: StoreProps) => state.userAuth.userData)
+    const isLoading = useSelector((state: StoreProps) => state.userAuth.isLoading)
     const [placeAutocomplete, setPlaceAutocomplete] = useState<google.maps.places.Autocomplete | null>(null)
     const [address, setAddress] = useState<{ street: string, city: string, state: string, country: string, zip: string } | null>(null)
     const [billingAddress, setBillingAddress] = useState<{ street: string, city: string, state: string, country: string, zip: string } | null>(null)
 
     const [placeFromUser, setPlaceFromUser] = useState<boolean>(false)
+    const [userWasUpdated, setUserWasUpdated] = useState<boolean>(false)
 
     const shippingFormRef = useRef<HTMLDivElement>(null)
 
@@ -34,26 +37,47 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
     const inputRef = useRef<HTMLInputElement>(null)
     const places = useMapsLibrary('places')
 
+    async function handleSaveDefaultAddress() {
+        const updatedUser = {
+            firstname: user.firstname,
+            lastname: user.lastname,
+            email: user.email,
+            phone: user.phone,
+            street: address?.street as string,
+            city: address?.city as string,
+            state: address?.state as string,
+            country: address?.country as string,
+            zipcode: address?.zip as string
+        }
+        const { payload } = await dispatch(updateUserByIdAsync(updatedUser))
+        console.log(payload)
+        if (payload.updatedUser) {
+            setUserWasUpdated(true)
+        }
+    }
+
     useLayoutEffect(() => {
         dispatch(getUserByIdAsync(id))
     }, [])
 
     useEffect(() => {
-        setAddress({
-            street: user.street,
-            city: user.city,
-            state: user.state,
-            country: user.country,
-            zip: user.zipcode
-        })
+        if (user.street && user.city && user.state && user.country && user.zipcode) {
+            setAddress({
+                street: user.street,
+                city: user.city,
+                state: user.state,
+                country: user.country,
+                zip: user.zipcode
+            })
 
-        setBillingAddress({
-            street: user.street,
-            city: user.city,
-            state: user.state,
-            country: user.country,
-            zip: user.zipcode
-        })
+            setBillingAddress({
+                street: user.street,
+                city: user.city,
+                state: user.state,
+                country: user.country,
+                zip: user.zipcode
+            })
+        }
 
         setPlaceFromUser(true)
     }, [user])
@@ -134,7 +158,14 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
                                 </div>
                             </div>
                         </div>
-                        <div className="border-b"></div>
+                        <div>
+                            <button disabled={userWasUpdated} onClick={handleSaveDefaultAddress} className={`h-8 w-full bg-[#ffffff] ${userWasUpdated ? 'bg-green-400 cursor-not-allowed' : 'text-[#10100e] hover:bg-indigo-500 active:bg-[#ffffff]'} flex justify-center items-center`}>{isLoading ?
+                                <RotatingLines
+                                    width="30"
+                                    strokeColor={'#10100e'}
+                                />
+                                : userWasUpdated ? 'Saved' : 'Save Default Address'}</button>
+                        </div>
                         <div className="flex flex-col gap-y-5 pb-20">
                             <h1 className="text-[2rem] uppercase text-[#ffffff]">Billing address</h1>
                             <div className="w-full grid grid-cols-2 gap-x-5">
