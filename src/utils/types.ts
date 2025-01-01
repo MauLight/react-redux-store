@@ -59,7 +59,6 @@ export interface NewUserProps {
     lastname: string
     email: string
     phone: number
-    address: string
     password: string
 }
 

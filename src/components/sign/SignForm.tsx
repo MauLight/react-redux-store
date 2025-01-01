@@ -16,7 +16,6 @@ const schema = yup
     .object({
         firstname: yup.string().required(),
         lastname: yup.string().required(),
-        address: yup.string().required(),
         phone: yup.number().required(),
         email: yup.string().email().required().matches(/^[\w-\\.]+@([\w-]+\.)+[\w-]{2,5}$/, 'Email must be a valid email address.'),
         password: yup.string().required().min(8, 'Password must be at least 8 characters long.').matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-.]).{8,}$/, 'Password must contain at least one uppercase, one number and one special character.'),
@@ -34,7 +33,6 @@ function SignForm(): ReactNode {
         defaultValues: {
             firstname: '',
             lastname: '',
-            address: '',
             email: '',
             phone: undefined,
             password: '',
@@ -42,14 +40,13 @@ function SignForm(): ReactNode {
         resolver: yupResolver(schema)
     })
 
-    const handleLogin = async ({ firstname, lastname, email, phone, address, password }: NewUserProps): Promise<void> => {
+    const handleLogin = async ({ firstname, lastname, email, phone, password }: NewUserProps): Promise<void> => {
 
         const newUser = {
             firstname,
             lastname,
             email,
             phone,
-            address,
             password
         }
         const response = await dispatch(postNewUserAsync(newUser))
@@ -89,7 +86,6 @@ function SignForm(): ReactNode {
                                     </div>
                                     <input {...register('email')} type='text' className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.email !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Email' />
                                     <input {...register('phone')} type='text' className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.phone !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Phone' />
-                                    <input {...register('address')} type='text' className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.address !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Address' />
                                     <input {...register('password')} type='password' className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.password !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Password' />
                                     <button disabled={errors.email !== undefined || errors.password !== undefined} type='submit' className={`w-full h-10 font-body text-[16px] text-[#ffffff] mt-1 uppercase ${errors.email !== undefined || errors.password !== undefined ? 'cursor-not-allowed bg-sym_gray-400' : 'bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e]'}`}>Sign in</button>
                                     <div className="flex justify-center items-center pt-2">
