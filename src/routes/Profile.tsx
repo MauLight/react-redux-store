@@ -11,7 +11,7 @@ import WishlistCard from '@/components/profile/WishlistCard'
 import video from '@/assets/video/empty.webm'
 
 import { ProductProps, StoreProps } from '@/utils/types'
-import { postWishlistFromUser } from '@/features/wishList/wishListSlice'
+import { postListToWishlistAsync, postWishlistFromUser } from '@/features/wishList/wishListSlice'
 import { Modal } from '@/components/common/Modal'
 import { toast } from 'react-toastify'
 
@@ -93,6 +93,11 @@ function Profile(): ReactNode {
     }
 
     useLayoutEffect(() => {
+        const invitedWishList = JSON.parse(localStorage.getItem('marketplace-invitedWishlist') || '[]')
+        if (invitedWishList.length > 0) {
+            dispatch(postListToWishlistAsync(invitedWishList))
+        }
+
         dispatch(getUserByIdAsync(id))
     }, [])
 

@@ -33,9 +33,14 @@ export const postLoginAsync = createAsyncThunk(
 
 export const getUserByIdAsync = createAsyncThunk(
     'userAuth/getUserById', async (id: string, { rejectWithValue }) => {
+        const user = localStorage.getItem('store-user') ? JSON.parse(localStorage.getItem('store-user') as string) : {}
+        const token = user.token
         if (!id) {
             return
         }
+
+        console.log(token, '1. This is the TOKEN')
+
         try {
             const { data } = await axios.get(`${url}/user/${id}`, {
                 headers: {

@@ -105,3 +105,5 @@ export interface TransactionProps {
     amount: number
     returnUrl?: string
 }
+
+export interface WishlistItem { userId: string, productId: string }

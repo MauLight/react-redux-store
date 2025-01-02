@@ -22,7 +22,7 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
 
   const handleWishList = async (id: string) => {
     const { payload } = await dispatch(postToWishlistAsync({ userId: user.id, productId: id }))
-    if (payload.message) {
+    if (payload && payload.message) {
       setWishListed(true)
     }
   }
