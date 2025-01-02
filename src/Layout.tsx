@@ -4,6 +4,7 @@ import { Routes, Route, useLocation, useMatch } from 'react-router-dom'
 import TopBar from './components/common/TopBar'
 import ErrorBoundary from './components/error/ErrorBoundary'
 import Fallback from './components/common/Fallback'
+import ScrollToTop from './ScrollToTop'
 
 const Sign = lazy(async () => await import('./routes/Sign'))
 const Login = lazy(async () => await import('./routes/Login'))
@@ -52,19 +53,21 @@ function Layout() {
             }
             <ErrorBoundary>
                 <Suspense fallback={<Fallback />}>
-                    <Routes>
-                        <Route path='/' element={<Home />} />
-                        <Route path='/sign' element={<Sign />} />
-                        <Route path='/login' element={<Login />} />
-                        <Route path='/profile' element={<Profile />} />
-                        <Route path='/collection' element={<Collection title='Surreal Collection' />} />
-                        <Route path='/product/:id' element={<IndividualProduct id={productId ? productId : undefined} />} />
-                        <Route path='/admin/login' element={<AdminLogin />} />
-                        <Route path='/admin' element={<Dashboard />} />
-                        <Route path='/checkout' element={<Checkout />} />
-                        <Route path='/confirmation' element={<Confirmation />} />
-                        <Route path='*' element={<NotFound />} />
-                    </Routes>
+                    <ScrollToTop>
+                        <Routes>
+                            <Route path='/' element={<Home />} />
+                            <Route path='/sign' element={<Sign />} />
+                            <Route path='/login' element={<Login />} />
+                            <Route path='/profile' element={<Profile />} />
+                            <Route path='/collection' element={<Collection title='Surreal Collection' />} />
+                            <Route path='/product/:id' element={<IndividualProduct id={productId ? productId : undefined} />} />
+                            <Route path='/admin/login' element={<AdminLogin />} />
+                            <Route path='/admin' element={<Dashboard />} />
+                            <Route path='/checkout' element={<Checkout />} />
+                            <Route path='/confirmation' element={<Confirmation />} />
+                            <Route path='*' element={<NotFound />} />
+                        </Routes>
+                    </ScrollToTop>
                 </Suspense>
             </ErrorBoundary>
             {

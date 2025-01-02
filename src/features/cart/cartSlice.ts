@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 
 const url = import.meta.env.VITE_TRANSBANK_BACKEND_URL
 const returnUrl = 'http://localhost:3000/confirmation'
-const user = localStorage.getItem('store-user') ? JSON.parse(localStorage.getItem('store-user') as string) : {}
+const user = localStorage.getItem('marketplace-user') ? JSON.parse(localStorage.getItem('marketplace-user') as string) : {}
 const token = user.token
 
 const initialCart: CartItemProps[] = []

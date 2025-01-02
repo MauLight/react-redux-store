@@ -46,6 +46,7 @@ const schema = yup
 function Profile(): ReactNode {
     const dispatch: AppDispatch = useDispatch()
     const id = useSelector((state: StoreProps) => state.userAuth.user.id)
+    const loggedUser = useSelector((state: StoreProps) => state.userAuth.user)
     const user = useSelector((state: StoreProps) => state.userAuth.userData)
     const wishlist = useSelector((state: StoreProps) => state.wishList.wishlist)
     const isLoading = useSelector((state: StoreProps) => state.userAuth.isLoading)
@@ -95,6 +96,12 @@ function Profile(): ReactNode {
     }
 
     useLayoutEffect(() => {
+        if (Object.keys(loggedUser).length === 0) {
+            navigate('/')
+        }
+    }, [user])
+
+    useLayoutEffect(() => {
         const invitedWishList = JSON.parse(localStorage.getItem('marketplace-invitedWishlist') || '[]')
         if (invitedWishList.length > 0) {
             dispatch(postListToWishlistAsync(invitedWishList))
@@ -106,12 +113,6 @@ function Profile(): ReactNode {
     useEffect(() => {
         if (user.wishlist) {
             dispatch(postWishlistFromUser(user.wishlist))
-        }
-    }, [user])
-
-    useEffect(() => {
-        if (Object.keys(user).length === 0) {
-            navigate('/')
         }
     }, [user])
 

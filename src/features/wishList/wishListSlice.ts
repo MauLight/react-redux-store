@@ -4,12 +4,12 @@ import axios, { AxiosError } from "axios"
 import { toast } from "react-toastify"
 
 const url = import.meta.env.VITE_USERS_BACKEND_URL
-const user = localStorage.getItem('store-user') ? JSON.parse(localStorage.getItem('store-user') as string) : {}
+const user = localStorage.getItem('marketplace-user') ? JSON.parse(localStorage.getItem('marketplace-user') as string) : {}
 const token = user.token
 
 export const postToWishlistAsync = createAsyncThunk(
     'wishlist/postToWishlist', async (wishlistItem: { userId: string, productId: string }, { rejectWithValue }) => {
-        if (!user.token) {
+        if (Object.keys(user).length === 0) {
             const invitedWishlist = JSON.parse(localStorage.getItem('marketplace-invitedWishlist') || '[]')
             if (invitedWishlist.length > 0) {
                 const wasWishlisted = invitedWishlist.find((elem: string) => elem === wishlistItem.productId)
@@ -25,34 +25,32 @@ export const postToWishlistAsync = createAsyncThunk(
             }
             toast.success('Item added to wishlist.')
             return
-        }
-
-        try {
-            const { data } = await axios.post(`${url}/wishlist`, wishlistItem, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            })
-            toast.success('Item added to wishlist.')
-            return data
-        } catch (error) {
-            toast.error((error as AxiosError).message)
-            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        } else {
+            try {
+                const { data } = await axios.post(`${url}/wishlist`, wishlistItem, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                toast.success('Item added to wishlist.')
+                return data
+            } catch (error) {
+                toast.error((error as AxiosError).message)
+                return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+            }
         }
     }
 )
 
 export const postListToWishlistAsync = createAsyncThunk(
-    'wishlist/postListToWishlist', async (newWishlist: { userId: string, productId: string }[], { rejectWithValue }) => {
-        const user = localStorage.getItem('store-user') ? JSON.parse(localStorage.getItem('store-user') as string) : {}
+    'wishlist/postListToWishlist', async (newWishlist: string[], { rejectWithValue }) => {
+        const user = localStorage.getItem('marketplace-user') ? JSON.parse(localStorage.getItem('marketplace-user') as string) : {}
         const token = user.token
 
         if (newWishlist.length === 0) {
             return
         }
-
-        console.log('newWishlist', user.id)
 
         try {
             const { data } = await axios.post(`${url}/wishlist/list`, { id: user.id, newWishlist }, {

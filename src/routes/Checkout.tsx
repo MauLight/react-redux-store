@@ -48,7 +48,7 @@ const Checkout = (): ReactElement => {
                     {
                         !readyToPay && (
                             <div>
-                                <p className='text-[1rem] lg:text-2xl text-[#10100e] uppercase'>{`total ${0} items`}</p>
+                                <p className='text-[1rem] lg:text-2xl text-[#10100e] uppercase'>{`total ${cart.length} items`}</p>
                                 <p className='text-[1rem] lg:text-2xl text-[#10100e] uppercase'>Your products are not reserved until payment is complete</p>
                             </div>
                         )

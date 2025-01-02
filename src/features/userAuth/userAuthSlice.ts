@@ -76,7 +76,9 @@ export const userAuthSlice = createSlice({
         user,
         userData: {},
         isLoading: false,
-        hasError: false
+        hasError: false,
+        getUserIsLoading: false,
+        getUserHasError: false
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -107,17 +109,17 @@ export const userAuthSlice = createSlice({
                 state.isLoading = false
             })
             .addCase(getUserByIdAsync.pending, (state, _action) => {
-                state.hasError = false
-                state.isLoading = true
+                state.getUserHasError = false
+                state.getUserIsLoading = true
             })
             .addCase(getUserByIdAsync.fulfilled, (state, action) => {
                 if (action.payload.user) state.userData = action.payload.user
-                state.hasError = false
-                state.isLoading = false
+                state.getUserHasError = false
+                state.getUserIsLoading = false
             })
             .addCase(getUserByIdAsync.rejected, (state, _action) => {
-                state.hasError = true
-                state.isLoading = false
+                state.getUserHasError = true
+                state.getUserIsLoading = false
             })
             .addCase(updateUserByIdAsync.pending, (state, _action) => {
                 state.hasError = false
