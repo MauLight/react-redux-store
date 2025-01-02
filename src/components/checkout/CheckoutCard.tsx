@@ -41,10 +41,10 @@ export const CheckoutCard = ({ product, dispatch }: CheckoutCardProps): ReactEle
           </div>
           <div className="flex flex-col">
             <h1 className='text-[1rem] lg:text-xl text-[#10100e] uppercase'>Qty</h1>
-            <div className='flex items-center justify-between border border-[#10100e] w-[80px] h-10 px-2'>{product.quantity}
-              <div className="h-full flex flex-col py-3 justify-between">
-                <i onClick={() => { handleChangeQuantity(1) }} className="fa-solid fa-sm fa-plus hover:text-indigo-500"></i>
-                <i onClick={() => { handleChangeQuantity(2) }} className="fa-solid fa-sm fa-minus hover:text-indigo-500"></i>
+            <div className='flex items-center justify-between border border-[#10100e] w-[80px] h-12 px-2'>{product.quantity}
+              <div className="h-full flex flex-col py-1 justify-between">
+                <i onClick={() => { handleChangeQuantity(1) }} className="fa-solid fa-md fa-plus hover:text-indigo-500"></i>
+                <i onClick={() => { handleChangeQuantity(2) }} className="fa-solid fa-md fa-minus hover:text-indigo-500"></i>
               </div>
             </div>
           </div>
