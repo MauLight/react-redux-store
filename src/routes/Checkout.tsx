@@ -75,7 +75,20 @@ const Checkout = (): ReactElement => {
                                         }
                                     </div>
                                     <div className="col-span-2 xl:col-span-1">
-                                        <CheckSummary numberOfProducts={Object.values(cart).length} total={total} taxes={vat} totalWithTaxes={totalWithVat} />
+                                        <CheckSummary numberOfProducts={Object.values(cart).length} total={total} taxes={vat} totalWithTaxes={totalWithVat}>
+                                            <div className="col-span-3">
+                                                {
+                                                    cart.length > 0 && cart.map((product, i) => (
+                                                        <CheckoutCard isConfirmation key={product.id + i} dispatch={dispatch} product={product} />
+                                                    ))
+                                                }
+                                                {
+                                                    cart.length === 0 && localCart.map((product, i) => (
+                                                        <CheckoutCard isConfirmation key={product.id + i} dispatch={dispatch} product={product} />
+                                                    ))
+                                                }
+                                            </div>
+                                        </CheckSummary>
                                     </div>
                                 </div>
                             )

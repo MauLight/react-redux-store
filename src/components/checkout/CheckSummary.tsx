@@ -1,4 +1,4 @@
-import { type ReactElement } from 'react'
+import { type ReactNode, useState } from 'react'
 import { AppDispatch } from '@/store/store'
 import { useDispatch, useSelector } from 'react-redux'
 import { createTransbankTransactionAsync, resetCart, setReadyToPay } from '@/features/cart/cartSlice'
@@ -6,16 +6,19 @@ import { createTransbankTransactionAsync, resetCart, setReadyToPay } from '@/fea
 import { v4 as uuid } from 'uuid'
 import { StoreProps } from '@/utils/types'
 import { useNavigate } from 'react-router-dom'
+import { Modal } from '../common/Modal'
 
 interface CheckSummaryProps {
   numberOfProducts: number
   total: number
   taxes: number
   totalWithTaxes: number
+  children: ReactNode
 }
 
-export const CheckSummary = ({ numberOfProducts, total, taxes, totalWithTaxes }: CheckSummaryProps): ReactElement => {
+export const CheckSummary = ({ numberOfProducts, total, taxes, totalWithTaxes, children }: CheckSummaryProps): ReactNode => {
 
+  const [openModal, setOpenModal] = useState<boolean>(false)
   const dispatch: AppDispatch = useDispatch()
   const user = useSelector((state: StoreProps) => state.userAuth.user)
   const navigate = useNavigate()
@@ -35,6 +38,10 @@ export const CheckSummary = ({ numberOfProducts, total, taxes, totalWithTaxes }:
       await handleTransbankCreateTransaction()
       dispatch(setReadyToPay())
     }
+  }
+
+  function handleOpenModal() {
+    setOpenModal(!openModal)
   }
 
   const handleClearCart = () => {
@@ -77,7 +84,19 @@ export const CheckSummary = ({ numberOfProducts, total, taxes, totalWithTaxes }:
           <i className="fa-brands fa-xl fa-cc-stripe text-[#10100e]"></i>
         </div>
       </div>
-      <button className='mt-5 px-5 h-10 border hover:border-transparent hover:bg-red-600 hover:text-[#ffffff] transition-color duration-200' onClick={handleClearCart}>Clear cart</button>
+      <button className='mt-5 px-5 h-10 border hover:border-transparent hover:bg-red-600 hover:text-[#ffffff] transition-color duration-200' onClick={handleOpenModal}>Clear cart</button>
+      <Modal openModal={openModal} handleOpenModal={handleOpenModal} >
+        <div className='flex flex-col gap-y-10'>
+          <h1 className='text-[1.5rem]'>This action will clear your cart.</h1>
+          {
+            children
+          }
+          <div className="flex justify-end gap-x-2">
+            <button onClick={handleOpenModal} className='h-8 w-[150px] bg-[#10100e] hover:bg-red-500 transition-color duration-200 text-[#ffffff]'>Cancel</button>
+            <button onClick={handleClearCart} className='h-8 w-[150px] bg-[#10100e] hover:bg-indigo-500 transition-color duration-200 text-[#ffffff]'>Confirm</button>
+          </div>
+        </div>
+      </Modal>
     </div>
   )
 }
