@@ -4,7 +4,7 @@ import axios, { AxiosError } from "axios"
 import { toast } from "react-toastify"
 
 const url = import.meta.env.VITE_USERS_BACKEND_URL
-const user = localStorage.getItem('store-user') ? JSON.parse(localStorage.getItem('store-user') as string) : {}
+const user = localStorage.getItem('marketplace-user') ? JSON.parse(localStorage.getItem('marketplace-user') as string) : {}
 const token = user.token
 
 export const postNewUserAsync = createAsyncThunk(
@@ -23,7 +23,7 @@ export const postLoginAsync = createAsyncThunk(
     'userAuth/postLogin', async (user: LoginProps, { rejectWithValue }) => {
         try {
             const { data } = await axios.post(`${url}/auth`, user)
-            localStorage.setItem('store-user', JSON.stringify(data))
+            localStorage.setItem('marketplace-user', JSON.stringify(data))
             return data
         } catch (error) {
             return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
@@ -33,13 +33,11 @@ export const postLoginAsync = createAsyncThunk(
 
 export const getUserByIdAsync = createAsyncThunk(
     'userAuth/getUserById', async (id: string, { rejectWithValue }) => {
-        const user = localStorage.getItem('store-user') ? JSON.parse(localStorage.getItem('store-user') as string) : {}
+        const user = localStorage.getItem('marketplace-user') ? JSON.parse(localStorage.getItem('marketplace-user') as string) : {}
         const token = user.token
         if (!id) {
             return
         }
-
-        console.log(token, '1. This is the TOKEN')
 
         try {
             const { data } = await axios.get(`${url}/user/${id}`, {
@@ -78,7 +76,7 @@ export const userAuthSlice = createSlice({
         user,
         userData: {},
         isLoading: false,
-        hasError: false,
+        hasError: false
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -113,7 +111,7 @@ export const userAuthSlice = createSlice({
                 state.isLoading = true
             })
             .addCase(getUserByIdAsync.fulfilled, (state, action) => {
-                state.userData = action.payload.user
+                if (action.payload.user) state.userData = action.payload.user
                 state.hasError = false
                 state.isLoading = false
             })

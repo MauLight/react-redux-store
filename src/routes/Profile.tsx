@@ -14,6 +14,7 @@ import { ProductProps, StoreProps } from '@/utils/types'
 import { postListToWishlistAsync, postWishlistFromUser } from '@/features/wishList/wishListSlice'
 import { Modal } from '@/components/common/Modal'
 import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 
 interface OpenConfirmationProps {
     firstname: string
@@ -48,6 +49,7 @@ function Profile(): ReactNode {
     const user = useSelector((state: StoreProps) => state.userAuth.userData)
     const wishlist = useSelector((state: StoreProps) => state.wishList.wishlist)
     const isLoading = useSelector((state: StoreProps) => state.userAuth.isLoading)
+    const navigate = useNavigate()
 
     const { register, handleSubmit, getValues, reset, formState: { errors } } = useForm({
         defaultValues: {
@@ -104,6 +106,12 @@ function Profile(): ReactNode {
     useEffect(() => {
         if (user.wishlist) {
             dispatch(postWishlistFromUser(user.wishlist))
+        }
+    }, [user])
+
+    useEffect(() => {
+        if (Object.keys(user).length === 0) {
+            navigate('/')
         }
     }, [user])
 
