@@ -107,7 +107,7 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
         if (payload.updatedUser) {
             const buyOrder = localStorage.getItem('marketplace-order')
             if (buyOrder) {
-                const { payload } = await dispatch(updateOrderAddressAsync({ address: updatedAddress, buyOrder }))
+                const { payload } = await dispatch(updateOrderAddressAsync({ address: updatedAddress, buyOrder, additional: getValues().additional_information || '' }))
                 if (payload.message) {
                     setUserWasUpdated(true)
                 }

@@ -28,7 +28,7 @@ export const createTransbankTransactionAsync = createAsyncThunk(
 )
 
 export const updateOrderAddressAsync = createAsyncThunk(
-    'cart/updateOrderAddress', async (addressData: { address: Record<string, any>, buyOrder: string }, { rejectWithValue }) => {
+    'cart/updateOrderAddress', async (addressData: { address: Record<string, any>, buyOrder: string, additional: string }, { rejectWithValue }) => {
         try {
             const { data } = await axios.post(`${url}/transbank/address`, addressData, {
                 headers: {
