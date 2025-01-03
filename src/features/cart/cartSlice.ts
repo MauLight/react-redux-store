@@ -27,6 +27,23 @@ export const createTransbankTransactionAsync = createAsyncThunk(
     }
 )
 
+export const updateOrderAddressAsync = createAsyncThunk(
+    'cart/updateOrderAddress', async (addressData: { address: Record<string, any>, buyOrder: string }, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.post(`${url}/transbank/address`, addressData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            return data
+        } catch (error) {
+            console.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
 export const getConfirmationFromTransbankAsync = createAsyncThunk(
     'cart/getConfirmationFromTransbank', async (confirmationData: { token: string, buyOrder: string }, { rejectWithValue }) => {
         try {
@@ -107,8 +124,26 @@ export const cartSlice = createSlice({
             .addCase(
                 createTransbankTransactionAsync.fulfilled, (state, action) => {
                     state.isLoading = false
-                    state.hasError = true
+                    state.hasError = false
                     state.transbank = action.payload as Record<string, any>
+                }
+            )
+            .addCase(
+                updateOrderAddressAsync.pending, (state, _action) => {
+                    state.isLoading = true
+                    state.hasError = false
+                }
+            )
+            .addCase(
+                updateOrderAddressAsync.rejected, (state, _action) => {
+                    state.isLoading = false
+                    state.hasError = true
+                }
+            )
+            .addCase(
+                updateOrderAddressAsync.fulfilled, (state, _action) => {
+                    state.isLoading = false
+                    state.hasError = false
                 }
             )
             .addCase(

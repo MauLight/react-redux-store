@@ -22,6 +22,8 @@ interface OpenConfirmationProps {
     email: string
     phone: string
     street: string
+    street_number: string
+    house_number?: string
     city: string
     state: string
     country: string
@@ -33,6 +35,8 @@ const schema = yup
         firstname: yup.string().required(),
         lastname: yup.string().required(),
         street: yup.string().required(),
+        street_number: yup.string().required(),
+        house_number: yup.string(),
         city: yup.string().required(),
         state: yup.string().required(),
         country: yup.string().required(),
@@ -57,6 +61,8 @@ function Profile(): ReactNode {
             firstname: '',
             lastname: '',
             street: '',
+            street_number: '',
+            house_number: '',
             city: '',
             state: '',
             country: '',
@@ -75,9 +81,9 @@ function Profile(): ReactNode {
         setIsEditing(false)
     }
 
-    function handleOpenConfirmation({ firstname, lastname, street, city, state, country, zipcode, phone, email }: OpenConfirmationProps) {
+    function handleOpenConfirmation({ firstname, lastname, street, street_number, city, state, country, zipcode, phone, email }: OpenConfirmationProps) {
 
-        if (!firstname || !lastname || !street || !phone || !city || !state || !country || !email || !zipcode) {
+        if (!firstname || !lastname || !street || !street_number || !phone || !city || !state || !country || !email || !zipcode) {
             toast.error('You must provide all the values.')
             return
         }
@@ -142,16 +148,17 @@ function Profile(): ReactNode {
                                                     <input {...register('phone')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.phone !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Phone' />
 
                                                     <div className="flex gap-x-2 gap-y-2">
-                                                        <input {...register('street')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.street !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Street' />
-                                                        <input {...register('city')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.city !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='City' />
+                                                        <input {...register('country')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.country !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Country' />
+                                                        <input {...register('state')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.state !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='State' />
                                                     </div>
                                                     <div className="flex gap-x-2 gap-y-2">
-                                                        <input {...register('state')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.state !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='State' />
-                                                        <input {...register('country')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.country !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Country' />
+                                                        <input {...register('city')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.city !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='City' />
+                                                        <input {...register('street')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.street !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Street' />
                                                     </div>
                                                     <div className="flex gap-x-5 gap-y-2">
-                                                        <div className='w-full'></div>
-                                                        <input {...register('zipcode')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.country !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Zipcode' />
+                                                        <input {...register('street_number')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.street_number !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Street Number' />
+                                                        <input {...register('house_number')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.house_number !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='House Number' />
+                                                        <input {...register('zipcode')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.zipcode !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Zipcode' />
                                                     </div>
 
                                                     <div className="w-full flex justify-end gap-x-2 mt-5">
@@ -217,7 +224,14 @@ function Profile(): ReactNode {
                             <div className="flex flex-col gap-y-1">
                                 <p className='text-[1rem] text-sym_gray-400 font-light'>{getValues().email}</p>
                                 <p className='text-[1rem] text-sym_gray-400 font-light'>{getValues().phone}</p>
-                                <p className='text-[1rem] text-sym_gray-400 font-light'>{getValues().street}</p>
+                                <div className="flex gap-x-2">
+                                    <p className='text-[1rem] text-sym_gray-400 font-light'>{`${getValues().street} ${getValues().street_number}`}</p>
+                                    {
+                                        getValues().house_number !== undefined && (
+                                            <p className='text-[1rem] text-sym_gray-400 font-light'>{`#${getValues().house_number}`}</p>
+                                        )
+                                    }
+                                </div>
                                 <p className='text-[1rem] text-sym_gray-400 font-light'>{getValues().city}</p>
                                 <p className='text-[1rem] text-sym_gray-400 font-light'>{getValues().state}</p>
                                 <p className='text-[1rem] text-sym_gray-400 font-light'>{getValues().country}</p>

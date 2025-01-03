@@ -12,6 +12,9 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from 'yup'
 
 import { StoreProps } from "@/utils/types"
+import { updateOrderAddressAsync } from "@/features/cart/cartSlice"
+import { toast } from "react-toastify"
+import { useNavigate } from "react-router-dom"
 
 interface PlaceAutocompleteProps {
     onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void
@@ -44,10 +47,12 @@ const schema = yup
 
 const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompleteProps) => {
 
+    const navigate = useNavigate()
     const dispatch: AppDispatch = useDispatch()
     const id = useSelector((state: StoreProps) => state.userAuth.user).id
     const user = useSelector((state: StoreProps) => state.userAuth.userData)
     const isLoading = useSelector((state: StoreProps) => state.userAuth.isLoading)
+    const updateAddressError = useSelector((state: StoreProps) => state.cart.hasError)
     const [placeAutocomplete, setPlaceAutocomplete] = useState<google.maps.places.Autocomplete | null>(null)
     const [billingAddress, setBillingAddress] = useState<BillingAddressProps | null>(null)
     const [gotAddress, setGotAddress] = useState<boolean>(false)
@@ -86,6 +91,9 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
             lastname: user.lastname,
             email: user.email,
             phone: user.phone,
+        }
+
+        const updatedAddress = {
             street: getValues().street,
             street_number: getValues().street_number,
             house_number: getValues().house_number,
@@ -94,9 +102,21 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
             country: getValues().country,
             zipcode: getValues().zipcode
         }
-        const { payload } = await dispatch(updateUserByIdAsync(updatedUser))
+
+        const { payload } = await dispatch(updateUserByIdAsync({ ...updatedUser, ...updatedAddress }))
         if (payload.updatedUser) {
-            setUserWasUpdated(true)
+            const buyOrder = localStorage.getItem('marketplace-order')
+            if (buyOrder) {
+                const { payload } = await dispatch(updateOrderAddressAsync({ address: updatedAddress, buyOrder }))
+                if (payload.message) {
+                    setUserWasUpdated(true)
+                }
+            } else {
+                toast.error('Order could not be completed, please try again.')
+                setTimeout(() => {
+                    navigate('/')
+                }, 2000)
+            }
         }
     }
 
@@ -105,7 +125,7 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
     }, [])
 
     useEffect(() => {
-        if (user.street && user.city && user.state && user.country && user.zipcode) {
+        if (user) {
             setValue('country', user.country)
             setValue('state', user.state)
             setValue('city', user.city)
@@ -126,6 +146,7 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
         }
 
         setPlaceFromUser(true)
+        setGotAddress(true)
     }, [user])
 
     useEffect(() => {
@@ -174,6 +195,15 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
             scrollToElement()
         }
     }, [gotAddress])
+
+    useEffect(() => {
+        if (updateAddressError) {
+            toast.error('There was an error from our part, please try again.')
+            setTimeout(() => {
+                window.location.reload()
+            }, 3000)
+        }
+    }, [updateAddressError])
 
     return (
         <div className="flex flex-col gap-y-10 pt-10">
@@ -230,12 +260,12 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
                                 </div>
                             </form>
                             <div>
-                                <button disabled={userWasUpdated} onClick={handleSaveDefaultAddress} className={`h-8 w-full bg-[#ffffff] ${userWasUpdated ? 'bg-green-400 cursor-not-allowed' : 'text-[#10100e] hover:bg-indigo-500 active:bg-[#ffffff]'} flex justify-center items-center`}>{isLoading ?
+                                <button disabled={userWasUpdated} onClick={handleSaveDefaultAddress} className={`h-8 w-full bg-[#ffffff] ${updateAddressError ? 'bg-red-600 text-[#ffffff]' : userWasUpdated ? 'bg-green-400 cursor-not-allowed' : 'text-[#10100e] hover:bg-indigo-500 active:bg-[#ffffff]'} flex justify-center items-center`}>{isLoading ?
                                     <RotatingLines
                                         width="30"
                                         strokeColor={'#10100e'}
                                     />
-                                    : userWasUpdated ? 'Saved' : 'Save Default Address'}</button>
+                                    : updateAddressError ? 'Error' : userWasUpdated ? 'Saved' : 'Save Default Address'}</button>
                             </div>
                         </section>
                         <div className="flex flex-col gap-y-5 pb-20">

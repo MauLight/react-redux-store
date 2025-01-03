@@ -62,7 +62,6 @@ export const updateUserByIdAsync = createAsyncThunk(
                     'Content-Type': 'application/json'
                 }
             })
-            toast.success('User updated succesfully.')
             return data
         } catch (error) {
             return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
