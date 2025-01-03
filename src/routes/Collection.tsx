@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { StoreProps } from '@/utils/types'
 import { AppDispatch } from '@/store/store'
 import { clearSortedProducts, getAllProductsAsync, getProductsBySearchWordAsync, getProductSortedByPriceAsync } from '@/features/products/productsSlice'
+import EmptyList from '@/components/common/EmptyList'
 
 interface CollectionProps {
     title: string
@@ -14,12 +15,15 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
     const dispatch: AppDispatch = useDispatch()
     const products = useSelector((state: StoreProps) => state.inventory.products)
     const sortedCollection = useSelector((state: StoreProps) => state.inventory.sortedProducts)
+    const searchingIsLoading = useSelector((state: StoreProps) => state.inventory.productsAreLoading)
 
     const [inputValue, setInputValue] = useState<string>('')
     const [loading, setLoading] = useState<boolean>(true)
     const [openSortMenu, setOpenSortMenu] = useState<boolean>(false)
     const [focusX, setFocusX] = useState<boolean>(false)
     const [isInputFocused, setIsInputFocused] = useState<boolean>(false)
+
+    const [isSearching, setIsSearching] = useState<boolean>(false)
 
     async function getCollection() {
         await dispatch(getAllProductsAsync())
@@ -38,6 +42,9 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
 
     async function handleSubmitSearch(e: HandleSubmitSearchEvent): Promise<void> {
         if (e.key === 'Enter') {
+            if (!isSearching) {
+                setIsSearching(true)
+            }
             await dispatch(getProductsBySearchWordAsync(inputValue))
         }
     }
@@ -45,6 +52,7 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
     function handleClearInput() {
         dispatch(clearSortedProducts())
         setInputValue('')
+        setIsSearching(false)
     }
 
 
@@ -63,6 +71,12 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
     }, [products])
 
 
+    useEffect(() => {
+        if (inputValue === '') {
+            setIsSearching(false)
+        }
+        console.log(isSearching)
+    }, [isSearching, inputValue])
 
     return (
         <main className='relative w-screen min-h-screen flex flex-col justify-center items-center pb-20'>
@@ -79,7 +93,7 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
                             <i className="absolute top-8 left-3 fa-xl fa-solid fa-magnifying-glass text-sym_gray-300"></i>
                             {
                                 inputValue.length > 0 && (
-                                    <i onClick={handleClearInput} className={`absolute top-[23px] right-2 fa-regular fa-circle-xmark ${focusX ? 'text-[#10100e]' : 'text-[#ffffff]'}`}></i>
+                                    <i onClick={handleClearInput} className={`absolute top-[23px] right-2 fa-regular fa-circle-xmark cursor-pointer ${focusX ? 'text-[#10100e]' : 'text-[#ffffff]'}`}></i>
                                 )
                             }
                             <input
@@ -105,15 +119,22 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
                     </nav>
                 </section>
                 {
-                    !loading ? (
+                    !loading && !searchingIsLoading ? (
                         <section className="w-full min-web:w-[1440px] h-full grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3 gap-5">
                             {
-                                sortedCollection.length > 0 && sortedCollection.map((product) => (
+                                isSearching && sortedCollection.length === 0 && (
+                                    <section className="border col-span-3">
+                                        <EmptyList />
+                                    </section>
+                                )
+                            }
+                            {
+                                isSearching && sortedCollection.length > 0 && sortedCollection.map((product) => (
                                     <ProductCard key={`${product.image + product.id}`} product={product} />
                                 ))
                             }
                             {
-                                sortedCollection.length === 0 && products.map((product) => (
+                                !isSearching && products.map((product) => (
                                     <ProductCard key={`${product.image + product.id}`} product={product} />
                                 ))
                             }

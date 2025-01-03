@@ -57,6 +57,7 @@ export const getProductsBySearchWordAsync = createAsyncThunk(
     'products/getProductsBySearchWord', async (searchWord: string, { rejectWithValue }) => {
         try {
             const { data } = await axios.get(`${url}/products/search?searchWord=${searchWord}`)
+            console.log(data, 'THE DATA')
             return data
         } catch (error) {
             console.error((error as AxiosError).message)
