@@ -27,7 +27,6 @@ function Layout() {
     const [showScrollButton, setShowScrollButton] = useState<boolean>(false)
 
     function scrollToTop() {
-        console.log('here', window.scrollY)
         window.scrollTo({
             top: 0,
             behavior: 'smooth'

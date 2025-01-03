@@ -53,11 +53,22 @@ export const getProductSortedByPriceAsync = createAsyncThunk(
     }
 )
 
+export const getProductSortedByAlphabetAsync = createAsyncThunk(
+    'products/getProductSortedByAlphabet', async ({ order }: { order: string }, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.get(`${url}/products/sorted-alphabet/${order}`)
+            return data
+        } catch (error) {
+            console.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
 export const getProductsBySearchWordAsync = createAsyncThunk(
     'products/getProductsBySearchWord', async (searchWord: string, { rejectWithValue }) => {
         try {
             const { data } = await axios.get(`${url}/products/search?searchWord=${searchWord}`)
-            console.log(data, 'THE DATA')
             return data
         } catch (error) {
             console.error((error as AxiosError).message)
@@ -234,6 +245,25 @@ export const productsSlice = createSlice({
             )
             .addCase(
                 getProductSortedByPriceAsync.rejected, (state, _action) => {
+                    state.productsAreLoading = false
+                    state.productsHasError = true
+                }
+            )
+            .addCase(
+                getProductSortedByAlphabetAsync.pending, (state, _action) => {
+                    state.productsAreLoading = true
+                    state.productsHasError = false
+                }
+            )
+            .addCase(
+                getProductSortedByAlphabetAsync.fulfilled, (state, action) => {
+                    state.productsAreLoading = false
+                    state.productsHasError = false
+                    state.sortedProducts = action.payload.products
+                }
+            )
+            .addCase(
+                getProductSortedByAlphabetAsync.rejected, (state, _action) => {
                     state.productsAreLoading = false
                     state.productsHasError = true
                 }

@@ -20,7 +20,6 @@ const TopBar = (): ReactElement => {
   const [hamburgerIsOpen, setHamburgerIsOpen] = useState<boolean>(false)
 
   function handleLogOut() {
-    console.log('Logout!')
     localStorage.removeItem('marketplace-user')
     window.location.reload()
   }

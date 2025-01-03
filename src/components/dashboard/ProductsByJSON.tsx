@@ -20,7 +20,6 @@ export default function ProductsByJSON(): ReactNode {
             replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
             const { payload } = await dispatch(postProductsAsync({ products: data }))
             if (payload) {
-                console.log(payload)
                 toast.success(payload.message)
                 setData('')
             } else {

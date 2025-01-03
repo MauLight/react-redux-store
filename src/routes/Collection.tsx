@@ -4,7 +4,7 @@ import video from '@/assets/video/Alien.webm'
 import { useDispatch, useSelector } from 'react-redux'
 import { StoreProps } from '@/utils/types'
 import { AppDispatch } from '@/store/store'
-import { clearSortedProducts, getAllProductsAsync, getProductsBySearchWordAsync, getProductSortedByPriceAsync } from '@/features/products/productsSlice'
+import { clearSortedProducts, getAllProductsAsync, getProductsBySearchWordAsync, getProductSortedByAlphabetAsync, getProductSortedByPriceAsync } from '@/features/products/productsSlice'
 import EmptyList from '@/components/common/EmptyList'
 
 interface CollectionProps {
@@ -24,6 +24,7 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
     const [isInputFocused, setIsInputFocused] = useState<boolean>(false)
 
     const [isSearching, setIsSearching] = useState<boolean>(false)
+    const [isSorting, setIsSorting] = useState<boolean>(false)
 
     async function getCollection() {
         await dispatch(getAllProductsAsync())
@@ -35,6 +36,13 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
 
     async function handleSortProductsByPrice(order: string) {
         await dispatch(getProductSortedByPriceAsync({ order }))
+        setIsSorting(true)
+        setOpenSortMenu(false)
+    }
+
+    async function handleSortProductsByAlphabet(order: string) {
+        await dispatch(getProductSortedByAlphabetAsync({ order }))
+        setIsSorting(true)
         setOpenSortMenu(false)
     }
 
@@ -75,7 +83,6 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
         if (inputValue === '') {
             setIsSearching(false)
         }
-        console.log(isSearching)
     }, [isSearching, inputValue])
 
     return (
@@ -111,8 +118,11 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
                             {
                                 openSortMenu &&
                                 <div className="absolute top-[60px] left-0 w-full flex flex-col bg-[#ffffff] z-20">
+                                    <button onClick={() => { setIsSorting(false) }} className='h-[60px] hover:text-indigo-500 transition-color duration-200'>Recommended</button>
                                     <button onClick={() => { handleSortProductsByPrice('asc') }} className='h-[60px] hover:text-indigo-500 transition-color duration-200'>Low to Hight</button>
                                     <button onClick={() => { handleSortProductsByPrice('des') }} className='h-[60px] hover:text-indigo-500 transition-color duration-200'>Hight to Low</button>
+                                    <button onClick={() => { handleSortProductsByAlphabet('asc') }} className='h-[60px] hover:text-indigo-500 transition-color duration-200'>Title A to Z</button>
+                                    <button onClick={() => { handleSortProductsByAlphabet('des') }} className='h-[60px] hover:text-indigo-500 transition-color duration-200'>Title Z to A</button>
                                 </div>
                             }
                         </div>
@@ -134,7 +144,12 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
                                 ))
                             }
                             {
-                                !isSearching && products.map((product) => (
+                                isSorting && sortedCollection.length > 0 && sortedCollection.map((product) => (
+                                    <ProductCard key={`${product.image + product.id}`} product={product} />
+                                ))
+                            }
+                            {
+                                !isSearching && !isSorting && products.map((product) => (
                                     <ProductCard key={`${product.image + product.id}`} product={product} />
                                 ))
                             }
