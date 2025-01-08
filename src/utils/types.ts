@@ -1,8 +1,8 @@
 export interface ProductProps {
-    id: string
+    id?: string
     description: string
     title: string
-    image: string
+    image?: string
     price: number
     fullPrice: number
     rating?: {

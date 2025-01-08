@@ -1,4 +1,5 @@
-import { Dispatch, SetStateAction, useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 interface NavbarButtonMobileProps {
     title: string
@@ -20,11 +21,24 @@ function NavbarButtonMobile({ title, icon, wasPressed, handlePressButton }: Navb
 
 function DashboardNavbar(): ReactNode {
 
+    const navigate = useNavigate()
+    const { pathname } = useLocation()
+
     const [{ one, two, three }, setNavState] = useState<Record<string, boolean>>({
         one: true,
         two: false,
         three: false
     })
+
+    useEffect(() => {
+        if (one && !pathname.includes('settings')) {
+            //navigate('/admin/settings')
+        } else if (two && !pathname.includes('products')) {
+            navigate('/admin/products')
+        } else if (three && !pathname.includes('collections')) {
+            navigate('/admin/collections')
+        }
+    }, [one, two, three])
 
     return (
         <>
