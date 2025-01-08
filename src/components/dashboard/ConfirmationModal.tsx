@@ -41,7 +41,7 @@ export default function ConfirmationModal({ product, setConfirmationDialogue, ha
                         <h2 className='text-[2.5rem] font-light text-sym_gray-600 text-balance uppercase'>{product.title}</h2>
                         <div className='flex justify-end gap-x-2'>
                             <p className='text-[3rem] text-end'>{`$${product.price}`}</p>
-                            <p className='text-[1.5rem] str font-light text-sym_gray-200 text-end uppercase line-through'>{product.fullPrice}</p>
+                            <p className='text-[1.5rem] str font-light text-sym_gray-200 text-end uppercase line-through'>{product.discount}</p>
                         </div>
                         <button className='h-10 px-2 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e]'>Add to cart</button>
                         <div className="border-b border-sym_gray-600 mt-10 mb-5"></div>

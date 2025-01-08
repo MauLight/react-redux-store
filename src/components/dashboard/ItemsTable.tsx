@@ -17,7 +17,7 @@ const paginatedProductsSelector = selector({
     }
 })
 
-export default function ItemsTable(): ReactNode {
+function ProductsTable(): ReactNode {
     const products = useRecoilValue(paginatedProductsSelector)
     const setCurrentPage = useSetRecoilState(currentPageState)
     const currentPage = useRecoilValue(currentPageState)
@@ -61,3 +61,5 @@ function Tableheader() {
         </div>
     )
 }
+
+export default ProductsTable

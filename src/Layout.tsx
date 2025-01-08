@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useState } from 'react'
 import { Routes, Route, useLocation, useMatch } from 'react-router-dom'
 
 import TopBar from './components/common/TopBar'
+import DashboardHeader from './components/dashboard/DashboardHeader'
 import ErrorBoundary from './components/error/ErrorBoundary'
 import Fallback from './components/common/Fallback'
 import ScrollToTop from './ScrollToTop'
@@ -14,6 +15,7 @@ const Collection = lazy(async () => await import('./routes/Collection'))
 const IndividualProduct = lazy(async () => await import('./routes/IndividualProduct'))
 const AdminLogin = lazy(async () => await import('./routes/AdminLogin'))
 const Dashboard = lazy(async () => await import('./routes/Dashboard'))
+const Products = lazy(async () => await import('./routes/Products'))
 const Checkout = lazy(async () => await import('./routes/Checkout'))
 const NotFound = lazy(async () => await import('./routes/NotFound'))
 const Confirmation = lazy(async () => await import('@/routes/Confirmation'))
@@ -21,6 +23,7 @@ const Confirmation = lazy(async () => await import('@/routes/Confirmation'))
 function Layout() {
     const { pathname } = useLocation()
     const hideTopbar = pathname.includes('sign') || pathname.includes('login') || pathname.includes('admin') || pathname.includes('confirmation')
+    const isAdmin = pathname.includes('admin')
 
     const matchId = useMatch('/product/:id')
     const productId = matchId?.params.id
@@ -50,6 +53,11 @@ function Layout() {
             {
                 !hideTopbar && <TopBar />
             }
+            {
+                isAdmin && (
+                    <DashboardHeader />
+                )
+            }
             <ErrorBoundary>
                 <Suspense fallback={<Fallback />}>
                     <ScrollToTop>
@@ -62,6 +70,7 @@ function Layout() {
                             <Route path='/product/:id' element={<IndividualProduct id={productId ? productId : undefined} />} />
                             <Route path='/admin/login' element={<AdminLogin />} />
                             <Route path='/admin' element={<Dashboard />} />
+                            <Route path='/admin/products' element={<Products />} />
                             <Route path='/checkout' element={<Checkout />} />
                             <Route path='/confirmation' element={<Confirmation />} />
                             <Route path='*' element={<NotFound />} />
