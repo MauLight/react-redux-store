@@ -4,7 +4,7 @@ export interface ProductProps {
     title: string
     image?: string
     price: number
-    fullPrice: number
+    discount: number
     rating?: {
         productId: string
         ratings: Array<number>

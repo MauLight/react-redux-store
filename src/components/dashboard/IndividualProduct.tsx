@@ -13,16 +13,16 @@ export const productSchema = yup.object().shape({
     title: yup.string().required('Title is required'),
     description: yup.string().required('Description is required'),
     image: yup.string().url('Image must be a valid URL'),
+    price: yup.number().required(),
+    discount: yup.number().required()
 })
 
 function IndividualProduct(): ReactNode {
     const dispatch: AppDispatch = useDispatch()
     const [confirmationDialogue, setConfirmationDialogue] = useState<boolean>(false)
-    const [percentage, setPercentage] = useState<number>(25)
-    const [fullPrice, setFullPrice] = useState<number>(0)
-    const [price, setPrice] = useState<number>(0)
+    const [priceWithDiscount, setPriceWithDiscount] = useState<number>(0)
 
-    const { register, getValues, handleSubmit, reset, formState: { errors } } = useForm({
+    const { watch, register, getValues, handleSubmit, reset, formState: { errors } } = useForm({
         defaultValues: {
             title: '',
             description: '',
@@ -30,6 +30,7 @@ function IndividualProduct(): ReactNode {
         },
         resolver: yupResolver(productSchema)
     })
+    const watchedValues = watch(['price', 'discount'])
 
     const onSubmit = () => {
         setConfirmationDialogue(true)
@@ -41,14 +42,14 @@ function IndividualProduct(): ReactNode {
         const isUrl = /^(https?:\/\/)?((([a-zA-Z0-9$_.+!*'(),;?&=-]|%[0-9a-fA-F]{2})+:)*([a-zA-Z0-9$_.+!*'(),;?&=-]|%[0-9a-fA-F]{2})+@)?(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)|([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(:[0-9]+)?(\/([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)*(\?([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)?(#([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)?$/.test(data.image as string)
 
         if (!isUrl) {
-            const { payload } = await dispatch(postIndividualProductAsync({ ...data, image: 'https://dummyimage.com/600x400/000/fff', fullPrice, price }))
+            const { payload } = await dispatch(postIndividualProductAsync({ ...data, image: 'https://dummyimage.com/600x400/000/fff' }))
             if (payload) {
                 toast.success(payload.message)
             } else {
                 toast.error('There was an error with your request.')
             }
         } else {
-            const { payload } = await dispatch(postIndividualProductAsync({ ...data, fullPrice, price }))
+            const { payload } = await dispatch(postIndividualProductAsync({ ...data }))
             if (payload) {
                 toast.success(payload.message)
             } else {
@@ -60,13 +61,15 @@ function IndividualProduct(): ReactNode {
     }
 
     function getPercentage() {
-        const discount = (percentage / 100) * fullPrice
-        setPrice(fullPrice - discount)
+        const percentage = getValues().discount
+        const price = getValues().price
+        const discount = (percentage / 100) * price
+        setPriceWithDiscount(price - discount)
     }
 
     useEffect(() => {
         getPercentage()
-    }, [percentage, fullPrice])
+    }, [watchedValues])
 
     return (
         <>
@@ -111,44 +114,27 @@ function IndividualProduct(): ReactNode {
                         </div>
                         {errors.image && <small className="text-red-500">{errors.image.message}</small>}
                     </div>
-                    {/* 
                     <div className="flex flex-col gap-y-2">
                         <div className="flex flex-col gap-y-1">
-                            <label className='text-[0.8rem]' htmlFor="description">Rating</label>
+                            <label className='text-[0.8rem]' htmlFor="description">Price</label>
                             <input
-                                {...register('rating')}
-                                type="number"
-                                className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.rating !== undefined ? 'ring-1 ring-red-500' : ''}`}
-                                placeholder='Rating'
-                            />
-                        </div>
-                        {errors.rating && <small className="text-red-500">{errors.rating.message}</small>}
-                    </div> */}
-
-                    <div className="flex flex-col gap-y-2">
-                        <div className="flex flex-col gap-y-1">
-                            <label className='text-[0.8rem]' htmlFor="description">Full price</label>
-                            <input
-                                value={fullPrice}
-                                onChange={({ target }) => { setFullPrice(Number(target.value)) }}
-                                type="number"
-                                className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${fullPrice === 0 ? 'ring-1 ring-red-500' : ''}`}
+                                {...register('price')}
+                                className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.price !== undefined ? 'ring-1 ring-red-500' : ''}`}
                                 placeholder='Full price'
                             />
                         </div>
-                        {fullPrice === 0 && <small className="text-red-500">{'Full price value is missing.'}</small>}
+                        {errors.price && <small className="text-red-500">{errors.price.message}</small>}
                     </div>
 
                     <div className="flex flex-col gap-y-2">
                         <div className="flex flex-col gap-y-1">
                             <label className='text-[0.8rem]' htmlFor="description">{'Discount (leave empty if no discount)'}</label>
                             <input
-                                value={percentage}
-                                onChange={({ target }) => { setPercentage(Number(target.value)) }}
-                                type="number"
+                                {...register('discount')}
                                 className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`}
                             />
                         </div>
+                        {errors.discount && <small className="text-red-500">{errors.discount.message}</small>}
                     </div>
 
                     <div className="flex flex-col gap-y-2">
@@ -156,7 +142,7 @@ function IndividualProduct(): ReactNode {
                             <label className='text-[0.8rem]' htmlFor="description">Price with discount</label>
                             <input
                                 disabled
-                                value={price}
+                                value={priceWithDiscount}
                                 type="number"
                                 className={`w-full h-9 bg-gray-50 rounded-[3px] border border-indigo-500 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`}
                             />
@@ -171,7 +157,7 @@ function IndividualProduct(): ReactNode {
                 confirmationDialogue && (
                     <Modal openModal={confirmationDialogue} handleOpenModal={() => { setConfirmationDialogue(!confirmationDialogue) }}>
                         <ConfirmationModal
-                            product={{ ...getValues(), price, fullPrice }}
+                            product={{ ...getValues() }}
                             setConfirmationDialogue={setConfirmationDialogue}
                             handlePostProduct={handlePostProduct}
                         />
