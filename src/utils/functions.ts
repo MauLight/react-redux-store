@@ -1,3 +1,4 @@
+import { toast } from "react-toastify"
 
 export const degToRad = (deg: number) => deg * Math.PI / 180
 export const randRange = (min: number, max: number) => Math.random() * (max - min) + min
@@ -22,4 +23,9 @@ export const fadeIn = (direction: string, delay: number) => {
       }
     }
   }
+}
+
+export function handleCopyToClipboard(text: string, message: string) {
+  navigator.clipboard.writeText(text)
+  toast.success(message)
 }

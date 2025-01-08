@@ -1,13 +1,17 @@
 import { postIndividualProductAsync } from '@/features/products/productsSlice'
 import { AppDispatch } from '@/store/store'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import * as yup from 'yup'
 import { Modal } from '../common/Modal'
 import ConfirmationModal from './ConfirmationModal'
+import axios from 'axios'
+import { handleCopyToClipboard } from '@/utils/functions'
+
+const CloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME
 
 export const productSchema = yup.object().shape({
     title: yup.string().required('Title is required'),
@@ -22,7 +26,8 @@ function IndividualProduct(): ReactNode {
     const [confirmationDialogue, setConfirmationDialogue] = useState<boolean>(false)
     const [priceWithDiscount, setPriceWithDiscount] = useState<number>(0)
 
-    const { watch, register, getValues, handleSubmit, reset, formState: { errors } } = useForm({
+    //* UseForm State
+    const { watch, register, getValues, setValue, handleSubmit, reset, formState: { errors } } = useForm({
         defaultValues: {
             title: '',
             description: '',
@@ -34,6 +39,33 @@ function IndividualProduct(): ReactNode {
 
     const onSubmit = () => {
         setConfirmationDialogue(true)
+    }
+
+    //* Cloudinary state
+    const [cloudinaryFileUpload, setCloudinaryFileUpload] = useState<string | null>(null)
+    const fileInputRef = useRef<HTMLInputElement>(null)
+    const handleFileButtonClick = (): void => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click()
+        }
+    }
+
+    const postToCloudinary = async (formData: FormData): Promise<any> => {
+        const { data } = await axios.post(`https://api.cloudinary.com/v1_1/${CloudinaryCloudName}/image/upload`, formData)
+        return data
+    }
+
+    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+        event.preventDefault()
+        const formData = new FormData()
+        if (event.target.files !== null) {
+            formData.append('file', event.target.files[0])
+            formData.append('upload_preset', 'marketplace')
+        }
+
+        const response = await postToCloudinary(formData)
+        setCloudinaryFileUpload(response.secure_url)
+        setValue('image', response.secure_url)
     }
 
     async function handlePostProduct() {
@@ -71,84 +103,110 @@ function IndividualProduct(): ReactNode {
         getPercentage()
     }, [watchedValues])
 
+
     return (
         <>
             <form onSubmit={handleSubmit(onSubmit)} className='w-full col-span-1 flex flex-col gap-y-5 px-4 md:px-10 py-10 bg-[#ffffff] border-x border-sym_gray-400'>
                 <h1 className='text-[1.5rem] sm:text-[2rem] text-balance leading-tight uppercase'>Add individual products here:</h1>
-                <div className='flex flex-col gap-y-5'>
-                    <div className="flex flex-col gap-y-2">
-                        <div className="flex flex-col gap-y-1">
-                            <label className='text-[0.8rem]' htmlFor="description">Title</label>
-                            <input
-                                {...register('title')}
-                                type="text"
-                                className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.title !== undefined ? 'ring-1 ring-red-500' : ''}`}
-                                placeholder='Title'
-                            />
+                <div className="flex">
+                    <div className='w-2/3 flex flex-col gap-y-5'>
+                        <div className="flex flex-col gap-y-2">
+                            <div className="flex flex-col gap-y-1">
+                                <label className='text-[0.8rem]' htmlFor="description">Title</label>
+                                <input
+                                    {...register('title')}
+                                    type="text"
+                                    className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.title !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                                    placeholder='Title'
+                                />
+                            </div>
+                            {errors.title && <small className="text-red-500">{errors.title.message}</small>}
                         </div>
-                        {errors.title && <small className="text-red-500">{errors.title.message}</small>}
-                    </div>
 
-                    <div className="flex flex-col gap-y-2">
-                        <div className="flex flex-col gap-y-1">
-                            <label className='text-[0.8rem]' htmlFor="description">Description</label>
-                            <input
-                                {...register('description')}
-                                type="text"
-                                className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.description !== undefined ? 'ring-1 ring-red-500' : ''}`}
-                                placeholder='Description'
-                            />
+                        <div className="flex flex-col gap-y-2">
+                            <div className="flex flex-col gap-y-1">
+                                <label className='text-[0.8rem]' htmlFor="description">Description</label>
+                                <input
+                                    {...register('description')}
+                                    type="text"
+                                    className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.description !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                                    placeholder='Description'
+                                />
+                            </div>
+                            {errors.description && <small className="text-red-500">{errors.description.message}</small>}
                         </div>
-                        {errors.description && <small className="text-red-500">{errors.description.message}</small>}
-                    </div>
 
-                    <div className="flex flex-col gap-y-2">
-                        <div className="flex flex-col gap-y-1">
-                            <label className='text-[0.8rem]' htmlFor="description">Image</label>
-                            <input
-                                {...register('image')}
-                                type="text"
-                                className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.image !== undefined ? 'ring-1 ring-red-500' : ''}`}
-                                placeholder='Image'
-                            />
+                        <div className="flex flex-col gap-y-2">
+                            <div className="relative flex flex-col gap-y-1">
+                                <label className='text-[0.8rem]' htmlFor="description">Image</label>
+                                <input
+                                    disabled
+                                    {...register('image')}
+                                    type="text"
+                                    className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none pl-2 pr-10 truncate placeholder-sym_gray-500 ${errors.image !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                                    placeholder='Image'
+                                />
+                                {
+                                    cloudinaryFileUpload && <i onClick={() => { handleCopyToClipboard(cloudinaryFileUpload, 'URL copied to clipboard.') }} className="absolute top-8 right-2 hover:text-indigo-500 active:text-[#10100e] cursor-pointer transition-color duration-200 fa-solid fa-clipboard"></i>
+                                }
+                            </div>
+                            {errors.image && <small className="text-red-500">{errors.image.message}</small>}
                         </div>
-                        {errors.image && <small className="text-red-500">{errors.image.message}</small>}
-                    </div>
-                    <div className="flex flex-col gap-y-2">
-                        <div className="flex flex-col gap-y-1">
-                            <label className='text-[0.8rem]' htmlFor="description">Price</label>
-                            <input
-                                {...register('price')}
-                                className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.price !== undefined ? 'ring-1 ring-red-500' : ''}`}
-                                placeholder='Full price'
-                            />
+                        <div className="flex flex-col gap-y-2">
+                            <div className="flex flex-col gap-y-1">
+                                <label className='text-[0.8rem]' htmlFor="description">Price</label>
+                                <input
+                                    {...register('price')}
+                                    className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.price !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                                    placeholder='Price'
+                                />
+                            </div>
+                            {errors.price && <small className="text-red-500">{errors.price.message}</small>}
                         </div>
-                        {errors.price && <small className="text-red-500">{errors.price.message}</small>}
-                    </div>
 
-                    <div className="flex flex-col gap-y-2">
-                        <div className="flex flex-col gap-y-1">
-                            <label className='text-[0.8rem]' htmlFor="description">{'Discount (leave empty if no discount)'}</label>
-                            <input
-                                {...register('discount')}
-                                className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`}
-                            />
+                        <div className="flex flex-col gap-y-2">
+                            <div className="flex flex-col gap-y-1">
+                                <label className='text-[0.8rem]' htmlFor="description">{'Discount (leave empty if no discount)'}</label>
+                                <input
+                                    {...register('discount')}
+                                    className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`}
+                                />
+                            </div>
+                            {errors.discount && <small className="text-red-500">{errors.discount.message}</small>}
                         </div>
-                        {errors.discount && <small className="text-red-500">{errors.discount.message}</small>}
-                    </div>
 
-                    <div className="flex flex-col gap-y-2">
-                        <div className="flex flex-col gap-y-1">
-                            <label className='text-[0.8rem]' htmlFor="description">Price with discount</label>
-                            <input
-                                disabled
-                                value={priceWithDiscount}
-                                type="number"
-                                className={`w-full h-9 bg-gray-50 rounded-[3px] border border-indigo-500 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`}
-                            />
+                        <div className="flex flex-col gap-y-2">
+                            <div className="flex flex-col gap-y-1">
+                                <label className='text-[0.8rem]' htmlFor="description">Price with discount</label>
+                                <input
+                                    disabled
+                                    value={priceWithDiscount}
+                                    type="number"
+                                    className={`w-full h-9 bg-gray-50 rounded-[3px] border border-indigo-500 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`}
+                                />
+                            </div>
                         </div>
-                    </div>
 
+                    </div>
+                    <div className='w-1/3 h-full pt-5 pl-5'>
+                        {
+                            cloudinaryFileUpload ? (
+                                <div className='h-[436px] rounded-[5px] overflow-hidden'>
+                                    <img src={cloudinaryFileUpload} alt="product" className='object-cover' />
+                                </div>
+                            )
+                                :
+                                (
+                                    <div className='h-[436px] border border-dashed border-sym_gray-300 rounded-[5px] p-2'>
+                                        <button type='button' className='w-full h-full flex flex-col justify-center items-center gap-y-3 hover:text-indigo-500 active:text-[#10100e] transition-color duration-200' onClick={handleFileButtonClick}>
+                                            <i className="fa-solid fa-cloud-arrow-up fa-xl"></i>
+                                            Upload file
+                                        </button>
+                                        <input type='file' ref={fileInputRef} onChange={handleFileUpload} className='hidden' />
+                                    </div>
+                                )
+                        }
+                    </div>
                 </div>
 
                 <button type="submit" className='h-10 bg-[#10100e] text-[#ffffff] mt-2'>Submit</button>

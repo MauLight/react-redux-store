@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react'
 import ProductsByJSON from '@/components/dashboard/ProductsByJSON'
 import IndividualProduct from '@/components/dashboard/IndividualProduct'
-import ProductsTable from '@/components/dashboard/ItemsTable'
+import ProductsTable from '@/components/dashboard/ProductsTable'
 
 export default function Products(): ReactNode {
     return (

@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react'
-import ItemsTable from '@/components/dashboard/ItemsTable'
+import ItemsTable from '@/components/dashboard/ProductsTable'
 
 export default function Dashboard(): ReactNode {
 
