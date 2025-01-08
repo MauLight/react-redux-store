@@ -6,15 +6,16 @@ interface NavbarButtonMobileProps {
     icon: string
     wasPressed: boolean
     handlePressButton: () => void
+    fontSize?: string
 }
 
-function NavbarButtonMobile({ title, icon, wasPressed, handlePressButton }: NavbarButtonMobileProps) {
+function NavbarButton({ title, icon, wasPressed, handlePressButton, fontSize = '0.7rem' }: NavbarButtonMobileProps) {
 
 
     return (
-        <button onClick={handlePressButton} className={`flex flex-col gap-y-1 items-center justify-center w-full hover:bg-indigo-500 active:bg-[#ffffff] transition-color duration-200 ${wasPressed ? 'bg-indigo-500' : ''}`}>
-            <i className={`${icon}`}></i>
-            <p className='text-[0.7rem]'>{title}</p>
+        <button onClick={handlePressButton} className={`group flex max-sm:flex-col sm:gap-x-2 gap-y-1 items-center justify-center w-full hover:bg-indigo-500 active:bg-[#ffffff] border-r border-sym_gray-300 transition-color duration-200 ${wasPressed ? 'bg-indigo-500' : ''}`}>
+            <i className={`${icon} group-active:text-indigo-500`}></i>
+            <p className={`text-[${fontSize}] group-active:text-indigo-500`}>{title}</p>
         </button>
     )
 }
@@ -43,11 +44,15 @@ function DashboardNavbar(): ReactNode {
     return (
         <>
             <nav className='fixed bottom-0 left-0 z-20 flex justify-between px-5 sm:hidden h-12 w-full bg-[#ffffff] border-t border-sym_gray-300'>
-                <NavbarButtonMobile wasPressed={one} handlePressButton={() => { setNavState({ one: true, two: false, three: false }) }} title='Settings' icon='fa-solid fa-gear' />
-                <NavbarButtonMobile wasPressed={two} handlePressButton={() => { setNavState({ one: false, two: true, three: false }) }} title='Products' icon='fa-solid fa-cube' />
-                <NavbarButtonMobile wasPressed={three} handlePressButton={() => { setNavState({ one: false, two: false, three: true }) }} title='Collections' icon='fa-solid fa-cubes' />
+                <NavbarButton wasPressed={one} handlePressButton={() => { setNavState({ one: true, two: false, three: false }) }} title='Settings' icon='fa-solid fa-gear' />
+                <NavbarButton wasPressed={two} handlePressButton={() => { setNavState({ one: false, two: true, three: false }) }} title='Products' icon='fa-solid fa-cube' />
+                <NavbarButton wasPressed={three} handlePressButton={() => { setNavState({ one: false, two: false, three: true }) }} title='Collections' icon='fa-solid fa-cubes' />
             </nav>
-            <nav className='hidden sm:flex h-10 w-full bg-[#10100e] rounded-[10px]'></nav>
+            <nav className='hidden sm:flex h-12 w-full bg-[#ffffff] border-y border-l border-sym_gray-300'>
+                <NavbarButton fontSize='1rem' wasPressed={one} handlePressButton={() => { setNavState({ one: true, two: false, three: false }) }} title='Settings' icon='fa-solid fa-gear' />
+                <NavbarButton fontSize='1rem' wasPressed={two} handlePressButton={() => { setNavState({ one: false, two: true, three: false }) }} title='Products' icon='fa-solid fa-cube' />
+                <NavbarButton fontSize='1rem' wasPressed={three} handlePressButton={() => { setNavState({ one: false, two: false, three: true }) }} title='Collections' icon='fa-solid fa-cubes' />
+            </nav>
         </>
     )
 }
