@@ -43,7 +43,7 @@ function DashboardNavbar(): ReactNode {
 
     return (
         <>
-            <nav className='fixed bottom-0 left-0 z-20 flex justify-between px-5 sm:hidden h-12 w-full bg-[#ffffff] border-t border-sym_gray-300'>
+            <nav className='fixed bottom-0 left-0 z-20 flex justify-betwee sm:hidden h-12 w-full bg-[#ffffff] border-t border-sym_gray-300'>
                 <NavbarButton wasPressed={one} handlePressButton={() => { setNavState({ one: true, two: false, three: false }) }} title='Settings' icon='fa-solid fa-gear' />
                 <NavbarButton wasPressed={two} handlePressButton={() => { setNavState({ one: false, two: true, three: false }) }} title='Products' icon='fa-solid fa-cube' />
                 <NavbarButton wasPressed={three} handlePressButton={() => { setNavState({ one: false, two: false, three: true }) }} title='Collections' icon='fa-solid fa-cubes' />
