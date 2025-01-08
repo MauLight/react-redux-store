@@ -1,11 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
+import { useDispatch } from 'react-redux'
 
 import homeCollectionReducer from '../features/homeCollection/homeCollectionSlice'
 import cartReducer from '@/features/cart/cartSlice'
 import wishListReducer from '@/features/wishList/wishListSlice'
-import { useDispatch } from 'react-redux'
 import userAuthReducer from '@/features/userAuth/userAuthSlice'
 import productsReducer from '@/features/products/productsSlice'
+import collectionsReducer from '@/features/collections/collectionsSlice'
 
 const store = configureStore({
     reducer: {
@@ -13,7 +14,8 @@ const store = configureStore({
         homeCollection: homeCollectionReducer,
         cart: cartReducer,
         wishList: wishListReducer,
-        inventory: productsReducer
+        inventory: productsReducer,
+        collections: collectionsReducer
     }
 })
 

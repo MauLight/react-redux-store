@@ -29,6 +29,14 @@ export interface StoreProps {
         productsAreLoading: boolean
         productsHasError: boolean
     }
+    collections: {
+        collections: CollectionProps[]
+        collection: CollectionProps
+        nav: string[]
+        titles: string[]
+        isLoading: boolean
+        hasErrors: boolean
+    }
     userAuth: {
         user: Record<string, any>
         userData: Record<string, any>
@@ -107,3 +115,10 @@ export interface TransactionProps {
 }
 
 export interface WishlistItem { userId: string, productId: string }
+
+export interface CollectionProps {
+    id: string
+    title: string,
+    discount: number,
+    products: Array<ProductProps>
+}
