@@ -93,6 +93,7 @@ function IndividualProduct(): ReactNode {
         }
 
         setCloudinaryFileUpload(null)
+        setValue('image', '')
     }
 
     async function handlePostProduct() {
