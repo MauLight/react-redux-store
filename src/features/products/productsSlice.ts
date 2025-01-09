@@ -81,7 +81,6 @@ export const updateProductByIdAsync = createAsyncThunk(
     'products/updateProductById', async ({ id, values }: { id: string, values: OnSubmitFormValues }, { rejectWithValue }) => {
         try {
             const { data } = await axios.put(`${url}/products/${id}`, values)
-            toast.success('Product updated succesfully.')
             return data
         } catch (error) {
             console.error((error as AxiosError).message)
@@ -326,10 +325,10 @@ export const productsSlice = createSlice({
                 }
             )
             .addCase(
-                updateProductByIdAsync.fulfilled, (state, action) => {
+                updateProductByIdAsync.fulfilled, (state, _action) => {
                     state.productsAreLoading = false
                     state.productsHasError = false
-                    state.products = [...state.products.filter(product => product.id !== action.payload.updatedProduct), action.payload.updatedProduct]
+                    toast.success('Product updated succesfully.')
                 }
             )
             .addCase(

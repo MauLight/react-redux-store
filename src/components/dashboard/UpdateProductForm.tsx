@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useDispatch } from 'react-redux'
-import { updateProductByIdAsync } from '@/features/products/productsSlice'
+import { getAllProductsAsync, updateProductByIdAsync } from '@/features/products/productsSlice'
 import { AppDispatch } from '@/store/store'
 
 import axios from 'axios'
@@ -53,8 +53,9 @@ function UpdateProductForm({ product, handleOpenUpdateProduct }: IndividualProdu
     async function handleUpdateProduct(data: OnSubmitFormValues) {
         const { payload } = await dispatch(updateProductByIdAsync({ id: product.id as string, values: data }))
         if (payload.updatedProduct) {
-            reset()
+            await dispatch(getAllProductsAsync())
             handleOpenUpdateProduct()
+            reset()
         }
     }
 

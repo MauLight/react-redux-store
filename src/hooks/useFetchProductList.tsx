@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { atom, useRecoilValue, useSetRecoilState } from 'recoil'
 import { getAllProductsAsync, getProductsByRangeAsync } from '@/features/products/productsSlice'
 import { AppDispatch } from '@/store/store'
-import { ProductProps, StoreProps } from '@/utils/types';
-import { currentPageState } from '@/utils/recoil';
+import { ProductProps, StoreProps } from '@/utils/types'
+import { currentPageState } from '@/utils/recoil'
 
 const productsListState = atom<ProductProps[]>({
     key: 'ProductList',
@@ -13,6 +13,7 @@ const productsListState = atom<ProductProps[]>({
 
 export const useFetchProducts = (currentPage: number, pageSize: number) => {
     const dispatch: AppDispatch = useDispatch()
+    const products = useSelector((state: StoreProps) => state.inventory.products)
     const setProducts = useSetRecoilState(productsListState)
 
     useEffect(() => {
@@ -21,8 +22,12 @@ export const useFetchProducts = (currentPage: number, pageSize: number) => {
             setProducts(payload.products.slice(0, currentPage * pageSize))
         }
 
-        fetchProducts()
-    }, [dispatch, setProducts, currentPage, pageSize])
+        if (!products.length) fetchProducts()
+        else {
+            setProducts(products.slice(0, currentPage * pageSize))
+        }
+
+    }, [products, dispatch, setProducts, currentPage, pageSize])
 }
 
 export const infiniteScrollFetch = () => {

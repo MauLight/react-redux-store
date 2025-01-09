@@ -11,8 +11,8 @@ export default function Products(): ReactNode {
     })
 
     return (
-        <section className='relative py-32 flex justify-center items-center'>
-            <div className={three ? 'w-[1200px]' : 'w-[1000px]'}>
+        <section className={three ? 'relative py-32 flex justify-start items-center pl-[18.5vw]' : 'relative py-32 flex justify-center items-center'}>
+            <div className={three ? 'w-[1400px]' : 'w-[1000px]'}>
                 {
                     one && <IndividualProduct />
                 }
@@ -20,7 +20,12 @@ export default function Products(): ReactNode {
                     two && <ProductsByJSON />
                 }
                 {
-                    three && <ProductsTable />
+                    three && (
+                        <div className="h-[700px] overflow-scroll rounded-[10px]">
+                            <ProductsTable />
+                        </div>
+                    )
+
                 }
             </div>
             <div className="fixed top-0 left-0 h-screen w-[200px] z-0 bg-[#ffffff] border-r border-sym_gray-100">

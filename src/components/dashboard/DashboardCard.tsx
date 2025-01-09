@@ -1,14 +1,16 @@
 import { deleteProductByIdAsync } from '@/features/products/productsSlice'
 import { AppDispatch } from '@/store/store'
-import { ProductProps } from '@/utils/types'
+import { ProductProps, StoreProps } from '@/utils/types'
 import { useState, type ReactNode } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Modal } from '../common/Modal'
 import ProductDescription from '../common/ProductDescription'
 import UpdateProductForm from './UpdateProductForm'
+import Fallback from '../common/Fallback'
 
 export default function DashboardCard({ product }: { product: ProductProps }): ReactNode {
     const dispatch: AppDispatch = useDispatch()
+    const productsAreLoading = useSelector((state: StoreProps) => state.inventory.productsAreLoading)
     const [modalIsOpen, setModalIsOpen] = useState<boolean>(false)
     const [updateIsOpen, setUpdateIsOpen] = useState<boolean>(false)
 
@@ -26,10 +28,10 @@ export default function DashboardCard({ product }: { product: ProductProps }): R
     }
 
     return (
-        <div className='h-20 w-full grid grid-cols-10 gap-x-5 px-10 border-b bg-[#ffffff] content-center overflow-x-scroll'>
+        <div className='h-20 w-full grid grid-cols-11 gap-x-5 px-10 border-b bg-[#ffffff] content-center overflow-x-scroll'>
             <p className='text-balance truncate'>{product.id}</p>
-            <p className='text-balance truncate uppercase'>{product.title}</p>
-            <p className='text-balance truncate uppercase'>{product.brand || '...'}</p>
+            <p className='col-span-2  text-balance truncate uppercase'>{product.title}</p>
+            <p className='text-balance truncate'>{product.brand || '...'}</p>
             <p className='col-span-2 text-balance font-light truncate line-clamp-2'>{product.description}</p>
             <p className='text-balance truncate'>{product.price}</p>
             <p className='text-balance truncate'>{product.discount}</p>
@@ -54,10 +56,20 @@ export default function DashboardCard({ product }: { product: ProductProps }): R
                 </section>
             </Modal>
             <Modal width='w-[1200px]' openModal={updateIsOpen} handleOpenModal={handleOpenUpdateProduct}>
-                <section className='flex flex-col gap-y-10'>
-                    <h1 className='text-[1.5rem] text-balance uppercase'>Update product</h1>
-                    <UpdateProductForm product={product} handleOpenUpdateProduct={handleOpenUpdateProduct} />
-                </section>
+                {
+                    productsAreLoading ? (
+                        <div className='min-h-[436px] flex justify-center items-center'>
+                            <Fallback color='#6366f1' />
+                        </div>
+                    )
+                        :
+                        (
+                            <section className='flex flex-col gap-y-10'>
+                                <h1 className='text-[1.5rem] text-balance uppercase'>Update product</h1>
+                                <UpdateProductForm product={product} handleOpenUpdateProduct={handleOpenUpdateProduct} />
+                            </section>
+                        )
+                }
             </Modal>
         </div>
     )
