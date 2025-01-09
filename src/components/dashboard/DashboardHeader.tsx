@@ -3,9 +3,9 @@ import DashboardNavbar from './DashboardNavbar'
 
 function DashboardHeader(): ReactNode {
     return (
-        <header className='w-full flex flex-col items-center bg-[#ffffff]'>
-            <section className='w-full max-w-[1440px] flex flex-col gap-y-5 py-10'>
-                <h1 className='text-[2rem] sm:text-[3rem] text-[#10100e] uppercase max-sm:px-4'>Admin dashboard</h1>
+        <header className='w-full flex flex-col items-center bg-[#ffffff] px-5 border-b border-sym_gray-100'>
+            <section className='w-full flex  gap-x-5 py-5'>
+                <h1 className='text-[1rem] text-[#10100e] uppercase max-sm:px-4'>Admin dashboard</h1>
                 <DashboardNavbar />
             </section>
         </header>

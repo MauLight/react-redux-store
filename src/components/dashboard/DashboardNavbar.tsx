@@ -13,9 +13,9 @@ function NavbarButton({ title, icon, wasPressed, handlePressButton, fontSize = '
 
 
     return (
-        <button onClick={handlePressButton} className={`group flex max-sm:flex-col sm:gap-x-2 gap-y-1 items-center justify-center w-full hover:bg-indigo-500 active:bg-[#ffffff] border-r border-sym_gray-300 transition-color duration-200 ${wasPressed ? 'bg-indigo-500' : ''}`}>
-            <i className={`${icon} group-active:text-indigo-500`}></i>
-            <p className={`text-[${fontSize}] group-active:text-indigo-500`}>{title}</p>
+        <button onClick={handlePressButton} className={`group flex max-sm:flex-col sm:gap-x-2 gap-y-1 items-center justify-center w-[120px] hover:text-indigo-500 active:text-[#10100e] border-sym_gray-300 transition-color duration-200 ${wasPressed ? 'text-indigo-500' : ''}`}>
+            <i className={`${icon}`}></i>
+            <p className={`text-[${fontSize}]`}>{title}</p>
         </button>
     )
 }
@@ -48,7 +48,7 @@ function DashboardNavbar(): ReactNode {
                 <NavbarButton wasPressed={two} handlePressButton={() => { setNavState({ one: false, two: true, three: false }) }} title='Products' icon='fa-solid fa-cube' />
                 <NavbarButton wasPressed={three} handlePressButton={() => { setNavState({ one: false, two: false, three: true }) }} title='Collections' icon='fa-solid fa-cubes' />
             </nav>
-            <nav className='hidden sm:flex h-12 w-full bg-[#ffffff] border-y border-l border-sym_gray-300'>
+            <nav className='hidden sm:flex bg-[#ffffff]'>
                 <NavbarButton fontSize='1rem' wasPressed={one} handlePressButton={() => { setNavState({ one: true, two: false, three: false }) }} title='Settings' icon='fa-solid fa-gear' />
                 <NavbarButton fontSize='1rem' wasPressed={two} handlePressButton={() => { setNavState({ one: false, two: true, three: false }) }} title='Products' icon='fa-solid fa-cube' />
                 <NavbarButton fontSize='1rem' wasPressed={three} handlePressButton={() => { setNavState({ one: false, two: false, three: true }) }} title='Collections' icon='fa-solid fa-cubes' />

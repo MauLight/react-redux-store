@@ -6,7 +6,7 @@ function App() {
 
   return (
     <>
-      <div className='relative min-h-screen bg-sym_gray-800'>
+      <div className='relative min-h-screen bg-gray-100'>
         <Layout />
         <ToastContainer
           position='top-right'
