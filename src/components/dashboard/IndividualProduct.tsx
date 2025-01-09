@@ -9,7 +9,6 @@ import * as yup from 'yup'
 import { Modal } from '../common/Modal'
 import ConfirmationModal from './ConfirmationModal'
 import axios from 'axios'
-import { handleCopyToClipboard } from '@/utils/functions'
 import IndividualProductForm from './IndividualProductsForm'
 import IndividualProductImage from './IndividualProductImage'
 
