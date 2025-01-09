@@ -1,4 +1,4 @@
-import { deleteProductByIdAsync, updateProductByIdAsync } from '@/features/products/productsSlice'
+import { deleteProductByIdAsync } from '@/features/products/productsSlice'
 import { AppDispatch } from '@/store/store'
 import { ProductProps } from '@/utils/types'
 import { useState, type ReactNode } from 'react'
@@ -20,20 +20,16 @@ export default function DashboardCard({ product }: { product: ProductProps }): R
         setModalIsOpen(!modalIsOpen)
     }
 
-    async function handleUpdateProduct() {
-        await dispatch(updateProductByIdAsync(product.id as string))
-        setModalIsOpen(false)
-    }
-
     async function handleDeleteProduct() {
         await dispatch(deleteProductByIdAsync(product.id as string))
         setModalIsOpen(false)
     }
 
     return (
-        <div className='h-20 w-full grid grid-cols-9 gap-x-5 px-10 border-b bg-[#ffffff] content-center overflow-x-scroll'>
+        <div className='h-20 w-full grid grid-cols-10 gap-x-5 px-10 border-b bg-[#ffffff] content-center overflow-x-scroll'>
             <p className='text-balance truncate'>{product.id}</p>
             <p className='text-balance truncate uppercase'>{product.title}</p>
+            <p className='text-balance truncate uppercase'>{product.brand || '...'}</p>
             <p className='col-span-2 text-balance font-light truncate line-clamp-2'>{product.description}</p>
             <p className='text-balance truncate'>{product.price}</p>
             <p className='text-balance truncate'>{product.discount}</p>
@@ -57,14 +53,10 @@ export default function DashboardCard({ product }: { product: ProductProps }): R
                     </div>
                 </section>
             </Modal>
-            <Modal openModal={updateIsOpen} handleOpenModal={handleOpenUpdateProduct}>
+            <Modal width='w-[1200px]' openModal={updateIsOpen} handleOpenModal={handleOpenUpdateProduct}>
                 <section className='flex flex-col gap-y-10'>
                     <h1 className='text-[1.5rem] text-balance uppercase'>Update product</h1>
-                    <UpdateProductForm product={product} />
-                    <div className="flex justify-end gap-x-5">
-                        <button onClick={handleOpenUpdateProduct} className='h-10 px-5 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-red-500 active:bg-[#10100e] rounded-[10px]'>Cancel</button>
-                        <button onClick={handleUpdateProduct} className='h-10 px-5 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e] rounded-[10px]'>Confirm</button>
-                    </div>
+                    <UpdateProductForm product={product} handleOpenUpdateProduct={handleOpenUpdateProduct} />
                 </section>
             </Modal>
         </div>

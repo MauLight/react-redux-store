@@ -123,3 +123,12 @@ export interface CollectionProps {
     discount: number,
     products: Array<ProductProps>
 }
+
+export interface OnSubmitFormValues {
+    title: string
+    brand?: string
+    description: string
+    image?: string
+    price: number
+    discount: number
+}

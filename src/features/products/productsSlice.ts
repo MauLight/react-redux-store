@@ -1,4 +1,4 @@
-import { ProductProps } from "@/utils/types"
+import { OnSubmitFormValues, ProductProps } from "@/utils/types"
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import axios, { AxiosError } from "axios"
 import { toast } from "react-toastify"
@@ -78,9 +78,9 @@ export const getProductsBySearchWordAsync = createAsyncThunk(
 )
 
 export const updateProductByIdAsync = createAsyncThunk(
-    'products/updateProductById', async (id: string, { rejectWithValue }) => {
+    'products/updateProductById', async ({ id, values }: { id: string, values: OnSubmitFormValues }, { rejectWithValue }) => {
         try {
-            const { data } = await axios.put(`${url}/products/${id}`)
+            const { data } = await axios.put(`${url}/products/${id}`, values)
             toast.success('Product updated succesfully.')
             return data
         } catch (error) {
