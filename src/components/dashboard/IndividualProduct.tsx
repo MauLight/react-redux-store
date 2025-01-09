@@ -18,6 +18,7 @@ const CloudinaryAPIKEY = import.meta.env.VITE_CLOUDINARY_APIKEY
 
 export const productSchema = yup.object().shape({
     title: yup.string().required('Title is required'),
+    brand: yup.string(),
     description: yup.string().required('Description is required'),
     image: yup.string().url('Image must be a valid URL'),
     price: yup.number().required(),
@@ -34,7 +35,9 @@ function IndividualProduct(): ReactNode {
         defaultValues: {
             title: '',
             description: '',
-            image: ''
+            image: '',
+            price: 0,
+            discount: 0
         },
         resolver: yupResolver(productSchema)
     })

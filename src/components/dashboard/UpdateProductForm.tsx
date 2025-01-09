@@ -10,7 +10,7 @@ import * as yup from 'yup'
 
 import IndividualProductImage from './IndividualProductImage'
 import { OnSubmitFormValues, ProductProps } from '@/utils/types'
-import { getPercentage, handleCopyToClipboard } from '@/utils/functions'
+import { generateSignature, getPercentage, handleCopyToClipboard } from '@/utils/functions'
 
 export const productSchema = yup.object().shape({
     title: yup.string().required('Title is required'),
@@ -22,6 +22,7 @@ export const productSchema = yup.object().shape({
 })
 
 const CloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME
+const CloudinaryAPIKEY = import.meta.env.VITE_CLOUDINARY_APIKEY
 
 interface IndividualProductFormProps {
     product: ProductProps
@@ -61,6 +62,7 @@ function UpdateProductForm({ product, handleOpenUpdateProduct }: IndividualProdu
 
     //* Cloudinary state
     const [cloudinaryFileUpload, setCloudinaryFileUpload] = useState<string | null>(null)
+    const [cloudinaryPublicId, setCloudinaryPublicId] = useState<string | null>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
     const handleFileButtonClick = (): void => {
         if (fileInputRef.current) {
@@ -83,7 +85,30 @@ function UpdateProductForm({ product, handleOpenUpdateProduct }: IndividualProdu
 
         const response = await postToCloudinary(formData)
         setCloudinaryFileUpload(response.secure_url)
+        setCloudinaryPublicId(response.public_id)
         setValue('image', response.secure_url)
+    }
+
+    //* Erase last uploaded image if wants to upload another
+    const handleResetUploadImage = async () => {
+        const timestamp = Math.floor(Date.now() / 1000)
+        const signature = generateSignature({ public_id: cloudinaryPublicId, timestamp })
+
+        const formData = new FormData()
+        formData.append('public_id', cloudinaryPublicId as string)
+        formData.append('timestamp', timestamp.toString())
+        formData.append('api_key', CloudinaryAPIKEY)
+        formData.append('signature', signature)
+
+        try {
+            const response = await axios.post(`https://api.cloudinary.com/v1_1/${CloudinaryCloudName}/image/destroy`, formData)
+            console.log('Image was deleted succesfully: ', response.data)
+        } catch (error) {
+            console.error('There was an error deleting this image: ', error)
+        }
+
+        setCloudinaryFileUpload(null)
+        setValue('image', product.image)
     }
 
     useEffect(() => {
@@ -95,30 +120,31 @@ function UpdateProductForm({ product, handleOpenUpdateProduct }: IndividualProdu
             <form onSubmit={handleSubmit(onSubmit)} className='w-full col-span-1 flex flex-col gap-y-5 px-4 md:px-5 pt-10 bg-[#ffffff] rounded-[8px]'>
                 <div className="flex gap-x-5">
                     <div className='w-2/3 h-full min-h-[436px] flex flex-col gap-y-7 pr-5'>
-                        <div className="flex flex-col gap-y-2">
-                            <div className="flex flex-col gap-y-1">
-                                <label className='text-[0.8rem]' htmlFor="description">Title</label>
-                                <input
-                                    {...register('title')}
-                                    type="text"
-                                    className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.title !== undefined ? 'ring-1 ring-red-500' : ''}`}
-                                    placeholder='Title'
-                                />
+                        <div className="flex gap-x-2">
+                            <div className="w-full flex flex-col gap-y-2">
+                                <div className="flex flex-col gap-y-1">
+                                    <label className='text-[0.8rem]' htmlFor="description">Title</label>
+                                    <input
+                                        {...register('title')}
+                                        type="text"
+                                        className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.title !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                                        placeholder='Title'
+                                    />
+                                </div>
+                                {errors.title && <small className="text-red-500">{errors.title.message}</small>}
                             </div>
-                            {errors.title && <small className="text-red-500">{errors.title.message}</small>}
-                        </div>
-
-                        <div className="flex flex-col gap-y-2">
-                            <div className="flex flex-col gap-y-1">
-                                <label className='text-[0.8rem]' htmlFor="description">Brand</label>
-                                <input
-                                    {...register('brand')}
-                                    type="text"
-                                    className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.brand !== undefined ? 'ring-1 ring-red-500' : ''}`}
-                                    placeholder='Brand'
-                                />
+                            <div className="w-full flex flex-col gap-y-2">
+                                <div className="flex flex-col gap-y-1">
+                                    <label className='text-[0.8rem]' htmlFor="description">Brand</label>
+                                    <input
+                                        {...register('brand')}
+                                        type="text"
+                                        className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.brand !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                                        placeholder='Brand'
+                                    />
+                                </div>
+                                {errors.brand && <small className="text-red-500">{errors.brand.message}</small>}
                             </div>
-                            {errors.title && <small className="text-red-500">{errors.title.message}</small>}
                         </div>
 
                         <div className="flex flex-col gap-y-2">
@@ -189,6 +215,7 @@ function UpdateProductForm({ product, handleOpenUpdateProduct }: IndividualProdu
 
                     </div>
                     <IndividualProductImage
+                        handleResetUploadImage={handleResetUploadImage}
                         cloudinaryFileUpload={cloudinaryFileUpload}
                         handleFileButtonClick={handleFileButtonClick}
                         handleFileUpload={handleFileUpload}

@@ -4,18 +4,20 @@ import { handleCopyToClipboard } from '@/utils/functions'
 
 interface IndividualProductFormProps {
     register: UseFormRegister<{
-        image?: string | undefined;
-        title: string;
-        description: string;
-        price: number;
-        discount: number;
+        image?: string | undefined
+        title: string
+        brand?: string
+        description: string
+        price: number
+        discount: number
     }>
     errors: FieldErrors<{
-        image?: string | undefined;
-        title: string;
-        description: string;
-        price: number;
-        discount: number;
+        image?: string | undefined
+        title: string
+        brand: string
+        description: string
+        price: number
+        discount: number
     }>
     cloudinaryFileUpload: string | null
     priceWithDiscount: number
@@ -27,17 +29,31 @@ function IndividualProductForm({ register, errors, cloudinaryFileUpload, priceWi
 
     return (
         <div className='w-2/3 h-full min-h-[436px] flex flex-col gap-y-7 pr-5'>
-            <div className="flex flex-col gap-y-2">
-                <div className="flex flex-col gap-y-1">
-                    <label className='text-[0.8rem]' htmlFor="description">Title</label>
-                    <input
-                        {...register('title')}
-                        type="text"
-                        className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.title !== undefined ? 'ring-1 ring-red-500' : ''}`}
-                        placeholder='Title'
-                    />
+            <div className="flex gap-x-2">
+                <div className="w-full flex flex-col gap-y-2">
+                    <div className="flex flex-col gap-y-1">
+                        <label className='text-[0.8rem]' htmlFor="description">Title</label>
+                        <input
+                            {...register('title')}
+                            type="text"
+                            className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.title !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                            placeholder='Title'
+                        />
+                    </div>
+                    {errors.title && <small className="text-red-500">{errors.title.message}</small>}
                 </div>
-                {errors.title && <small className="text-red-500">{errors.title.message}</small>}
+                <div className="w-full flex flex-col gap-y-2">
+                    <div className="flex flex-col gap-y-1">
+                        <label className='text-[0.8rem]' htmlFor="description">Brand</label>
+                        <input
+                            {...register('brand')}
+                            type="text"
+                            className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.brand !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                            placeholder='Brand'
+                        />
+                    </div>
+                    {errors.brand && <small className="text-red-500">{errors.brand.message}</small>}
+                </div>
             </div>
 
             <div className="flex flex-col gap-y-2">
