@@ -11,8 +11,10 @@ import ConfirmationModal from './ConfirmationModal'
 import axios from 'axios'
 import IndividualProductForm from './IndividualProductsForm'
 import IndividualProductImage from './IndividualProductImage'
+import { generateSignature } from '@/utils/functions'
 
 const CloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME
+const CloudinaryAPIKEY = import.meta.env.VITE_CLOUDINARY_APIKEY
 
 export const productSchema = yup.object().shape({
     title: yup.string().required('Title is required'),
@@ -44,6 +46,7 @@ function IndividualProduct(): ReactNode {
 
     //* Cloudinary state
     const [cloudinaryFileUpload, setCloudinaryFileUpload] = useState<string | null>(null)
+    const [cloudinaryPublicId, setCloudinaryPublicId] = useState<string | null>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
     const handleFileButtonClick = (): void => {
         if (fileInputRef.current) {
@@ -56,6 +59,7 @@ function IndividualProduct(): ReactNode {
         return data
     }
 
+    //* Upload a new image to Cloudinary
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
         event.preventDefault()
         const formData = new FormData()
@@ -66,7 +70,29 @@ function IndividualProduct(): ReactNode {
 
         const response = await postToCloudinary(formData)
         setCloudinaryFileUpload(response.secure_url)
+        setCloudinaryPublicId(response.public_id)
         setValue('image', response.secure_url)
+    }
+
+    //* Erase last uploaded image if wants to upload another
+    const handleResetUploadImage = async () => {
+        const timestamp = Math.floor(Date.now() / 1000)
+        const signature = generateSignature({ public_id: cloudinaryPublicId, timestamp })
+
+        const formData = new FormData()
+        formData.append('public_id', cloudinaryPublicId as string)
+        formData.append('timestamp', timestamp.toString())
+        formData.append('api_key', CloudinaryAPIKEY)
+        formData.append('signature', signature)
+
+        try {
+            const response = await axios.post(`https://api.cloudinary.com/v1_1/${CloudinaryCloudName}/image/destroy`, formData)
+            console.log('Image was deleted succesfully: ', response.data)
+        } catch (error) {
+            console.error('There was an error deleting this image: ', error)
+        }
+
+        setCloudinaryFileUpload(null)
     }
 
     async function handlePostProduct() {
@@ -117,6 +143,7 @@ function IndividualProduct(): ReactNode {
                         priceWithDiscount={priceWithDiscount}
                     />
                     <IndividualProductImage
+                        handleResetUploadImage={handleResetUploadImage}
                         cloudinaryFileUpload={cloudinaryFileUpload}
                         handleFileButtonClick={handleFileButtonClick}
                         handleFileUpload={handleFileUpload}

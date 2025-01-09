@@ -1,5 +1,8 @@
 import { Dispatch, SetStateAction } from "react"
 import { toast } from "react-toastify"
+import CryptoJS from 'crypto-js'
+
+const cloudinaryApiSecret = import.meta.env.VITE_CLOUDINARY_APISECRET
 
 export const degToRad = (deg: number) => deg * Math.PI / 180
 export const randRange = (min: number, max: number) => Math.random() * (max - min) + min
@@ -42,4 +45,12 @@ export function getPercentage(getValues: () => {
   const price = getValues().price
   const discount = (percentage / 100) * price
   setPriceWithDiscount(price - discount)
+}
+
+export function generateSignature(params: Record<string, any>): string {
+  const sortedParams = Object.keys(params).sort().map(key => `${key}=${params[key]}`).join('&')
+  const stringToSign = `${sortedParams}${cloudinaryApiSecret}`
+  const hash = CryptoJS.SHA1(stringToSign)
+
+  return hash.toString(CryptoJS.enc.Hex)
 }

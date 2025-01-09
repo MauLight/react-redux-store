@@ -35,7 +35,7 @@ const TopBar = (): ReactElement => {
             <div className="hidden sm:flex items-center gap-x-8">
               <Link to={user.email ? '/profile' : '/login'} className={`${topBarText} flex items-center gap-x-2 overflow-hidden`}>
                 <i className='fa-solid fa-user'></i>
-                <p>{user.email ? `${user.email}` : 'Sign in'}</p>
+                <p className='w-[120px] truncate'>{user.email ? `${user.email}` : 'Sign in'}</p>
               </Link>
               <Link className={`${topBarText} flex items-center gap-x-2`} aria-label='checkout' to={'/checkout'}>
                 <i className='relative fa-solid fa-cart-shopping cursor-pointer'>

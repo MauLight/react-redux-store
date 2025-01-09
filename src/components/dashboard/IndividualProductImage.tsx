@@ -5,20 +5,25 @@ interface IndividualProductImageProps {
     handleFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => Promise<void>
     handleFileButtonClick: () => void
     fileInputRef: RefObject<HTMLInputElement>
+    handleResetUploadImage: () => void
 }
 
 export default function IndividualProductImage({
     cloudinaryFileUpload,
     fileInputRef,
     handleFileUpload,
-    handleFileButtonClick
+    handleFileButtonClick,
+    handleResetUploadImage
 }: IndividualProductImageProps): ReactNode {
     return (
         <div className='w-1/3 h-full pt-6 pl-5'>
             {
                 cloudinaryFileUpload ? (
-                    <div className='h-[405px] rounded-[5px] overflow-hidden'>
+                    <div className='relative h-[405px] rounded-[5px] overflow-hidden'>
                         <img src={cloudinaryFileUpload} alt="product" className='object-cover' />
+                        <button type='button' onClick={handleResetUploadImage} className='absolute top-2 right-2 w-[30px] h-[30px] flex justify-center items-center rounded-full bg-indigo-500 text-[#ffffff] hover:bg-[#10100e] active:bg-indigo-500'>
+                            <i className="fa-solid fa-xmark"></i>
+                        </button>
                     </div>
                 )
                     :

@@ -46,14 +46,25 @@ export default function DashboardCard({ product }: { product: ProductProps }): R
                 </button>
             </div>
             <Modal openModal={modalIsOpen} handleOpenModal={handleOpenDeleteProduct}>
-                <section className='flex flex-col gap-y-10'>
-                    <h1 className='text-[1.5rem] text-balance uppercase'>Are you sure you want to delete this product?</h1>
-                    <ProductDescription product={product} />
-                    <div className="flex justify-end gap-x-5">
-                        <button onClick={handleOpenDeleteProduct} className='h-10 px-5 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-red-500 active:bg-[#10100e] rounded-[10px]'>Cancel</button>
-                        <button onClick={handleDeleteProduct} className='h-10 px-5 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e] rounded-[10px]'>Confirm</button>
-                    </div>
-                </section>
+                {
+                    productsAreLoading ? (
+                        <div className='min-h-[436px] flex justify-center items-center'>
+                            <Fallback color='#6366f1' />
+                        </div>
+                    )
+                        :
+                        (
+                            <section className='flex flex-col gap-y-10'>
+                                <h1 className='text-[1.5rem] text-balance uppercase'>Are you sure you want to delete this product?</h1>
+                                <ProductDescription product={product} />
+                                <div className="flex justify-end gap-x-5">
+                                    <button onClick={handleOpenDeleteProduct} className='h-10 px-5 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-red-500 active:bg-[#10100e] rounded-[10px]'>Cancel</button>
+                                    <button onClick={handleDeleteProduct} className='h-10 px-5 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e] rounded-[10px]'>Confirm</button>
+                                </div>
+                            </section>
+                        )
+                }
+
             </Modal>
             <Modal width='w-[1200px]' openModal={updateIsOpen} handleOpenModal={handleOpenUpdateProduct}>
                 {
