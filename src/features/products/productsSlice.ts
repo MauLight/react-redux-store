@@ -77,7 +77,20 @@ export const getProductsBySearchWordAsync = createAsyncThunk(
     }
 )
 
-export const deleteProductById = createAsyncThunk(
+export const updateProductByIdAsync = createAsyncThunk(
+    'products/updateProductById', async (id: string, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.put(`${url}/products/${id}`)
+            toast.success('Product updated succesfully.')
+            return data
+        } catch (error) {
+            console.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
+export const deleteProductByIdAsync = createAsyncThunk(
     'products/deleteProductById', async (id: string, { rejectWithValue }) => {
         try {
             const { data } = await axios.delete(`${url}/products/${id}`)
@@ -307,20 +320,39 @@ export const productsSlice = createSlice({
                 }
             )
             .addCase(
-                deleteProductById.pending, (state, _action) => {
+                updateProductByIdAsync.pending, (state, _action) => {
                     state.productsAreLoading = true
                     state.productsHasError = false
                 }
             )
             .addCase(
-                deleteProductById.fulfilled, (state, action) => {
+                updateProductByIdAsync.fulfilled, (state, action) => {
+                    state.productsAreLoading = false
+                    state.productsHasError = false
+                    state.products = [...state.products.filter(product => product.id !== action.payload.updatedProduct), action.payload.updatedProduct]
+                }
+            )
+            .addCase(
+                updateProductByIdAsync.rejected, (state, _action) => {
+                    state.productsAreLoading = false
+                    state.productsHasError = true
+                }
+            )
+            .addCase(
+                deleteProductByIdAsync.pending, (state, _action) => {
+                    state.productsAreLoading = true
+                    state.productsHasError = false
+                }
+            )
+            .addCase(
+                deleteProductByIdAsync.fulfilled, (state, action) => {
                     state.productsAreLoading = false
                     state.productsHasError = false
                     state.products = action.payload.products
                 }
             )
             .addCase(
-                deleteProductById.rejected, (state, _action) => {
+                deleteProductByIdAsync.rejected, (state, _action) => {
                     state.productsAreLoading = false
                     state.productsHasError = true
                 }

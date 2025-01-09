@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from "react"
 import { toast } from "react-toastify"
 
 export const degToRad = (deg: number) => deg * Math.PI / 180
@@ -28,4 +29,17 @@ export const fadeIn = (direction: string, delay: number) => {
 export function handleCopyToClipboard(text: string, message: string) {
   navigator.clipboard.writeText(text)
   toast.success(message)
+}
+
+export function getPercentage(getValues: () => {
+  image?: string | undefined;
+  discount: number;
+  price: number;
+  title: string;
+  description: string;
+}, setPriceWithDiscount: Dispatch<SetStateAction<number>>) {
+  const percentage = getValues().discount
+  const price = getValues().price
+  const discount = (percentage / 100) * price
+  setPriceWithDiscount(price - discount)
 }

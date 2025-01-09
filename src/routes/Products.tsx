@@ -11,8 +11,8 @@ export default function Products(): ReactNode {
     })
 
     return (
-        <section className='relative py-20 flex justify-center items-center'>
-            <div className='w-[1000px]'>
+        <section className='relative py-32 flex justify-center items-center'>
+            <div className={three ? 'w-[1200px]' : 'w-[1000px]'}>
                 {
                     one && <IndividualProduct />
                 }

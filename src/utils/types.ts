@@ -2,6 +2,7 @@ export interface ProductProps {
     id?: string
     description: string
     title: string
+    brand?: string
     image?: string
     price: number
     discount: number

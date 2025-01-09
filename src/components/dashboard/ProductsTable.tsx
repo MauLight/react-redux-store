@@ -29,7 +29,7 @@ function ProductsTable(): ReactNode {
     }
 
     return (
-        <div className='flex flex-col'>
+        <div className='flex flex-col rounded-[10px] overflow-hidden'>
             <Tableheader />
             {
                 products.length > 0 ? products.map((product: ProductProps) => (
@@ -49,15 +49,15 @@ function ProductsTable(): ReactNode {
 
 function Tableheader() {
     return (
-        <div className='h-20 w-full grid grid-cols-9 gap-x-5 px-10 border-b bg-[#10100e] text-[#ffffff] content-center overflow-x-scroll'>
+        <div className='h-20 w-full grid grid-cols-9 gap-x-5 px-10 border-b bg-sym_gray-400 text-[#ffffff] content-center overflow-x-scroll'>
             <p className='text-balance truncate uppercase'>Id</p>
             <p className='text-balance truncate uppercase'>Title</p>
             <p className='col-span-2 text-balance truncate uppercase'>Description</p>
             <p className='text-balance truncate uppercase'>Price</p>
-            <p className='text-balance truncate uppercase'>FullPrice</p>
+            <p className='text-balance truncate uppercase'>Discount</p>
             <p className='text-balance truncate uppercase'>Image</p>
             <p className='text-balance truncate uppercase'>Rating</p>
-            <p className='text-balance truncate uppercase'>Action</p>
+            <p className='text-balance truncate uppercase'>Actions</p>
         </div>
     )
 }
