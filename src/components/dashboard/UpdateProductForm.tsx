@@ -140,7 +140,7 @@ function UpdateProductForm({ product, handleOpenUpdateProduct }: IndividualProdu
 
     return (
         <>
-            <form onSubmit={handleSubmit(onSubmit)} className='w-full col-span-1 flex flex-col gap-y-5 px-4 md:px-5 pt-10 bg-[#ffffff] rounded-[8px]'>
+            <form onSubmit={handleSubmit(onSubmit)} className='w-full col-span-1 flex flex-col gap-y-5 px-4 md:px-5 bg-[#ffffff] rounded-[8px]'>
                 <div className="flex gap-x-5">
                     <div className='w-2/3 h-full min-h-[436px] flex flex-col gap-y-7 pr-5'>
                         <div className="flex gap-x-2">
@@ -213,7 +213,7 @@ function UpdateProductForm({ product, handleOpenUpdateProduct }: IndividualProdu
                                                 className="peer h-10 w-10 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-indigo-500 checked:border-indigo-500" id="check1" />
                                             <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" strokeWidth="1">
-                                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path>
                                                 </svg>
                                             </span>
                                         </label>
