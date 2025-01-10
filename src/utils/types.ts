@@ -64,7 +64,8 @@ export interface StoreProps {
         hasError: boolean
     }
     courier: {
-        courier: Record<string, any>,
+        counties: any[],
+        regions: any[]
         isLoading: boolean,
         hasError: boolean
     }
@@ -154,6 +155,7 @@ export interface RegionProps {
 }
 
 export interface DropdownProps {
+    value: string
     setValue: UseFormSetValue<{
         house_number?: string | undefined;
         country: string;
@@ -169,4 +171,6 @@ export interface DropdownProps {
     }>
     list: string[]
     defaultValue?: string
+    loading: boolean
+    error: boolean
 }

@@ -34,7 +34,6 @@ export const getRegionsFromCourierAsync = createAsyncThunk(
                     'Content-Type': 'application/json'
                 }
             })
-            console.log(data)
             return data
         } catch (error) {
             toast.error((error as AxiosError).message)
@@ -46,7 +45,7 @@ export const getRegionsFromCourierAsync = createAsyncThunk(
 export const courierSlice = createSlice({
     name: 'courier',
     initialState: {
-        coverage: {},
+        counties: [],
         regions: [],
         isLoading: false,
         hasError: false
@@ -68,7 +67,6 @@ export const courierSlice = createSlice({
             )
             .addCase(
                 getRegionsFromCourierAsync.fulfilled, (state, action) => {
-                    console.log(action.payload)
                     state.isLoading = false
                     state.hasError = false
                     state.regions = action.payload.regions
@@ -88,10 +86,11 @@ export const courierSlice = createSlice({
             )
             .addCase(
                 getCoverageFromCourierAsync.fulfilled, (state, action) => {
-                    console.log(action.payload)
                     state.isLoading = false
                     state.hasError = false
-                    state.coverage = action.payload
+                    const response = action.payload.data.coverageAreas
+                    const counties = response.map((county: Record<string, string>) => county.coverageName)
+                    state.counties = counties
                 }
             )
     }

@@ -15,7 +15,6 @@ import { postListToWishlistAsync, postWishlistFromUser } from '@/features/wishLi
 import { Modal } from '@/components/common/Modal'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
-import { getRegionsAsync } from '@/utils/functions'
 import { getCoverageFromCourierAsync, getRegionsFromCourierAsync } from '@/features/courier/courierSlice'
 
 interface OpenConfirmationProps {
@@ -50,13 +49,21 @@ const schema = yup
 
 
 function Profile(): ReactNode {
+    const navigate = useNavigate()
     const dispatch: AppDispatch = useDispatch()
+
+    //* User state
     const id = useSelector((state: StoreProps) => state.userAuth.user.id)
     const loggedUser = useSelector((state: StoreProps) => state.userAuth.user)
     const user = useSelector((state: StoreProps) => state.userAuth.userData)
     const wishlist = useSelector((state: StoreProps) => state.wishList.wishlist)
     const isLoading = useSelector((state: StoreProps) => state.userAuth.isLoading)
-    const navigate = useNavigate()
+
+    //* Courier state
+    const courierIsLoading = useSelector((state: StoreProps) => state.courier.isLoading)
+    const courierHasError = useSelector((state: StoreProps) => state.courier.hasError)
+    const regions = useSelector((state: StoreProps) => state.courier.regions)
+    const counties = useSelector((state: StoreProps) => state.courier.counties)
 
     const { register, watch, handleSubmit, getValues, setValue, reset, formState: { errors } } = useForm({
         defaultValues: {
@@ -140,7 +147,6 @@ function Profile(): ReactNode {
     useEffect(() => {
         async function getRegions() {
             const { payload } = await dispatch(getRegionsFromCourierAsync())
-            console.log(payload)
             setRegionsList(payload.regions.map((region: RegionProps) => region.regionName))
         }
 
@@ -153,15 +159,21 @@ function Profile(): ReactNode {
         }
     }, [user])
 
-    // useEffect(() => {
-    //     async function getCountiesAsync() {
-    //         if (getValues().state.length) {
-    //             const region = getValues().state
-    //             const regionCode = regionsList.find(region => region.regionName)
-    //             await dispatch(getCoverageFromCourierAsync({ regionCode, type: 0 }))
-    //         }
-    //     }
-    // }, [watchedValue])
+    useEffect(() => {
+        async function getCountiesAsync() {
+            if (getValues().state !== '') {
+                const selectedRegion = getValues().state
+                const regionCode = regions.find(region => region.regionName === selectedRegion).regionId
+                if (regionCode) {
+                    await dispatch(getCoverageFromCourierAsync({ regionCode, type: 0 }))
+                }
+            }
+        }
+
+        if (regions.length > 0) {
+            getCountiesAsync()
+        }
+    }, [watchedValue, regions])
 
     return (
         <main className='w-screen min-h-screen flex flex-col items-center gap-y-20 pt-44 pb-20 bg-[#10100e]'>
@@ -190,10 +202,24 @@ function Profile(): ReactNode {
 
                                                     <div className="flex gap-x-2 gap-y-2">
                                                         <input {...register('country')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.country !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Country' />
-                                                        <CustomDropdown defaultValue={getValues().state} setValue={setValue} list={regionsList} />
+                                                        <CustomDropdown
+                                                            value='state'
+                                                            defaultValue={getValues().state}
+                                                            setValue={setValue}
+                                                            list={regionsList}
+                                                            loading={courierIsLoading}
+                                                            error={courierHasError}
+                                                        />
                                                     </div>
                                                     <div className="flex gap-x-2 gap-y-2">
-                                                        <CustomDropdown defaultValue={getValues().state} setValue={setValue} list={regionsList} />
+                                                        <CustomDropdown
+                                                            value='city'
+                                                            defaultValue={getValues().city}
+                                                            setValue={setValue}
+                                                            list={counties}
+                                                            loading={courierIsLoading}
+                                                            error={courierHasError}
+                                                        />
                                                         <input {...register('street')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.street !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Street' />
                                                     </div>
                                                     <div className="flex gap-x-5 gap-y-2">
@@ -293,31 +319,57 @@ function Profile(): ReactNode {
 
 export default Profile
 
-function CustomDropdown({ setValue, list, defaultValue }: DropdownProps): ReactNode {
+function CustomDropdown({ value, setValue, list, defaultValue, loading, error }: DropdownProps): ReactNode {
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const [choice, setChoice] = useState<string>(defaultValue || '')
 
     useEffect(() => {
         if (choice !== '') {
-            setValue('state', choice)
+            setValue((value as "firstname" | "lastname" | "street" | "street_number" | "house_number" | "city" | "state" | "country" | "phone" | "zipcode" | "email"), choice)
         }
     }, [choice])
 
     return (
-        <div onClick={() => { setIsOpen(!isOpen) }} className='relative mt-2 w-full h-9 flex items-center bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2'>
+        <div onClick={() => { setIsOpen(!isOpen) }} className='relative mt-2 w-full h-9 flex items-center bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 cursor-pointer'>
             <p className={`capitalize ${choice === '' ? 'text-sym_gray-300' : 'text-[#ffffff]'}`}>{choice === '' ? 'State' : choice}</p>
             {
                 isOpen && (
-                    <div className='absolute top-9 left-0 w-full h-[200px] overflow-y-scroll bg-[#10100e] border-b border-x rounded-b-[5px]'>
-                        {
-                            list.map((item: string, i) => (
-                                <button key={`${item}-${i}`} onClick={() => { setChoice(item) }} className='w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300'>
-                                    {
-                                        item
-                                    }
-                                </button>
-                            ))
-                        }
+                    <div className='absolute top-9 left-0 w-full h-[200px] overflow-y-scroll bg-[#10100e] border-b rounded-b-[5px]'>
+                        <>
+                            {
+                                error ? (
+                                    <div className='w-full h-full flex justify-center items-center'>
+                                        <p className='text-balance text-center'>There was an error fetching the list, please refresh the page.</p>
+                                    </div>
+                                )
+                                    :
+                                    (
+                                        <>
+                                            {
+                                                loading ? (
+                                                    <div className='w-full h-full flex justify-center items-center'>
+                                                        <Fallback color='#3f51b5' />
+                                                    </div>
+                                                )
+                                                    :
+                                                    (
+                                                        <>
+                                                            {
+                                                                list.map((item: string, i) => (
+                                                                    <button key={`${item}-${i}`} onClick={() => { setChoice(item) }} className='w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 hover:text-[#10100e] hover:bg-[#ffffff] active:text-[#ffffff] active:bg-[#10100e] transition-color duration-200'>
+                                                                        {
+                                                                            item
+                                                                        }
+                                                                    </button>
+                                                                ))
+                                                            }
+                                                        </>
+                                                    )
+                                            }
+                                        </>
+                                    )
+                            }
+                        </>
                     </div>
                 )
             }
