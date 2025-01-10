@@ -42,7 +42,7 @@ export interface StoreProps {
     }
     userAuth: {
         user: Record<string, any>
-        userData: Record<string, any>
+        userData: UserProps
         isLoading: boolean
         hasError: boolean
     }
@@ -78,8 +78,15 @@ export interface UserProps {
     firstname: string
     lastname: string
     email: string
-    phone: number
-    address: string
+    phone: string
+    street: string
+    street_number: string
+    house_number: string
+    city: string
+    state: string
+    country: string
+    zipcode: string
+    wishlist: Array<ProductProps>
 }
 
 export interface UserToBeUpdatedProps {
@@ -156,4 +163,5 @@ export interface DropdownProps {
         email: string;
     }>
     list: string[]
+    defaultValue?: string
 }

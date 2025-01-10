@@ -59,17 +59,17 @@ function Profile(): ReactNode {
 
     const { register, handleSubmit, getValues, setValue, reset, formState: { errors } } = useForm({
         defaultValues: {
-            firstname: '',
-            lastname: '',
-            street: '',
-            street_number: '',
-            house_number: '',
-            city: '',
-            state: '',
-            country: '',
-            phone: '',
-            zipcode: '',
-            email: ''
+            firstname: user.firstname || '',
+            lastname: user.lastname || '',
+            street: user.street || '',
+            street_number: user.street_number || '',
+            house_number: user.house_number || '',
+            city: user.city || '',
+            state: user.state || '',
+            country: user.country || '',
+            phone: user.phone || '',
+            zipcode: user.zipcode || '',
+            email: user.email || ''
         },
         resolver: yupResolver(schema)
     })
@@ -84,7 +84,7 @@ function Profile(): ReactNode {
     }
 
     function handleOpenConfirmation({ firstname, lastname, street, street_number, city, state, country, zipcode, phone, email }: OpenConfirmationProps) {
-
+        console.log(state)
         if (!firstname || !lastname || !street || !street_number || !phone || !city || !state || !country || !email || !zipcode) {
             toast.error('You must provide all the values.')
             return
@@ -118,6 +118,22 @@ function Profile(): ReactNode {
         dispatch(getUserByIdAsync(id))
     }, [])
 
+    useLayoutEffect(() => {
+        if (user) {
+            setValue('firstname', user.firstname)
+            setValue('lastname', user.lastname)
+            setValue('email', user.email)
+            setValue('phone', user.phone)
+            setValue('country', user.country)
+            setValue('state', user.state)
+            setValue('city', user.city)
+            setValue('street', user.street)
+            setValue('street_number', user.street_number)
+            setValue('house_number', user.house_number)
+            setValue('zipcode', user.zipcode)
+        }
+    }, [user])
+
     useEffect(() => {
         async function getRegions() {
             const regions = await getRegionsAsync()
@@ -132,7 +148,6 @@ function Profile(): ReactNode {
             dispatch(postWishlistFromUser(user.wishlist))
         }
     }, [user])
-
 
     return (
         <main className='w-screen min-h-screen flex flex-col items-center gap-y-20 pt-44 pb-20 bg-[#10100e]'>
@@ -161,7 +176,7 @@ function Profile(): ReactNode {
 
                                                     <div className="flex gap-x-2 gap-y-2">
                                                         <input {...register('country')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.country !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Country' />
-                                                        <RegionsDropdown setValue={setValue} list={regionsList} />
+                                                        <RegionsDropdown defaultValue={getValues().state} setValue={setValue} list={regionsList} />
                                                     </div>
                                                     <div className="flex gap-x-2 gap-y-2">
                                                         <input {...register('city')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.city !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='City' />
@@ -264,18 +279,19 @@ function Profile(): ReactNode {
 
 export default Profile
 
-function RegionsDropdown({ setValue, list }: DropdownProps): ReactNode {
+function RegionsDropdown({ setValue, list, defaultValue }: DropdownProps): ReactNode {
     const [isOpen, setIsOpen] = useState<boolean>(false)
-    const [choice, setChoice] = useState<string>('')
+    const [choice, setChoice] = useState<string>(defaultValue || '')
 
     useEffect(() => {
-        if (choice.length) {
+        if (choice !== '') {
             setValue('state', choice)
         }
-    }, [])
+    }, [choice])
+
     return (
         <div onClick={() => { setIsOpen(!isOpen) }} className='relative mt-2 w-full h-9 flex items-center bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2'>
-            <p className='capitalize text-sym_gray-300'>{choice === '' ? 'State' : choice}</p>
+            <p className={`capitalize ${choice === '' ? 'text-sym_gray-300' : 'text-[#ffffff]'}`}>{choice === '' ? 'State' : choice}</p>
             {
                 isOpen && (
                     <div className='absolute top-9 left-0 w-full h-[200px] overflow-y-scroll bg-[#10100e] border-b border-x rounded-b-[5px]'>
