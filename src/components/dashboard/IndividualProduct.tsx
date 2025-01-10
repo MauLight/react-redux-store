@@ -1,16 +1,21 @@
-import { postIndividualProductAsync } from '@/features/products/productsSlice'
-import { AppDispatch } from '@/store/store'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { useForm } from 'react-hook-form'
-import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
-import * as yup from 'yup'
-import { Modal } from '../common/Modal'
-import ConfirmationModal from './ConfirmationModal'
 import axios from 'axios'
+import Compressor from 'compressorjs'
+
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useForm } from 'react-hook-form'
+import * as yup from 'yup'
+
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '@/store/store'
+import { postIndividualProductAsync } from '@/features/products/productsSlice'
+
+import { Modal } from '../common/Modal'
 import IndividualProductForm from './IndividualProductsForm'
 import IndividualProductImage from './IndividualProductImage'
+import ConfirmationModal from './ConfirmationModal'
+
 import { generateSignature } from '@/utils/functions'
 
 const CloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME
@@ -29,6 +34,7 @@ function IndividualProduct(): ReactNode {
     const dispatch: AppDispatch = useDispatch()
     const [confirmationDialogue, setConfirmationDialogue] = useState<boolean>(false)
     const [priceWithDiscount, setPriceWithDiscount] = useState<number>(0)
+    const [compress, setCompress] = useState<number>(1)
 
     //* UseForm State
     const { watch, register, getValues, setValue, handleSubmit, reset, formState: { errors } } = useForm({
@@ -65,16 +71,38 @@ function IndividualProduct(): ReactNode {
     //* Upload a new image to Cloudinary
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
         event.preventDefault()
-        const formData = new FormData()
-        if (event.target.files !== null) {
-            formData.append('file', event.target.files[0])
-            formData.append('upload_preset', 'marketplace')
-        }
 
-        const response = await postToCloudinary(formData)
-        setCloudinaryFileUpload(response.secure_url)
-        setCloudinaryPublicId(response.public_id)
-        setValue('image', response.secure_url)
+        if (event.target.files !== null) {
+            const file = event.target.files[0]
+            const formData = new FormData()
+            if (compress === 1) {
+                new Compressor(file, {
+                    quality: 0.6,
+                    success(res) {
+                        console.log(res.size, 'This is the new size.')
+                        formData.append('file', res)
+                        formData.append('upload_preset', 'marketplace')
+                        postToCloudinary(formData)
+                            .then((response) => {
+                                setCloudinaryFileUpload(response.secure_url)
+                                setCloudinaryPublicId(response.public_id)
+                                setValue('image', response.secure_url)
+                            })
+                    }
+                })
+            } else {
+                formData.append('file', file)
+                formData.append('upload_preset', 'marketplace')
+                postToCloudinary(formData)
+                    .then((response) => {
+                        setCloudinaryFileUpload(response.secure_url)
+                        setCloudinaryPublicId(response.public_id)
+                        setValue('image', response.secure_url)
+                    })
+            }
+
+
+        }
     }
 
     //* Erase last uploaded image if wants to upload another
@@ -141,6 +169,8 @@ function IndividualProduct(): ReactNode {
                 <h1 className='text-[1rem] sm:text-[1.2rem] text-balance leading-tight'>Add individual products here:</h1>
                 <div className="flex gap-x-5">
                     <IndividualProductForm
+                        compress={compress}
+                        setCompress={setCompress}
                         register={register}
                         errors={errors}
                         cloudinaryFileUpload={cloudinaryFileUpload}
