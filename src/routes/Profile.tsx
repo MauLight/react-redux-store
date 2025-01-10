@@ -10,11 +10,12 @@ import Fallback from '@/components/common/Fallback'
 import WishlistCard from '@/components/profile/WishlistCard'
 import video from '@/assets/video/empty.webm'
 
-import { ProductProps, StoreProps } from '@/utils/types'
+import { ProductProps, RegionProps, DropdownProps, StoreProps } from '@/utils/types'
 import { postListToWishlistAsync, postWishlistFromUser } from '@/features/wishList/wishListSlice'
 import { Modal } from '@/components/common/Modal'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
+import { getRegionsAsync } from '@/utils/functions'
 
 interface OpenConfirmationProps {
     firstname: string
@@ -56,7 +57,7 @@ function Profile(): ReactNode {
     const isLoading = useSelector((state: StoreProps) => state.userAuth.isLoading)
     const navigate = useNavigate()
 
-    const { register, handleSubmit, getValues, reset, formState: { errors } } = useForm({
+    const { register, handleSubmit, getValues, setValue, reset, formState: { errors } } = useForm({
         defaultValues: {
             firstname: '',
             lastname: '',
@@ -75,6 +76,7 @@ function Profile(): ReactNode {
 
     const [isEditing, setIsEditing] = useState<boolean>(false)
     const [isOpen, setIsOpen] = useState<boolean>(false)
+    const [regionsList, setRegionsList] = useState<string[]>([])
 
     function handleCancelConfirmation() {
         setIsOpen(false)
@@ -117,13 +119,23 @@ function Profile(): ReactNode {
     }, [])
 
     useEffect(() => {
+        async function getRegions() {
+            const regions = await getRegionsAsync()
+            setRegionsList(regions.map((region: RegionProps) => region.regionName))
+        }
+
+        getRegions()
+    }, [])
+
+    useEffect(() => {
         if (user.wishlist) {
             dispatch(postWishlistFromUser(user.wishlist))
         }
     }, [user])
 
+
     return (
-        <main className='w-screen min-h-screen flex flex-col items-center gap-y-20 pt-44 pb-20'>
+        <main className='w-screen min-h-screen flex flex-col items-center gap-y-20 pt-44 pb-20 bg-[#10100e]'>
             <>
                 {
                     isLoading && (
@@ -149,7 +161,7 @@ function Profile(): ReactNode {
 
                                                     <div className="flex gap-x-2 gap-y-2">
                                                         <input {...register('country')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.country !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Country' />
-                                                        <input {...register('state')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.state !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='State' />
+                                                        <RegionsDropdown setValue={setValue} list={regionsList} />
                                                     </div>
                                                     <div className="flex gap-x-2 gap-y-2">
                                                         <input {...register('city')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.city !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='City' />
@@ -251,3 +263,34 @@ function Profile(): ReactNode {
 }
 
 export default Profile
+
+function RegionsDropdown({ setValue, list }: DropdownProps): ReactNode {
+    const [isOpen, setIsOpen] = useState<boolean>(false)
+    const [choice, setChoice] = useState<string>('')
+
+    useEffect(() => {
+        if (choice.length) {
+            setValue('state', choice)
+        }
+    }, [])
+    return (
+        <div onClick={() => { setIsOpen(!isOpen) }} className='relative mt-2 w-full h-9 flex items-center bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2'>
+            <p className='capitalize text-sym_gray-300'>{choice === '' ? 'State' : choice}</p>
+            {
+                isOpen && (
+                    <div className='absolute top-9 left-0 w-full h-[200px] overflow-y-scroll bg-[#10100e] border-b border-x rounded-b-[5px]'>
+                        {
+                            list.map((item: string) => (
+                                <button onClick={() => { setChoice(item) }} className='w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300'>
+                                    {
+                                        item
+                                    }
+                                </button>
+                            ))
+                        }
+                    </div>
+                )
+            }
+        </div>
+    )
+}

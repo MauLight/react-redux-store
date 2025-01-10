@@ -1,6 +1,8 @@
 import { Dispatch, SetStateAction } from "react"
 import { toast } from "react-toastify"
 import CryptoJS from 'crypto-js'
+import axios from "axios"
+import { RegionProps } from "./types"
 
 const cloudinaryApiSecret = import.meta.env.VITE_CLOUDINARY_APISECRET
 
@@ -53,4 +55,14 @@ export function generateSignature(params: Record<string, any>): string {
   const hash = CryptoJS.SHA1(stringToSign)
 
   return hash.toString(CryptoJS.enc.Hex)
+}
+
+export async function getRegionsAsync(): Promise<RegionProps[]> {
+  const { data } = await axios.get('http://testservices.wschilexpress.com/georeference/api/v1/regions')
+  if (data) {
+    const regions = data.regions
+    return regions
+  } else {
+    return []
+  }
 }
