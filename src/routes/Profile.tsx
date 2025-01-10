@@ -280,8 +280,8 @@ function RegionsDropdown({ setValue, list }: DropdownProps): ReactNode {
                 isOpen && (
                     <div className='absolute top-9 left-0 w-full h-[200px] overflow-y-scroll bg-[#10100e] border-b border-x rounded-b-[5px]'>
                         {
-                            list.map((item: string) => (
-                                <button onClick={() => { setChoice(item) }} className='w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300'>
+                            list.map((item: string, i) => (
+                                <button key={`${item}-${i}`} onClick={() => { setChoice(item) }} className='w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300'>
                                     {
                                         item
                                     }
