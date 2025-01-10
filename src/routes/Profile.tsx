@@ -16,6 +16,7 @@ import { Modal } from '@/components/common/Modal'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import { getRegionsAsync } from '@/utils/functions'
+import { getCoverageFromCourierAsync, getRegionsFromCourierAsync } from '@/features/courier/courierSlice'
 
 interface OpenConfirmationProps {
     firstname: string
@@ -57,7 +58,7 @@ function Profile(): ReactNode {
     const isLoading = useSelector((state: StoreProps) => state.userAuth.isLoading)
     const navigate = useNavigate()
 
-    const { register, handleSubmit, getValues, setValue, reset, formState: { errors } } = useForm({
+    const { register, watch, handleSubmit, getValues, setValue, reset, formState: { errors } } = useForm({
         defaultValues: {
             firstname: user.firstname || '',
             lastname: user.lastname || '',
@@ -73,6 +74,8 @@ function Profile(): ReactNode {
         },
         resolver: yupResolver(schema)
     })
+
+    const watchedValue = watch('state')
 
     const [isEditing, setIsEditing] = useState<boolean>(false)
     const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -136,8 +139,9 @@ function Profile(): ReactNode {
 
     useEffect(() => {
         async function getRegions() {
-            const regions = await getRegionsAsync()
-            setRegionsList(regions.map((region: RegionProps) => region.regionName))
+            const { payload } = await dispatch(getRegionsFromCourierAsync())
+            console.log(payload)
+            setRegionsList(payload.regions.map((region: RegionProps) => region.regionName))
         }
 
         getRegions()
@@ -148,6 +152,16 @@ function Profile(): ReactNode {
             dispatch(postWishlistFromUser(user.wishlist))
         }
     }, [user])
+
+    // useEffect(() => {
+    //     async function getCountiesAsync() {
+    //         if (getValues().state.length) {
+    //             const region = getValues().state
+    //             const regionCode = regionsList.find(region => region.regionName)
+    //             await dispatch(getCoverageFromCourierAsync({ regionCode, type: 0 }))
+    //         }
+    //     }
+    // }, [watchedValue])
 
     return (
         <main className='w-screen min-h-screen flex flex-col items-center gap-y-20 pt-44 pb-20 bg-[#10100e]'>
@@ -176,10 +190,10 @@ function Profile(): ReactNode {
 
                                                     <div className="flex gap-x-2 gap-y-2">
                                                         <input {...register('country')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.country !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Country' />
-                                                        <RegionsDropdown defaultValue={getValues().state} setValue={setValue} list={regionsList} />
+                                                        <CustomDropdown defaultValue={getValues().state} setValue={setValue} list={regionsList} />
                                                     </div>
                                                     <div className="flex gap-x-2 gap-y-2">
-                                                        <input {...register('city')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.city !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='City' />
+                                                        <CustomDropdown defaultValue={getValues().state} setValue={setValue} list={regionsList} />
                                                         <input {...register('street')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.street !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Street' />
                                                     </div>
                                                     <div className="flex gap-x-5 gap-y-2">
@@ -279,7 +293,7 @@ function Profile(): ReactNode {
 
 export default Profile
 
-function RegionsDropdown({ setValue, list, defaultValue }: DropdownProps): ReactNode {
+function CustomDropdown({ setValue, list, defaultValue }: DropdownProps): ReactNode {
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const [choice, setChoice] = useState<string>(defaultValue || '')
 

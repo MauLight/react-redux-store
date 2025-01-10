@@ -15,6 +15,8 @@ import { StoreProps } from "@/utils/types"
 import { updateOrderAddressAsync } from "@/features/cart/cartSlice"
 import { toast } from "react-toastify"
 import { useNavigate } from "react-router-dom"
+import { getCoverageFromCourierAsync } from "@/features/courier/courierSlice"
+import { getRegionsAsync } from "@/utils/functions"
 
 interface PlaceAutocompleteProps {
     onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void
@@ -62,7 +64,7 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
 
     const shippingFormRef = useRef<HTMLFormElement>(null)
 
-    const { register, handleSubmit, getValues, setValue, formState: { errors } } = useForm({
+    const { register, watch, handleSubmit, getValues, setValue, formState: { errors } } = useForm({
         defaultValues: {
             country: '',
             state: '',
@@ -75,6 +77,8 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
         },
         resolver: yupResolver(schema)
     })
+
+    const watchedValues = watch(['state'])
 
     function scrollToElement() {
         if (shippingFormRef.current) {
@@ -195,6 +199,24 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
             scrollToElement()
         }
     }, [gotAddress])
+
+    useEffect(() => {
+
+        async function getRegionCodeAndCoverage() {
+            const regions = await getRegionsAsync()
+            if (regions.length > 0) {
+                const regionCode = regions.find((region) => region.regionName === getValues().state)?.regionId
+                if (regionCode) {
+                    console.log(regionCode)
+                    await dispatch(getCoverageFromCourierAsync({ regionCode, type: 0 }))
+                }
+            }
+        }
+
+        if (gotAddress && user.state) {
+            getRegionCodeAndCoverage()
+        }
+    }, [gotAddress, watchedValues])
 
     useEffect(() => {
         if (updateAddressError) {

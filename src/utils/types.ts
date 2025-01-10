@@ -63,6 +63,11 @@ export interface StoreProps {
         isLoading: boolean,
         hasError: boolean
     }
+    courier: {
+        courier: Record<string, any>,
+        isLoading: boolean,
+        hasError: boolean
+    }
 }
 
 export interface NewUserProps {

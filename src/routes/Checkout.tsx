@@ -69,8 +69,8 @@ const Checkout = (): ReactElement => {
                                             ))
                                         }
                                         {
-                                            cart.length === 0 && localCart.map((product, i) => (
-                                                <CheckoutCard key={product.id + i} dispatch={dispatch} product={product} />
+                                            cart.length === 0 && localCart.map((product: ProductProps, i) => (
+                                                <CheckoutCard key={(product.id as string) + i} dispatch={dispatch} product={product} />
                                             ))
                                         }
                                     </div>
@@ -83,8 +83,8 @@ const Checkout = (): ReactElement => {
                                                     ))
                                                 }
                                                 {
-                                                    cart.length === 0 && localCart.map((product, i) => (
-                                                        <CheckoutCard isConfirmation key={product.id + i} dispatch={dispatch} product={product} />
+                                                    cart.length === 0 && localCart.map((product: ProductProps, i) => (
+                                                        <CheckoutCard isConfirmation key={(product.id as string) + i} dispatch={dispatch} product={product} />
                                                     ))
                                                 }
                                             </div>
