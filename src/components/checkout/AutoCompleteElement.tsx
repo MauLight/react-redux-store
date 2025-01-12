@@ -1,5 +1,5 @@
 import { getUserByIdAsync, updateUserByIdAsync } from "@/features/userAuth/userAuthSlice"
-import { useEffect, useLayoutEffect, useRef, useState } from "react"
+import { memo, useEffect, useLayoutEffect, useRef, useState } from "react"
 import { useMapsLibrary } from "@vis.gl/react-google-maps"
 import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch } from "@/store/store"
@@ -11,11 +11,11 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from 'yup'
 
-import { StoreProps } from "@/utils/types"
+import { QuotesProps, StoreProps } from "@/utils/types"
 import { updateOrderAddressAsync } from "@/features/cart/cartSlice"
 import { toast } from "react-toastify"
 import { useNavigate } from "react-router-dom"
-import { getCoverageFromCourierAsync } from "@/features/courier/courierSlice"
+import { postQuoteCourierAsync } from "@/features/courier/courierSlice"
 import { getRegionsAsync } from "@/utils/functions"
 
 interface PlaceAutocompleteProps {
@@ -51,10 +51,16 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
 
     const navigate = useNavigate()
     const dispatch: AppDispatch = useDispatch()
+
     const id = useSelector((state: StoreProps) => state.userAuth.user).id
     const user = useSelector((state: StoreProps) => state.userAuth.userData)
     const isLoading = useSelector((state: StoreProps) => state.userAuth.isLoading)
     const updateAddressError = useSelector((state: StoreProps) => state.cart.hasError)
+    const declaredWorth = useSelector((state: StoreProps) => state.cart.total)
+
+    //* Courier options
+    const quote = useSelector((state: StoreProps) => state.courier.quote)
+
     const [placeAutocomplete, setPlaceAutocomplete] = useState<google.maps.places.Autocomplete | null>(null)
     const [billingAddress, setBillingAddress] = useState<BillingAddressProps | null>(null)
     const [gotAddress, setGotAddress] = useState<boolean>(false)
@@ -207,16 +213,26 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
             if (regions.length > 0) {
                 const regionCode = regions.find((region) => region.regionName === getValues().state)?.regionId
                 if (regionCode) {
-                    console.log(regionCode)
-                    await dispatch(getCoverageFromCourierAsync({ regionCode, type: 0 }))
+
+                    console.log(regionCode, 'THIS IS THE REGION CODE')
+                    console.log(getValues().city, 'THIS IS THE COUNTY')
+                    console.log(declaredWorth, 'THIS IS THE DECLARED WORTH')
+
+                    await dispatch(postQuoteCourierAsync({ regionCode, destinationCounty: getValues().city, declaredWorth, deliveryTime: 0 }))
                 }
             }
         }
 
-        if (gotAddress && user.state) {
+        if (gotAddress) {
             getRegionCodeAndCoverage()
         }
-    }, [gotAddress, watchedValues])
+    }, [gotAddress])
+
+    useEffect(() => {
+        if (Object.keys(quote).length) {
+            console.log(quote, 'These are the quotes')
+        }
+    }, [quote])
 
     useEffect(() => {
         if (updateAddressError) {
@@ -290,7 +306,25 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
                                     : updateAddressError ? 'Error' : userWasUpdated ? 'Saved' : 'Save Default Address'}</button>
                             </div>
                         </section>
-                        <div className="flex flex-col gap-y-5 pb-20">
+                        {
+                            Object.keys(quote).length && (
+                                <section className="flex flex-col gap-y-5 border p-5">
+                                    {
+                                        quote.slice(0, 2).map((quo: QuotesProps, i: number) => (
+                                            <div key={`${quo.serviceValue}-${i}`} className="grid grid-cols-4 gap-x-5">
+                                                <div className="flex justify-center items-center p-1 bg-[#ff0]">
+                                                    <img src='https://developers.wschilexpress.com/content/logo_chilexpress_negro.svg' alt="courier" />
+                                                </div>
+                                                <p className="text-[#ffffff]">{quo.serviceDescription}</p>
+                                                <p className="text-[#ffffff]">{`$${quo.serviceValue}`}</p>
+                                                <input className="accent-indigo-500" name="courier" type="radio" />
+                                            </div>
+                                        ))
+                                    }
+                                </section>
+                            )
+                        }
+                        <section className="flex flex-col gap-y-5 pb-20">
                             <h1 className="text-[2rem] uppercase text-[#ffffff]">Billing address</h1>
                             <div className="w-full grid grid-cols-2 gap-x-5">
                                 <div className="col-span-1">
@@ -320,7 +354,7 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
                                 </div>
                             </div>
                             <TransbankForm placeFromUser={placeFromUser} selectedPlace={selectedPlace} />
-                        </div>
+                        </section>
                     </main>
                 )
             }
@@ -328,4 +362,4 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
     )
 }
 
-export default PlaceAutocomplete
+export default memo(PlaceAutocomplete)

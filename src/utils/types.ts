@@ -52,6 +52,7 @@ export interface StoreProps {
         transbank: Record<string, any>
         isLoading: boolean
         hasError: boolean
+        total: number
     }
     homeCollection: {
         collection: Array<ProductProps>
@@ -65,7 +66,8 @@ export interface StoreProps {
     }
     courier: {
         counties: any[],
-        regions: any[]
+        regions: any[],
+        quote: Record<string, any>
         isLoading: boolean,
         hasError: boolean
     }
@@ -173,4 +175,15 @@ export interface DropdownProps {
     defaultValue?: string
     loading: boolean
     error: boolean
+}
+
+export interface QuotesProps {
+    additionalServices: any[]
+    conditions: string
+    deliveryType: number
+    didUseVolumetricWeight: boolean
+    finalWeight: string
+    serviceDescription: string
+    serviceTypeCode: number
+    serviceValue: string
 }

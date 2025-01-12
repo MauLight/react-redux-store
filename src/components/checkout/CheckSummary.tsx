@@ -1,7 +1,7 @@
 import { type ReactNode, useState } from 'react'
 import { AppDispatch } from '@/store/store'
 import { useDispatch, useSelector } from 'react-redux'
-import { createTransbankTransactionAsync, resetCart, setReadyToPay } from '@/features/cart/cartSlice'
+import { createTransbankTransactionAsync, postTotal, resetCart, setReadyToPay } from '@/features/cart/cartSlice'
 
 import { v4 as uuid } from 'uuid'
 import { StoreProps } from '@/utils/types'
@@ -36,6 +36,7 @@ export const CheckSummary = ({ numberOfProducts, total, taxes, totalWithTaxes, c
     }
     if (totalWithTaxes > 0 && user.token) {
       await handleTransbankCreateTransaction()
+      dispatch(postTotal(totalWithTaxes))
       dispatch(setReadyToPay())
     }
   }

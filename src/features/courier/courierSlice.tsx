@@ -42,11 +42,33 @@ export const getRegionsFromCourierAsync = createAsyncThunk(
     }
 )
 
+export const postQuoteCourierAsync = createAsyncThunk(
+    'courier/postQuoteCourier', async (destinationData: { regionCode: string, destinationCounty: string, declaredWorth: number, deliveryTime: number }, { rejectWithValue }) => {
+        const user = localStorage.getItem('marketplace-user') ? JSON.parse(localStorage.getItem('marketplace-user') as string) : {}
+        const token = user.token
+        try {
+            const { data } = await axios.post(`${url}/courier`, destinationData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            return data
+        } catch (error) {
+            toast.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
+
+
 export const courierSlice = createSlice({
     name: 'courier',
     initialState: {
         counties: [],
         regions: [],
+        quote: {},
         isLoading: false,
         hasError: false
     },
@@ -91,6 +113,25 @@ export const courierSlice = createSlice({
                     const response = action.payload.data.coverageAreas
                     const counties = response.map((county: Record<string, string>) => county.coverageName)
                     state.counties = counties
+                }
+            )
+            .addCase(
+                postQuoteCourierAsync.pending, (state, _action) => {
+                    state.isLoading = true
+                    state.hasError = false
+                }
+            )
+            .addCase(
+                postQuoteCourierAsync.rejected, (state, _action) => {
+                    state.isLoading = false
+                    state.hasError = true
+                }
+            )
+            .addCase(
+                postQuoteCourierAsync.fulfilled, (state, action) => {
+                    state.isLoading = false
+                    state.hasError = false
+                    state.quote = action.payload.data.data.courierServiceOptions
                 }
             )
     }
