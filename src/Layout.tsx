@@ -14,8 +14,11 @@ const Profile = lazy(async () => await import('./routes/Profile'))
 const Collection = lazy(async () => await import('./routes/Collection'))
 const IndividualProduct = lazy(async () => await import('./routes/IndividualProduct'))
 const AdminLogin = lazy(async () => await import('./routes/AdminLogin'))
+
 const Dashboard = lazy(async () => await import('./routes/Dashboard'))
 const Products = lazy(async () => await import('./routes/Products'))
+const Builder = lazy(async () => await import('./routes/Builder'))
+
 const Checkout = lazy(async () => await import('./routes/Checkout'))
 const NotFound = lazy(async () => await import('./routes/NotFound'))
 const Confirmation = lazy(async () => await import('@/routes/Confirmation'))
@@ -71,6 +74,7 @@ function Layout() {
                             <Route path='/admin/login' element={<AdminLogin />} />
                             <Route path='/admin' element={<Dashboard />} />
                             <Route path='/admin/products' element={<Products />} />
+                            <Route path='/admin/builder' element={<Builder />} />
                             <Route path='/checkout' element={<Checkout />} />
                             <Route path='/confirmation' element={<Confirmation />} />
                             <Route path='*' element={<NotFound />} />

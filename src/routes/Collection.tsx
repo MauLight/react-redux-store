@@ -140,17 +140,17 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
                             }
                             {
                                 isSearching && sortedCollection.length > 0 && sortedCollection.map((product) => (
-                                    <ProductCard key={`${product.image + product.id}`} product={product} />
+                                    <ProductCard key={`${product.image as string + product.id}`} product={product} />
                                 ))
                             }
                             {
                                 isSorting && sortedCollection.length > 0 && sortedCollection.map((product) => (
-                                    <ProductCard key={`${product.image + product.id}`} product={product} />
+                                    <ProductCard key={`${product.image as string + product.id}`} product={product} />
                                 ))
                             }
                             {
                                 !isSearching && !isSorting && products.map((product) => (
-                                    <ProductCard key={`${product.image + product.id}`} product={product} />
+                                    <ProductCard key={`${product.image as string + product.id}`} product={product} />
                                 ))
                             }
                         </section>

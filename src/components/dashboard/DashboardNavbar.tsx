@@ -25,34 +25,39 @@ function DashboardNavbar(): ReactNode {
     const navigate = useNavigate()
     const { pathname } = useLocation()
 
-    const [{ one, two, three }, setNavState] = useState<Record<string, boolean>>({
+    const [{ one, two, three, four }, setNavState] = useState<Record<string, boolean>>({
         one: true,
         two: false,
-        three: false
+        three: false,
+        four: false
     })
 
     useEffect(() => {
-        if (one && !pathname.includes('settings')) {
-            //navigate('/admin/settings')
+        if (one && !pathname.includes('builder')) {
+            navigate('/admin/builder')
         } else if (two && !pathname.includes('products')) {
             navigate('/admin/products')
         } else if (three && !pathname.includes('collections')) {
             navigate('/admin/collections')
+        } else if (three && !pathname.includes('settings')) {
+            //navigate('/admin/collections')
         }
     }, [one, two, three])
 
     return (
         <>
             <nav className='fixed bottom-0 left-0 z-20 flex justify-between sm:hidden h-12 w-full bg-[#ffffff] border-t border-sym_gray-300'>
-                <NavbarButton wasPressed={one} handlePressButton={() => { setNavState({ one: true, two: false, three: false }) }} title='Settings' icon='fa-solid fa-gear' />
-                <NavbarButton wasPressed={two} handlePressButton={() => { setNavState({ one: false, two: true, three: false }) }} title='Products' icon='fa-solid fa-cube' />
-                <NavbarButton wasPressed={three} handlePressButton={() => { setNavState({ one: false, two: false, three: true }) }} title='Collections' icon='fa-solid fa-cubes' />
+                <NavbarButton wasPressed={one} handlePressButton={() => { setNavState({ one: true, two: false, three: false, four: false }) }} title='Builder' icon='fa-solid fa-wrench' />
+                <NavbarButton wasPressed={two} handlePressButton={() => { setNavState({ one: false, two: true, three: false, four: false }) }} title='Products' icon='fa-solid fa-cube' />
+                <NavbarButton wasPressed={three} handlePressButton={() => { setNavState({ one: false, two: false, three: true, four: false }) }} title='Collections' icon='fa-solid fa-cubes' />
+                <NavbarButton wasPressed={four} handlePressButton={() => { setNavState({ one: false, two: false, three: false, four: true }) }} title='Settings' icon='fa-solid fa-gear' />
             </nav>
             <nav className='w-full hidden sm:flex justify-between items-center bg-[#ffffff]'>
                 <div className="flex">
-                    <NavbarButton fontSize='1rem' wasPressed={one} handlePressButton={() => { setNavState({ one: true, two: false, three: false }) }} title='Settings' icon='fa-solid fa-gear' />
-                    <NavbarButton fontSize='1rem' wasPressed={two} handlePressButton={() => { setNavState({ one: false, two: true, three: false }) }} title='Products' icon='fa-solid fa-cube' />
-                    <NavbarButton fontSize='1rem' wasPressed={three} handlePressButton={() => { setNavState({ one: false, two: false, three: true }) }} title='Collections' icon='fa-solid fa-cubes' />
+                    <NavbarButton wasPressed={one} handlePressButton={() => { setNavState({ one: true, two: false, three: false, four: false }) }} title='Builder' icon='fa-solid fa-wrench' />
+                    <NavbarButton wasPressed={two} handlePressButton={() => { setNavState({ one: false, two: true, three: false, four: false }) }} title='Products' icon='fa-solid fa-cube' />
+                    <NavbarButton wasPressed={three} handlePressButton={() => { setNavState({ one: false, two: false, three: true, four: false }) }} title='Collections' icon='fa-solid fa-cubes' />
+                    <NavbarButton wasPressed={four} handlePressButton={() => { setNavState({ one: false, two: false, three: false, four: true }) }} title='Settings' icon='fa-solid fa-gear' />
                 </div>
                 <Link to={'/'} className='text-[0.9rem] hover:text-indigo-500 transition-color duration-200 flex gap-x-1 items-center'>
                     <i className="fa-solid fa-arrow-left-long"></i>
