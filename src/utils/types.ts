@@ -53,6 +53,7 @@ export interface StoreProps {
         isLoading: boolean
         hasError: boolean
         total: number
+        totalWithCourier: number
     }
     homeCollection: {
         collection: Array<ProductProps>
@@ -67,7 +68,7 @@ export interface StoreProps {
     courier: {
         counties: any[],
         regions: any[],
-        quote: Record<string, any>
+        quote: QuotesProps[]
         isLoading: boolean,
         hasError: boolean
     }
@@ -186,4 +187,14 @@ export interface QuotesProps {
     serviceDescription: string
     serviceTypeCode: number
     serviceValue: string
+}
+
+export interface BillingAddressProps {
+    country: string
+    state: string
+    city: string
+    street: string
+    street_number: string
+    house_number?: string
+    zipcode: string
 }

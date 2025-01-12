@@ -69,11 +69,15 @@ export const cartSlice = createSlice({
         transbank: {} as Record<string, any>,
         isLoading: false,
         hasError: false,
-        total: 0
+        total: 0,
+        totalWithCourier: 0
     },
     reducers: {
         postTotal: (state, action) => {
             state.total = action.payload
+        },
+        postCourierTotal: (state, action) => {
+            state.totalWithCourier = action.payload
         },
         addItem: (state, action) => {
             const { id, title, image, price, fullPrice } = action.payload
@@ -176,7 +180,7 @@ export const cartSlice = createSlice({
     }
 })
 
-export const { postTotal, addItem, removeItem, changeItemQuantity, resetCart, setReadyToPay, setNotReadyToPay } = cartSlice.actions
+export const { postTotal, postCourierTotal, addItem, removeItem, changeItemQuantity, resetCart, setReadyToPay, setNotReadyToPay } = cartSlice.actions
 const cartReducer = cartSlice.reducer
 
 export default cartReducer

@@ -4,33 +4,25 @@ import { useMapsLibrary } from "@vis.gl/react-google-maps"
 import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch } from "@/store/store"
 
-import TransbankForm from "./TransbankForm"
 import { RotatingLines } from "react-loader-spinner"
 
 import { useForm } from 'react-hook-form'
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from 'yup'
 
-import { QuotesProps, StoreProps } from "@/utils/types"
+import { BillingAddressProps, StoreProps } from "@/utils/types"
 import { updateOrderAddressAsync } from "@/features/cart/cartSlice"
 import { toast } from "react-toastify"
 import { useNavigate } from "react-router-dom"
 import { postQuoteCourierAsync } from "@/features/courier/courierSlice"
 import { getRegionsAsync } from "@/utils/functions"
+import CourierOptions from "./CourierOptions"
+import BillingAddress from "./BillingAddress"
+import Fallback from "../common/Fallback"
 
 interface PlaceAutocompleteProps {
     onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void
     selectedPlace: google.maps.places.PlaceResult
-}
-
-interface BillingAddressProps {
-    country: string
-    state: string
-    city: string
-    street: string
-    street_number: string
-    house_number?: string
-    zipcode: string
 }
 
 const schema = yup
@@ -60,6 +52,8 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
 
     //* Courier options
     const quote = useSelector((state: StoreProps) => state.courier.quote)
+    const cartIsLoading = useSelector((state: StoreProps) => state.cart.isLoading)
+    const cartHasError = useSelector((state: StoreProps) => state.cart.hasError)
 
     const [placeAutocomplete, setPlaceAutocomplete] = useState<google.maps.places.Autocomplete | null>(null)
     const [billingAddress, setBillingAddress] = useState<BillingAddressProps | null>(null)
@@ -84,7 +78,7 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
         resolver: yupResolver(schema)
     })
 
-    const watchedValues = watch(['state'])
+    //const watchedValues = watch(['state'])
 
     function scrollToElement() {
         if (shippingFormRef.current) {
@@ -214,10 +208,6 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
                 const regionCode = regions.find((region) => region.regionName === getValues().state)?.regionId
                 if (regionCode) {
 
-                    console.log(regionCode, 'THIS IS THE REGION CODE')
-                    console.log(getValues().city, 'THIS IS THE COUNTY')
-                    console.log(declaredWorth, 'THIS IS THE DECLARED WORTH')
-
                     await dispatch(postQuoteCourierAsync({ regionCode, destinationCounty: getValues().city, declaredWorth, deliveryTime: 0 }))
                 }
             }
@@ -227,12 +217,6 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
             getRegionCodeAndCoverage()
         }
     }, [gotAddress])
-
-    useEffect(() => {
-        if (Object.keys(quote).length) {
-            console.log(quote, 'These are the quotes')
-        }
-    }, [quote])
 
     useEffect(() => {
         if (updateAddressError) {
@@ -251,7 +235,7 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
             </div>
             {
                 gotAddress && billingAddress && (
-                    <main className="flex flex-col gap-y-20">
+                    <main className="flex flex-col gap-y-20 pb-10">
                         <section className="flex flex-col gap-y-10">
                             <form onSubmit={handleSubmit(handleSaveDefaultAddress)} ref={shippingFormRef} className="flex flex-col gap-y-10">
                                 <h1 className="text-[2rem] uppercase text-[#ffffff]">Shipping address</h1>
@@ -306,55 +290,33 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
                                     : updateAddressError ? 'Error' : userWasUpdated ? 'Saved' : 'Save Default Address'}</button>
                             </div>
                         </section>
-                        {
-                            Object.keys(quote).length && (
-                                <section className="flex flex-col gap-y-5 border p-5">
-                                    {
-                                        quote.slice(0, 2).map((quo: QuotesProps, i: number) => (
-                                            <div key={`${quo.serviceValue}-${i}`} className="grid grid-cols-4 gap-x-5">
-                                                <div className="flex justify-center items-center p-1 bg-[#ff0]">
-                                                    <img src='https://developers.wschilexpress.com/content/logo_chilexpress_negro.svg' alt="courier" />
-                                                </div>
-                                                <p className="text-[#ffffff]">{quo.serviceDescription}</p>
-                                                <p className="text-[#ffffff]">{`$${quo.serviceValue}`}</p>
-                                                <input className="accent-indigo-500" name="courier" type="radio" />
-                                            </div>
-                                        ))
-                                    }
-                                </section>
-                            )
-                        }
-                        <section className="flex flex-col gap-y-5 pb-20">
-                            <h1 className="text-[2rem] uppercase text-[#ffffff]">Billing address</h1>
-                            <div className="w-full grid grid-cols-2 gap-x-5">
-                                <div className="col-span-1">
-                                    <label className="text-[#ffffff] text-[1rem]" htmlFor="street">Street</label>
-                                    <input onChange={({ target }) => { setBillingAddress({ ...billingAddress, street: target.value }) }} value={billingAddress.street} id="street" className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`} />
-                                </div>
-                                <div className="col-span-1">
-                                    <label className="text-[#ffffff] text-[1rem]" htmlFor="city">City</label>
-                                    <input onChange={({ target }) => { setBillingAddress({ ...billingAddress, city: target.value }) }} value={billingAddress.city} id="city" className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`} />
-                                </div>
-                            </div>
-                            <div className="w-full grid grid-cols-2 gap-x-5">
-                                <div className="">
-                                    <label className="text-[#ffffff] text-[1rem]" htmlFor="state">state</label>
-                                    <input onChange={({ target }) => { setBillingAddress({ ...billingAddress, state: target.value }) }} value={billingAddress.state} id="state" className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`} />
-                                </div>
-                                <div className="">
-                                    <label className="text-[#ffffff] text-[1rem]" htmlFor="country">Country</label>
-                                    <input onChange={({ target }) => { setBillingAddress({ ...billingAddress, country: target.value }) }} value={billingAddress.country} id="country" className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`} />
-                                </div>
-                            </div>
-                            <div className="w-full grid grid-cols-2 gap-x-5">
-                                <div></div>
-                                <div className="">
-                                    <label className="text-[#ffffff] text-[1rem]" htmlFor="zip">Zipcode</label>
-                                    <input onChange={({ target }) => { setBillingAddress({ ...billingAddress, zipcode: target.value }) }} value={billingAddress.zipcode} id="zip" className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`} />
-                                </div>
-                            </div>
-                            <TransbankForm placeFromUser={placeFromUser} selectedPlace={selectedPlace} />
-                        </section>
+                        <>
+                            {
+                                cartHasError ? (
+                                    <></>
+                                )
+                                    :
+                                    (
+                                        <>
+                                            {
+                                                Object.keys(quote).length ? (
+                                                    <CourierOptions quote={quote} />
+                                                )
+                                                    :
+                                                    (
+                                                        <Fallback color='#6366f1' />
+                                                    )
+                                            }
+                                        </>
+                                    )
+                            }
+                        </>
+                        {/* <BillingAddress
+                            billingAddress={billingAddress}
+                            setBillingAddress={setBillingAddress}
+                            placeFromUser={placeFromUser}
+                            selectedPlace={selectedPlace}
+                        /> */}
                     </main>
                 )
             }
