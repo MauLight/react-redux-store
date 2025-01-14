@@ -4,6 +4,7 @@ import { CleanupFn } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine'
 import Hamburger from 'hamburger-react'
 import HeroSectionPanel from './HeroSectionPanel'
+import CollectionSectionPanel from './CollectionSectionPanel'
 
 interface TaskProps {
     id: number
@@ -13,7 +14,7 @@ interface TaskProps {
 
 function HeroSection() {
     return (
-        <section onClick={() => { console.log('Here!') }} className='w-full h-full'>
+        <section className='w-full h-full'>
             <img className='h-full w-full object-cover grayscale' src="https://res.cloudinary.com/maulight/image/upload/v1736786410/gsdwd31smgtmacjjv3ml.png" alt="placeholder" />
         </section>
     )
@@ -75,7 +76,7 @@ const initialElements = [
 function BuilderCard({ card, onDrop, setCurrPanel }: { card: { id: number, title: string, node: ReactNode }, onDrop: (source: number, target: number) => void, setCurrPanel: Dispatch<SetStateAction<number>> }) {
     const { id, title, node } = card
     const [dragging, setDragging] = useState<boolean>(false)
-    const [isDraggedOver, setIsDraggedOver] = useState<boolean>(false)
+    const [_isDraggedOver, setIsDraggedOver] = useState<boolean>(false)
     const ref = useRef(null)
 
     function handleCurrPanel(panel: string) {
@@ -177,6 +178,11 @@ function DragAndDropPanel({ currPanel }: { currPanel: number }) {
                 {
                     currPanel === 1 && (
                         <HeroSectionPanel />
+                    )
+                }
+                {
+                    currPanel === 3 && (
+                        <CollectionSectionPanel />
                     )
                 }
             </div>

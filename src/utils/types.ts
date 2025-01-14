@@ -174,8 +174,8 @@ export interface DropdownProps {
     }>
     list: string[]
     defaultValue?: string
-    loading: boolean
-    error: boolean
+    loading?: boolean
+    error?: boolean
 }
 
 export interface QuotesProps {

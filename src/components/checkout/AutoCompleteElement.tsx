@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom"
 import { postQuoteCourierAsync } from "@/features/courier/courierSlice"
 import { getRegionsAsync } from "@/utils/functions"
 import CourierOptions from "./CourierOptions"
-import BillingAddress from "./BillingAddress"
+//import BillingAddress from "./BillingAddress"
 import Fallback from "../common/Fallback"
 
 interface PlaceAutocompleteProps {
@@ -39,7 +39,7 @@ const schema = yup
     .required()
 
 
-const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompleteProps) => {
+const PlaceAutocomplete = ({ onPlaceSelect }: PlaceAutocompleteProps) => {
 
     const navigate = useNavigate()
     const dispatch: AppDispatch = useDispatch()
@@ -52,14 +52,14 @@ const PlaceAutocomplete = ({ onPlaceSelect, selectedPlace }: PlaceAutocompletePr
 
     //* Courier options
     const quote = useSelector((state: StoreProps) => state.courier.quote)
-    const cartIsLoading = useSelector((state: StoreProps) => state.cart.isLoading)
+    //const cartIsLoading = useSelector((state: StoreProps) => state.cart.isLoading)
     const cartHasError = useSelector((state: StoreProps) => state.cart.hasError)
 
     const [placeAutocomplete, setPlaceAutocomplete] = useState<google.maps.places.Autocomplete | null>(null)
     const [billingAddress, setBillingAddress] = useState<BillingAddressProps | null>(null)
     const [gotAddress, setGotAddress] = useState<boolean>(false)
 
-    const [placeFromUser, setPlaceFromUser] = useState<boolean>(false)
+    const [_placeFromUser, setPlaceFromUser] = useState<boolean>(false)
     const [userWasUpdated, setUserWasUpdated] = useState<boolean>(false)
 
     const shippingFormRef = useRef<HTMLFormElement>(null)
