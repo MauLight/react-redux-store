@@ -6,6 +6,7 @@ import Hamburger from 'hamburger-react'
 import HeroSectionPanel from './HeroSectionPanel'
 import CollectionSectionPanel from './CollectionSectionPanel'
 import SliderSectionPanel from './SliderSectionPanel'
+import ProductsSectionPanel from './ProductsSectionPanel'
 
 interface TaskProps {
     id: number
@@ -189,6 +190,11 @@ function DragAndDropPanel({ currPanel }: { currPanel: number }) {
                 {
                     currPanel === 3 && (
                         <CollectionSectionPanel />
+                    )
+                }
+                {
+                    currPanel === 4 && (
+                        <ProductsSectionPanel />
                     )
                 }
             </div>
