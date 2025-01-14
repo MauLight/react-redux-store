@@ -17,7 +17,7 @@ export default function ProductDescription({ product }: { product: ProductProps 
     const dispatch: AppDispatch = useDispatch()
 
     const [loading, setLoading] = useState<boolean>(true)
-    const [stars, setStars] = useState<ReactNode[]>([])
+    const [_stars, setStars] = useState<ReactNode[]>([])
 
     function calculateRating(rating: number) {
         const ratingArray: ReactNode[] = []

@@ -6,6 +6,7 @@ import DashboardHeader from './components/dashboard/DashboardHeader'
 import ErrorBoundary from './components/error/ErrorBoundary'
 import Fallback from './components/common/Fallback'
 import ScrollToTop from './ScrollToTop'
+import AnnouncementBar from './components/common/AnnouncementBar'
 
 const Sign = lazy(async () => await import('./routes/Sign'))
 const Login = lazy(async () => await import('./routes/Login'))
@@ -27,6 +28,8 @@ function Layout() {
     const { pathname } = useLocation()
     const hideTopbar = pathname.includes('sign') || pathname.includes('login') || pathname.includes('admin') || pathname.includes('confirmation')
     const isAdmin = pathname.includes('admin')
+
+    const [announcementBar, _setAnnouncementBar] = useState<boolean>(true)
 
     const matchId = useMatch('/product/:id')
     const productId = matchId?.params.id
@@ -52,9 +55,14 @@ function Layout() {
     }, [])
 
     return (
-        <main className='relative'>
+        <main className={`relative ${pathname.length === 1 ? 'bg-[#10100e]' : ''}`}>
             {
-                !hideTopbar && <TopBar />
+                announcementBar && (
+                    <AnnouncementBar />
+                )
+            }
+            {
+                !hideTopbar && <TopBar announcementBar={announcementBar} />
             }
             {
                 isAdmin && (

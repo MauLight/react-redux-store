@@ -6,7 +6,7 @@ import { useState, type ReactElement } from 'react'
 import { useSelector } from 'react-redux'
 import { Link, useLocation } from 'react-router-dom'
 
-const TopBar = (): ReactElement => {
+const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement => {
   const user = useSelector((state: StoreProps) => state.userAuth.user)
   const cart = useSelector((state: StoreProps) => state.cart.cart)
   const readyToPay = useSelector((state: StoreProps) => state.cart.readyToPay)
@@ -25,7 +25,7 @@ const TopBar = (): ReactElement => {
   }
 
   return (
-    <main className="fixed top-2 w-full flex justify-center z-50">
+    <main className={`fixed ${announcementBar ? 'top-8' : 'top-2'} w-full flex justify-center z-50`}>
       <section className={`h-[50px] w-full min-[1440px]:w-web px-3 rounded-[10px] ${yPosition > 50 ? 'bg-[#10100e] bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70' : 'bg-transparent'} transition-all duration-200`}>
         <nav className="flex h-full w-full justify-between items-center">
           <Link to={'/'} className="block">
