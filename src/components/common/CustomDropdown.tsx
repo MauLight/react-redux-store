@@ -13,8 +13,17 @@ function CustomDropdown({ value, setValue, list, defaultValue, loading, error }:
     }, [choice])
 
     return (
-        <div onClick={() => { setIsOpen(!isOpen) }} className='relative mt-2 w-full h-9 flex items-center bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 cursor-pointer'>
+        <div onClick={() => { setIsOpen(!isOpen) }} className='relative mt-2 w-full h-9 flex justify-between items-center bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 cursor-pointer'>
             <p className={`capitalize ${choice === '' ? 'text-sym_gray-300' : 'text-[#10100e]'}`}>{choice === '' ? 'State' : choice}</p>
+            {
+                isOpen ? (
+                    <i className="fa-solid fa-arrow-up"></i>
+                )
+                    :
+                    (
+                        <i className="fa-solid fa-arrow-down"></i>
+                    )
+            }
             {
                 isOpen && (
                     <div className='absolute top-9 left-0 z-20 w-full max-h-[200px] overflow-y-scroll bg-[#10100e] border-b rounded-b-[5px]'>
