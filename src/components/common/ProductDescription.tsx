@@ -88,20 +88,22 @@ export default function ProductDescription({ product }: { product: ProductProps 
                 product !== undefined && !loading && (
                     <section className={`lg:flex gap-x-5 ${!isAdmin ? 'min-h-[33rem]' : ''}`}>
                         <div>
-                            <InnerImageZoom hideHint={true} zoomPreload={true} zoomType='hover' src={product.image as string} zoomSrc={product.image} />
+                            <InnerImageZoom className='max-h-[650px]' height={2} hideHint={true} zoomPreload={true} zoomType='hover' src={product.image as string} zoomSrc={product.image} />
                             {
                                 !isAdmin && (
                                     <div className="flex justify-center gap-x-2 mt-5">
                                         {
                                             Array.from({ length: 4 }).map((_, i) => (
-                                                <img src={product.image} key={i} className='w-20 h-20 border border-sym_gray-200'></img>
+                                                <div className='w-20 h-20 border border-sym_gray-200 overflow-hidden'>
+                                                    <img src={product.image} key={i} className='object-cover h-full'></img>
+                                                </div>
                                             ))
                                         }
                                     </div>
                                 )
                             }
                         </div>
-                        <div className="w-full flex flex-col justify-between">
+                        <div className="w-full flex flex-col justify-between pl-10">
                             <div className="flex flex-col">
                                 <h2 aria-label={product.title} className={isAdmin ? 'text-[1.5rem] min-[500px]:text-[2rem] font-light text-sym_gray-600 text-balance uppercase' : 'text-[1.5rem] min-[500px]:text-[2.5rem] font-light text-sym_gray-600 text-balance uppercase'}>{product.title}</h2>
                                 <div className='flex justify-end gap-x-2'>
