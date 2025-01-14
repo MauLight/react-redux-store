@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react'
 
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar'
-import HomeSection from '@/components/dashboard/builder/HomeSection'
+import HomeSection from '@/components/dashboard/builder/home/HomeSection'
 
 function Builder(): ReactNode {
     const [navState, setNavState] = useState<Record<string, boolean>>({

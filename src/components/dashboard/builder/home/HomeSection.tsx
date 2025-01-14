@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { Dispatch, SetStateAction, useEffect, useRef, useState, type ReactNode } from 'react'
 import { draggable, dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
 import { CleanupFn } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types'
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine'
 import Hamburger from 'hamburger-react'
+import HeroSectionPanel from './HeroSectionPanel'
 
 interface TaskProps {
     id: number
@@ -12,7 +13,7 @@ interface TaskProps {
 
 function HeroSection() {
     return (
-        <section className='w-full h-full'>
+        <section onClick={() => { console.log('Here!') }} className='w-full h-full'>
             <img className='h-full w-full object-cover grayscale' src="https://res.cloudinary.com/maulight/image/upload/v1736786410/gsdwd31smgtmacjjv3ml.png" alt="placeholder" />
         </section>
     )
@@ -71,11 +72,30 @@ const initialElements = [
     },
 ]
 
-function BuilderCard({ card, onDrop }: { card: { id: number, title: string, node: ReactNode }, onDrop: (source: number, target: number) => void }) {
+function BuilderCard({ card, onDrop, setCurrPanel }: { card: { id: number, title: string, node: ReactNode }, onDrop: (source: number, target: number) => void, setCurrPanel: Dispatch<SetStateAction<number>> }) {
     const { id, title, node } = card
     const [dragging, setDragging] = useState<boolean>(false)
     const [isDraggedOver, setIsDraggedOver] = useState<boolean>(false)
     const ref = useRef(null)
+
+    function handleCurrPanel(panel: string) {
+        switch (panel) {
+            case 'Hero Section':
+                setCurrPanel(1)
+                break
+            case 'Slider Section':
+                setCurrPanel(2)
+                break
+            case 'Collection Section':
+                setCurrPanel(3)
+                break
+            case 'Products Section':
+                setCurrPanel(4)
+                break
+            default:
+                setCurrPanel(1)
+        }
+    }
 
     useEffect(() => {
         const element = ref.current
@@ -86,7 +106,7 @@ function BuilderCard({ card, onDrop }: { card: { id: number, title: string, node
                 element,
                 getInitialData() { return card },
                 onDragStart: () => setDragging(true),
-                onDrop: () => setDragging(false)
+                onDrop: () => setDragging(false),
             }),
             dropTargetForElements({
                 element,
@@ -104,7 +124,7 @@ function BuilderCard({ card, onDrop }: { card: { id: number, title: string, node
     }, [])
 
     return (
-        <li ref={ref} className={`group relative w-full h-[170px] flex justify-start items-center border border-sym_gray-400 rounded-[5px] cursor-grab active:cursor-grabbing ${dragging ? 'bg-indigo-500 opacity-50' : 'bg-[#ffffff]'}`} data-test-id={id} >
+        <li onClick={() => { handleCurrPanel(title) }} ref={ref} className={`group relative w-full h-[170px] flex justify-start items-center border border-sym_gray-400 rounded-[5px] cursor-grab active:cursor-grabbing ${dragging ? 'bg-indigo-500 opacity-50' : 'bg-[#ffffff]'}`} data-test-id={id} >
             <div className='z-10 absolute top-0 left-0 w-full h-full flex justify-center items-center'>
                 <p className='text-[1.5rem]'>{title}</p>
             </div>
@@ -114,7 +134,8 @@ function BuilderCard({ card, onDrop }: { card: { id: number, title: string, node
     )
 }
 
-function DragAndDropList() {
+function DragAndDropList({ setCurrPanel }: { setCurrPanel: Dispatch<SetStateAction<number>> }) {
+
     const [tasks, setTasks] = useState<TaskProps[]>(initialElements)
 
     function handleDropElement(source: number, target: number) {
@@ -136,35 +157,54 @@ function DragAndDropList() {
                 <Hamburger size={10} color='#ffffff' />
             </div>
             {tasks.map((task, i) => (
-                <BuilderCard key={task.id + '-' + i} card={task} onDrop={handleDropElement} />
+                <BuilderCard key={task.id + '-' + i} card={task} onDrop={handleDropElement} setCurrPanel={setCurrPanel} />
             ))}
             <div className='h-[40px] w-full bg-[#10100e]'></div>
         </ul>
     )
 }
 
-function HomeSection(): ReactNode {
+function DragAndDropPanel({ currPanel }: { currPanel: number }) {
     return (
-        <main className='grid grid-cols-7 gap-x-5 w-[1100px] gap-y-1 py-5 px-10 bg-[#ffffff] rounded-[5px]'>
-            <section className='col-span-3 flex flex-col items-start justify-between gap-y-5'>
+        <section className='col-span-3 flex flex-col items-start justify-between gap-y-5'>
+            <div className='flex flex-col gap-y-10'>
                 <div>
                     <h1 className='text-[1.2rem]'>Home Builder:</h1>
                     <p className='text-[0.9rem] text-sym_gray-600 text-balance'>
-                        In this section you can rearrange the block components of your application. Drag and drop the components in the desired order, double-click to enter a specific section.
+                        In this section you can rearrange the block components of your application. Drag and drop the components in the desired order, click to enter a specific section.
                     </p>
                 </div>
-                <div className="w-full flex justify-start gap-x-2">
-                    <button className='w-[120px] h-10 bg-[#10100e] hover:bg-sym_gray-700 active:bg-[#10100e] transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
-                        <i className="fa-regular fa-eye"></i>
-                        Preview
-                    </button>
-                    <button className='w-[120px] h-10 bg-green-600 hover:bg-green-500 active:bg-green-600 transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
-                        <i className="fa-solid fa-floppy-disk"></i>
-                        Save
-                    </button>
-                </div>
-            </section>
-            <DragAndDropList />
+                {
+                    currPanel === 1 && (
+                        <HeroSectionPanel />
+                    )
+                }
+            </div>
+            <div className="w-full flex justify-start gap-x-2">
+                <button className='w-[120px] h-10 bg-[#10100e] hover:bg-sym_gray-700 active:bg-[#10100e] transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
+                    <i className="fa-regular fa-eye"></i>
+                    Preview
+                </button>
+                <button className='w-[120px] h-10 bg-green-600 hover:bg-green-500 active:bg-green-600 transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
+                    <i className="fa-solid fa-floppy-disk"></i>
+                    Save
+                </button>
+            </div>
+        </section>
+    )
+}
+
+function HomeSection(): ReactNode {
+    const [currPanel, setCurrPanel] = useState<number>(0)
+
+    useEffect(() => {
+        console.log('Current panel', currPanel)
+    }, [currPanel])
+
+    return (
+        <main className='grid grid-cols-7 gap-x-5 w-[1100px] gap-y-1 py-5 px-10 bg-[#ffffff] rounded-[5px]'>
+            <DragAndDropPanel currPanel={currPanel} />
+            <DragAndDropList setCurrPanel={setCurrPanel} />
         </main>
     )
 }
