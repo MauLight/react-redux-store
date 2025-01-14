@@ -4,9 +4,14 @@ import { handleCopyToClipboard } from '@/utils/functions'
 
 interface IndividualProductFormProps {
     register: UseFormRegister<{
+        brand?: string | undefined
         image?: string | undefined
+        weight?: number | undefined
+        height?: number | undefined
+        width?: number | undefined
+        length?: number | undefined
+        quantity?: number | undefined
         title: string
-        brand?: string
         description: string
         price: number
         discount: number
@@ -16,8 +21,13 @@ interface IndividualProductFormProps {
         title: string
         brand: string
         description: string
-        price: number
-        discount: number
+        weight: number | undefined
+        height: number | undefined
+        width: number | undefined
+        length: number | undefined
+        price: number | undefined
+        discount: number | undefined
+        quantity: number | undefined
     }>
     cloudinaryFileUpload: string | null
     priceWithDiscount: number
@@ -107,7 +117,52 @@ function IndividualProductForm({ register, errors, cloudinaryFileUpload, priceWi
                             </label>
                         </div>
                     </div>
-                    {errors.brand && <small className="text-red-500">{errors.brand.message}</small>}
+                </div>
+            </div>
+            <div className="flex gap-x-2">
+                <div className="w-full flex flex-col gap-y-2">
+                    <div className="flex flex-col gap-y-1">
+                        <label className='text-[0.8rem]' htmlFor="weight">Weight</label>
+                        <input
+                            {...register('weight')}
+                            className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.weight !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                            placeholder='Price'
+                        />
+                    </div>
+                    {errors.weight && <small className="text-red-500">{errors.weight.message}</small>}
+                </div>
+
+                <div className="w-full flex flex-col gap-y-2">
+                    <div className="flex flex-col gap-y-1">
+                        <label className='text-[0.8rem]' htmlFor="height">Height</label>
+                        <input
+                            {...register('height')}
+                            className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500  ${errors.height !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                        />
+                    </div>
+                    {errors.height && <small className="text-red-500">{errors.height.message}</small>}
+                </div>
+
+                <div className="w-full flex flex-col gap-y-2">
+                    <div className="flex flex-col gap-y-1">
+                        <label className='text-[0.8rem]' htmlFor="width">Width</label>
+                        <input
+                            {...register('width')}
+                            className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500  ${errors.width !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                        />
+                    </div>
+                    {errors.width && <small className="text-red-500">{errors.width.message}</small>}
+                </div>
+
+                <div className="w-full flex flex-col gap-y-2">
+                    <div className="flex flex-col gap-y-1">
+                        <label className='text-[0.8rem]' htmlFor="length">Length</label>
+                        <input
+                            {...register('length')}
+                            className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500  ${errors.length !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                        />
+                    </div>
+                    {errors.length && <small className="text-red-500">{errors.length.message}</small>}
                 </div>
             </div>
             <div className="flex gap-x-2">
@@ -125,13 +180,24 @@ function IndividualProductForm({ register, errors, cloudinaryFileUpload, priceWi
 
                 <div className="w-full flex flex-col gap-y-2">
                     <div className="flex flex-col gap-y-1">
-                        <label className='text-[0.8rem]' htmlFor="description">{'Discount (leave empty if no discount)'}</label>
+                        <label className='text-[0.8rem]' htmlFor="description">{'Discount (optional)'}</label>
                         <input
                             {...register('discount')}
                             className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`}
                         />
                     </div>
                     {errors.discount && <small className="text-red-500">{errors.discount.message}</small>}
+                </div>
+
+                <div className="w-full flex flex-col gap-y-2">
+                    <div className="flex flex-col gap-y-1">
+                        <label className='text-[0.8rem]' htmlFor="quantity">Quantity</label>
+                        <input
+                            {...register('quantity')}
+                            className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.quantity !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                        />
+                    </div>
+                    {errors.quantity && <small className="text-red-500">{errors.quantity.message}</small>}
                 </div>
             </div>
 

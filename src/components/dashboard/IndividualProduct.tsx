@@ -26,8 +26,13 @@ export const productSchema = yup.object().shape({
     brand: yup.string(),
     description: yup.string().required('Description is required'),
     image: yup.string().url('Image must be a valid URL'),
+    weight: yup.number(),
+    height: yup.number(),
+    width: yup.number(),
+    length: yup.number(),
     price: yup.number().required(),
-    discount: yup.number().required()
+    discount: yup.number().required(),
+    quantity: yup.number(),
 })
 
 function IndividualProduct(): ReactNode {
@@ -42,8 +47,13 @@ function IndividualProduct(): ReactNode {
             title: '',
             description: '',
             image: '',
+            weight: 0,
+            height: 0,
+            width: 0,
+            length: 0,
             price: 0,
-            discount: 0
+            discount: 0,
+            quantity: 0,
         },
         resolver: yupResolver(productSchema)
     })

@@ -11,7 +11,7 @@ export default function DashboardSidebar({ titles, state, setState }: { titles: 
                 <button onClick={() => { setState({ one: false, two: true, three: false, four: false, five: false }) }} className={`w-[150px] h-10 text-left font-light text-[0.9rem] px-2 rounded-[5px] ${two ? 'text-indigo-500 bg-gray-100 font-semibold' : 'text-[#10100e]'}`}>{titles[1]}</button>
                 <button onClick={() => { setState({ one: false, two: false, three: true, four: false, five: false }) }} className={`w-[150px] h-10 text-left font-light text-[0.9rem] px-2 rounded-[5px] ${three ? 'text-indigo-500 bg-gray-100 font-semibold' : 'text-[#10100e]'}`}>{titles[2]}</button>
                 <button onClick={() => { setState({ one: false, two: false, three: false, four: true, five: false }) }} className={`w-[150px] h-10 text-left font-light text-[0.9rem] px-2 rounded-[5px] ${four ? 'text-indigo-500 bg-gray-100 font-semibold' : 'text-[#10100e]'}`}>{titles[3]}</button>
-                <button onClick={() => { setState({ one: false, two: false, three: false, four: true, five: true }) }} className={`w-[150px] h-10 text-left font-light text-[0.9rem] px-2 rounded-[5px] ${five ? 'text-indigo-500 bg-gray-100 font-semibold' : 'text-[#10100e]'}`}>{titles[4]}</button>
+                <button onClick={() => { setState({ one: false, two: false, three: false, four: false, five: true }) }} className={`w-[150px] h-10 text-left font-light text-[0.9rem] px-2 rounded-[5px] ${five ? 'text-indigo-500 bg-gray-100 font-semibold' : 'text-[#10100e]'}`}>{titles[4]}</button>
             </div>
         </div>
     )
