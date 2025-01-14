@@ -12,8 +12,7 @@ function Builder(): ReactNode {
         five: false,
     })
     return (
-        <div className='h-screen w-full flex flex-col justify-center gap-y-5 items-center'>
-            <h1>Builder</h1>
+        <div className='h-screen w-full flex flex-col justify-center gap-y-5 items-start pl-[400px]'>
             {
                 navState.two && (
                     <HomeSection />
