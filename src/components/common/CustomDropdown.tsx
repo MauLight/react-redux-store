@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useState } from 'react'
 import Fallback from './Fallback'
 import { DropdownProps } from '@/utils/types'
 
-function CustomDropdown({ value, setValue, list, defaultValue, loading, error }: DropdownProps): ReactNode {
+function CustomDropdown({ value, setValue, list, defaultValue, loading, error, id }: DropdownProps): ReactNode {
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const [choice, setChoice] = useState<string>(defaultValue || '')
 
@@ -13,7 +13,7 @@ function CustomDropdown({ value, setValue, list, defaultValue, loading, error }:
     }, [choice])
 
     return (
-        <div onClick={() => { setIsOpen(!isOpen) }} className='relative mt-2 w-full h-9 flex justify-between items-center bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 cursor-pointer'>
+        <div id={id} onClick={() => { setIsOpen(!isOpen) }} className='relative mt-2 w-full h-9 flex justify-between items-center bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 cursor-pointer'>
             <p className={`capitalize ${choice === '' ? 'text-sym_gray-300' : 'text-[#10100e]'}`}>{choice === '' ? 'State' : choice}</p>
             {
                 isOpen ? (

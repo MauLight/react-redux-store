@@ -5,6 +5,7 @@ import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine'
 import Hamburger from 'hamburger-react'
 import HeroSectionPanel from './HeroSectionPanel'
 import CollectionSectionPanel from './CollectionSectionPanel'
+import SliderSectionPanel from './SliderSectionPanel'
 
 interface TaskProps {
     id: number
@@ -181,6 +182,11 @@ function DragAndDropPanel({ currPanel }: { currPanel: number }) {
                     )
                 }
                 {
+                    currPanel === 2 && (
+                        <SliderSectionPanel />
+                    )
+                }
+                {
                     currPanel === 3 && (
                         <CollectionSectionPanel />
                     )
@@ -202,10 +208,6 @@ function DragAndDropPanel({ currPanel }: { currPanel: number }) {
 
 function HomeSection(): ReactNode {
     const [currPanel, setCurrPanel] = useState<number>(0)
-
-    useEffect(() => {
-        console.log('Current panel', currPanel)
-    }, [currPanel])
 
     return (
         <main className='grid grid-cols-7 gap-x-5 w-[1100px] gap-y-1 py-5 px-10 bg-[#ffffff] rounded-[5px]'>
