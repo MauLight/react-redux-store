@@ -5,6 +5,7 @@ import { useFetchProducts } from '@/hooks/useFetchProductList'
 
 import DashboardCard from './DashboardCard'
 import { ProductProps } from '@/utils/types'
+import EmptyList from '../common/EmptyList'
 
 const pageSize = 10
 
@@ -37,10 +38,10 @@ function ProductsTable(): ReactNode {
                 ))
                     :
                     (
-                        <p>No items to display.</p>
+                        <EmptyList legend='There are no items to display.' />
                     )
             }
-            <button onClick={loadMore} className="w-full h-10 px-5 border-b bg-[#ffffff] text-[#10100e] hover:bg-[#10100e] hover:text-[#ffffff] transition-color duration-200">
+            <button disabled={!products.length} onClick={loadMore} className={`w-full h-10 px-5 border-b ${!products.length ? 'bg-sym_gray-200 text-sym_gray-500 cursor-not-allowed' : 'bg-[#ffffff] text-[#10100e] hover:bg-[#10100e] hover:text-[#ffffff]'} transition-color duration-200`}>
                 Load More
             </button>
         </div>

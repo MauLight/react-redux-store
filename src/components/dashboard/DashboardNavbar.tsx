@@ -13,7 +13,7 @@ function NavbarButton({ title, icon, wasPressed, handlePressButton, fontSize = '
 
 
     return (
-        <button onClick={handlePressButton} className={`group flex max-sm:flex-col sm:gap-x-2 gap-y-1 items-center justify-center w-[120px] hover:text-indigo-500 active:text-[#10100e] border-sym_gray-300 transition-color duration-200 ${wasPressed ? 'text-indigo-500' : ''}`}>
+        <button onClick={handlePressButton} className={`group flex max-sm:flex-col sm:gap-x-1 gap-y-1 items-center justify-center max-w-[120px] hover:text-indigo-500 active:text-[#10100e] border-sym_gray-300 transition-color duration-200 ${wasPressed ? 'text-indigo-500' : ''}`}>
             <i className={`${icon}`}></i>
             <p className={`text-[${fontSize}]`}>{title}</p>
         </button>
@@ -53,7 +53,7 @@ function DashboardNavbar(): ReactNode {
                 <NavbarButton wasPressed={four} handlePressButton={() => { setNavState({ one: false, two: false, three: false, four: true }) }} title='Settings' icon='fa-solid fa-gear' />
             </nav>
             <nav className='w-full hidden sm:flex justify-between items-center bg-[#ffffff]'>
-                <div className="flex">
+                <div className="flex gap-x-10">
                     <NavbarButton wasPressed={one} handlePressButton={() => { setNavState({ one: true, two: false, three: false, four: false }) }} title='Builder' icon='fa-solid fa-wrench' />
                     <NavbarButton wasPressed={two} handlePressButton={() => { setNavState({ one: false, two: true, three: false, four: false }) }} title='Products' icon='fa-solid fa-cube' />
                     <NavbarButton wasPressed={three} handlePressButton={() => { setNavState({ one: false, two: false, three: true, four: false }) }} title='Collections' icon='fa-solid fa-cubes' />
