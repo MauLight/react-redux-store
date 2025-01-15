@@ -38,9 +38,10 @@ const CloudinaryAPIKEY = import.meta.env.VITE_CLOUDINARY_APIKEY
 interface IndividualProductFormProps {
     product: ProductProps
     handleOpenUpdateProduct: () => void
+    closeModal: () => void
 }
 
-function UpdateProductForm({ product, handleOpenUpdateProduct }: IndividualProductFormProps): ReactNode {
+function UpdateProductForm({ product, handleOpenUpdateProduct, closeModal }: IndividualProductFormProps): ReactNode {
     const dispatch: AppDispatch = useDispatch()
     const postProductIsLoading = useSelector((state: StoreProps) => state.inventory.productsAreLoading)
     const postProductError = useSelector((state: StoreProps) => state.inventory.productsHasError)
@@ -190,7 +191,10 @@ function UpdateProductForm({ product, handleOpenUpdateProduct }: IndividualProdu
     }, [tags])
 
     return (
-        <>
+        <section className='relative'>
+            <button onClick={closeModal} className='absolute top-0 right-2'>
+                <i className="fa-solid fa-lg fa-xmark text-[#10100e] hover:text-red-500 active:text-[#10100e] transition-color duration-200"></i>
+            </button>
             <form onSubmit={(e) => { e.preventDefault() }} className='w-full col-span-1 flex flex-col gap-y-5 px-4 md:px-10 py-10 bg-[#ffffff] rounded-[8px]'>
                 <h1 className='text-[1rem] sm:text-[1.2rem] text-balance leading-tight'>Update Product:</h1>
                 <div className="flex gap-x-5">
@@ -236,7 +240,7 @@ function UpdateProductForm({ product, handleOpenUpdateProduct }: IndividualProdu
                     </Modal>
                 )
             }
-        </>
+        </section>
     )
 }
 

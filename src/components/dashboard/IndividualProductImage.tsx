@@ -16,8 +16,6 @@ export default function IndividualProductImage({
     handleResetUploadImage
 }: IndividualProductImageProps): ReactNode {
 
-    console.log(cloudinaryFileUpload)
-
     return (
         <div className='w-1/3 h-full pt-6 pl-5'>
             {
