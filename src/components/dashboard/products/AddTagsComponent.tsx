@@ -51,7 +51,7 @@ function AddTagsComponent({
                                 <>
                                     {
                                         suggestedTags.map((tag, i) => (
-                                            <button onClick={() => { handleAddTag(tag) }} type='button' key={tag + i} className='px-3 text-indigo-500 hover:text-indigo-400 text-[0.8rem] italic'>{tag}
+                                            <button onClick={() => { handleAddTag(tag) }} type='button' key={tag + i} className='px-2 shrink-0 text-indigo-500 hover:text-indigo-400 text-[0.8rem] italic'>{tag}
                                                 <i className="fa-solid fa-plus"></i>
                                             </button>
                                         ))

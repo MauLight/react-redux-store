@@ -139,6 +139,11 @@ function IndividualProduct(): ReactNode {
         setValue('image', '')
     }
 
+    function handleResetForm() {
+        reset()
+        setWasSubmitted(true)
+    }
+
     async function handlePostProduct() {
         const data = getValues()
 
@@ -211,8 +216,9 @@ function IndividualProduct(): ReactNode {
                         handleResetUploadImage={handleResetUploadImage}
                     />
                 </div>
-                <div className="flex justify-end">
-                    <button onClick={handleSubmit(onSubmit)} className='w-[150px] h-10 bg-[#10100e] text-[#ffffff] mt-2 rounded-[10px]'>Submit</button>
+                <div className="flex gap-x-2 justify-end">
+                    <button onClick={handleResetForm} type='button' className='w-[150px] h-10 bg-[#ffffff] border border-gray-400 hover:bg-red-500 text-[#10100e] hover:text-[#ffffff] active:bg-[#ffffff] active:text-[#10100e] transition-color duration-200 mt-2 rounded-[10px]'>Reset</button>
+                    <button onClick={handleSubmit(onSubmit)} className='w-[150px] h-10 bg-[#10100e] text-[#ffffff] hover:bg-green-600 active:bg-[#10100e] transition-color duration-200 mt-2 rounded-[10px]'>Submit</button>
                 </div>
             </form>
             {
