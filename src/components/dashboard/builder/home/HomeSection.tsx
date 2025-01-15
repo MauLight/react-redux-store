@@ -213,7 +213,7 @@ function DragAndDropPanel({ currPanel }: { currPanel: number }) {
 }
 
 function HomeSection(): ReactNode {
-    const [currPanel, setCurrPanel] = useState<number>(0)
+    const [currPanel, setCurrPanel] = useState<number>(1)
 
     return (
         <main className='grid grid-cols-7 gap-x-5 w-[1100px] gap-y-1 py-5 px-10 bg-[#ffffff] rounded-[5px]'>

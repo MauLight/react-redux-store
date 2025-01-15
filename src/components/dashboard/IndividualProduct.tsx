@@ -17,6 +17,8 @@ import IndividualProductImage from './IndividualProductImage'
 import ConfirmationModal from './ConfirmationModal'
 
 import { generateSignature } from '@/utils/functions'
+import { useSelector } from 'react-redux'
+import { StoreProps } from '@/utils/types'
 
 const CloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME
 const CloudinaryAPIKEY = import.meta.env.VITE_CLOUDINARY_APIKEY
@@ -36,7 +38,13 @@ export const productSchema = yup.object().shape({
 })
 
 function IndividualProduct(): ReactNode {
+
+    //* Store state
     const dispatch: AppDispatch = useDispatch()
+    const postProductIsLoading = useSelector((state: StoreProps) => state.inventory.productsAreLoading)
+    const postProductError = useSelector((state: StoreProps) => state.inventory.productsHasError)
+    const postProductErrorMessage = useSelector((state: StoreProps) => state.inventory.errorMessage)
+
     const [confirmationDialogue, setConfirmationDialogue] = useState<boolean>(false)
     const [priceWithDiscount, setPriceWithDiscount] = useState<number>(0)
     const [compress, setCompress] = useState<number>(1)
@@ -149,26 +157,18 @@ function IndividualProduct(): ReactNode {
 
         const isUrl = /^(https?:\/\/)?((([a-zA-Z0-9$_.+!*'(),;?&=-]|%[0-9a-fA-F]{2})+:)*([a-zA-Z0-9$_.+!*'(),;?&=-]|%[0-9a-fA-F]{2})+@)?(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)|([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(:[0-9]+)?(\/([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)*(\?([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)?(#([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)?$/.test(data.image as string)
 
-        if (!isUrl) {
-            const { payload } = await dispatch(postIndividualProductAsync({ ...data, image: 'https://dummyimage.com/600x400/000/fff', tags }))
-            if (payload) {
-                toast.success(payload.message)
+        try {
+            if (!isUrl) {
+                await dispatch(postIndividualProductAsync({ ...data, image: 'https://dummyimage.com/600x400/000/fff', tags }))
             } else {
-                toast.error('There was an error with your request.')
+                await dispatch(postIndividualProductAsync({ ...data, tags }))
             }
-        } else {
-            const { payload } = await dispatch(postIndividualProductAsync({ ...data, tags }))
-            if (payload) {
-                toast.success(payload.message)
-            } else {
-                toast.error('There was an error with your request.')
-            }
+            setWasSubmitted(true)
+
+        } catch (error) {
+            console.log(error)
+            toast.error('There was an error submitting this product.')
         }
-        reset()
-        setTags([])
-        setCloudinaryFileUpload(null)
-        setConfirmationDialogue(false)
-        setWasSubmitted(true)
     }
 
     function getPercentage() {
@@ -187,6 +187,16 @@ function IndividualProduct(): ReactNode {
             setWasSubmitted(false)
         }
     }, [watchedValues, valuesForDescription, descriptionAdded])
+
+    useEffect(() => {
+        if (!postProductError) {
+            reset()
+            setTags([])
+            setCloudinaryFileUpload(null)
+            setConfirmationDialogue(false)
+        }
+
+    }, [wasSubmitted])
 
 
     return (
@@ -226,8 +236,11 @@ function IndividualProduct(): ReactNode {
                     <Modal openModal={confirmationDialogue} handleOpenModal={() => { setConfirmationDialogue(!confirmationDialogue) }}>
                         <ConfirmationModal
                             product={{ ...getValues() }}
-                            setConfirmationDialogue={setConfirmationDialogue}
+                            errorMessage={postProductErrorMessage}
                             handlePostProduct={handlePostProduct}
+                            postProductError={postProductError}
+                            postProductIsLoading={postProductIsLoading}
+                            setConfirmationDialogue={setConfirmationDialogue}
                         />
                     </Modal>
                 )

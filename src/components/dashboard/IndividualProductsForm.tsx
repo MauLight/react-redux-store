@@ -176,6 +176,7 @@ function IndividualProductForm({
                     handleAddTag={handleAddTag}
                     generatedTags={generatedTags}
                     handleDeleteTag={handleDeleteTag}
+                    handleGenerateTagsWithGemini={handleGenerateTagsWithGemini}
                 />
             </div>
 

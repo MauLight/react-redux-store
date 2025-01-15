@@ -122,6 +122,7 @@ export const postIndividualProductAsync = createAsyncThunk(
             return data
         } catch (error) {
             console.error((error as AxiosError).message)
+            toast.error((error as AxiosError).message)
             return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
         }
     }
@@ -154,7 +155,8 @@ export const productsSlice = createSlice({
         individualProduct: {},
         sortedProducts: [] as ProductProps[],
         productsAreLoading: false,
-        productsHasError: false
+        productsHasError: false,
+        errorMessage: ''
     },
     reducers: {
         clearSortedProducts: (state) => {
@@ -193,12 +195,14 @@ export const productsSlice = createSlice({
                     state.productsAreLoading = false
                     state.productsHasError = false
                     state.products = [...state.products, action.payload.product]
+                    toast.success('Product added to database.')
                 }
             )
             .addCase(
-                postIndividualProductAsync.rejected, (state, _action) => {
+                postIndividualProductAsync.rejected, (state, action) => {
                     state.productsAreLoading = false
                     state.productsHasError = true
+                    state.errorMessage = action.payload as string
                 }
             )
             .addCase(

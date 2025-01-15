@@ -9,7 +9,7 @@ export default function AnnouncementBar(): ReactNode {
             </div>
             <div className='h-5 border border-[#10100e]'></div>
             <div className="flex gap-x-2">
-                <p className='text-[1rem] font-light'>Free shipping from 45 US$</p>
+                <p className='text-[1rem] font-light'>Free shipping from US$ 45</p>
             </div>
         </div>
     )
