@@ -16,6 +16,7 @@ import { useSelector } from 'react-redux'
 import IndividualProductForm from './IndividualProductsForm'
 import { Modal } from '../common/Modal'
 import ConfirmationModal from './ConfirmationModal'
+import { toast } from 'react-toastify'
 
 export const productSchema = yup.object().shape({
     title: yup.string().required('Title is required'),
@@ -87,7 +88,7 @@ function UpdateProductForm({ product, handleOpenUpdateProduct }: IndividualProdu
     }
 
     //* Cloudinary state
-    const [cloudinaryFileUpload, setCloudinaryFileUpload] = useState<string | null>(null)
+    const [cloudinaryFileUpload, setCloudinaryFileUpload] = useState<string | null>(product.image || null)
     const [cloudinaryPublicId, setCloudinaryPublicId] = useState<string | null>(null)
     const [compress, setCompress] = useState<number>(1)
     const fileInputRef = useRef<HTMLInputElement>(null)
@@ -149,9 +150,10 @@ function UpdateProductForm({ product, handleOpenUpdateProduct }: IndividualProdu
         formData.append('signature', signature)
 
         try {
-            const response = await axios.post(`https://api.cloudinary.com/v1_1/${CloudinaryCloudName}/image/destroy`, formData)
-            console.log('Image was deleted succesfully: ', response.data)
+            await axios.post(`https://api.cloudinary.com/v1_1/${CloudinaryCloudName}/image/destroy`, formData)
+            toast.success('Image was deleted succesfully')
         } catch (error) {
+            toast.error('There was an error deleting this image')
             console.error('There was an error deleting this image: ', error)
         }
 
@@ -175,7 +177,6 @@ function UpdateProductForm({ product, handleOpenUpdateProduct }: IndividualProdu
     }, [watchedValues, valuesForDescription, descriptionAdded])
 
     useEffect(() => {
-        console.log('triggered!', wasSubmitted)
         if (!postProductError && wasSubmitted) {
             reset()
             setTags([])
@@ -186,7 +187,6 @@ function UpdateProductForm({ product, handleOpenUpdateProduct }: IndividualProdu
     }, [wasSubmitted])
 
     useEffect(() => {
-        console.log(tags)
     }, [tags])
 
     return (
