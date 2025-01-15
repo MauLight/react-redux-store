@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, type ReactNode } from 'react'
+import { Dispatch, KeyboardEvent, SetStateAction, useState, type ReactNode } from 'react'
 import { FieldErrors, UseFormRegister } from 'react-hook-form'
 import { handleCopyToClipboard } from '@/utils/functions'
 
@@ -37,14 +37,34 @@ interface IndividualProductFormProps {
 
 function IndividualProductForm({ register, errors, cloudinaryFileUpload, priceWithDiscount, compress, setCompress }: IndividualProductFormProps): ReactNode {
 
+    const [newTag, setNewTag] = useState<string>('')
+    const [tags, setTags] = useState<string[]>([])
+    const [suggestedTags, _setSuggestedTags] = useState<string[]>(['tag 1', 'tag 2', 'tag 3', 'tag 4', 'tag 5',])
 
+
+    function handleAddTagFromInput(e: KeyboardEvent<HTMLInputElement>): void {
+        if (e.key === 'Enter' && newTag !== '') {
+            handleAddTag(newTag)
+            setNewTag('')
+        }
+    }
+
+    function handleAddTag(tag: string) {
+        const wasAdded = tags.find((addedTag) => addedTag === tag)
+        if (wasAdded) return
+        setTags([...tags, tag])
+    }
+    function handleDeleteTag(tagToDelete: string) {
+        const newTags = tags.filter((tag) => tag !== tagToDelete)
+        setTags(newTags)
+    }
 
     return (
         <div className='w-2/3 h-full min-h-[436px] flex flex-col gap-y-7 pr-5'>
             <div className="flex gap-x-2">
                 <div className="w-full flex flex-col gap-y-2">
                     <div className="flex flex-col gap-y-1">
-                        <label className='text-[0.8rem]' htmlFor="description">Title</label>
+                        <label className='text-[0.8rem]' htmlFor="title">Title</label>
                         <input
                             {...register('title')}
                             type="text"
@@ -56,7 +76,7 @@ function IndividualProductForm({ register, errors, cloudinaryFileUpload, priceWi
                 </div>
                 <div className="w-full flex flex-col gap-y-2">
                     <div className="flex flex-col gap-y-1">
-                        <label className='text-[0.8rem]' htmlFor="description">Brand</label>
+                        <label className='text-[0.8rem]' htmlFor="brand">Brand</label>
                         <input
                             {...register('brand')}
                             type="text"
@@ -81,10 +101,46 @@ function IndividualProductForm({ register, errors, cloudinaryFileUpload, priceWi
                 {errors.description && <small className="text-red-500">{errors.description.message}</small>}
             </div>
 
+            <div className="flex flex-col gap-y-2">
+                <div className="flex flex-col gap-y-1">
+                    <div className="w-full flex items-center justify-between gap-x-2">
+                        <label className='text-[0.8rem]' htmlFor="tags">Tags</label>
+                        <div className="flex items-center">
+                            <p className='text-[0.8rem] text-indigo-500 italic'>Suggested:</p>
+                            {
+                                suggestedTags.map((tag, i) => (
+                                    <button onClick={() => { handleAddTag(tag) }} type='button' key={tag + i} className='px-3 text-indigo-500 text-[0.8rem] italic'>{tag}</button>
+                                ))
+                            }
+                        </div>
+                    </div>
+                    <div className="relative">
+                        <div className="absolute h-full w-1/2 flex flex-wrap items-center gap-x-2 top-0 right-0">
+                            {
+                                tags.length > 0 && tags.map((tag, i) => (
+                                    <div className='flex items-center justify-center text-[#ffffff] bg-indigo-500 px-1 h-5 border rounded-full border-indigo-500 text-[0.8rem]'>
+                                        <p key={tag + i} className='flex items-center justify-center text-[#ffffff] bg-indigo-500 px-2 h-5 border rounded-full border-indigo-500 text-[0.8rem]'>{tag}</p>
+                                        <i onClick={() => { handleDeleteTag(tag) }} className="fa-solid fa-xmark text-[#ffffff] hover:text-[#10100e] active:text-[#ffffff]"></i>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                        <input
+                            value={newTag}
+                            onChange={({ target }) => { setNewTag(target.value) }}
+                            onKeyDown={handleAddTagFromInput}
+                            type="text"
+                            className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none pl-2 pr-72 placeholder-sym_gray-500`}
+                            placeholder='Tags'
+                        />
+                    </div>
+                </div>
+            </div>
+
             <div className="flex gap-x-2">
                 <div className="w-full flex flex-col gap-y-2">
                     <div className="relative flex flex-col gap-y-1">
-                        <label className='text-[0.8rem]' htmlFor="description">Image</label>
+                        <label className='text-[0.8rem]' htmlFor="image">Image</label>
                         <input
                             disabled
                             {...register('image')}
@@ -100,10 +156,11 @@ function IndividualProductForm({ register, errors, cloudinaryFileUpload, priceWi
                 </div>
                 <div className="flex flex-col gap-y-2 justify-center items-center">
                     <div className="flex flex-col gap-y-1 justify-center items-center">
-                        <label className='text-[0.8rem]' htmlFor="description">Compress</label>
+                        <label className='text-[0.8rem]' htmlFor="compress">Compress</label>
                         <div className="inline-flex items-center">
                             <label className="flex items-center cursor-pointer relative">
                                 <input
+                                    name='compress'
                                     value={compress}
                                     onChange={() => { setCompress(compress === 1 ? 0 : 1) }}
                                     type="checkbox"
@@ -168,7 +225,7 @@ function IndividualProductForm({ register, errors, cloudinaryFileUpload, priceWi
             <div className="flex gap-x-2">
                 <div className="w-full flex flex-col gap-y-2">
                     <div className="flex flex-col gap-y-1">
-                        <label className='text-[0.8rem]' htmlFor="description">Price</label>
+                        <label className='text-[0.8rem]' htmlFor="price">Price</label>
                         <input
                             {...register('price')}
                             className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.price !== undefined ? 'ring-1 ring-red-500' : ''}`}
@@ -180,7 +237,7 @@ function IndividualProductForm({ register, errors, cloudinaryFileUpload, priceWi
 
                 <div className="w-full flex flex-col gap-y-2">
                     <div className="flex flex-col gap-y-1">
-                        <label className='text-[0.8rem]' htmlFor="description">{'Discount (optional)'}</label>
+                        <label className='text-[0.8rem]' htmlFor="discount">{'Discount (optional)'}</label>
                         <input
                             {...register('discount')}
                             className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`}
@@ -203,7 +260,7 @@ function IndividualProductForm({ register, errors, cloudinaryFileUpload, priceWi
 
             <div className="flex flex-col gap-y-2">
                 <div className="flex flex-col gap-y-1">
-                    <label className='text-[0.8rem]' htmlFor="description">Price with discount</label>
+                    <label className='text-[0.8rem]' htmlFor="priceWithDiscount">Price with discount</label>
                     <input
                         disabled
                         value={priceWithDiscount}
