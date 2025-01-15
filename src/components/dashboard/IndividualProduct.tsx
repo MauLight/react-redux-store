@@ -30,8 +30,8 @@ export const productSchema = yup.object().shape({
     height: yup.number(),
     width: yup.number(),
     length: yup.number(),
-    price: yup.number().required(),
-    discount: yup.number().required(),
+    price: yup.number().required('Price is required'),
+    discount: yup.number(),
     quantity: yup.number(),
 })
 
@@ -40,6 +40,9 @@ function IndividualProduct(): ReactNode {
     const [confirmationDialogue, setConfirmationDialogue] = useState<boolean>(false)
     const [priceWithDiscount, setPriceWithDiscount] = useState<number>(0)
     const [compress, setCompress] = useState<number>(1)
+
+    const [tags, setTags] = useState<string[]>([])
+    const [wasSubmitted, setWasSubmitted] = useState<boolean>(false)
 
     //* UseForm State
     const { watch, register, getValues, setValue, handleSubmit, reset, formState: { errors } } = useForm({
@@ -50,14 +53,13 @@ function IndividualProduct(): ReactNode {
             weight: 0,
             height: 0,
             width: 0,
-            length: 0,
-            price: 0,
-            discount: 0,
-            quantity: 0,
+            length: 0
         },
         resolver: yupResolver(productSchema)
     })
     const watchedValues = watch(['price', 'discount'])
+    const valuesForDescription = watch(['title', 'brand'])
+    const descriptionAdded = watch(['description'])
 
     const onSubmit = () => {
         setConfirmationDialogue(true)
@@ -143,14 +145,14 @@ function IndividualProduct(): ReactNode {
         const isUrl = /^(https?:\/\/)?((([a-zA-Z0-9$_.+!*'(),;?&=-]|%[0-9a-fA-F]{2})+:)*([a-zA-Z0-9$_.+!*'(),;?&=-]|%[0-9a-fA-F]{2})+@)?(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)|([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(:[0-9]+)?(\/([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)*(\?([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)?(#([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)?$/.test(data.image as string)
 
         if (!isUrl) {
-            const { payload } = await dispatch(postIndividualProductAsync({ ...data, image: 'https://dummyimage.com/600x400/000/fff' }))
+            const { payload } = await dispatch(postIndividualProductAsync({ ...data, image: 'https://dummyimage.com/600x400/000/fff', tags }))
             if (payload) {
                 toast.success(payload.message)
             } else {
                 toast.error('There was an error with your request.')
             }
         } else {
-            const { payload } = await dispatch(postIndividualProductAsync({ ...data }))
+            const { payload } = await dispatch(postIndividualProductAsync({ ...data, tags }))
             if (payload) {
                 toast.success(payload.message)
             } else {
@@ -158,13 +160,16 @@ function IndividualProduct(): ReactNode {
             }
         }
         reset()
+        setTags([])
+        setCloudinaryFileUpload(null)
         setConfirmationDialogue(false)
+        setWasSubmitted(true)
     }
 
     function getPercentage() {
         const percentage = getValues().discount
         const price = getValues().price
-        const discount = (percentage / 100) * price
+        const discount = percentage ? (percentage / 100) * price : 0
         setPriceWithDiscount(price - discount)
     }
 
@@ -172,30 +177,42 @@ function IndividualProduct(): ReactNode {
         getPercentage()
     }, [watchedValues])
 
+    useEffect(() => {
+        if (wasSubmitted && (watchedValues.length || valuesForDescription.length || descriptionAdded.length)) {
+            setWasSubmitted(false)
+        }
+    }, [watchedValues, valuesForDescription, descriptionAdded])
+
 
     return (
         <>
-            <form onSubmit={handleSubmit(onSubmit)} className='w-full col-span-1 flex flex-col gap-y-5 px-4 md:px-10 py-10 bg-[#ffffff] rounded-[8px]'>
+            <form onSubmit={(e) => { e.preventDefault() }} className='w-full col-span-1 flex flex-col gap-y-5 px-4 md:px-10 py-10 bg-[#ffffff] rounded-[8px]'>
                 <h1 className='text-[1rem] sm:text-[1.2rem] text-balance leading-tight'>Add individual products here:</h1>
                 <div className="flex gap-x-5">
                     <IndividualProductForm
-                        compress={compress}
-                        setCompress={setCompress}
-                        register={register}
+                        tags={tags}
                         errors={errors}
-                        cloudinaryFileUpload={cloudinaryFileUpload}
+                        setTags={setTags}
+                        register={register}
+                        setValue={setValue}
+                        compress={compress}
+                        wasSubmitted={wasSubmitted}
+                        setCompress={setCompress}
+                        descriptionAdded={descriptionAdded}
                         priceWithDiscount={priceWithDiscount}
+                        cloudinaryFileUpload={cloudinaryFileUpload}
+                        valuesForDescription={valuesForDescription}
                     />
                     <IndividualProductImage
-                        handleResetUploadImage={handleResetUploadImage}
+                        fileInputRef={fileInputRef}
+                        handleFileUpload={handleFileUpload}
                         cloudinaryFileUpload={cloudinaryFileUpload}
                         handleFileButtonClick={handleFileButtonClick}
-                        handleFileUpload={handleFileUpload}
-                        fileInputRef={fileInputRef}
+                        handleResetUploadImage={handleResetUploadImage}
                     />
                 </div>
                 <div className="flex justify-end">
-                    <button type="submit" className='w-[150px] h-10 bg-[#10100e] text-[#ffffff] mt-2 rounded-[10px]'>Submit</button>
+                    <button onClick={handleSubmit(onSubmit)} className='w-[150px] h-10 bg-[#10100e] text-[#ffffff] mt-2 rounded-[10px]'>Submit</button>
                 </div>
             </form>
             {

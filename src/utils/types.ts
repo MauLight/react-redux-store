@@ -7,13 +7,14 @@ export interface ProductProps {
     brand?: string
     image?: string
     price: number
-    discount: number
+    discount?: number
     rating?: {
         productId: string
         ratings: Array<number>
         averageRating: number
     }
     quantity?: number
+    tags?: Array<string>
 }
 
 export interface wishListProduct { id: string, productId: string }

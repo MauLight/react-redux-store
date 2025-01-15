@@ -1,20 +1,34 @@
-import { Dispatch, KeyboardEvent, SetStateAction, useState, type ReactNode } from 'react'
-import { FieldErrors, UseFormRegister } from 'react-hook-form'
+import { Dispatch, SetStateAction, useEffect, useState, type ReactNode } from 'react'
+import { FieldErrors, UseFormRegister, UseFormSetValue } from 'react-hook-form'
 import { handleCopyToClipboard } from '@/utils/functions'
-
+import AddTagsComponent from './products/AddTagsComponent'
+import { generateWithGemini } from '@/gemini/gemini'
 interface IndividualProductFormProps {
     register: UseFormRegister<{
-        brand?: string | undefined
-        image?: string | undefined
-        weight?: number | undefined
-        height?: number | undefined
-        width?: number | undefined
-        length?: number | undefined
-        quantity?: number | undefined
-        title: string
-        description: string
-        price: number
-        discount: number
+        length?: number | undefined;
+        image?: string | undefined;
+        brand?: string | undefined;
+        weight?: number | undefined;
+        height?: number | undefined;
+        width?: number | undefined;
+        discount?: number | undefined;
+        quantity?: number | undefined;
+        title: string;
+        description: string;
+        price: number;
+    }>
+    setValue: UseFormSetValue<{
+        length?: number | undefined;
+        image?: string | undefined;
+        quantity?: number | undefined;
+        brand?: string | undefined;
+        discount?: number | undefined;
+        weight?: number | undefined;
+        height?: number | undefined;
+        width?: number | undefined;
+        title: string;
+        price: number;
+        description: string;
     }>
     errors: FieldErrors<{
         image?: string | undefined
@@ -33,31 +47,82 @@ interface IndividualProductFormProps {
     priceWithDiscount: number
     compress: number
     setCompress: Dispatch<SetStateAction<number>>
+    descriptionAdded: [string]
+    valuesForDescription: [string, string | undefined]
+    tags: Array<string>
+    setTags: Dispatch<SetStateAction<Array<string>>>
+    wasSubmitted: boolean
 }
 
-function IndividualProductForm({ register, errors, cloudinaryFileUpload, priceWithDiscount, compress, setCompress }: IndividualProductFormProps): ReactNode {
+function IndividualProductForm({
+    tags,
+    errors,
+    setTags,
+    register,
+    setValue,
+    compress,
+    setCompress,
+    wasSubmitted,
+    descriptionAdded,
+    priceWithDiscount,
+    valuesForDescription,
+    cloudinaryFileUpload,
+}: IndividualProductFormProps): ReactNode {
 
-    const [newTag, setNewTag] = useState<string>('')
-    const [tags, setTags] = useState<string[]>([])
-    const [suggestedTags, _setSuggestedTags] = useState<string[]>(['tag 1', 'tag 2', 'tag 3', 'tag 4', 'tag 5',])
-
-
-    function handleAddTagFromInput(e: KeyboardEvent<HTMLInputElement>): void {
-        if (e.key === 'Enter' && newTag !== '') {
-            handleAddTag(newTag)
-            setNewTag('')
-        }
-    }
+    const [generatedDescription, setGeneratedDescription] = useState<string>('')
+    const [generatedTags, setGeneratedTags] = useState<Array<string>>([])
 
     function handleAddTag(tag: string) {
         const wasAdded = tags.find((addedTag) => addedTag === tag)
         if (wasAdded) return
         setTags([...tags, tag])
     }
+
     function handleDeleteTag(tagToDelete: string) {
         const newTags = tags.filter((tag) => tag !== tagToDelete)
         setTags(newTags)
     }
+
+    async function handleGenerateDescriptionWithGemini(): Promise<string | null> {
+
+        if (valuesForDescription[0].length && valuesForDescription[1] && valuesForDescription[1].length) {
+            const prompt = `Use this title for a product (${valuesForDescription[0]}) and this brand name (${valuesForDescription[1]}) to come up with a description for the product with an emphazis in key characteristics suitable for selling the product, answer with only the description and use a maximum of 200 characters.`
+            const generation = await generateWithGemini(prompt)
+            setGeneratedDescription(generation)
+            return generation
+        } else if (valuesForDescription[0].length) {
+            const prompt = `Use this title for a product (${valuesForDescription[0]}) to come up with a description for the product with an emphazis in key characteristics suitable for selling the product, answer with only the description and use a maximum of 200 characters.`
+            const generation = await generateWithGemini(prompt)
+            setGeneratedDescription(generation)
+            return generation
+        }
+
+        return null
+    }
+
+    async function handleGenerateTagsWithGemini() {
+
+        if (descriptionAdded[0].length) {
+            const prompt = `Use this product description (${descriptionAdded[0]}) to come up with 5 categories for the product to be used as tags, but answer with only the categories separated by commas.`
+            const generation = await generateWithGemini(prompt)
+            const generatedList = generation.split(',')
+            setGeneratedTags(generatedList.map(tag => tag.trim()))
+            return
+        }
+    }
+
+    useEffect(() => {
+        if (generatedDescription.length) {
+            setValue('description', generatedDescription)
+        }
+    }, [generatedDescription])
+
+    useEffect(() => {
+        if (wasSubmitted) {
+            setGeneratedDescription('')
+            setGeneratedTags([])
+        }
+    }, [wasSubmitted])
 
     return (
         <div className='w-2/3 h-full min-h-[436px] flex flex-col gap-y-7 pr-5'>
@@ -70,6 +135,7 @@ function IndividualProductForm({ register, errors, cloudinaryFileUpload, priceWi
                             type="text"
                             className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.title !== undefined ? 'ring-1 ring-red-500' : ''}`}
                             placeholder='Title'
+                            onBlur={handleGenerateDescriptionWithGemini}
                         />
                     </div>
                     {errors.title && <small className="text-red-500">{errors.title.message}</small>}
@@ -82,6 +148,7 @@ function IndividualProductForm({ register, errors, cloudinaryFileUpload, priceWi
                             type="text"
                             className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.brand !== undefined ? 'ring-1 ring-red-500' : ''}`}
                             placeholder='Brand'
+                            onBlur={handleGenerateDescriptionWithGemini}
                         />
                     </div>
                     {errors.brand && <small className="text-red-500">{errors.brand.message}</small>}
@@ -96,45 +163,20 @@ function IndividualProductForm({ register, errors, cloudinaryFileUpload, priceWi
                         type="text"
                         className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.description !== undefined ? 'ring-1 ring-red-500' : ''}`}
                         placeholder='Description'
+                        onBlur={handleGenerateTagsWithGemini}
                     />
                 </div>
                 {errors.description && <small className="text-red-500">{errors.description.message}</small>}
             </div>
 
             <div className="flex flex-col gap-y-2">
-                <div className="flex flex-col gap-y-1">
-                    <div className="w-full flex items-center justify-between gap-x-2">
-                        <label className='text-[0.8rem]' htmlFor="tags">Tags</label>
-                        <div className="flex items-center">
-                            <p className='text-[0.8rem] text-indigo-500 italic'>Suggested:</p>
-                            {
-                                suggestedTags.map((tag, i) => (
-                                    <button onClick={() => { handleAddTag(tag) }} type='button' key={tag + i} className='px-3 text-indigo-500 text-[0.8rem] italic'>{tag}</button>
-                                ))
-                            }
-                        </div>
-                    </div>
-                    <div className="relative">
-                        <div className="absolute h-full w-1/2 flex flex-wrap items-center gap-x-2 top-0 right-0">
-                            {
-                                tags.length > 0 && tags.map((tag, i) => (
-                                    <div className='flex items-center justify-center text-[#ffffff] bg-indigo-500 px-1 h-5 border rounded-full border-indigo-500 text-[0.8rem]'>
-                                        <p key={tag + i} className='flex items-center justify-center text-[#ffffff] bg-indigo-500 px-2 h-5 border rounded-full border-indigo-500 text-[0.8rem]'>{tag}</p>
-                                        <i onClick={() => { handleDeleteTag(tag) }} className="fa-solid fa-xmark text-[#ffffff] hover:text-[#10100e] active:text-[#ffffff]"></i>
-                                    </div>
-                                ))
-                            }
-                        </div>
-                        <input
-                            value={newTag}
-                            onChange={({ target }) => { setNewTag(target.value) }}
-                            onKeyDown={handleAddTagFromInput}
-                            type="text"
-                            className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none pl-2 pr-72 placeholder-sym_gray-500`}
-                            placeholder='Tags'
-                        />
-                    </div>
-                </div>
+                <AddTagsComponent
+                    tags={tags}
+                    wasSubmitted={wasSubmitted}
+                    handleAddTag={handleAddTag}
+                    generatedTags={generatedTags}
+                    handleDeleteTag={handleDeleteTag}
+                />
             </div>
 
             <div className="flex gap-x-2">
@@ -222,38 +264,44 @@ function IndividualProductForm({ register, errors, cloudinaryFileUpload, priceWi
                     {errors.length && <small className="text-red-500">{errors.length.message}</small>}
                 </div>
             </div>
-            <div className="flex gap-x-2">
-                <div className="w-full flex flex-col gap-y-2">
-                    <div className="flex flex-col gap-y-1">
-                        <label className='text-[0.8rem]' htmlFor="price">Price</label>
-                        <input
-                            {...register('price')}
-                            className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.price !== undefined ? 'ring-1 ring-red-500' : ''}`}
-                            placeholder='Price'
-                        />
+            <div className="flex flex-col gap-y-2">
+                <div className="flex gap-x-2">
+                    <div className="w-full flex flex-col gap-y-2">
+                        <div className="flex flex-col gap-y-1">
+                            <label className='text-[0.8rem]' htmlFor="price">Price</label>
+                            <input
+                                {...register('price')}
+                                className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.price !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                                placeholder='Price'
+                            />
+                        </div>
+
                     </div>
+
+                    <div className="w-full flex flex-col gap-y-2">
+                        <div className="flex flex-col gap-y-1">
+                            <label className='text-[0.8rem]' htmlFor="discount">{'Discount (optional)'}</label>
+                            <input
+                                {...register('discount')}
+                                className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`}
+                            />
+                        </div>
+
+                    </div>
+
+                    <div className="w-full flex flex-col gap-y-2">
+                        <div className="flex flex-col gap-y-1">
+                            <label className='text-[0.8rem]' htmlFor="quantity">Quantity</label>
+                            <input
+                                {...register('quantity')}
+                                className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.quantity !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div className="flex flex-col gap-y-1">
                     {errors.price && <small className="text-red-500">{errors.price.message}</small>}
-                </div>
-
-                <div className="w-full flex flex-col gap-y-2">
-                    <div className="flex flex-col gap-y-1">
-                        <label className='text-[0.8rem]' htmlFor="discount">{'Discount (optional)'}</label>
-                        <input
-                            {...register('discount')}
-                            className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`}
-                        />
-                    </div>
                     {errors.discount && <small className="text-red-500">{errors.discount.message}</small>}
-                </div>
-
-                <div className="w-full flex flex-col gap-y-2">
-                    <div className="flex flex-col gap-y-1">
-                        <label className='text-[0.8rem]' htmlFor="quantity">Quantity</label>
-                        <input
-                            {...register('quantity')}
-                            className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.quantity !== undefined ? 'ring-1 ring-red-500' : ''}`}
-                        />
-                    </div>
                     {errors.quantity && <small className="text-red-500">{errors.quantity.message}</small>}
                 </div>
             </div>
