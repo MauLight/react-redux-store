@@ -75,8 +75,7 @@ export default function DashboardCard({ product }: { product: ProductProps }): R
                     )
                         :
                         (
-                            <section className='flex flex-col gap-y-10'>
-                                <h1 className='text-[1.5rem] text-balance uppercase'>Update product</h1>
+                            <section className='flex flex-col'>
                                 <UpdateProductForm product={product} handleOpenUpdateProduct={handleOpenUpdateProduct} />
                             </section>
                         )

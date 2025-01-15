@@ -15,6 +15,10 @@ export interface ProductProps {
     }
     quantity?: number
     tags?: Array<string>
+    weight?: number,
+    height?: number,
+    width?: number,
+    length?: number
 }
 
 export interface wishListProduct { id: string, productId: string }

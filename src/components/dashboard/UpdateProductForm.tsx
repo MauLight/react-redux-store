@@ -10,16 +10,25 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
 import IndividualProductImage from './IndividualProductImage'
-import { OnSubmitFormValues, ProductProps } from '@/utils/types'
-import { generateSignature, getPercentage, handleCopyToClipboard } from '@/utils/functions'
+import { ProductProps, StoreProps } from '@/utils/types'
+import { generateSignature, getPercentage } from '@/utils/functions'
+import { useSelector } from 'react-redux'
+import IndividualProductForm from './IndividualProductsForm'
+import { Modal } from '../common/Modal'
+import ConfirmationModal from './ConfirmationModal'
 
 export const productSchema = yup.object().shape({
     title: yup.string().required('Title is required'),
     brand: yup.string(),
     description: yup.string().required('Description is required'),
     image: yup.string().url('Image must be a valid URL'),
-    price: yup.number().required(),
-    discount: yup.number().required()
+    weight: yup.number(),
+    height: yup.number(),
+    width: yup.number(),
+    length: yup.number(),
+    price: yup.number().required('Price is required'),
+    discount: yup.number().required(),
+    quantity: yup.number(),
 })
 
 const CloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME
@@ -32,27 +41,43 @@ interface IndividualProductFormProps {
 
 function UpdateProductForm({ product, handleOpenUpdateProduct }: IndividualProductFormProps): ReactNode {
     const dispatch: AppDispatch = useDispatch()
+    const postProductIsLoading = useSelector((state: StoreProps) => state.inventory.productsAreLoading)
+    const postProductError = useSelector((state: StoreProps) => state.inventory.productsHasError)
+    const postProductErrorMessage = useSelector((state: StoreProps) => state.inventory.errorMessage)
+
+    const [tags, setTags] = useState<string[]>(product.tags || [])
+    const [wasSubmitted, setWasSubmitted] = useState<boolean>(false)
+    const [confirmationDialogue, setConfirmationDialogue] = useState<boolean>(false)
 
     //* UseForm State
     const [priceWithDiscount, setPriceWithDiscount] = useState<number>(0)
     const { watch, register, getValues, setValue, handleSubmit, reset, formState: { errors } } = useForm({
         defaultValues: {
-            title: product.title,
+            title: product.title || '',
             brand: product.brand || '',
             description: product.description || '',
             image: product.image || '',
+            weight: product.weight || 0,
+            height: product.height || 0,
+            width: product.width || 0,
+            length: product.length || 0,
             price: product.price || 0,
-            discount: product.discount || 0
+            discount: product.discount || 0,
+            quantity: product.quantity || 0
         },
         resolver: yupResolver(productSchema)
     })
-    const watchedValues = watch(['price', 'discount'])
 
-    const onSubmit = (data: OnSubmitFormValues) => {
-        handleUpdateProduct(data)
+    const watchedValues = watch(['price', 'discount'])
+    const valuesForDescription = watch(['title', 'brand'])
+    const descriptionAdded = watch(['description'])
+
+    const onSubmit = () => {
+        setConfirmationDialogue(true)
     }
 
-    async function handleUpdateProduct(data: OnSubmitFormValues) {
+    async function handleUpdateProduct() {
+        const data = getValues()
         const { payload } = await dispatch(updateProductByIdAsync({ id: product.id as string, values: data }))
         if (payload.updatedProduct) {
             await dispatch(getAllProductsAsync())
@@ -134,145 +159,83 @@ function UpdateProductForm({ product, handleOpenUpdateProduct }: IndividualProdu
         setValue('image', product.image)
     }
 
+    function handleResetForm() {
+        reset()
+        setWasSubmitted(true)
+    }
+
     useEffect(() => {
         getPercentage(getValues, setPriceWithDiscount)
     }, [watchedValues])
 
+    useEffect(() => {
+        if (wasSubmitted && (watchedValues.length || valuesForDescription.length || descriptionAdded.length)) {
+            setWasSubmitted(false)
+        }
+    }, [watchedValues, valuesForDescription, descriptionAdded])
+
+    useEffect(() => {
+        console.log('triggered!', wasSubmitted)
+        if (!postProductError && wasSubmitted) {
+            reset()
+            setTags([])
+            setCloudinaryFileUpload(null)
+            setConfirmationDialogue(false)
+        }
+
+    }, [wasSubmitted])
+
+    useEffect(() => {
+        console.log(tags)
+    }, [tags])
+
     return (
         <>
-            <form onSubmit={handleSubmit(onSubmit)} className='w-full col-span-1 flex flex-col gap-y-5 px-4 md:px-5 bg-[#ffffff] rounded-[8px]'>
+            <form onSubmit={(e) => { e.preventDefault() }} className='w-full col-span-1 flex flex-col gap-y-5 px-4 md:px-10 py-10 bg-[#ffffff] rounded-[8px]'>
+                <h1 className='text-[1rem] sm:text-[1.2rem] text-balance leading-tight'>Update Product:</h1>
                 <div className="flex gap-x-5">
-                    <div className='w-2/3 h-full min-h-[436px] flex flex-col gap-y-7 pr-5'>
-                        <div className="flex gap-x-2">
-                            <div className="w-full flex flex-col gap-y-2">
-                                <div className="flex flex-col gap-y-1">
-                                    <label className='text-[0.8rem]' htmlFor="description">Title</label>
-                                    <input
-                                        {...register('title')}
-                                        type="text"
-                                        className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.title !== undefined ? 'ring-1 ring-red-500' : ''}`}
-                                        placeholder='Title'
-                                    />
-                                </div>
-                                {errors.title && <small className="text-red-500">{errors.title.message}</small>}
-                            </div>
-                            <div className="w-full flex flex-col gap-y-2">
-                                <div className="flex flex-col gap-y-1">
-                                    <label className='text-[0.8rem]' htmlFor="description">Brand</label>
-                                    <input
-                                        {...register('brand')}
-                                        type="text"
-                                        className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.brand !== undefined ? 'ring-1 ring-red-500' : ''}`}
-                                        placeholder='Brand'
-                                    />
-                                </div>
-                                {errors.brand && <small className="text-red-500">{errors.brand.message}</small>}
-                            </div>
-                        </div>
 
-                        <div className="flex flex-col gap-y-2">
-                            <div className="flex flex-col gap-y-1">
-                                <label className='text-[0.8rem]' htmlFor="description">Description</label>
-                                <input
-                                    {...register('description')}
-                                    type="text"
-                                    className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.description !== undefined ? 'ring-1 ring-red-500' : ''}`}
-                                    placeholder='Description'
-                                />
-                            </div>
-                            {errors.description && <small className="text-red-500">{errors.description.message}</small>}
-                        </div>
-
-                        <div className="flex gap-x-2">
-                            <div className="w-full flex flex-col gap-y-2">
-                                <div className="relative flex flex-col gap-y-1">
-                                    <label className='text-[0.8rem]' htmlFor="description">Image</label>
-                                    <input
-                                        disabled
-                                        {...register('image')}
-                                        type="text"
-                                        className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none pl-2 pr-10 truncate placeholder-sym_gray-500 ${errors.image !== undefined ? 'ring-1 ring-red-500' : ''}`}
-                                        placeholder='Image'
-                                    />
-                                    {
-                                        cloudinaryFileUpload && <i onClick={() => { handleCopyToClipboard(cloudinaryFileUpload, 'URL copied to clipboard.') }} className="absolute top-8 right-2 hover:text-indigo-500 active:text-[#10100e] cursor-pointer transition-color duration-200 fa-solid fa-clipboard"></i>
-                                    }
-                                </div>
-                                {errors.image && <small className="text-red-500">{errors.image.message}</small>}
-                            </div>
-                            <div className="flex flex-col gap-y-2 justify-center items-center">
-                                <div className="flex flex-col gap-y-1 justify-center items-center">
-                                    <label className='text-[0.8rem]' htmlFor="description">Compress</label>
-                                    <div className="inline-flex items-center">
-                                        <label className="flex items-center cursor-pointer relative">
-                                            <input
-                                                value={compress}
-                                                onChange={() => { setCompress(compress === 1 ? 0 : 1) }}
-                                                type="checkbox"
-                                                defaultChecked
-                                                className="peer h-10 w-10 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-indigo-500 checked:border-indigo-500" id="check1" />
-                                            <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" strokeWidth="1">
-                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path>
-                                                </svg>
-                                            </span>
-                                        </label>
-                                    </div>
-                                </div>
-                                {errors.brand && <small className="text-red-500">{errors.brand.message}</small>}
-                            </div>
-                        </div>
-                        <div className="flex gap-x-2">
-                            <div className="w-full flex flex-col gap-y-2">
-                                <div className="flex flex-col gap-y-1">
-                                    <label className='text-[0.8rem]' htmlFor="description">Price</label>
-                                    <input
-                                        {...register('price')}
-                                        className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.price !== undefined ? 'ring-1 ring-red-500' : ''}`}
-                                        placeholder='Price'
-                                    />
-                                </div>
-                                {errors.price && <small className="text-red-500">{errors.price.message}</small>}
-                            </div>
-
-                            <div className="w-full flex flex-col gap-y-2">
-                                <div className="flex flex-col gap-y-1">
-                                    <label className='text-[0.8rem]' htmlFor="description">{'Discount (leave empty if no discount)'}</label>
-                                    <input
-                                        {...register('discount')}
-                                        className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`}
-                                    />
-                                </div>
-                                {errors.discount && <small className="text-red-500">{errors.discount.message}</small>}
-                            </div>
-                        </div>
-
-                        <div className="flex flex-col gap-y-2">
-                            <div className="flex flex-col gap-y-1">
-                                <label className='text-[0.8rem]' htmlFor="description">Price with discount</label>
-                                <input
-                                    disabled
-                                    value={priceWithDiscount}
-                                    type="number"
-                                    className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-indigo-500 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`}
-                                />
-                            </div>
-                        </div>
-
-                    </div>
+                    <IndividualProductForm
+                        tags={tags}
+                        errors={errors}
+                        setTags={setTags}
+                        register={register}
+                        setValue={setValue}
+                        compress={compress}
+                        wasSubmitted={wasSubmitted}
+                        setCompress={setCompress}
+                        descriptionAdded={descriptionAdded}
+                        priceWithDiscount={priceWithDiscount}
+                        cloudinaryFileUpload={cloudinaryFileUpload}
+                        valuesForDescription={valuesForDescription}
+                    />
                     <IndividualProductImage
-                        handleResetUploadImage={handleResetUploadImage}
+                        fileInputRef={fileInputRef}
+                        handleFileUpload={handleFileUpload}
                         cloudinaryFileUpload={cloudinaryFileUpload}
                         handleFileButtonClick={handleFileButtonClick}
-                        handleFileUpload={handleFileUpload}
-                        fileInputRef={fileInputRef}
+                        handleResetUploadImage={handleResetUploadImage}
                     />
                 </div>
-                <div className="flex justify-end gap-x-5 px-5">
-                    <button type='button' onClick={handleOpenUpdateProduct} className='h-10 px-5 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-red-500 active:bg-[#10100e] rounded-[10px]'>Cancel</button>
-                    <button type='submit' className='h-10 px-5 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e] rounded-[10px]'>Update</button>
+                <div className="flex gap-x-2 justify-end">
+                    <button onClick={handleResetForm} type='button' className='w-[150px] h-10 bg-[#ffffff] border border-gray-400 hover:bg-red-500 text-[#10100e] hover:text-[#ffffff] active:bg-[#ffffff] active:text-[#10100e] transition-color duration-200 mt-2 rounded-[10px]'>Reset</button>
+                    <button onClick={handleSubmit(onSubmit)} className='w-[150px] h-10 bg-[#10100e] text-[#ffffff] hover:bg-green-600 active:bg-[#10100e] transition-color duration-200 mt-2 rounded-[10px]'>Submit</button>
                 </div>
             </form>
+            {
+                confirmationDialogue && (
+                    <Modal width='w-[1000px]' openModal={confirmationDialogue} handleOpenModal={() => { setConfirmationDialogue(!confirmationDialogue) }}>
+                        <ConfirmationModal
+                            product={{ ...getValues() }}
+                            errorMessage={postProductErrorMessage}
+                            handlePostProduct={handleUpdateProduct}
+                            postProductError={postProductError}
+                            postProductIsLoading={postProductIsLoading}
+                            setConfirmationDialogue={setConfirmationDialogue}
+                        />
+                    </Modal>
+                )
+            }
         </>
     )
 }
