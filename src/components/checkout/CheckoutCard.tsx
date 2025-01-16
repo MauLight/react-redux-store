@@ -26,6 +26,13 @@ export const CheckoutCard = ({ product, dispatch, isConfirmation }: CheckoutCard
     dispatch(removeItem(id))
   }
 
+  function getPercentage() {
+    const percentage = product.discount
+    const price = product.price
+    const discount = percentage ? (percentage / 100) * price : 0
+    return (price - discount)
+  }
+
   return (
     <div key={product.id} className={`grid grid-cols-5 border-b border-[#10100e] pb-3 ${isConfirmation ? 'lg:h-[100px]' : 'lg:h-[220px]'}`}>
       <div className='col-span-1 border'>
@@ -36,8 +43,12 @@ export const CheckoutCard = ({ product, dispatch, isConfirmation }: CheckoutCard
           <div className="flex flex-col">
             <h1 className='text-[1rem] lg:text-xl text-[#10100e] uppercase'>{product.title}</h1>
             <div className="flex">
-              <h1 className='text-xl font-semiBold text-[#10100e] uppercase'>{`${product.price}$`}</h1>
-              <h1 className='text-[1rem] lg:text-md text-[#10100e] uppercase line-through'>{`${product.fullPrice}$`}</h1>
+              <h1 className='text-xl font-semiBold text-[#10100e] uppercase'>{`${getPercentage()}$`}</h1>
+              {
+                product.discount && (
+                  <h1 className='text-[1rem] lg:text-md text-[#10100e] uppercase line-through'>{`${product.price}$`}</h1>
+                )
+              }
             </div>
           </div>
           {
