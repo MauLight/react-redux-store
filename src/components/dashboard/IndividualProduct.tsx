@@ -76,6 +76,8 @@ function IndividualProduct(): ReactNode {
 
     //* Cloudinary state
     const [urlToCloudinary, setUrlToCloudinary] = useState<string>('')
+    const [cloudinaryLoading, setCloudinaryLoading] = useState<boolean>(false)
+    const [cloudinaryError, setCloudinaryError] = useState<string | null>(null)
     const [urlToCloudinaryError, setUrlToCloudinaryError] = useState<boolean>(false)
     const [cloudinaryFileUpload, setCloudinaryFileUpload] = useState<string | null>(null)
     const [cloudinaryPublicId, setCloudinaryPublicId] = useState<string | null>(null)
@@ -91,32 +93,41 @@ function IndividualProduct(): ReactNode {
         event.preventDefault()
 
         if (event.target.files !== null) {
-            const file = event.target.files[0]
-            const formData = new FormData()
-            if (compress === 1) {
-                new Compressor(file, {
-                    quality: 0.6,
-                    success(res) {
-                        console.log(res.size, 'This is the new size.')
-                        formData.append('file', res)
-                        formData.append('upload_preset', 'marketplace')
-                        postToCloudinary(formData)
-                            .then((response) => {
-                                setCloudinaryFileUpload(response.secure_url)
-                                setCloudinaryPublicId(response.public_id)
-                                setValue('image', response.secure_url)
-                            })
-                    }
-                })
-            } else {
-                formData.append('file', file)
-                formData.append('upload_preset', 'marketplace')
-                postToCloudinary(formData)
-                    .then((response) => {
-                        setCloudinaryFileUpload(response.secure_url)
-                        setCloudinaryPublicId(response.public_id)
-                        setValue('image', response.secure_url)
+            try {
+                setCloudinaryLoading(true)
+                const file = event.target.files[0]
+                const formData = new FormData()
+                if (compress === 1) {
+                    new Compressor(file, {
+                        quality: 0.6,
+                        success(res) {
+                            console.log(res.size, 'This is the new size.')
+                            formData.append('file', res)
+                            formData.append('upload_preset', 'marketplace')
+                            postToCloudinary(formData, setCloudinaryError)
+                                .then((response) => {
+                                    setCloudinaryFileUpload(response.secure_url)
+                                    setCloudinaryPublicId(response.public_id)
+                                    setValue('image', response.secure_url)
+                                    setCloudinaryLoading(false)
+                                })
+                        }
                     })
+                } else {
+                    formData.append('file', file)
+                    formData.append('upload_preset', 'marketplace')
+                    postToCloudinary(formData, setCloudinaryError)
+                        .then((response) => {
+                            setCloudinaryFileUpload(response.secure_url)
+                            setCloudinaryPublicId(response.public_id)
+                            setValue('image', response.secure_url)
+                            setCloudinaryLoading(false)
+                        })
+                }
+            } catch (error) {
+                console.log(error)
+                setCloudinaryLoading(false)
+                toast.error(error as string)
             }
 
 
@@ -130,18 +141,24 @@ function IndividualProduct(): ReactNode {
         )
 
         if (isUrl) {
-            const file = urlToCloudinary
-            const formData = new FormData()
+            try {
+                setCloudinaryLoading(true)
+                const file = urlToCloudinary
+                const formData = new FormData()
 
-            formData.append('file', file)
-            formData.append('upload_preset', 'marketplace')
-            postToCloudinary(formData)
-                .then((response) => {
-                    setCloudinaryFileUpload(response.secure_url)
-                    setCloudinaryPublicId(response.public_id)
-                    setValue('image', response.secure_url)
-                })
-            setUrlToCloudinaryError(false)
+                formData.append('file', file)
+                formData.append('upload_preset', 'marketplace')
+                const response = await postToCloudinary(formData, setCloudinaryError)
+                setCloudinaryFileUpload(response.secure_url)
+                setCloudinaryPublicId(response.public_id)
+                setValue('image', response.secure_url)
+
+                setUrlToCloudinaryError(false)
+                setCloudinaryLoading(false)
+            } catch (error) {
+                console.log(error)
+                toast.error(error as string)
+            }
         } else {
             setUrlToCloudinaryError(true)
         }
@@ -243,7 +260,9 @@ function IndividualProduct(): ReactNode {
                         valuesForDescription={valuesForDescription}
                     />
                     <IndividualProductImage
+                        error={cloudinaryError}
                         fileInputRef={fileInputRef}
+                        isLoading={cloudinaryLoading}
                         handleFileUpload={handleFileUpload}
                         cloudinaryFileUpload={cloudinaryFileUpload}
                         handleFileButtonClick={handleFileButtonClick}
