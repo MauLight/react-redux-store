@@ -212,7 +212,7 @@ const PlaceAutocomplete = ({ onPlaceSelect, setStep }: PlaceAutocompleteProps) =
         <div className="flex flex-col gap-y-10 pt-10 px-5">
             <div className="autocomplete-container flex flex-col gap-y-1">
                 <label className="text-[#10100e] text-[0.8rem]" htmlFor="placeautocomplete">Search Location</label>
-                <input id="placeautocomplete" className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`} ref={inputRef} />
+                <input id="placeautocomplete" className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 text-[#10100e] ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`} ref={inputRef} />
             </div>
             {
                 gotAddress && (
