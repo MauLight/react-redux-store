@@ -51,7 +51,7 @@ export default function CheckoutToPayment(): ReactNode {
     }
 
     return (
-        <main className='w-full h-full text-[#ffffff]'>
+        <main className='w-full h-full text-[#ffffff] pb-20'>
             <section className="h-full grid grid-cols-3 gap-x-10">
 
                 <div className='h-full col-span-2 border bg-[#ffffff]'>

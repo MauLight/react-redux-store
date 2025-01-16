@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from 'yup'
 
-import { BillingAddressProps, StoreProps } from "@/utils/types"
+import { StoreProps } from "@/utils/types"
 import { updateOrderAddressAsync } from "@/features/cart/cartSlice"
 import { toast } from "react-toastify"
 import { useNavigate } from "react-router-dom"
@@ -19,6 +19,7 @@ import { getRegionsAsync } from "@/utils/functions"
 import CourierOptions from "./CourierOptions"
 //import BillingAddress from "./BillingAddress"
 import Fallback from "../common/Fallback"
+import ErrorComponent from "../common/ErrorComponent"
 
 interface PlaceAutocompleteProps {
     onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void
@@ -52,15 +53,14 @@ const PlaceAutocomplete = ({ onPlaceSelect }: PlaceAutocompleteProps) => {
 
     //* Courier options
     const quote = useSelector((state: StoreProps) => state.courier.quote)
-    //const cartIsLoading = useSelector((state: StoreProps) => state.cart.isLoading)
     const cartHasError = useSelector((state: StoreProps) => state.cart.hasError)
 
     const [placeAutocomplete, setPlaceAutocomplete] = useState<google.maps.places.Autocomplete | null>(null)
-    const [billingAddress, setBillingAddress] = useState<BillingAddressProps | null>(null)
     const [gotAddress, setGotAddress] = useState<boolean>(false)
 
-    const [_placeFromUser, setPlaceFromUser] = useState<boolean>(false)
+    const [addressFromUser, setAddressFromUser] = useState<boolean>(false)
     const [userWasUpdated, setUserWasUpdated] = useState<boolean>(false)
+    const [courierWasChosen, setCourierWasChosen] = useState<boolean>(false)
 
     const shippingFormRef = useRef<HTMLFormElement>(null)
 
@@ -77,14 +77,6 @@ const PlaceAutocomplete = ({ onPlaceSelect }: PlaceAutocompleteProps) => {
         },
         resolver: yupResolver(schema)
     })
-
-    //const watchedValues = watch(['state'])
-
-    function scrollToElement() {
-        if (shippingFormRef.current) {
-            shippingFormRef.current.scrollIntoView({ behavior: 'smooth' })
-        }
-    }
 
     const inputRef = useRef<HTMLInputElement>(null)
     const places = useMapsLibrary('places')
@@ -137,20 +129,11 @@ const PlaceAutocomplete = ({ onPlaceSelect }: PlaceAutocompleteProps) => {
             setValue('street_number', user.street_number)
             setValue('house_number', user.house_number)
             setValue('zipcode', user.zipcode)
-
-            setBillingAddress({
-                country: user.country,
-                state: user.state,
-                city: user.city,
-                street: user.street,
-                street_number: user.street_number,
-                house_number: user.house_number,
-                zipcode: user.zipcode
-            })
         }
 
-        setPlaceFromUser(true)
+        setAddressFromUser(true)
         setGotAddress(true)
+
     }, [user])
 
     useEffect(() => {
@@ -187,18 +170,10 @@ const PlaceAutocomplete = ({ onPlaceSelect }: PlaceAutocompleteProps) => {
                 setValue('street', newAddress.street)
                 setValue('street_number', newAddress.street_number)
                 setValue('zipcode', newAddress.zipcode)
-
-                setBillingAddress(newAddress)
                 setGotAddress(true)
             }
         })
     }, [onPlaceSelect, placeAutocomplete])
-
-    useEffect(() => {
-        if (gotAddress || shippingFormRef.current) {
-            scrollToElement()
-        }
-    }, [gotAddress])
 
     useEffect(() => {
 
@@ -234,11 +209,11 @@ const PlaceAutocomplete = ({ onPlaceSelect }: PlaceAutocompleteProps) => {
                 <input id="placeautocomplete" className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`} ref={inputRef} />
             </div>
             {
-                gotAddress && billingAddress && (
+                gotAddress && (
                     <main className="flex flex-col gap-y-20 pb-10">
                         <section className="flex flex-col gap-y-5">
                             <h1 className="text-[1rem] text-[#10100e]">Shipping address</h1>
-                            <form onSubmit={handleSubmit(handleSaveDefaultAddress)} ref={shippingFormRef} className="flex flex-col gap-y-10 text-[#10100e]">
+                            <form onSubmit={handleSubmit(handleSaveDefaultAddress)} ref={shippingFormRef} className="flex flex-col gap-y-5 text-[#10100e]">
                                 <div className="w-full grid grid-cols-2 gap-x-5">
                                     <div className="">
                                         <label className=" text-[0.8rem]" htmlFor="country">Country</label>
@@ -287,36 +262,37 @@ const PlaceAutocomplete = ({ onPlaceSelect }: PlaceAutocompleteProps) => {
                                         width="30"
                                         strokeColor={'#10100e'}
                                     />
-                                    : updateAddressError ? 'Error' : userWasUpdated ? 'Saved' : 'Save Default Address'}</button>
+                                    : updateAddressError ? 'Error' : userWasUpdated ? 'Saved' : 'Confirm Address'}</button>
                             </div>
                         </section>
                         <>
                             {
                                 cartHasError ? (
-                                    <></>
+                                    <ErrorComponent />
                                 )
                                     :
                                     (
-                                        <>
+                                        <div className="flex flex-col gap-y-5">
                                             {
                                                 Object.keys(quote).length ? (
-                                                    <CourierOptions quote={quote} />
+                                                    <CourierOptions quote={quote} setWasChosen={setCourierWasChosen} />
                                                 )
                                                     :
                                                     (
                                                         <Fallback color='#6366f1' />
                                                     )
                                             }
-                                        </>
+                                            {
+                                                userWasUpdated && courierWasChosen && (
+                                                    <div className="w-full flex flex-col items-end gap-x-2">
+                                                        <button className="h-8 w-[200px] text-[#ffffff] bg-[#10100e]">Next</button>
+                                                    </div>
+                                                )
+                                            }
+                                        </div>
                                     )
                             }
                         </>
-                        {/* <BillingAddress
-                            billingAddress={billingAddress}
-                            setBillingAddress={setBillingAddress}
-                            placeFromUser={placeFromUser}
-                            selectedPlace={selectedPlace}
-                        /> */}
                     </main>
                 )
             }
