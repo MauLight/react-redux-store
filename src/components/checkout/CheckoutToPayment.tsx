@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import GoogleMaps from './GoogleMaps'
+import ReviewPayment from './ReviewPayment'
 
 const paymentSteps = [
     {
@@ -74,9 +75,16 @@ export default function CheckoutToPayment(): ReactNode {
                         one && (
 
                             <div>
-                                <GoogleMaps />
+                                <GoogleMaps setStep={setCurrentStep} />
                             </div>
 
+                        )
+                    }
+                    {
+                        two && (
+                            <div>
+                                <ReviewPayment />
+                            </div>
                         )
                     }
                 </div>

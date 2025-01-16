@@ -1,5 +1,5 @@
 import { getUserByIdAsync, updateUserByIdAsync } from "@/features/userAuth/userAuthSlice"
-import { memo, useEffect, useLayoutEffect, useRef, useState } from "react"
+import { Dispatch, memo, SetStateAction, useEffect, useLayoutEffect, useRef, useState } from "react"
 import { useMapsLibrary } from "@vis.gl/react-google-maps"
 import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch } from "@/store/store"
@@ -24,6 +24,7 @@ import ErrorComponent from "../common/ErrorComponent"
 interface PlaceAutocompleteProps {
     onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void
     selectedPlace: google.maps.places.PlaceResult
+    setStep: Dispatch<SetStateAction<{ one: boolean, two: boolean }>>
 }
 
 const schema = yup
@@ -40,7 +41,7 @@ const schema = yup
     .required()
 
 
-const PlaceAutocomplete = ({ onPlaceSelect }: PlaceAutocompleteProps) => {
+const PlaceAutocomplete = ({ onPlaceSelect, setStep }: PlaceAutocompleteProps) => {
 
     const navigate = useNavigate()
     const dispatch: AppDispatch = useDispatch()
@@ -58,7 +59,6 @@ const PlaceAutocomplete = ({ onPlaceSelect }: PlaceAutocompleteProps) => {
     const [placeAutocomplete, setPlaceAutocomplete] = useState<google.maps.places.Autocomplete | null>(null)
     const [gotAddress, setGotAddress] = useState<boolean>(false)
 
-    const [addressFromUser, setAddressFromUser] = useState<boolean>(false)
     const [userWasUpdated, setUserWasUpdated] = useState<boolean>(false)
     const [courierWasChosen, setCourierWasChosen] = useState<boolean>(false)
 
@@ -80,6 +80,13 @@ const PlaceAutocomplete = ({ onPlaceSelect }: PlaceAutocompleteProps) => {
 
     const inputRef = useRef<HTMLInputElement>(null)
     const places = useMapsLibrary('places')
+
+    function handleNextStep() {
+        setStep({
+            one: false,
+            two: true
+        })
+    }
 
     async function handleSaveDefaultAddress() {
         const updatedUser = {
@@ -131,7 +138,6 @@ const PlaceAutocomplete = ({ onPlaceSelect }: PlaceAutocompleteProps) => {
             setValue('zipcode', user.zipcode)
         }
 
-        setAddressFromUser(true)
         setGotAddress(true)
 
     }, [user])
@@ -285,7 +291,7 @@ const PlaceAutocomplete = ({ onPlaceSelect }: PlaceAutocompleteProps) => {
                                             {
                                                 userWasUpdated && courierWasChosen && (
                                                     <div className="w-full flex flex-col items-end gap-x-2">
-                                                        <button className="h-8 w-[200px] text-[#ffffff] bg-[#10100e]">Next</button>
+                                                        <button onClick={handleNextStep} className="h-8 w-[200px] text-[#ffffff] bg-[#10100e]">Next</button>
                                                     </div>
                                                 )
                                             }

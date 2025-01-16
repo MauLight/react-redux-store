@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { Dispatch, SetStateAction, useState, type ReactNode } from 'react'
 import { AdvancedMarker, APIProvider, Map, MapCameraChangedEvent } from '@vis.gl/react-google-maps'
 
 import PlaceAutocomplete from './AutoCompleteElement'
@@ -6,7 +6,7 @@ import PlaceAutocomplete from './AutoCompleteElement'
 const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
 const mapId = import.meta.env.VITE_GOOGLE_MAPS_MAP_ID
 
-function GoogleMaps(): ReactNode {
+function GoogleMaps({ setStep }: { setStep: Dispatch<SetStateAction<{ one: boolean, two: boolean }>> }): ReactNode {
 
     //* Google maps state
     const [zoom, setZoom] = useState<number>(13)
@@ -31,7 +31,11 @@ function GoogleMaps(): ReactNode {
                         {geocodeResult && <AdvancedMarker position={geocodeResult} />}
                     </Map>
                 </div>
-                <PlaceAutocomplete selectedPlace={locationInputValue as google.maps.places.PlaceResult} onPlaceSelect={setLocationInputValue} />
+                <PlaceAutocomplete
+                    setStep={setStep}
+                    onPlaceSelect={setLocationInputValue}
+                    selectedPlace={locationInputValue as google.maps.places.PlaceResult}
+                />
             </main>
         </APIProvider>
     )

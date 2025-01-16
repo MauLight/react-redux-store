@@ -11,7 +11,6 @@ import { XMarkIcon } from '@heroicons/react/20/solid'
 //* Types
 import { ProductProps, StoreProps } from '@/utils/types'
 import { fadeIn } from '@/utils/functions'
-import GoogleMapsAPI from '@/components/checkout/GoogleMapsAPI'
 import CheckoutToPayment from '@/components/checkout/CheckoutToPayment'
 
 const Checkout = (): ReactElement => {
