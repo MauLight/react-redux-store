@@ -60,6 +60,13 @@ export default function ProductDescription({ product }: { product: ProductProps 
         dispatch(addItem(itemToAdd))
     }
 
+    function getPercentage() {
+        const percentage = product.discount
+        const price = product.price
+        const discount = percentage ? (percentage / 100) * price : 0
+        return (price - discount)
+    }
+
     useLayoutEffect(() => {
         setIsAdmin(pathname.includes('admin'))
     }, [])
@@ -107,8 +114,12 @@ export default function ProductDescription({ product }: { product: ProductProps 
                             <div className="flex flex-col">
                                 <h2 aria-label={product.title} className={isAdmin ? 'text-[1.5rem] min-[500px]:text-[2rem] font-light text-sym_gray-600 text-balance uppercase' : 'text-[1.5rem] min-[500px]:text-[2.5rem] font-light text-sym_gray-600 text-balance uppercase'}>{product.title}</h2>
                                 <div className='flex justify-end gap-x-2'>
-                                    <p className='text-[1.5rem] min-[500px]:text-[3rem] text-end'>{`$${product.price}`}</p>
-                                    <p className='text-[1rem] min-[500px]:text-[1.5rem] str font-light text-sym_gray-200 text-end uppercase line-through'>{product.discount}</p>
+                                    <p className='text-[1.5rem] min-[500px]:text-[3rem] text-end'>{`$${getPercentage()}`}</p>
+                                    {
+                                        product.discount !== undefined && product.discount > 0 && (
+                                            <p className='text-[1rem] min-[500px]:text-[1.5rem] str font-light text-sym_gray-200 text-end uppercase line-through'>{product.price}</p>
+                                        )
+                                    }
                                 </div>
                                 {
                                     !isAdmin && (
