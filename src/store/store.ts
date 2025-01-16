@@ -8,6 +8,7 @@ import userAuthReducer from '@/features/userAuth/userAuthSlice'
 import productsReducer from '@/features/products/productsSlice'
 import collectionsReducer from '@/features/collections/collectionsSlice'
 import courierReducer from '@/features/courier/courierSlice'
+import errorReportingMiddleware from './middleware'
 
 const store = configureStore({
     reducer: {
@@ -18,7 +19,8 @@ const store = configureStore({
         inventory: productsReducer,
         collections: collectionsReducer,
         courier: courierReducer
-    }
+    },
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(errorReportingMiddleware),
 })
 
 export type AppDispatch = typeof store.dispatch
