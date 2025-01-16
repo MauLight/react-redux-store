@@ -14,16 +14,23 @@ const WishlistCard = ({ product, userId }: CheckoutCardProps): ReactElement => {
     const dispatch: AppDispatch = useDispatch()
 
     async function handleRemoveItemFromWishlist() {
-        await dispatch(deleteFromWishlistAsync({ userId, productId: product.id }))
+        await dispatch(deleteFromWishlistAsync({ userId, productId: product.id as string }))
     }
 
     function handleAddItemToCart() {
         dispatch(addItem(product))
     }
 
+    function getPercentage() {
+        const percentage = product.discount
+        const price = product.price
+        const discount = percentage ? (percentage / 100) * price : 0
+        return (price - discount)
+    }
+
     return (
         <section className="grid grid-cols-5 border-b border-[#10100e] pb-3 sm:h-[220px]">
-            <div className="col-span-1 border">
+            <div className="col-span-1 border w-[200px] h-[200px] overflow-hidden">
                 <img src={product.image} alt="mock1" className="w-full h-full object-cover" />
             </div>
             <div className="col-span-4 h-full flex flex-col justify-start items-between px-5">
@@ -31,8 +38,12 @@ const WishlistCard = ({ product, userId }: CheckoutCardProps): ReactElement => {
                     <div className="flex flex-col">
                         <h1 className='text-[0.9rem] min-[400px]:text-[1rem] sm:text-[2rem] text-[#10100e] uppercase'>{product.title}</h1>
                         <div className="flex">
-                            <h1 className='text-[0.9rem] min-[400px]:text-xl font-semiBold text-[#10100e] uppercase'>{`${product.price}$`}</h1>
-                            <h1 className='text-[0.8rem] min-[400px]:text-md text-[#10100e] uppercase line-through'>{`${product.fullPrice}$`}</h1>
+                            <p className='text-[0.9rem] min-[400px]:text-xl font-semiBold text-[#10100e] uppercase'>{`${getPercentage()}$`}</p>
+                            {
+                                product.discount !== undefined && product.discount > 0 && (
+                                    <p className='text-[0.8rem] min-[400px]:text-md text-[#10100e] uppercase line-through'>{`${product.price}$`}</p>
+                                )
+                            }
                         </div>
                     </div>
                     <div className="flex flex-col max-[400px]:items-end gap-y-2">
