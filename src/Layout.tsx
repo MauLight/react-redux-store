@@ -55,7 +55,7 @@ function Layout() {
     }, [])
 
     return (
-        <main className={`relative ${pathname.length === 1 ? 'bg-[#10100e]' : ''}`}>
+        <main className={`relative ${pathname.length === 1 || pathname === '/collection' ? 'bg-[#10100e]' : ''}`}>
             {
                 announcementBar && (
                     <AnnouncementBar />

@@ -35,7 +35,7 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
   }
 
   return (
-    <section className="group relative sm:h-full sm:min-h-[450px] col-span-1 overflow-hidden">
+    <section className="group relative h-[460px] col-span-1 overflow-hidden">
 
       <img key={product.id} src={product.image} alt="product" className="w-full sm:h-full object-cover" />
 

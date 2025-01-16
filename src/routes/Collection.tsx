@@ -167,7 +167,8 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
                         )
                 }
             </div>
-            <video autoPlay muted loop src={video} className='absolute top-0 left-0 w-screen h-screen object-cover opacity-30'></video>
+            <video autoPlay muted loop src={video} className='absolute top-0 left-0 w-screen h-screen object-cover opacity-80'></video>
+            <div className='absolute top-0 left-0 w-screen h-screen bg-[#10100e] opacity-80'></div>
         </main>
     )
 }
