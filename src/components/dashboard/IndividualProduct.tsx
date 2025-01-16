@@ -214,7 +214,9 @@ function IndividualProduct(): ReactNode {
         if (!postProductError) {
             reset()
             setTags([])
+            setUrlToCloudinary('')
             setCloudinaryFileUpload(null)
+            setUrlToCloudinaryError(false)
             setConfirmationDialogue(false)
         }
 
@@ -251,7 +253,7 @@ function IndividualProduct(): ReactNode {
                             <div className='flex flex-col gap-y-1'>
                                 <label className='text-[0.8rem]' htmlFor="url">Upload Image from URL</label>
                                 <div className='relative'>
-                                    <input className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${urlToCloudinaryError ? 'ring-1 ring-red-500' : ''}`} value={urlToCloudinary} onChange={({ target }) => { setUrlToCloudinary(target.value) }} type="text" />
+                                    <input className={`w-full h-10 pr-10 truncate text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${urlToCloudinaryError ? 'ring-1 ring-red-500' : ''}`} value={urlToCloudinary} onChange={({ target }) => { setUrlToCloudinary(target.value) }} type="text" />
                                     <button className='absolute top-1 right-1 w-[33px] h-[33px] rounded-[5px] bg-[#10100e] hover:bg-green-600 active:bg-[#10100e] transition-color duration-200' onClick={handleFileUploadFromUrl}>
                                         <i className="text-[#ffffff] fa-solid fa-plus"></i>
                                     </button>
