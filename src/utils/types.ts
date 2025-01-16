@@ -51,6 +51,9 @@ export interface StoreProps {
         userData: UserProps
         isLoading: boolean
         hasError: boolean
+        getUserIsLoading: boolean,
+        getUserHasError: boolean,
+        errorMessage: string
     }
     cart: {
         cart: Array<CartItemProps>,

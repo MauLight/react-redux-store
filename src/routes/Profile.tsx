@@ -17,6 +17,7 @@ import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import { getCoverageFromCourierAsync, getRegionsFromCourierAsync } from '@/features/courier/courierSlice'
 import CustomDropdown from '@/components/common/CustomDropdown'
+import ErrorComponent from '@/components/common/ErrorComponent'
 
 interface OpenConfirmationProps {
     firstname: string
@@ -58,7 +59,9 @@ function Profile(): ReactNode {
     const loggedUser = useSelector((state: StoreProps) => state.userAuth.user)
     const user = useSelector((state: StoreProps) => state.userAuth.userData)
     const wishlist = useSelector((state: StoreProps) => state.wishList.wishlist)
-    const isLoading = useSelector((state: StoreProps) => state.userAuth.isLoading)
+    const isLoading = useSelector((state: StoreProps) => state.userAuth.getUserIsLoading)
+    const hasError = useSelector((state: StoreProps) => state.userAuth.getUserHasError)
+    const errorMessage = useSelector((state: StoreProps) => state.userAuth.errorMessage)
 
     //* Courier state
     const courierIsLoading = useSelector((state: StoreProps) => state.courier.isLoading)
@@ -180,12 +183,17 @@ function Profile(): ReactNode {
         <main className='w-screen min-h-screen flex flex-col items-center gap-y-20 pt-44 pb-20 bg-[#10100e]'>
             <>
                 {
-                    isLoading && (
+                    hasError && (
+                        <ErrorComponent theme='dark' error={errorMessage} />
+                    )
+                }
+                {
+                    !hasError && isLoading && (
                         <Fallback color='#ffffff' />
                     )
                 }
                 {
-                    !isLoading && user && (
+                    !hasError && !isLoading && user && (
                         <main>
                             <header className='w-full min-[1440px]:w-[1440px] text-[#ffffff] flex flex-col gap-y-2 tracking-tight uppercase'>
                                 <div className='flex'>
