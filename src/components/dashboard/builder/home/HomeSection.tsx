@@ -127,7 +127,7 @@ function BuilderCard({ card, onDrop, setCurrPanel }: { card: { id: number, title
     }, [])
 
     return (
-        <li onClick={() => { handleCurrPanel(title) }} ref={ref} className={`group relative w-full h-[170px] flex justify-start items-center border border-sym_gray-400 rounded-[5px] cursor-grab active:cursor-grabbing ${dragging ? 'bg-indigo-500 opacity-50' : 'bg-[#ffffff]'}`} data-test-id={id} >
+        <li onClick={() => { handleCurrPanel(title) }} ref={ref} className={`group relative w-full h-[170px] flex justify-start items-center border border-sym_gray-400 rounded-[5px] overflow-hidden cursor-grab active:cursor-grabbing ${dragging ? 'bg-indigo-500 opacity-50' : 'bg-[#ffffff]'}`} data-test-id={id} >
             <div className='z-10 absolute top-0 left-0 w-full h-full flex justify-center items-center'>
                 <p className='text-[1.5rem]'>{title}</p>
             </div>
