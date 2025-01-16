@@ -35,7 +35,7 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
   }
 
   return (
-    <section className="group relative h-[460px] col-span-1 overflow-hidden">
+    <section className={`group relative ${pathname === '/collection' ? 'h-[460px]' : 'h-full'} col-span-1 overflow-hidden`}>
 
       <img key={product.id} src={product.image} alt="product" className="w-full sm:h-full object-cover" />
 
@@ -43,15 +43,15 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
         isCollection && (
           <div className="w-full absolute bottom-5 flex justify-between px-5 z-10 transition-all duration-300">
             <div className="flex flex-col">
-              <h1 aria-label={product.title} className='text-[1rem] min-[400px]:text-[22px] uppercase neue antialiazed text-[#ffffff] leading-tight'>{product.title}</h1>
+              <h1 aria-label={product.title} className='text-[1rem] min-[400px]:text-[22px] uppercase antialiazed text-[#ffffff] leading-tight'>{product.title}</h1>
               <div className="flex gap-x-2">
-                <p className='text-[16px] uppercase neue antialiazed text-[#ffffff]'>{`${getPercentage()}$`}</p>
+                <p className='text-[16px] uppercase antialiazed text-[#ffffff]'>{`${getPercentage()}$`}</p>
                 {
                   product.discount !== undefined && product.discount > 0 && (
-                    <p className='text-[12px] uppercase neue antialiazed text-gray-100 line-through'>{`${product.price}$`}</p>
+                    <p className='text-[12px] uppercase antialiazed text-gray-100 line-through'>{`${product.price}$`}</p>
                   )
                 }
-              </div>
+              </div>≈
             </div>
             <div className="flex items-center gap-x-5">
               <button aria-label='wishlist' onClick={() => { handleWishList(product.id as string) }}>
