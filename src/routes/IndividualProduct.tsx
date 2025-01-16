@@ -6,10 +6,14 @@ import { getProductById } from '@/features/products/productsSlice'
 import ProductDescription from '@/components/common/ProductDescription'
 import { StoreProps } from '@/utils/types'
 import video from '@/assets/video/Product.webm'
+import Fallback from '@/components/common/Fallback'
+import ErrorComponent from '@/components/common/ErrorComponent'
 
 function IndividualProduct({ id }: { id: string | undefined }): ReactNode {
     const dispatch: AppDispatch = useDispatch()
     const product = useSelector((state: StoreProps) => state.inventory.individualProduct)
+    const isLoading = useSelector((state: StoreProps) => state.inventory.productsAreLoading)
+    const hasError = useSelector((state: StoreProps) => state.inventory.productsHasError)
 
     useEffect(() => {
         if (id) {
@@ -22,7 +26,19 @@ function IndividualProduct({ id }: { id: string | undefined }): ReactNode {
             <div className="w-[1440px] z-20">
                 <div className=" bg-[#ffffff] p-10">
                     {
-                        product !== undefined && (
+                        hasError && (
+                            <ErrorComponent />
+                        )
+                    }
+                    {
+                        !hasError && isLoading && (
+                            <div className='h-[33rem] w-full flex justify-center items-center'>
+                                <Fallback color='#3f51b5' />
+                            </div>
+                        )
+                    }
+                    {
+                        !hasError && !isLoading && product !== undefined && (
                             <ProductDescription key={product.id} product={product} />
                         )
                     }
