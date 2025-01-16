@@ -63,6 +63,7 @@ export interface StoreProps {
         hasError: boolean
         total: number
         totalWithCourier: number
+        courierFee: Record<string, any>
     }
     homeCollection: {
         collection: Array<ProductProps>

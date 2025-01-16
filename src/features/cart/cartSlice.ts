@@ -70,7 +70,8 @@ export const cartSlice = createSlice({
         isLoading: false,
         hasError: false,
         total: 0,
-        totalWithCourier: 0
+        totalWithCourier: 0,
+        courierFee: {}
     },
     reducers: {
         postTotal: (state, action) => {
@@ -78,6 +79,9 @@ export const cartSlice = createSlice({
         },
         postCourierTotal: (state, action) => {
             state.totalWithCourier = action.payload
+        },
+        postCourierFee: (state, action) => {
+            state.courierFee = action.payload
         },
         addItem: (state, action) => {
             const { id, title, image, price, fullPrice } = action.payload
@@ -183,7 +187,7 @@ export const cartSlice = createSlice({
     }
 })
 
-export const { fillCart, postTotal, postCourierTotal, addItem, removeItem, changeItemQuantity, resetCart, setReadyToPay, setNotReadyToPay } = cartSlice.actions
+export const { fillCart, postTotal, postCourierTotal, postCourierFee, addItem, removeItem, changeItemQuantity, resetCart, setReadyToPay, setNotReadyToPay } = cartSlice.actions
 const cartReducer = cartSlice.reducer
 
 export default cartReducer

@@ -74,7 +74,7 @@ export default function CheckoutToPayment({ totalWithVat }: { totalWithVat: numb
                     }
                     {
                         two && (
-                            <div>
+                            <div className='h-full'>
                                 <ReviewPayment />
                             </div>
                         )

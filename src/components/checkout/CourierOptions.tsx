@@ -1,4 +1,4 @@
-import { postCourierTotal } from '@/features/cart/cartSlice'
+import { postCourierFee, postCourierTotal } from '@/features/cart/cartSlice'
 import { AppDispatch } from '@/store/store'
 import { QuotesProps, StoreProps } from '@/utils/types'
 import { Dispatch, SetStateAction, useState, type ReactNode } from 'react'
@@ -14,8 +14,9 @@ function CourierOptions({ quote, setWasChosen }: CourierOptionsProps): ReactNode
     const total = useSelector((state: StoreProps) => state.cart.total)
     const [selectedCourier, setSelectedCourier] = useState<string>('')
 
-    function handleSelectCourier(e: React.ChangeEvent<HTMLInputElement>): void {
+    function handleSelectCourier(e: React.ChangeEvent<HTMLInputElement>, quo: QuotesProps): void {
         dispatch(postCourierTotal(total + Number(e.target.value)))
+        dispatch(postCourierFee({ quote: quo, fee: Number(e.target.value) }))
         setSelectedCourier(e.target.value)
         setWasChosen(true)
     }
@@ -41,7 +42,7 @@ function CourierOptions({ quote, setWasChosen }: CourierOptionsProps): ReactNode
                                 <input
                                     value={quo.serviceValue}
                                     checked={selectedCourier === quo.serviceValue}
-                                    onChange={handleSelectCourier} className='accent-indigo-500 w-5 h-5'
+                                    onChange={(e) => { handleSelectCourier(e, quo) }} className='accent-indigo-500 w-5 h-5'
                                     name="courier"
                                     type="radio"
                                 />
