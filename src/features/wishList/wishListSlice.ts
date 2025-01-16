@@ -33,7 +33,6 @@ export const postToWishlistAsync = createAsyncThunk(
                         'Content-Type': 'application/json'
                     }
                 })
-                toast.success('Item added to wishlist.')
                 return data
             } catch (error) {
                 toast.error((error as AxiosError).message)

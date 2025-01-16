@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import axios, { AxiosError } from "axios"
 import { toast } from "react-toastify"
 
-const url = import.meta.env.VITE_PRODUCTS_BACKEND_URL
+const url = import.meta.env.VITE_BACKEND_URL
 
 export const getAllCollectionsAsync = createAsyncThunk(
     'products/getAllCollections', async (_, { rejectWithValue }) => {

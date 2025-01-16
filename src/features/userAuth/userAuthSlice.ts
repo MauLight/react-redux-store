@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import axios, { AxiosError } from "axios"
 import { toast } from "react-toastify"
 
-const url = import.meta.env.VITE_USERS_BACKEND_URL
+const url = import.meta.env.VITE_BACKEND_URL
 const user = localStorage.getItem('marketplace-user') ? JSON.parse(localStorage.getItem('marketplace-user') as string) : {}
 const token = user.token
 
@@ -40,7 +40,7 @@ export const getUserByIdAsync = createAsyncThunk(
         }
 
         try {
-            const { data } = await axios.get(`${url}/user/${id}`, {
+            const { data } = await axios.get(`${url}/auth/user/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -56,7 +56,7 @@ export const getUserByIdAsync = createAsyncThunk(
 export const updateUserByIdAsync = createAsyncThunk(
     'userAuth/updateUserById', async (updatedUser: UserToBeUpdatedProps, { rejectWithValue }) => {
         try {
-            const { data } = await axios.put(`${url}/user/${user.id}`, updatedUser, {
+            const { data } = await axios.put(`${url}/auth/user/${user.id}`, updatedUser, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'

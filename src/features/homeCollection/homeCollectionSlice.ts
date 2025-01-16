@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios, { AxiosError } from 'axios'
 
-const url = import.meta.env.VITE_PRODUCTS_BACKEND_URL
+const url = import.meta.env.VITE_BACKEND_URL
 
 import { ProductProps } from './types'
 
