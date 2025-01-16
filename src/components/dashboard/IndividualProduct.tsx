@@ -16,7 +16,7 @@ import IndividualProductForm from './IndividualProductsForm'
 import IndividualProductImage from './IndividualProductImage'
 import ConfirmationModal from './ConfirmationModal'
 
-import { generateSignature } from '@/utils/functions'
+import { generateSignature, postToCloudinary } from '@/utils/functions'
 import { useSelector } from 'react-redux'
 import { StoreProps } from '@/utils/types'
 
@@ -75,6 +75,8 @@ function IndividualProduct(): ReactNode {
     }
 
     //* Cloudinary state
+    const [urlToCloudinary, setUrlToCloudinary] = useState<string>('')
+    const [urlToCloudinaryError, setUrlToCloudinaryError] = useState<boolean>(false)
     const [cloudinaryFileUpload, setCloudinaryFileUpload] = useState<string | null>(null)
     const [cloudinaryPublicId, setCloudinaryPublicId] = useState<string | null>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
@@ -82,11 +84,6 @@ function IndividualProduct(): ReactNode {
         if (fileInputRef.current) {
             fileInputRef.current.click()
         }
-    }
-
-    const postToCloudinary = async (formData: FormData): Promise<any> => {
-        const { data } = await axios.post(`https://api.cloudinary.com/v1_1/${CloudinaryCloudName}/image/upload`, formData)
-        return data
     }
 
     //* Upload a new image to Cloudinary
@@ -123,6 +120,30 @@ function IndividualProduct(): ReactNode {
             }
 
 
+        }
+    }
+
+    const handleFileUploadFromUrl = async (): Promise<void> => {
+
+        const isUrl = /^(https?:\/\/)?((([a-zA-Z0-9$_.+!*'(),;?&=-]|%[0-9a-fA-F]{2})+:)*([a-zA-Z0-9$_.+!*'(),;?&=-]|%[0-9a-fA-F]{2})+@)?(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)|([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(:[0-9]+)?(\/([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)*(\?([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)?(#([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)?$/.test(
+            urlToCloudinary as string
+        )
+
+        if (isUrl) {
+            const file = urlToCloudinary
+            const formData = new FormData()
+
+            formData.append('file', file)
+            formData.append('upload_preset', 'marketplace')
+            postToCloudinary(formData)
+                .then((response) => {
+                    setCloudinaryFileUpload(response.secure_url)
+                    setCloudinaryPublicId(response.public_id)
+                    setValue('image', response.secure_url)
+                })
+            setUrlToCloudinaryError(false)
+        } else {
+            setUrlToCloudinaryError(true)
         }
     }
 
@@ -212,8 +233,8 @@ function IndividualProduct(): ReactNode {
                         register={register}
                         setValue={setValue}
                         compress={compress}
-                        wasSubmitted={wasSubmitted}
                         setCompress={setCompress}
+                        wasSubmitted={wasSubmitted}
                         descriptionAdded={descriptionAdded}
                         priceWithDiscount={priceWithDiscount}
                         cloudinaryFileUpload={cloudinaryFileUpload}
@@ -225,7 +246,20 @@ function IndividualProduct(): ReactNode {
                         cloudinaryFileUpload={cloudinaryFileUpload}
                         handleFileButtonClick={handleFileButtonClick}
                         handleResetUploadImage={handleResetUploadImage}
-                    />
+                    >
+                        {
+                            <div className='flex flex-col gap-y-1'>
+                                <label className='text-[0.8rem]' htmlFor="url">Upload Image from URL</label>
+                                <div className='relative'>
+                                    <input className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${urlToCloudinaryError ? 'ring-1 ring-red-500' : ''}`} value={urlToCloudinary} onChange={({ target }) => { setUrlToCloudinary(target.value) }} type="text" />
+                                    <button className='absolute top-1 right-1 w-[33px] h-[33px] rounded-[5px] bg-[#10100e] hover:bg-green-600 active:bg-[#10100e] transition-color duration-200' onClick={handleFileUploadFromUrl}>
+                                        <i className="text-[#ffffff] fa-solid fa-plus"></i>
+                                    </button>
+                                </div>
+                                {urlToCloudinaryError && <small className="text-red-500">Value is not a valid URL</small>}
+                            </div>
+                        }
+                    </IndividualProductImage>
                 </div>
                 <div className="flex gap-x-2 justify-end">
                     <button onClick={handleResetForm} type='button' className='w-[150px] h-10 bg-[#ffffff] border border-gray-400 hover:bg-red-500 text-[#10100e] hover:text-[#ffffff] active:bg-[#ffffff] active:text-[#10100e] transition-color duration-200 mt-2 rounded-[10px]'>Reset</button>

@@ -5,6 +5,7 @@ import axios from "axios"
 import { RegionProps } from "./types"
 
 const cloudinaryApiSecret = import.meta.env.VITE_CLOUDINARY_APISECRET
+const CloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME
 
 export const degToRad = (deg: number) => deg * Math.PI / 180
 export const randRange = (min: number, max: number) => Math.random() * (max - min) + min
@@ -65,4 +66,9 @@ export async function getRegionsAsync(): Promise<RegionProps[]> {
   } else {
     return []
   }
+}
+
+export const postToCloudinary = async (formData: FormData): Promise<any> => {
+  const { data } = await axios.post(`https://api.cloudinary.com/v1_1/${CloudinaryCloudName}/image/upload`, formData)
+  return data
 }
