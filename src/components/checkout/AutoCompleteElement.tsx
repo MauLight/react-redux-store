@@ -64,7 +64,7 @@ const PlaceAutocomplete = ({ onPlaceSelect }: PlaceAutocompleteProps) => {
 
     const shippingFormRef = useRef<HTMLFormElement>(null)
 
-    const { register, watch, handleSubmit, getValues, setValue, formState: { errors } } = useForm({
+    const { register, handleSubmit, getValues, setValue, formState: { errors } } = useForm({
         defaultValues: {
             country: '',
             state: '',
@@ -228,61 +228,61 @@ const PlaceAutocomplete = ({ onPlaceSelect }: PlaceAutocompleteProps) => {
     }, [updateAddressError])
 
     return (
-        <div className="flex flex-col gap-y-10 pt-10">
-            <div className="autocomplete-container">
-                <label className="text-[#ffffff] text-[1rem]" htmlFor="placeautocomplete">Check your shipping address</label>
+        <div className="flex flex-col gap-y-10 pt-10 px-5">
+            <div className="autocomplete-container flex flex-col gap-y-1">
+                <label className="text-[#10100e] text-[0.8rem]" htmlFor="placeautocomplete">Search Location</label>
                 <input id="placeautocomplete" className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`} ref={inputRef} />
             </div>
             {
                 gotAddress && billingAddress && (
                     <main className="flex flex-col gap-y-20 pb-10">
-                        <section className="flex flex-col gap-y-10">
-                            <form onSubmit={handleSubmit(handleSaveDefaultAddress)} ref={shippingFormRef} className="flex flex-col gap-y-10">
-                                <h1 className="text-[2rem] uppercase text-[#ffffff]">Shipping address</h1>
+                        <section className="flex flex-col gap-y-5">
+                            <h1 className="text-[1rem] text-[#10100e]">Shipping address</h1>
+                            <form onSubmit={handleSubmit(handleSaveDefaultAddress)} ref={shippingFormRef} className="flex flex-col gap-y-10 text-[#10100e]">
                                 <div className="w-full grid grid-cols-2 gap-x-5">
                                     <div className="">
-                                        <label className="text-[#ffffff] text-[1rem]" htmlFor="country">Country</label>
+                                        <label className=" text-[0.8rem]" htmlFor="country">Country</label>
                                         <input {...register('country')} className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.country !== undefined ? 'ring-1 ring-red-500' : ''}`} />
                                     </div>
                                     <div className="">
-                                        <label className="text-[#ffffff] text-[1rem]" htmlFor="state">State</label>
+                                        <label className=" text-[0.8rem]" htmlFor="state">State</label>
                                         <input {...register('state')} className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.state !== undefined ? 'ring-1 ring-red-500' : ''}`} />
                                     </div>
                                 </div>
                                 <div className="w-full grid grid-cols-2 gap-x-5">
                                     <div className="col-span-1">
-                                        <label className="text-[#ffffff] text-[1rem]" htmlFor="city">City</label>
+                                        <label className=" text-[0.8rem]" htmlFor="city">City</label>
                                         <input {...register('city')} className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.city !== undefined ? 'ring-1 ring-red-500' : ''}`} />
                                     </div>
                                     <div className="col-span-1">
-                                        <label className="text-[#ffffff] text-[1rem]" htmlFor="street">Street</label>
+                                        <label className=" text-[0.8rem]" htmlFor="street">Street</label>
                                         <input {...register('street')} className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.street !== undefined ? 'ring-1 ring-red-500' : ''}`} />
                                     </div>
                                 </div>
                                 <div className="w-full grid grid-cols-3 gap-x-5">
                                     <div className="col-span-1">
-                                        <label className="text-[#ffffff] text-[1rem]" htmlFor="city">Street number</label>
+                                        <label className=" text-[0.8rem]" htmlFor="city">Street number</label>
                                         <input {...register('street_number')} className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.street_number !== undefined ? 'ring-1 ring-red-500' : ''}`} />
                                     </div>
                                     <div className="col-span-1">
-                                        <label className="text-[#ffffff] text-[1rem]" htmlFor="street">{'House number (*)'}</label>
+                                        <label className=" text-[0.8rem]" htmlFor="street">{'House number (*)'}</label>
                                         <input {...register('house_number')} className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`} />
                                     </div>
                                     <div className="">
-                                        <label className="text-[#ffffff] text-[1rem]" htmlFor="zip">Zipcode</label>
+                                        <label className=" text-[0.8rem]" htmlFor="zip">Zipcode</label>
                                         <input {...register('zipcode')} className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.zipcode !== undefined ? 'ring-1 ring-red-500' : ''}`} />
                                     </div>
                                 </div>
                                 <div className="w-full grid grid-cols-1 gap-x-5">
                                     <div className="">
-                                        <label className="text-[#ffffff] text-[1rem]" htmlFor="zip">{'Additional Information (*)'}</label>
+                                        <label className=" text-[0.8rem]" htmlFor="zip">{'Additional Information (*)'}</label>
                                         <textarea {...register('additional_information')} className="w-full h-20 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none p-2 placeholder-sym_gray-500" />
                                     </div>
-                                    <small className="text-[#ffffff] mt-5">{'(*) Optional'}</small>
+                                    <small className=" mt-5">{'(*) Optional'}</small>
                                 </div>
                             </form>
-                            <div>
-                                <button disabled={userWasUpdated} onClick={handleSaveDefaultAddress} className={`h-8 w-full bg-[#ffffff] ${updateAddressError ? 'bg-red-600 text-[#ffffff]' : userWasUpdated ? 'bg-green-400 cursor-not-allowed' : 'text-[#10100e] hover:bg-indigo-500 active:bg-[#ffffff]'} flex justify-center items-center`}>{isLoading ?
+                            <div className="flex justify-end">
+                                <button disabled={userWasUpdated} onClick={handleSaveDefaultAddress} className={`h-8 w-[200px] text-[#ffffff] bg-[#10100e] ${updateAddressError ? 'bg-red-600 ' : userWasUpdated ? 'bg-green-400 cursor-not-allowed' : 'text-[#10100e] hover:bg-indigo-500 active:bg-[#ffffff]'} flex justify-center items-center`}>{isLoading ?
                                     <RotatingLines
                                         width="30"
                                         strokeColor={'#10100e'}

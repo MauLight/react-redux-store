@@ -12,6 +12,7 @@ import { XMarkIcon } from '@heroicons/react/20/solid'
 import { ProductProps, StoreProps } from '@/utils/types'
 import { fadeIn } from '@/utils/functions'
 import GoogleMapsAPI from '@/components/checkout/GoogleMapsAPI'
+import CheckoutToPayment from '@/components/checkout/CheckoutToPayment'
 
 const Checkout = (): ReactElement => {
     const cart = useSelector((state: StoreProps) => state.cart.cart)
@@ -35,16 +36,22 @@ const Checkout = (): ReactElement => {
             <div className={`w-web flex flex-col justify-center overflow-y-scroll transition-color duration-200 ${readyToPay ? 'bg-[#10100e] min-h-screen' : 'gap-y-10 bg-[#fdfdfd] h-screen'}`}>
                 <div className="h-[100px]"></div>
                 <div className="flex flex-col gap-y-5">
-                    <div className="flex justify-between items-start">
-                        <motion.h1
-                            variants={fadeIn('bottom', 0.1)}
-                            initial={'hidden'}
-                            whileInView={'show'}
-                            className={`uppercase text-[2rem] min-[500px]:text-[4rem] lg:text-9xl ${readyToPay ? 'text-[#ffffff]' : 'text-[#10100e]'}`}>{readyToPay ? 'checkout' : 'your cart'}</motion.h1>
-                        <Link to={'/'}>
-                            <XMarkIcon className='w-6 text-[#2E3D49] font-accent hover:rotate-90 hover:text-[#EA0C1D] transition-all duration-200' />
-                        </Link>
-                    </div>
+                    {
+                        !readyToPay && (
+                            <div className="flex justify-between items-start">
+                                <motion.h1
+                                    variants={fadeIn('bottom', 0.1)}
+                                    initial={'hidden'}
+                                    whileInView={'show'}
+                                    className='uppercase text-[2rem] min-[500px]:text-[4rem] lg:text-9xl text-[#10100e]'>
+                                    your cart
+                                </motion.h1>
+                                <Link to={'/'}>
+                                    <XMarkIcon className='w-6 text-[#2E3D49] font-accent hover:rotate-90 hover:text-[#EA0C1D] transition-all duration-200' />
+                                </Link>
+                            </div>
+                        )
+                    }
                     {
                         !readyToPay && (
                             <div>
@@ -57,7 +64,10 @@ const Checkout = (): ReactElement => {
                 <>
                     {
                         readyToPay ? (
-                            <GoogleMapsAPI vat={vat} totalWithVat={totalWithVat} />
+
+                            <>
+                                <CheckoutToPayment />
+                            </>
                         )
                             :
                             (
