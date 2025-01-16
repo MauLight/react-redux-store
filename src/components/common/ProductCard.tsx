@@ -27,6 +27,13 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
     }
   }
 
+  function getPercentage() {
+    const percentage = product.discount
+    const price = product.price
+    const discount = percentage ? (percentage / 100) * price : 0
+    return (price - discount)
+  }
+
   return (
     <section className="group relative sm:h-full sm:min-h-[450px] col-span-1 overflow-hidden">
 
@@ -38,8 +45,12 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
             <div className="flex flex-col">
               <h1 aria-label={product.title} className='text-[1rem] min-[400px]:text-[22px] uppercase neue antialiazed text-[#ffffff] leading-tight'>{product.title}</h1>
               <div className="flex gap-x-2">
-                <p className='text-[16px] uppercase neue antialiazed text-[#ffffff]'>{`${product.price}$`}</p>
-                <p className='text-[12px] uppercase neue antialiazed text-gray-100 line-through'>{`${product.discount}$`}</p>
+                <p className='text-[16px] uppercase neue antialiazed text-[#ffffff]'>{`${getPercentage()}$`}</p>
+                {
+                  product.discount !== undefined && product.discount > 0 && (
+                    <p className='text-[12px] uppercase neue antialiazed text-gray-100 line-through'>{`${product.price}$`}</p>
+                  )
+                }
               </div>
             </div>
             <div className="flex items-center gap-x-5">
@@ -61,7 +72,7 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
           </div>
         )
       }
-
+      <div className='w-full h-full absolute top-0 left-0 bg-gradient-to-t from-[#10100e] to-transparent opacity-50'></div>
       <Link to={`/product/${product.id}`} className="absolute top-0 left-0 w-full sm:h-full bg-[#10100e] opacity-0 group-hover:opacity-30 z-0 transition-all duration-200"></Link>
     </section>
   )
