@@ -182,13 +182,14 @@ const PlaceAutocomplete = ({ onPlaceSelect, setStep }: PlaceAutocompleteProps) =
     }, [onPlaceSelect, placeAutocomplete])
 
     useEffect(() => {
-
+        console.log('triggered 0')
         async function getRegionCodeAndCoverage() {
             const regions = await getRegionsAsync()
             if (regions.length > 0) {
-                const regionCode = regions.find((region) => region.regionName === getValues().state)?.regionId
-                if (regionCode) {
 
+                const regionCode = regions.find((region) => region.regionName === getValues().state)?.regionId
+
+                if (regionCode) {
                     await dispatch(postQuoteCourierAsync({ regionCode, destinationCounty: getValues().city, declaredWorth, deliveryTime: 0 }))
                 }
             }

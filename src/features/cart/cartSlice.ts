@@ -105,6 +105,9 @@ export const cartSlice = createSlice({
             }
             return state
         },
+        fillCart: (state, action) => {
+            state.cart = action.payload
+        },
         resetCart: (state) => {
             state.cart = initialCart
         },
@@ -180,7 +183,7 @@ export const cartSlice = createSlice({
     }
 })
 
-export const { postTotal, postCourierTotal, addItem, removeItem, changeItemQuantity, resetCart, setReadyToPay, setNotReadyToPay } = cartSlice.actions
+export const { fillCart, postTotal, postCourierTotal, addItem, removeItem, changeItemQuantity, resetCart, setReadyToPay, setNotReadyToPay } = cartSlice.actions
 const cartReducer = cartSlice.reducer
 
 export default cartReducer

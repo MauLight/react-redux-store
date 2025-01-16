@@ -12,6 +12,7 @@ import { XMarkIcon } from '@heroicons/react/20/solid'
 import { ProductProps, StoreProps } from '@/utils/types'
 import { fadeIn } from '@/utils/functions'
 import CheckoutToPayment from '@/components/checkout/CheckoutToPayment'
+import { fillCart } from '@/features/cart/cartSlice'
 
 const Checkout = (): ReactElement => {
     const cart = useSelector((state: StoreProps) => state.cart.cart)
@@ -23,6 +24,12 @@ const Checkout = (): ReactElement => {
     const total = cart.length > 0 ? cart.reduce((acc: number, curr: any) => acc + (curr.price * curr.quantity), 0) : localCart.reduce((acc: number, curr: any) => acc + (curr.price * curr.quantity), 0)
     const vat = Math.floor(((total / 100) * 19))
     const totalWithVat = total + vat
+
+    useEffect(() => {
+        if (localCart.length > 0 && !cart.length) {
+            dispatch(fillCart(localCart))
+        }
+    }, [])
 
     useEffect(() => {
         if (cart.length > 0) {
@@ -65,7 +72,7 @@ const Checkout = (): ReactElement => {
                         readyToPay ? (
 
                             <>
-                                <CheckoutToPayment />
+                                <CheckoutToPayment totalWithVat={totalWithVat} />
                             </>
                         )
                             :

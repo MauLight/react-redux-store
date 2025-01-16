@@ -1,6 +1,10 @@
 import { useState, type ReactNode } from 'react'
 import GoogleMaps from './GoogleMaps'
 import ReviewPayment from './ReviewPayment'
+import { useSelector } from 'react-redux'
+import { StoreProps } from '@/utils/types'
+import { SummaryCard } from './SummaryCard'
+import TransbankForm from './TransbankForm'
 
 const paymentSteps = [
     {
@@ -15,9 +19,10 @@ const paymentSteps = [
     }
 ]
 
-function CheckoutToPaymentStep({ title, step, current, handleCurrent }: { title: string, step: number, current: boolean, handleCurrent: () => void }) {
+function CheckoutToPaymentStep({ title, step, current }: { title: string, step: number, current: boolean }) {
+
     return (
-        <button onClick={handleCurrent} className={`relative col-span-1 flex justify-center items-center gap-x-2 bg-[#ffffff] border-b-[4px] ${current ? 'border-[#10100e]' : 'border-gray-200'}`}>
+        <div className={`relative col-span-1 flex justify-center items-center gap-x-2 bg-[#ffffff] border-b-[4px] ${current ? 'border-[#10100e]' : 'border-gray-200'}`}>
             <div className={`w-[30px] h-[30px] flex justify-center items-center rounded-full text-[#ffffff] ${current ? 'bg-[#10100e]' : 'bg-gray-300'}`}>{step}</div>
             <p className={`text-[1.2rem] ${current ? 'text-[#10100e]' : 'font-light text-gray-400'}`}>{title}</p>
             {
@@ -27,29 +32,17 @@ function CheckoutToPaymentStep({ title, step, current, handleCurrent }: { title:
                     </div>
                 )
             }
-        </button>
+        </div>
     )
 }
 
-export default function CheckoutToPayment(): ReactNode {
+export default function CheckoutToPayment({ totalWithVat }: { totalWithVat: number }): ReactNode {
+    const cart = useSelector((state: StoreProps) => state.cart.cart)
+    const total = useSelector((state: StoreProps) => state.cart.totalWithCourier)
     const [{ one, two }, setCurrentStep] = useState<{ one: boolean, two: boolean }>({
         one: true,
         two: false
     })
-
-    function handleCurrentStep(step: number) {
-        if (step === 1) {
-            setCurrentStep({
-                one: true,
-                two: false
-            })
-        } else {
-            setCurrentStep({
-                one: false,
-                two: true
-            })
-        }
-    }
 
     return (
         <main className='w-full h-full text-[#ffffff] pb-20'>
@@ -65,7 +58,6 @@ export default function CheckoutToPayment(): ReactNode {
                                         step={step.step}
                                         title={step.title}
                                         current={i === 0 ? one : two}
-                                        handleCurrent={() => { handleCurrentStep(i === 0 ? 1 : 2) }}
                                     />
                                 ))
                             }
@@ -89,7 +81,28 @@ export default function CheckoutToPayment(): ReactNode {
                     }
                 </div>
 
-                <div className='h-full col-span-1 border'></div>
+                <div className='h-full col-span-1'>
+                    <section className='flex flex-col gap-y-4 min-h-[400px] pt-0'>
+                        <div className='bg-[#ffffff] mb-5'>
+                            <img className='w-full' src="https://res.cloudinary.com/maulight/image/upload/v1734712129/zds7cbfpfhfki1djh3wp.png" alt="webpay" />
+                        </div>
+                        {
+                            cart.map((product, i) => (
+                                <SummaryCard product={product} key={i} />
+                            ))
+                        }
+                        <div>
+                            <div className="w-full flex justify-between mt-10">
+                                <h1 className='text-[#ffffff] text-[2rem] uppercase'>Total</h1>
+                                <h1 className='text-[#ffffff] text-[2rem] uppercase'>{total === 0 ? totalWithVat : total}$</h1>
+                            </div>
+                            <div className="w-full flex justify-end">
+                                <h1 className='text-[1rem] lg:text-lg text-gray-400 uppercase leading-none'>{`Includes 19% VAT`}</h1>
+                            </div>
+                        </div>
+                        <TransbankForm readyToPay={two} />
+                    </section>
+                </div>
 
             </section>
         </main>
