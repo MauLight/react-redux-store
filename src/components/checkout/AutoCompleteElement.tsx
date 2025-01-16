@@ -10,16 +10,17 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from 'yup'
 
-import { StoreProps } from "@/utils/types"
+import { RegionProps, StoreProps } from "@/utils/types"
 import { updateOrderAddressAsync } from "@/features/cart/cartSlice"
 import { toast } from "react-toastify"
 import { useNavigate } from "react-router-dom"
-import { postQuoteCourierAsync } from "@/features/courier/courierSlice"
+import { getCoverageFromCourierAsync, getRegionsFromCourierAsync, postQuoteCourierAsync } from "@/features/courier/courierSlice"
 import { getRegionsAsync } from "@/utils/functions"
 import CourierOptions from "./CourierOptions"
 //import BillingAddress from "./BillingAddress"
 import Fallback from "../common/Fallback"
 import ErrorComponent from "../common/ErrorComponent"
+import CustomDropdown from "../common/CustomDropdown"
 
 interface PlaceAutocompleteProps {
     onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void
@@ -45,12 +46,19 @@ const PlaceAutocomplete = ({ onPlaceSelect, setStep }: PlaceAutocompleteProps) =
 
     const navigate = useNavigate()
     const dispatch: AppDispatch = useDispatch()
+    //* Courier state
+    const courierIsLoading = useSelector((state: StoreProps) => state.courier.isLoading)
+    const courierHasError = useSelector((state: StoreProps) => state.courier.hasError)
+    const regions = useSelector((state: StoreProps) => state.courier.regions)
+    const counties = useSelector((state: StoreProps) => state.courier.counties)
 
     const id = useSelector((state: StoreProps) => state.userAuth.user).id
     const user = useSelector((state: StoreProps) => state.userAuth.userData)
     const isLoading = useSelector((state: StoreProps) => state.userAuth.isLoading)
     const updateAddressError = useSelector((state: StoreProps) => state.cart.hasError)
     const declaredWorth = useSelector((state: StoreProps) => state.cart.total)
+
+    const [regionsList, setRegionsList] = useState<string[]>([])
 
     //* Courier options
     const quote = useSelector((state: StoreProps) => state.courier.quote)
@@ -64,7 +72,7 @@ const PlaceAutocomplete = ({ onPlaceSelect, setStep }: PlaceAutocompleteProps) =
 
     const shippingFormRef = useRef<HTMLFormElement>(null)
 
-    const { register, handleSubmit, getValues, setValue, formState: { errors } } = useForm({
+    const { register, watch, handleSubmit, getValues, setValue, formState: { errors } } = useForm({
         defaultValues: {
             country: '',
             state: '',
@@ -77,6 +85,8 @@ const PlaceAutocomplete = ({ onPlaceSelect, setStep }: PlaceAutocompleteProps) =
         },
         resolver: yupResolver(schema)
     })
+
+    const watchedValue = watch('state')
 
     const inputRef = useRef<HTMLInputElement>(null)
     const places = useMapsLibrary('places')
@@ -143,6 +153,31 @@ const PlaceAutocomplete = ({ onPlaceSelect, setStep }: PlaceAutocompleteProps) =
     }, [user])
 
     useEffect(() => {
+        async function getRegions() {
+            const { payload } = await dispatch(getRegionsFromCourierAsync())
+            setRegionsList(payload.regions.map((region: RegionProps) => region.regionName))
+        }
+
+        getRegions()
+    }, [])
+
+    useEffect(() => {
+        async function getCountiesAsync() {
+            if (getValues().state !== '') {
+                const selectedRegion = getValues().state
+                const regionCode = regions.find(region => region.regionName === selectedRegion).regionId
+                if (regionCode) {
+                    await dispatch(getCoverageFromCourierAsync({ regionCode, type: 0 }))
+                }
+            }
+        }
+
+        if (regions.length > 0) {
+            getCountiesAsync()
+        }
+    }, [watchedValue, regions])
+
+    useEffect(() => {
         if (!places || !inputRef.current) return
 
         const options = {
@@ -182,7 +217,6 @@ const PlaceAutocomplete = ({ onPlaceSelect, setStep }: PlaceAutocompleteProps) =
     }, [onPlaceSelect, placeAutocomplete])
 
     useEffect(() => {
-        console.log('triggered 0')
         async function getRegionCodeAndCoverage() {
             const regions = await getRegionsAsync()
             if (regions.length > 0) {
@@ -228,13 +262,28 @@ const PlaceAutocomplete = ({ onPlaceSelect, setStep }: PlaceAutocompleteProps) =
                                     </div>
                                     <div className="">
                                         <label className=" text-[0.8rem]" htmlFor="state">State</label>
-                                        <input {...register('state')} className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.state !== undefined ? 'ring-1 ring-red-500' : ''}`} />
+                                        <CustomDropdown
+                                            value='state'
+                                            defaultValue={getValues().state}
+                                            setValue={setValue}
+                                            list={regionsList}
+                                            loading={courierIsLoading}
+                                            error={courierHasError}
+                                        />
                                     </div>
+
                                 </div>
                                 <div className="w-full grid grid-cols-2 gap-x-5">
                                     <div className="col-span-1">
                                         <label className=" text-[0.8rem]" htmlFor="city">City</label>
-                                        <input {...register('city')} className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.city !== undefined ? 'ring-1 ring-red-500' : ''}`} />
+                                        <CustomDropdown
+                                            value='city'
+                                            defaultValue={getValues().city}
+                                            setValue={setValue}
+                                            list={counties}
+                                            loading={courierIsLoading}
+                                            error={courierHasError}
+                                        />
                                     </div>
                                     <div className="col-span-1">
                                         <label className=" text-[0.8rem]" htmlFor="street">Street</label>

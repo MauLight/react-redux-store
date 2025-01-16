@@ -1,5 +1,3 @@
-import { UseFormSetValue } from "react-hook-form"
-
 export interface ProductProps {
     id?: string
     description: string
@@ -170,19 +168,7 @@ export interface RegionProps {
 export interface DropdownProps {
     id?: string
     value: string
-    setValue: UseFormSetValue<{
-        house_number?: string | undefined;
-        country: string;
-        zipcode: string;
-        phone: string;
-        firstname: string;
-        lastname: string;
-        street: string;
-        street_number: string;
-        city: string;
-        state: string;
-        email: string;
-    }>
+    setValue: any
     list: string[]
     defaultValue?: string
     loading?: boolean
