@@ -68,13 +68,15 @@ export async function getRegionsAsync(): Promise<RegionProps[]> {
   }
 }
 
-export const postToCloudinary = async (formData: FormData, setError: Dispatch<SetStateAction<string | null>>): Promise<any> => {
+export const postToCloudinary = async (formData: FormData, setError?: Dispatch<SetStateAction<string | null>>): Promise<any> => {
   try {
     const { data } = await axios.post(`https://api.cloudinary.com/v1_1/${CloudinaryCloudName}/image/upload`, formData)
     return data
   } catch (error) {
     console.log(error)
-    setError((error as Record<string, any>).message)
+    if (setError) {
+      setError((error as Record<string, any>).message)
+    }
     return error
   }
 }

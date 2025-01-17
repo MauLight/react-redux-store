@@ -19,12 +19,12 @@ const schema = yup
     })
     .required()
 
-function LoginForm(): ReactNode {
+function LoginForm({ isBuilder }: { isBuilder: boolean | undefined }): ReactNode {
     const navigate = useNavigate()
     const { pathname } = useLocation()
     const [searchParams] = useSearchParams()
     const comesFromCheckout = Boolean(searchParams.get('checkout'))
-    const isAdmin = pathname.includes('admin')
+    const isAdmin = pathname.includes('admin') && !isBuilder
 
     const dispatch = useDispatch<AppDispatch>()
     const isLoading = useSelector((state: StoreProps) => state.userAuth.isLoading)
@@ -40,6 +40,11 @@ function LoginForm(): ReactNode {
     })
 
     const handleLogin = async ({ email, password }: LoginProps): Promise<void> => {
+
+        if (isBuilder) {
+            return
+        }
+
         const user = {
             email,
             password
