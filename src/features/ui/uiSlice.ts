@@ -10,7 +10,7 @@ interface authPanelProps {
     allowGoogle: boolean
     compressImages: boolean
     logoUrl: string
-    Background: string
+    background: string
 }
 
 interface homePanelProps {
@@ -68,7 +68,50 @@ export const uiSlice = createSlice({
         homeIsLoading: false,
         homeHasError: false
     },
-    reducers: {},
+    reducers: {
+        updateAllowGoogle: (state, action) => {
+            state.auth.allowGoogle = action.payload
+        },
+        updateCompressImages: (state, action) => {
+            state.auth.compressImages = action.payload
+        },
+        updateLogoUrl: (state, action) => {
+            state.auth.logoUrl = action.payload
+        },
+        updateBackground: (state, action) => {
+            state.auth.background = action.payload
+        },
+        updateHeroHeader: (state, action) => {
+            state.home.hero.header = action.payload
+        },
+        updateHeroSubheader: (state, action) => {
+            state.home.hero.subHeader = action.payload
+        },
+        updateHeroImage: (state, action) => {
+            state.home.hero.image = action.payload
+        },
+        updateSliderSavedSliders: (state, action) => {
+            state.home.slider.savedSliders = action.payload
+        },
+        updateSliderSliderSpeed: (state, action) => {
+            state.home.slider.sliderSpeed = action.payload
+        },
+        updateSliderCurrentSlider: (state, action) => {
+            state.home.slider.currentSlider = action.payload
+        },
+        updateCollectionCollections: (state, action) => {
+            state.home.collection.collections = action.payload
+        },
+        updateCollectionsDefaultSorting: (state, action) => {
+            state.home.collection.defaultSorting = action.payload
+        },
+        updateProductsItemsPerRow: (state, action) => {
+            state.home.products.itemsPerRow = action.payload
+        },
+        updateProdcutsDefaultSorting: (state, action) => {
+            state.home.products.defaultSorting = action.payload
+        }
+    },
     extraReducers: (builder) => {
         builder
     }
