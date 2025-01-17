@@ -14,7 +14,7 @@ import { updateAuthAllowGoogle, updateAuthBackground, updateAuthLogoUrl } from '
 export default function AuthBuilderPanel(): ReactNode {
 
     const dispatch: AppDispatch = useDispatch()
-    const { auth, authHasError, authIsLoading, home, homeIsLoading, homeHasError } = useSelector((state: StoreProps) => state.ui)
+    const { auth, authHasError, authIsLoading } = useSelector((state: StoreProps) => state.ui)
 
     //* Switch state
 
@@ -33,14 +33,21 @@ export default function AuthBuilderPanel(): ReactNode {
 
     //* Cloudinary state
     const [compress, setCompress] = useState<number>(1)
-    const [urlToCloudinary, setUrlToCloudinary] = useState<string>('')
+
     const [cloudinaryLoadingOne, setCloudinaryLoadingOne] = useState<boolean>(false)
     const [cloudinaryLoadingTwo, setCloudinaryLoadingTwo] = useState<boolean>(false)
     const [cloudinaryErrorOne, setCloudinaryErrorOne] = useState<string | null>(null)
     const [cloudinaryErrorTwo, setCloudinaryErrorTwo] = useState<string | null>(null)
-    const [urlToCloudinaryError, setUrlToCloudinaryError] = useState<boolean>(false)
 
-    const [cloudinaryPublicId, setCloudinaryPublicId] = useState<string | null>(null)
+
+    const [urlToCloudinaryLogo, setUrlToCloudinaryLogo] = useState<string>('')
+    const [urlToCloudinaryBg, setUrlToCloudinaryBg] = useState<string>('')
+    const [urlToCloudinaryLoadingLogo, setUrlToCloudinaryLoadingLogo] = useState<boolean>(false)
+    const [urlToCloudinaryLoadingBg, setUrlToCloudinaryLoadingBg] = useState<boolean>(false)
+    const [urlToCloudinaryErrorLogo, setUrlToCloudinaryErrorLogo] = useState<string | null>(null)
+    const [urlToCloudinaryErrorBg, setUrlToCloudinaryErrorBg] = useState<string | null>(null)
+
+    const [_cloudinaryPublicId, setCloudinaryPublicId] = useState<string | null>(null)
 
     //* Upload a new image to Cloudinary
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, index: number): Promise<void> => {
@@ -117,38 +124,61 @@ export default function AuthBuilderPanel(): ReactNode {
         }
     }
 
-    const handleFileUploadFromUrl = async (): Promise<void> => {
+    const handleFileUploadFromUrl = async (index: number): Promise<void> => {
 
         const isUrl = /^(https?:\/\/)?((([a-zA-Z0-9$_.+!*'(),;?&=-]|%[0-9a-fA-F]{2})+:)*([a-zA-Z0-9$_.+!*'(),;?&=-]|%[0-9a-fA-F]{2})+@)?(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)|([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(:[0-9]+)?(\/([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)*(\?([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)?(#([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)?$/.test(
-            urlToCloudinary as string
+            index === 0 ? urlToCloudinaryLogo : urlToCloudinaryBg as string
         )
 
         if (isUrl) {
             try {
 
-                const file = urlToCloudinary
+                if (index == 0) {
+                    setUrlToCloudinaryLoadingLogo(true)
+                } else {
+                    setUrlToCloudinaryLoadingBg(true)
+                }
+
+                const file = index === 0 ? urlToCloudinaryLogo : urlToCloudinaryBg
                 const formData = new FormData()
 
                 formData.append('file', file)
                 formData.append('upload_preset', 'marketplace')
-                const response = await postToCloudinary(formData)
+                const response = await postToCloudinary(formData, index === 0 ? setUrlToCloudinaryErrorLogo : setUrlToCloudinaryErrorBg)
 
-                // if (index === 0) {
-                //     dispatch(updateAuthLogoUrl(response.secure_url))
-                // } else {
-                //     dispatch(updateAuthBackground(response.secure_url))
-                // }
+                if (response.secure_url) {
+                    if (index === 0) {
+                        dispatch(updateAuthLogoUrl(response.secure_url))
+                    } else {
+                        dispatch(updateAuthBackground(response.secure_url))
+                    }
 
-                setCloudinaryPublicId(response.public_id)
+                    setCloudinaryPublicId(response.public_id)
 
-                setUrlToCloudinaryError(false)
+                    if (index === 0) {
+                        setUrlToCloudinaryErrorLogo(null)
+                    } else {
+                        setUrlToCloudinaryErrorBg(null)
+                    }
+
+                    if (index == 0) {
+                        setUrlToCloudinaryLoadingLogo(false)
+                    } else {
+                        setUrlToCloudinaryLoadingBg(false)
+                    }
+                }
 
             } catch (error) {
                 console.log(error)
                 toast.error(error as string)
             }
         } else {
-            setUrlToCloudinaryError(true)
+
+            if (index === 0) {
+                setUrlToCloudinaryErrorLogo('There was an error on our part.')
+            } else {
+                setUrlToCloudinaryErrorBg('There was an error on our part.')
+            }
         }
     }
 
@@ -186,15 +216,21 @@ export default function AuthBuilderPanel(): ReactNode {
                     ))
                 }
 
-                <div className='flex flex-col gap-y-1'>
-                    <label className='text-[0.8rem]' htmlFor="url">Upload Image from URL</label>
-                    <div className='relative'>
-                        <input className={`w-full h-10 pr-10 truncate text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${urlToCloudinaryError ? 'ring-1 ring-red-500' : ''}`} value={urlToCloudinary} onChange={({ target }) => { setUrlToCloudinary(target.value) }} type="text" />
-                        <button className='absolute top-1 right-1 w-[33px] h-[33px] rounded-[5px] bg-[#10100e] hover:bg-green-600 active:bg-[#10100e] transition-color duration-200' onClick={handleFileUploadFromUrl}>
-                            <i className="text-[#ffffff] fa-solid fa-plus"></i>
-                        </button>
-                    </div>
-                    {urlToCloudinaryError && <small className="text-red-500">Value is not a valid URL</small>}
+                <div className="flex flex-col gap-y-5">
+                    {
+                        ['Upload Logo from URL', 'Upload Background from URL'].map((title, i) => (
+                            <UploadComponentFromUrl
+                                index={i}
+                                title={title}
+                                key={title + i}
+                                loading={i === 0 ? urlToCloudinaryLoadingLogo : urlToCloudinaryLoadingBg}
+                                urlToCloudinary={i === 0 ? urlToCloudinaryLogo : urlToCloudinaryBg}
+                                setUrlToCloudinary={i === 0 ? setUrlToCloudinaryLogo : setUrlToCloudinaryBg}
+                                urlToCloudinaryError={i === 0 ? urlToCloudinaryErrorLogo : urlToCloudinaryErrorBg}
+                                handleFileUploadFromUrl={handleFileUploadFromUrl}
+                            />
+                        ))
+                    }
                 </div>
 
             </div>
@@ -256,5 +292,47 @@ function UploadComponent({ title, handleFileUpload, index, error, isLoading }: U
                 )
             }
         </>
+    )
+}
+
+interface UploadComponentFromUrlProps {
+    title: string
+    index: number
+    loading: boolean
+    urlToCloudinary: string
+    urlToCloudinaryError: string | null
+    setUrlToCloudinary: (url: string) => void
+    handleFileUploadFromUrl: (index: number) => void
+}
+
+function UploadComponentFromUrl({
+    title,
+    index,
+    loading,
+    urlToCloudinary,
+    urlToCloudinaryError,
+    setUrlToCloudinary,
+    handleFileUploadFromUrl }
+    :
+    UploadComponentFromUrlProps) {
+    return (
+        <div className='flex flex-col gap-y-1'>
+            <label className='text-[0.8rem]' htmlFor="url">{title}</label>
+            <div className='relative'>
+                <input className={`w-full h-10 pr-10 truncate text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${urlToCloudinaryError ? 'ring-1 ring-red-500' : ''}`} value={urlToCloudinary} onChange={({ target }) => { setUrlToCloudinary(target.value) }} type="text" />
+                <button className='absolute top-1 right-1 w-[33px] h-[33px] rounded-[5px] bg-[#10100e] hover:bg-green-600 active:bg-[#10100e] transition-color duration-200' onClick={() => { handleFileUploadFromUrl(index) }}>
+                    {
+                        loading ? (
+                            <Fallback color='#ffffff' />
+                        )
+                            :
+                            (
+                                <i className="text-[#ffffff] fa-solid fa-plus"></i>
+                            )
+                    }
+                </button>
+            </div>
+            {urlToCloudinaryError && <small className="text-red-500">Value is not a valid URL</small>}
+        </div>
     )
 }
