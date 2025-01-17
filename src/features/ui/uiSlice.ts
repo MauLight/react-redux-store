@@ -61,7 +61,12 @@ export const postListToWishlistAsync = createAsyncThunk(
 export const uiSlice = createSlice({
     name: 'ui',
     initialState: {
-        auth: {} as authPanelProps,
+        auth: {
+            allowGoogle: false,
+            compressImages: false,
+            logoUrl: '',
+            background: ''
+        },
         authIsLoading: false,
         authHasError: false,
         home: {} as homePanelProps,
@@ -69,19 +74,19 @@ export const uiSlice = createSlice({
         homeHasError: false
     },
     reducers: {
-        updateAllowGoogle: (state, action) => {
+        updateAuthAllowGoogle: (state, action) => {
             state.auth.allowGoogle = action.payload
         },
-        updateCompressImages: (state, action) => {
+        updateAuthCompressImages: (state, action) => {
             state.auth.compressImages = action.payload
         },
-        updateLogoUrl: (state, action) => {
+        updateAuthLogoUrl: (state, action) => {
             state.auth.logoUrl = action.payload
         },
-        updateBackground: (state, action) => {
+        updateAuthBackground: (state, action) => {
             state.auth.background = action.payload
         },
-        updateHeroHeader: (state, action) => {
+        updateHeroHeroHeader: (state, action) => {
             state.home.hero.header = action.payload
         },
         updateHeroSubheader: (state, action) => {
@@ -117,7 +122,22 @@ export const uiSlice = createSlice({
     }
 })
 
-export const { } = uiSlice.actions
+export const {
+    updateAuthAllowGoogle,
+    updateAuthCompressImages,
+    updateAuthLogoUrl,
+    updateAuthBackground,
+    updateHeroHeroHeader,
+    updateHeroSubheader,
+    updateHeroImage,
+    updateSliderSavedSliders,
+    updateSliderSliderSpeed,
+    updateSliderCurrentSlider,
+    updateCollectionCollections,
+    updateCollectionsDefaultSorting,
+    updateProductsItemsPerRow,
+    updateProdcutsDefaultSorting
+} = uiSlice.actions
 const uiReducer = uiSlice.reducer
 
 export default uiReducer

@@ -9,9 +9,11 @@ import productsReducer from '@/features/products/productsSlice'
 import collectionsReducer from '@/features/collections/collectionsSlice'
 import courierReducer from '@/features/courier/courierSlice'
 import errorReportingMiddleware from './middleware'
+import uiReducer from '@/features/ui/uiSlice'
 
 const store = configureStore({
     reducer: {
+        ui: uiReducer,
         userAuth: userAuthReducer,
         homeCollection: homeCollectionReducer,
         cart: cartReducer,

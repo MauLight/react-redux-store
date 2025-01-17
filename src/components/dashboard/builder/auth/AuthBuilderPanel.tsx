@@ -5,19 +5,29 @@ import Compressor from 'compressorjs'
 import { Switch } from '@/components/common/Switch'
 import ErrorComponent from '@/components/common/ErrorComponent'
 import Fallback from '@/components/common/Fallback'
+import { AppDispatch } from '@/store/store'
+import { useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
+import { StoreProps } from '@/utils/types'
+import { updateAuthAllowGoogle } from '@/features/ui/uiSlice'
 
 export default function AuthBuilderPanel(): ReactNode {
 
-    //* Switch state
-    const [clickedOne, setClickedOne] = useState<boolean>(true)
-    const [clickedTwo, setClickedTwo] = useState<boolean>(true)
+    const dispatch: AppDispatch = useDispatch()
+    const { auth, authHasError, authIsLoading, home, homeIsLoading, homeHasError } = useSelector((state: StoreProps) => state.ui)
 
-    const handleClickOne = (): void => {
-        setClickedOne(!clickedOne)
+    //* Switch state
+
+    const [clickedAllowGoogle, setClickedAllowGoogle] = useState<boolean>(auth.allowGoogle || false)
+    const [clickedCompressImage, setClickedCompressImage] = useState<boolean>(auth.compressImages || false)
+
+    const handleClickAllowGoogle = (): void => {
+        setClickedAllowGoogle(!clickedAllowGoogle)
+        dispatch(updateAuthAllowGoogle(!clickedAllowGoogle))
     }
 
-    const handleClickTwo = (): void => {
-        setClickedTwo(!clickedTwo)
+    const handleClickCompressImage = (): void => {
+        setClickedCompressImage(!clickedCompressImage)
     }
 
     //* Cloudinary state
@@ -28,9 +38,19 @@ export default function AuthBuilderPanel(): ReactNode {
     const [cloudinaryErrorOne, setCloudinaryErrorOne] = useState<string | null>(null)
     const [cloudinaryErrorTwo, setCloudinaryErrorTwo] = useState<string | null>(null)
     const [urlToCloudinaryError, setUrlToCloudinaryError] = useState<boolean>(false)
-    const [cloudinaryFileUpload, setCloudinaryFileUpload] = useState<string | null>(null)
+
+    const [cloudinaryFileUploadLogo, setCloudinaryFileUploadLogo] = useState<string | null>(null)
+    const [cloudinaryFileUploadBackground, setCloudinaryFileUploadBackground] = useState<string | null>(null)
+
     const [cloudinaryPublicId, setCloudinaryPublicId] = useState<string | null>(null)
 
+    function handleProxyFileUploadAllowGoogle(event: React.ChangeEvent<HTMLInputElement>, index: number) {
+        handleFileUpload(event, index)
+    }
+
+    function handleProxyFileUploadCompressImage(event: React.ChangeEvent<HTMLInputElement>, index: number) {
+        handleFileUpload(event, index)
+    }
 
     //* Upload a new image to Cloudinary
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, index: number): Promise<void> => {
@@ -55,7 +75,7 @@ export default function AuthBuilderPanel(): ReactNode {
                             formData.append('upload_preset', 'marketplace')
                             postToCloudinary(formData, index === 0 ? setCloudinaryErrorOne : setCloudinaryErrorTwo)
                                 .then((response) => {
-                                    setCloudinaryFileUpload(response.secure_url)
+                                    setCloudinaryFileUploadLogo(response.secure_url)
                                     setCloudinaryPublicId(response.public_id)
 
                                     //setValue('image', response.secure_url)
@@ -73,7 +93,7 @@ export default function AuthBuilderPanel(): ReactNode {
                     formData.append('upload_preset', 'marketplace')
                     postToCloudinary(formData, index === 0 ? setCloudinaryErrorOne : setCloudinaryErrorTwo)
                         .then((response) => {
-                            setCloudinaryFileUpload(response.secure_url)
+                            setCloudinaryFileUploadLogo(response.secure_url)
                             setCloudinaryPublicId(response.public_id)
 
                             //setValue('image', response.secure_url)
@@ -114,7 +134,7 @@ export default function AuthBuilderPanel(): ReactNode {
                 formData.append('file', file)
                 formData.append('upload_preset', 'marketplace')
                 const response = await postToCloudinary(formData)
-                setCloudinaryFileUpload(response.secure_url)
+                setCloudinaryFileUploadLogo(response.secure_url)
                 setCloudinaryPublicId(response.public_id)
 
                 //setValue('image', response.secure_url)
@@ -143,11 +163,11 @@ export default function AuthBuilderPanel(): ReactNode {
                 <div className="flex flex-col gap-y-2">
                     <div className="flex items-center justify-between gap-x-2">
                         <p>Allow users to log in with Google Auth</p>
-                        <Switch clicked={clickedOne} handleClick={handleClickOne} />
+                        <Switch clicked={clickedAllowGoogle} handleClick={handleClickAllowGoogle} />
                     </div>
                     <div className="flex items-center justify-between gap-x-2">
                         <p>Compress images before Upload</p>
-                        <Switch clicked={clickedTwo} handleClick={handleClickTwo} />
+                        <Switch clicked={clickedCompressImage} handleClick={handleClickCompressImage} />
                     </div>
                 </div>
 
@@ -159,7 +179,7 @@ export default function AuthBuilderPanel(): ReactNode {
                             key={title + i}
                             error={i === 0 ? cloudinaryErrorOne : cloudinaryErrorTwo}
                             isLoading={i === 0 ? cloudinaryLoadingOne : cloudinaryLoadingTwo}
-                            handleFileUpload={handleFileUpload}
+                            handleFileUpload={i === 0 ? handleProxyFileUploadAllowGoogle : handleProxyFileUploadCompressImage}
                         />
                     ))
                 }
@@ -195,7 +215,7 @@ interface UploadComponentProps {
     title: string
     error: string | null
     isLoading: boolean
-    handleFileUpload: (event: React.ChangeEvent<HTMLInputElement>, index: number) => Promise<void>
+    handleFileUpload: (event: React.ChangeEvent<HTMLInputElement>, index: number) => void
 }
 
 function UploadComponent({ title, handleFileUpload, index, error, isLoading }: UploadComponentProps) {

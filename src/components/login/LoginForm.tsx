@@ -20,6 +20,10 @@ const schema = yup
     .required()
 
 function LoginForm({ isBuilder }: { isBuilder: boolean | undefined }): ReactNode {
+
+    //* Login UI state
+    const authUI = useSelector((state: StoreProps) => state.ui.auth)
+
     const navigate = useNavigate()
     const { pathname } = useLocation()
     const [searchParams] = useSearchParams()
@@ -105,7 +109,7 @@ function LoginForm({ isBuilder }: { isBuilder: boolean | undefined }): ReactNode
                             </form>
                             <div className="flex flex-col gap-y-2">
                                 {
-                                    !isAdmin && (
+                                    !isAdmin && authUI.allowGoogle && (
                                         <div className="flex items-center justify-center gap-x-1 cursor-pointer">
                                             <i className="fa-brands fa-google text-[#4285f4]"></i>
                                             <p className='font-body text-[16px] text-[#4285f4]'>Continue with Google</p>

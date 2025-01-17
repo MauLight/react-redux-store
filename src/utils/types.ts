@@ -79,6 +79,38 @@ export interface StoreProps {
         quote: QuotesProps[]
         isLoading: boolean,
         hasError: boolean
+    },
+    ui: {
+        auth: {
+            allowGoogle: boolean
+            compressImages: boolean
+            logoUrl: string
+            background: string
+        },
+        authIsLoading: boolean
+        authHasError: boolean
+        home: {
+            hero: {
+                header: string
+                subHeader: string
+                image: string
+            },
+            slider: {
+                savedSliders: Array<string> //Slider list names
+                sliderSpeed: number
+                currentSlider: Array<string> //Current slider contains ordered list of images
+            },
+            collection: {
+                collections: Array<string> // Collection list names
+                defaultSorting: number
+            },
+            products: {
+                itemsPerRow: number
+                defaultSorting: number //This applies to home page
+            }
+        }
+        homeIsLoading: boolean
+        homeHasError: boolean
     }
 }
 
