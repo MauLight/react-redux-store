@@ -8,8 +8,9 @@ import { useNavigate } from 'react-router-dom'
 
 
 function Login({ isBuilder }: { isBuilder?: boolean }): ReactNode {
-    const user = useSelector((state: StoreProps) => state.userAuth.user)
     const navigate = useNavigate()
+    const user = useSelector((state: StoreProps) => state.userAuth.user)
+    const authUI = useSelector((state: StoreProps) => state.ui.auth)
 
     return (
         <section className={`relative ${isBuilder ? 'w-full h-full' : 'w-full h-screen'} flex items-center justify-center overflow-hidden`}>
@@ -17,7 +18,15 @@ function Login({ isBuilder }: { isBuilder?: boolean }): ReactNode {
                 <LoginForm isBuilder={isBuilder} />
                 <LoginFooter />
             </div>
-            <video src={video} autoPlay loop muted className='absolute w-full h-full object-cover' />
+            {
+                authUI.background === '' ? (
+                    <video src={video} autoPlay loop muted className='absolute w-full h-full object-cover' />
+                )
+                    :
+                    (
+                        <img className='absolute w-full h-full object-cover' src={authUI.background} alt="background image" />
+                    )
+            }
         </section>
     )
 }

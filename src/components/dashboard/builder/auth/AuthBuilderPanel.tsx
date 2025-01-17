@@ -9,7 +9,7 @@ import { AppDispatch } from '@/store/store'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { StoreProps } from '@/utils/types'
-import { updateAuthAllowGoogle } from '@/features/ui/uiSlice'
+import { updateAuthAllowGoogle, updateAuthBackground, updateAuthLogoUrl } from '@/features/ui/uiSlice'
 
 export default function AuthBuilderPanel(): ReactNode {
 
@@ -28,6 +28,7 @@ export default function AuthBuilderPanel(): ReactNode {
 
     const handleClickCompressImage = (): void => {
         setClickedCompressImage(!clickedCompressImage)
+        setCompress(clickedCompressImage ? 1 : 0)
     }
 
     //* Cloudinary state
@@ -39,18 +40,7 @@ export default function AuthBuilderPanel(): ReactNode {
     const [cloudinaryErrorTwo, setCloudinaryErrorTwo] = useState<string | null>(null)
     const [urlToCloudinaryError, setUrlToCloudinaryError] = useState<boolean>(false)
 
-    const [cloudinaryFileUploadLogo, setCloudinaryFileUploadLogo] = useState<string | null>(null)
-    const [cloudinaryFileUploadBackground, setCloudinaryFileUploadBackground] = useState<string | null>(null)
-
     const [cloudinaryPublicId, setCloudinaryPublicId] = useState<string | null>(null)
-
-    function handleProxyFileUploadAllowGoogle(event: React.ChangeEvent<HTMLInputElement>, index: number) {
-        handleFileUpload(event, index)
-    }
-
-    function handleProxyFileUploadCompressImage(event: React.ChangeEvent<HTMLInputElement>, index: number) {
-        handleFileUpload(event, index)
-    }
 
     //* Upload a new image to Cloudinary
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, index: number): Promise<void> => {
@@ -75,10 +65,14 @@ export default function AuthBuilderPanel(): ReactNode {
                             formData.append('upload_preset', 'marketplace')
                             postToCloudinary(formData, index === 0 ? setCloudinaryErrorOne : setCloudinaryErrorTwo)
                                 .then((response) => {
-                                    setCloudinaryFileUploadLogo(response.secure_url)
-                                    setCloudinaryPublicId(response.public_id)
 
-                                    //setValue('image', response.secure_url)
+                                    if (index === 0) {
+                                        dispatch(updateAuthLogoUrl(response.secure_url))
+                                    } else {
+                                        dispatch(updateAuthBackground(response.secure_url))
+                                    }
+
+                                    setCloudinaryPublicId(response.public_id)
 
                                     if (index === 0) {
                                         setCloudinaryLoadingOne(false)
@@ -93,10 +87,14 @@ export default function AuthBuilderPanel(): ReactNode {
                     formData.append('upload_preset', 'marketplace')
                     postToCloudinary(formData, index === 0 ? setCloudinaryErrorOne : setCloudinaryErrorTwo)
                         .then((response) => {
-                            setCloudinaryFileUploadLogo(response.secure_url)
-                            setCloudinaryPublicId(response.public_id)
 
-                            //setValue('image', response.secure_url)
+                            if (index === 0) {
+                                dispatch(updateAuthLogoUrl(response.secure_url))
+                            } else {
+                                dispatch(updateAuthBackground(response.secure_url))
+                            }
+
+                            setCloudinaryPublicId(response.public_id)
 
                             if (index === 0) {
                                 setCloudinaryLoadingOne(false)
@@ -134,10 +132,14 @@ export default function AuthBuilderPanel(): ReactNode {
                 formData.append('file', file)
                 formData.append('upload_preset', 'marketplace')
                 const response = await postToCloudinary(formData)
-                setCloudinaryFileUploadLogo(response.secure_url)
-                setCloudinaryPublicId(response.public_id)
 
-                //setValue('image', response.secure_url)
+                // if (index === 0) {
+                //     dispatch(updateAuthLogoUrl(response.secure_url))
+                // } else {
+                //     dispatch(updateAuthBackground(response.secure_url))
+                // }
+
+                setCloudinaryPublicId(response.public_id)
 
                 setUrlToCloudinaryError(false)
 
@@ -179,7 +181,7 @@ export default function AuthBuilderPanel(): ReactNode {
                             key={title + i}
                             error={i === 0 ? cloudinaryErrorOne : cloudinaryErrorTwo}
                             isLoading={i === 0 ? cloudinaryLoadingOne : cloudinaryLoadingTwo}
-                            handleFileUpload={i === 0 ? handleProxyFileUploadAllowGoogle : handleProxyFileUploadCompressImage}
+                            handleFileUpload={handleFileUpload}
                         />
                     ))
                 }
