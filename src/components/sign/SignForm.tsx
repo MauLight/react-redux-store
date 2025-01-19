@@ -148,8 +148,6 @@ function SignForm({ isBuilder }: { isBuilder: boolean }): ReactNode {
                                             <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
                                                 <div className="flex items-center justify-center gap-x-1 cursor-pointer">
                                                     <GoogleButton operation={1} handleLogin={handleLogin} />
-                                                    {/* <i className="fa-brands fa-google text-[#4285f4]"></i>
-                                            <p className='font-body text-[16px] text-[#4285f4]'>Continue with Google</p> */}
                                                 </div>
                                             </GoogleOAuthProvider>
                                         )
