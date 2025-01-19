@@ -27,22 +27,55 @@ interface homePanelProps {
     }
 }
 
-export const postListToWishlistAsync = createAsyncThunk(
-    'wishlist/postListToWishlist', async (newWishlist: string[], { rejectWithValue }) => {
-        const user = localStorage.getItem('marketplace-user') ? JSON.parse(localStorage.getItem('marketplace-user') as string) : {}
-        const token = user.token
-
-        if (newWishlist.length === 0) {
-            return
-        }
-
+export const getUIConfigurationAsync = createAsyncThunk(
+    'ui/getUIConfiguration', async (_, { rejectWithValue }) => {
         try {
-            const { data } = await axios.post(`${url}/wishlist/list`, { id: user.id, newWishlist }, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            })
+            const { data } = await axios.get(`${url}/administrator/ui`,
+                // {
+                //     headers: {
+                //         'Authorization': `Bearer ${token}`,
+                //         'Content-Type': 'application/json'
+                //     }
+                // }
+            )
+            return data
+        } catch (error) {
+            toast.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
+export const postNewUIConfigurationAsync = createAsyncThunk(
+    'ui/postNewUIConfiguration', async (_, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.post(`${url}/administrator/ui`,
+                // {
+                //     headers: {
+                //         'Authorization': `Bearer ${token}`,
+                //         'Content-Type': 'application/json'
+                //     }
+                // }
+            )
+            return data
+        } catch (error) {
+            toast.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
+export const updateUIConfigurationAsync = createAsyncThunk(
+    'ui/updateUIConfiguration', async ({ id, newConfiguration }: { id: string, newConfiguration: Record<string, any> }, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.put(`${url}/administrator/ui/${id}`, newConfiguration,
+                // {
+                //     headers: {
+                //         'Authorization': `Bearer ${token}`,
+                //         'Content-Type': 'application/json'
+                //     }
+                // }
+            )
             return data
         } catch (error) {
             toast.error((error as AxiosError).message)
