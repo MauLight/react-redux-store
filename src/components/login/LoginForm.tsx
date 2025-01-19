@@ -1,16 +1,18 @@
 import { useState, type ReactNode } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { AppDispatch } from '@/store/store'
 import { useDispatch, useSelector } from 'react-redux'
-import { postLoginAsync } from '@/features/userAuth/userAuthSlice'
-
-import { useForm } from 'react-hook-form'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { yupResolver } from "@hookform/resolvers/yup"
+import { AppDispatch } from '@/store/store'
+import { useForm } from 'react-hook-form'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 import * as yup from 'yup'
+
 
 import { LoginProps, StoreProps } from '@/utils/types'
 import { toast } from 'react-toastify'
 import Fallback from '../common/Fallback'
+import GoogleButton from './GoogleButton'
+import { postLoginAsync } from '@/features/userAuth/userAuthSlice'
 
 const schema = yup
     .object({
@@ -120,10 +122,13 @@ function LoginForm({ isBuilder }: { isBuilder: boolean | undefined }): ReactNode
                             <div className="flex flex-col gap-y-2">
                                 {
                                     !isAdmin && authUI.allowGoogle && (
-                                        <div className="flex items-center justify-center gap-x-1 cursor-pointer">
-                                            <i className="fa-brands fa-google text-[#4285f4]"></i>
-                                            <p className='font-body text-[16px] text-[#4285f4]'>Continue with Google</p>
-                                        </div>
+                                        <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+                                            <div className="flex items-center justify-center gap-x-1 cursor-pointer">
+                                                <GoogleButton operation={1} handleLogin={handleLogin} />
+                                                {/* <i className="fa-brands fa-google text-[#4285f4]"></i>
+                                            <p className='font-body text-[16px] text-[#4285f4]'>Continue with Google</p> */}
+                                            </div>
+                                        </GoogleOAuthProvider>
                                     )
                                 }
                                 <div className="flex flex-col">

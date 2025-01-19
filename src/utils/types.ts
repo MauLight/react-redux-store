@@ -118,7 +118,7 @@ export interface NewUserProps {
     firstname: string
     lastname: string
     email: string
-    phone: number
+    phone?: number
     password: string
 }
 

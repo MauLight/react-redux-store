@@ -6,13 +6,6 @@ const url = import.meta.env.VITE_USERS_BACKEND_URL
 //const user = localStorage.getItem('marketplace-user') ? JSON.parse(localStorage.getItem('marketplace-user') as string) : {}
 //const token = user.token
 
-interface authPanelProps {
-    allowGoogle: boolean
-    compressImages: boolean
-    logoUrl: string
-    background: string
-}
-
 interface homePanelProps {
     hero: {
         header: string
