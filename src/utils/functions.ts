@@ -2,7 +2,8 @@ import { Dispatch, SetStateAction } from "react"
 import { toast } from "react-toastify"
 import CryptoJS from 'crypto-js'
 import axios from "axios"
-import { RegionProps } from "./types"
+import { LoginProps, RegionProps } from "./types"
+import { postLoginAsync } from "@/features/userAuth/userAuthSlice"
 
 const cloudinaryApiSecret = import.meta.env.VITE_CLOUDINARY_APISECRET
 const CloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME

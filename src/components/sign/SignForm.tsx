@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { AppDispatch } from '@/store/store'
 import { useDispatch, useSelector } from 'react-redux'
-import { postNewUserAsync } from '@/features/userAuth/userAuthSlice'
+import { postLoginAsync, postNewUserAsync } from '@/features/userAuth/userAuthSlice'
 import { toast } from 'react-toastify'
 
 import * as yup from 'yup'
@@ -9,8 +9,10 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from "@hookform/resolvers/yup"
 
 import { RotatingLines } from 'react-loader-spinner'
-import { NewUserProps, StoreProps } from '@/utils/types'
+import { LoginProps, NewUserProps, StoreProps } from '@/utils/types'
 import { useNavigate } from 'react-router-dom'
+import GoogleButton from '../login/GoogleButton'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 
 const schema = yup
     .object({
@@ -22,9 +24,12 @@ const schema = yup
     })
     .required()
 
-function SignForm(): ReactNode {
+function SignForm({ isBuilder }: { isBuilder: boolean }): ReactNode {
     const navigate = useNavigate()
     const dispatch = useDispatch<AppDispatch>()
+
+    //* Login UI state
+    const authUI = useSelector((state: StoreProps) => state.ui.auth)
     const isLoading = useSelector((state: StoreProps) => state.userAuth.isLoading)
     const hasError = useSelector((state: StoreProps) => state.userAuth.hasError)
     const [error, setError] = useState<string>('')
@@ -40,7 +45,7 @@ function SignForm(): ReactNode {
         resolver: yupResolver(schema)
     })
 
-    const handleLogin = async ({ firstname, lastname, email, phone, password }: NewUserProps): Promise<void> => {
+    const handleSignUp = async ({ firstname, lastname, email, phone, password }: NewUserProps): Promise<void> => {
 
         const newUser = {
             firstname,
@@ -61,6 +66,27 @@ function SignForm(): ReactNode {
         }
     }
 
+    const handleLogin = async ({ email, password }: LoginProps): Promise<void> => {
+
+        if (isBuilder) {
+            return
+        }
+
+        const user = {
+            email,
+            password
+        }
+
+        const response = await dispatch(postLoginAsync(user))
+        if (response.payload.error) {
+            toast.error(response.payload.error)
+            setError(response.payload.error)
+            return
+        }
+        reset()
+        navigate('/')
+    }
+
     return (
         <header className="min-h-[520px] w-[350px] flex flex-col rounded-[10px] pt-8 gap-y-5 px-7 pb-5 bg-[#ffffff]">
             <>
@@ -79,7 +105,7 @@ function SignForm(): ReactNode {
                         (
                             <>
                                 <h1 className='font-body text-[#10100e] text-4xl text-center uppercase'>Welcome</h1>
-                                <form onSubmit={handleSubmit(handleLogin)} className="flex flex-col gap-y-2 pt-5 text-[0.9rem]">
+                                <form onSubmit={handleSubmit(handleSignUp)} className="flex flex-col gap-y-2 pt-5 text-[0.9rem]">
                                     <div className="flex gap-x-2">
                                         <input {...register('firstname')} type='text' className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.firstname !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Firstname' />
                                         <input {...register('lastname')} type='text' className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.lastname !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Lastname' />
@@ -95,10 +121,17 @@ function SignForm(): ReactNode {
                                     </div>
                                 </form>
                                 <div className="flex flex-col gap-y-2">
-                                    <div className="flex items-center justify-center gap-x-1 cursor-pointer">
-                                        <i className="fa-brands fa-google text-[#4285f4]"></i>
-                                        <p className='font-body text-[16px] text-[#4285f4]'>Continue with Google</p>
-                                    </div>
+                                    {
+                                        authUI.allowGoogle && (
+                                            <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+                                                <div className="flex items-center justify-center gap-x-1 cursor-pointer">
+                                                    <GoogleButton operation={1} handleLogin={handleLogin} />
+                                                    {/* <i className="fa-brands fa-google text-[#4285f4]"></i>
+                                            <p className='font-body text-[16px] text-[#4285f4]'>Continue with Google</p> */}
+                                                </div>
+                                            </GoogleOAuthProvider>
+                                        )
+                                    }
                                     <div className="flex flex-col">
                                         <div className="flex justify-start">
                                             {

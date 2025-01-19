@@ -69,6 +69,7 @@ function LoginForm({ isBuilder }: { isBuilder: boolean | undefined }): ReactNode
             navigate('/')
         }
     }
+
     const handleAdminLogin = async ({ email, password }: LoginProps): Promise<void> => {
         const user = {
             email,

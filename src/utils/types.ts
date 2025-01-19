@@ -151,6 +151,7 @@ export interface UserToBeUpdatedProps {
 export interface LoginProps {
     email: string
     password: string
+    isBuilder?: boolean
 }
 
 export interface CartItemProps {

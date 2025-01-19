@@ -188,7 +188,7 @@ export default function AuthBuilderPanel(): ReactNode {
                 <div>
                     <h1 className='text-[1.2rem]'>Auth Builder:</h1>
                     <p className='text-[0.9rem] text-sym_gray-600 text-balance'>
-                        In this section you can customize the login screen of your application. Add your company logo, enable Google Authentication, change the background, and more.
+                        Customize the login screen. Add your company logo, enable Google Authentication, change the background, and more.
                     </p>
                 </div>
 
