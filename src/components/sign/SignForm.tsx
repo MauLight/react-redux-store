@@ -88,7 +88,7 @@ function SignForm({ isBuilder }: { isBuilder: boolean }): ReactNode {
     }
 
     return (
-        <header className="min-h-[520px] w-[350px] flex flex-col rounded-[10px] pt-8 gap-y-5 px-7 pb-5 bg-[#ffffff]">
+        <section className="w-[350px] flex flex-col rounded-[10px] gap-y-5 px-7 py-9 bg-[#ffffff]">
             <>
                 {
                     isLoading && (
@@ -104,7 +104,29 @@ function SignForm({ isBuilder }: { isBuilder: boolean }): ReactNode {
                     !isLoading && (
                         (
                             <>
-                                <h1 className='font-body text-[#10100e] text-4xl text-center uppercase'>Welcome</h1>
+                                <>
+                                    {
+                                        authUI.logoUrl && (
+                                            <div className="w-full flex justify-center items-center">
+                                                <img className='w-[60px]' src={authUI.logoUrl} alt="logo" />
+                                            </div>
+                                        )
+                                    }
+                                </>
+                                <>
+                                    {
+                                        authUI.header !== '' && (
+                                            <h1 className='font-body text-[#10100e] text-4xl text-center'>{authUI.header}</h1>
+                                        )
+                                    }
+                                </>
+                                <>
+                                    {
+                                        !authUI.logoUrl && authUI.header === '' && (
+                                            <h1 className='font-body text-[#10100e] text-4xl text-center uppercase'>Welcome</h1>
+                                        )
+                                    }
+                                </>
                                 <form onSubmit={handleSubmit(handleSignUp)} className="flex flex-col gap-y-2 pt-5 text-[0.9rem]">
                                     <div className="flex gap-x-2">
                                         <input {...register('firstname')} type='text' className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.firstname !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Firstname' />
@@ -156,7 +178,7 @@ function SignForm({ isBuilder }: { isBuilder: boolean }): ReactNode {
                     )
                 }
             </>
-        </header>
+        </section>
     )
 }
 

@@ -90,7 +90,7 @@ const GoogleButton = ({
       className='h-8 p-2 text-[#4285F4] w-full flex justify-center items-center gap-x-2'
     >
       <i className="fa-brands fa-google"></i>
-      {btnPressed ? 'Loading...' : 'Login With Google'}
+      {btnPressed ? 'Loading...' : 'Continue With Google'}
     </button>
   )
 }

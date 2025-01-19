@@ -57,6 +57,7 @@ export const uiSlice = createSlice({
         auth: {
             allowGoogle: false,
             compressImages: false,
+            header: '',
             logoUrl: '',
             background: ''
         },
@@ -75,6 +76,9 @@ export const uiSlice = createSlice({
         },
         updateAuthLogoUrl: (state, action) => {
             state.auth.logoUrl = action.payload
+        },
+        updateAuthHeader: (state, action) => {
+            state.auth.header = action.payload
         },
         updateAuthBackground: (state, action) => {
             state.auth.background = action.payload
@@ -118,6 +122,7 @@ export const uiSlice = createSlice({
 export const {
     updateAuthAllowGoogle,
     updateAuthCompressImages,
+    updateAuthHeader,
     updateAuthLogoUrl,
     updateAuthBackground,
     updateHeroHeroHeader,

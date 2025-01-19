@@ -84,6 +84,7 @@ export interface StoreProps {
         auth: {
             allowGoogle: boolean
             compressImages: boolean
+            header: string
             logoUrl: string
             background: string
         },

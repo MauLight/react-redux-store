@@ -89,7 +89,7 @@ function LoginForm({ isBuilder }: { isBuilder: boolean | undefined }): ReactNode
     }
 
     return (
-        <header className={`min-h-[400px] w-[300px] flex flex-col rounded-[10px] pt-12 px-7 pb-2 bg-[#ffffff] ${authUI.logoUrl ? 'gap-y-2' : 'gap-y-5'}`}>
+        <header className={`min-h-[400px] w-[300px] flex flex-col rounded-[10px] px-7 pb-2 bg-[#ffffff] ${authUI.logoUrl ? 'gap-y-2' : 'gap-y-5'} ${authUI.allowGoogle ? 'pt-9' : 'pt-12'}`}>
             <>
                 {
                     isLoading && (
@@ -126,8 +126,6 @@ function LoginForm({ isBuilder }: { isBuilder: boolean | undefined }): ReactNode
                                         <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
                                             <div className="flex items-center justify-center gap-x-1 cursor-pointer">
                                                 <GoogleButton operation={1} handleLogin={handleLogin} />
-                                                {/* <i className="fa-brands fa-google text-[#4285f4]"></i>
-                                            <p className='font-body text-[16px] text-[#4285f4]'>Continue with Google</p> */}
                                             </div>
                                         </GoogleOAuthProvider>
                                     )

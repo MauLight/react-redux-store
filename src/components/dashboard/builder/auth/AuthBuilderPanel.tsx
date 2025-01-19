@@ -9,7 +9,8 @@ import { AppDispatch } from '@/store/store'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { StoreProps } from '@/utils/types'
-import { updateAuthAllowGoogle, updateAuthBackground, updateAuthLogoUrl } from '@/features/ui/uiSlice'
+import { updateAuthAllowGoogle, updateAuthBackground, updateAuthHeader, updateAuthLogoUrl } from '@/features/ui/uiSlice'
+import { title } from 'process'
 
 export default function AuthBuilderPanel(): ReactNode {
 
@@ -20,6 +21,7 @@ export default function AuthBuilderPanel(): ReactNode {
 
     const [clickedAllowGoogle, setClickedAllowGoogle] = useState<boolean>(auth.allowGoogle || false)
     const [clickedCompressImage, setClickedCompressImage] = useState<boolean>(auth.compressImages || false)
+    const [authHeader, setAuthHeader] = useState<string>('')
 
     const handleClickAllowGoogle = (): void => {
         setClickedAllowGoogle(!clickedAllowGoogle)
@@ -29,6 +31,10 @@ export default function AuthBuilderPanel(): ReactNode {
     const handleClickCompressImage = (): void => {
         setClickedCompressImage(!clickedCompressImage)
         setCompress(clickedCompressImage ? 1 : 0)
+    }
+
+    const handleAuthAddHeader = () => {
+        dispatch(updateAuthHeader(authHeader))
     }
 
     //* Cloudinary state
@@ -203,6 +209,16 @@ export default function AuthBuilderPanel(): ReactNode {
                     </div>
                 </div>
 
+                <div className='flex flex-col gap-y-1'>
+                    <label className='text-[0.8rem]' htmlFor="url">Add Header</label>
+                    <div className='relative'>
+                        <input value={authHeader} onChange={({ target }) => { setAuthHeader(target.value) }} className='w-full h-10 pr-10 truncate text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500' type="text" />
+                        <button className='absolute top-1 right-1 w-[33px] h-[33px] rounded-[5px] bg-[#10100e] hover:bg-green-600 active:bg-[#10100e] transition-color duration-200' onClick={handleAuthAddHeader}>
+                            <i className="text-[#ffffff] fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
                 {
                     ['Upload Logo', 'Upload Image/Video Background'].map((title, i) => (
                         <UploadComponent
@@ -216,7 +232,7 @@ export default function AuthBuilderPanel(): ReactNode {
                     ))
                 }
 
-                <div className="flex flex-col gap-y-5">
+                <div className="flex gap-x-5">
                     {
                         ['Upload Logo from URL', 'Upload Background from URL'].map((title, i) => (
                             <UploadComponentFromUrl
@@ -234,7 +250,7 @@ export default function AuthBuilderPanel(): ReactNode {
                 </div>
 
             </div>
-            <div className="w-full flex justify-start gap-x-2">
+            <div className="w-full flex justify-start gap-x-2 mt-5">
                 <button className='w-[120px] h-10 bg-[#10100e] hover:bg-sym_gray-700 active:bg-[#10100e] transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
                     <i className="fa-regular fa-eye"></i>
                     Preview
