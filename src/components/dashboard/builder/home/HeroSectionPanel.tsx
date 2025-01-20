@@ -18,7 +18,7 @@ const CloudinaryAPIKEY = import.meta.env.VITE_CLOUDINARY_APIKEY
 
 function HeroSectionPanel(): ReactNode {
     const dispatch: AppDispatch = useDispatch()
-    const { ui, currUI, authHasError, authIsLoading } = useSelector((state: StoreProps) => state.ui)
+    const { ui, currUI, uiHasError, uiIsLoading } = useSelector((state: StoreProps) => state.ui)
     const hero = useSelector((state: StoreProps) => state.ui.currUI.home.hero)
 
     const [header, setHeader] = useState<string>('')
@@ -134,7 +134,6 @@ function HeroSectionPanel(): ReactNode {
 
     useEffect(() => {
         if (hero) {
-            console.log(hero)
             setHeader(hero.header)
             setSubHeader(hero.subHeader)
             setClickedCompressImage(hero.compressImage)
@@ -143,92 +142,110 @@ function HeroSectionPanel(): ReactNode {
     }, [])
 
     return (
-        <section className='w-full flex flex-col gap-y-5'>
-            <h2 className='text-[1rem] text-sym_gray-700'>Hero Section:</h2>
-            <div className="flex flex-col gap-y-10">
-
-                <div className="flex flex-col gap-y-2">
-                    <div className="flex flex-col gap-y-1">
-                        <label className='text-[0.8rem]' htmlFor="header">Header</label>
-                        <input
-                            id='header'
-                            value={header}
-                            onChange={({ target }) => { setHeader(target.value) }}
-                            type="text"
-                            className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`}
-                            placeholder='Header'
-                        />
+        <>
+            {
+                uiHasError && (
+                    <ErrorComponent />
+                )
+            }
+            {
+                !uiHasError && uiIsLoading && (
+                    <div className="w-full h-full flex justify-center items-center">
+                        <Fallback />
                     </div>
-                </div>
+                )
+            }
+            {
+                !uiHasError && !uiIsLoading && (
+                    <section className='w-full flex flex-col gap-y-5'>
+                        <h2 className='text-[1rem] text-sym_gray-700'>Hero Section:</h2>
+                        <div className="flex flex-col gap-y-10">
 
-                <div className="flex flex-col gap-y-2">
-                    <div className="flex flex-col gap-y-1">
-                        <label className='text-[0.8rem]' htmlFor="subHeader">Sub-header</label>
-                        <input
-                            id='subHeader'
-                            value={subHeader}
-                            onChange={({ target }) => { setSubHeader(target.value) }}
-                            type="text"
-                            className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`}
-                            placeholder='Sub-header'
-                        />
-                    </div>
-                </div>
-
-                <div className="flex items-center justify-between gap-x-2">
-                    <p>Compress images before Upload</p>
-                    <Switch clicked={clickedCompressImage} handleClick={handleClickSwitch} />
-                </div>
-
-                <div className="flex flex-col gap-y-2">
-                    <>
-                        {
-                            cloudinaryError && (
-                                <ErrorComponent error={cloudinaryError} />
-                            )
-                        }
-                        {
-                            !cloudinaryError && cloudinaryLoading && (
-                                <div className='w-full h-[120px] flex justify-center items-center'>
-                                    <Fallback color='#6366f1' />
+                            <div className="flex flex-col gap-y-2">
+                                <div className="flex flex-col gap-y-1">
+                                    <label className='text-[0.8rem]' htmlFor="header">Header</label>
+                                    <input
+                                        id='header'
+                                        value={header}
+                                        onChange={({ target }) => { setHeader(target.value) }}
+                                        type="text"
+                                        className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`}
+                                        placeholder='Header'
+                                    />
                                 </div>
-                            )
-                        }
-                        {
-                            !cloudinaryError && !cloudinaryLoading && cloudinaryBackground && (
-                                <div className="group flex flex-col gap-y-2">
+                            </div>
 
-                                    <label className='text-[0.8rem]' htmlFor="background upload">{'Image (16:9 / 1920x1080 px for best results)'}</label>
-                                    <div className='relative h-[120px] rounded-[5px] overflow-hidden'>
-                                        <img src={cloudinaryBackground} alt="product" className='h-full w-full object-cover' />
-                                        <button type='button' onClick={handleResetUploadImage} className='absolute top-2 right-2 w-[30px] h-[30px] flex justify-center items-center rounded-full bg-indigo-500 text-[#ffffff] hover:bg-[#10100e] active:bg-indigo-500'>
-                                            <i className="fa-solid fa-xmark"></i>
-                                        </button>
-                                    </div>
+                            <div className="flex flex-col gap-y-2">
+                                <div className="flex flex-col gap-y-1">
+                                    <label className='text-[0.8rem]' htmlFor="subHeader">Sub-header</label>
+                                    <input
+                                        id='subHeader'
+                                        value={subHeader}
+                                        onChange={({ target }) => { setSubHeader(target.value) }}
+                                        type="text"
+                                        className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`}
+                                        placeholder='Sub-header'
+                                    />
                                 </div>
-                            )
+                            </div>
 
-                        }
-                        {
-                            !cloudinaryError && !cloudinaryLoading && !cloudinaryBackground && (
-                                <div className="group flex flex-col gap-y-2">
-                                    <label className='text-[0.8rem]' htmlFor="background upload">{'Image (16:9 / 1920x1080 px for best results)'}</label>
-                                    <button onClick={handleFileButtonClick} name='background upload' className='h-[120px] flex flex-col justify-center items-center gap-y-2 border border-sym_gray-600 border-dashed rounded-[5px] group-hover:border-indigo-500 group-hover:text-indigo-500 transition-color duration-200'>
-                                        <i className="fa-solid fa-cloud-arrow-up fa-xl"></i>
-                                        Upload image
-                                    </button>
-                                    <input type='file' ref={fileInputRef} onChange={handleFileUpload} className='hidden' />
-                                </div>
-                            )
+                            <div className="flex items-center justify-between gap-x-2">
+                                <p>Compress images before Upload</p>
+                                <Switch clicked={clickedCompressImage} handleClick={handleClickSwitch} />
+                            </div>
 
-                        }
-                    </>
-                </div>
+                            <div className="flex flex-col gap-y-2">
+                                <>
+                                    {
+                                        cloudinaryError && (
+                                            <ErrorComponent error={cloudinaryError} />
+                                        )
+                                    }
+                                    {
+                                        !cloudinaryError && cloudinaryLoading && (
+                                            <div className='w-full h-[120px] flex justify-center items-center'>
+                                                <Fallback color='#6366f1' />
+                                            </div>
+                                        )
+                                    }
+                                    {
+                                        !cloudinaryError && !cloudinaryLoading && cloudinaryBackground && (
+                                            <div className="group flex flex-col gap-y-2">
 
-            </div>
-            <div className="h-[120px]"></div>
-            <SaveButtonBuilder handleSaveConfiguration={handleUpdateHeroConfiguration} />
-        </section>
+                                                <label className='text-[0.8rem]' htmlFor="background upload">{'Image (16:9 / 1920x1080 px for best results)'}</label>
+                                                <div className='relative h-[120px] rounded-[5px] overflow-hidden'>
+                                                    <img src={cloudinaryBackground} alt="product" className='h-full w-full object-cover' />
+                                                    <button type='button' onClick={handleResetUploadImage} className='absolute top-2 right-2 w-[30px] h-[30px] flex justify-center items-center rounded-full bg-indigo-500 text-[#ffffff] hover:bg-[#10100e] active:bg-indigo-500'>
+                                                        <i className="fa-solid fa-xmark"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )
+
+                                    }
+                                    {
+                                        !cloudinaryError && !cloudinaryLoading && !cloudinaryBackground && (
+                                            <div className="group flex flex-col gap-y-2">
+                                                <label className='text-[0.8rem]' htmlFor="background upload">{'Image (16:9 / 1920x1080 px for best results)'}</label>
+                                                <button onClick={handleFileButtonClick} name='background upload' className='h-[120px] flex flex-col justify-center items-center gap-y-2 border border-sym_gray-600 border-dashed rounded-[5px] group-hover:border-indigo-500 group-hover:text-indigo-500 transition-color duration-200'>
+                                                    <i className="fa-solid fa-cloud-arrow-up fa-xl"></i>
+                                                    Upload image
+                                                </button>
+                                                <input type='file' ref={fileInputRef} onChange={handleFileUpload} className='hidden' />
+                                            </div>
+                                        )
+
+                                    }
+                                </>
+                            </div>
+
+                        </div>
+                        <div className="h-[120px]"></div>
+                        <SaveButtonBuilder handleSaveConfiguration={handleUpdateHeroConfiguration} />
+                    </section>
+                )
+            }
+        </>
     )
 }
 

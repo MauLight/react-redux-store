@@ -9,12 +9,12 @@ import { AppDispatch } from '@/store/store'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { StoreProps } from '@/utils/types'
-import { updateAuthAllowGoogle, updateAuthBackground, updateAuthHeader, updateAuthLogoUrl, updateUIConfigurationAsync } from '@/features/ui/uiSlice'
+import { updateUIConfigurationAsync } from '@/features/ui/uiSlice'
 
 export default function AuthBuilderPanel(): ReactNode {
 
     const dispatch: AppDispatch = useDispatch()
-    const { ui, currUI, authHasError, authIsLoading } = useSelector((state: StoreProps) => state.ui)
+    const { currUI, authHasError, authIsLoading } = useSelector((state: StoreProps) => state.ui)
 
     //* Switch state
 
@@ -24,16 +24,11 @@ export default function AuthBuilderPanel(): ReactNode {
 
     const handleClickAllowGoogle = (): void => {
         setClickedAllowGoogle(!clickedAllowGoogle)
-        dispatch(updateAuthAllowGoogle(!clickedAllowGoogle))
     }
 
     const handleClickCompressImage = (): void => {
         setClickedCompressImage(!clickedCompressImage)
         setCompress(clickedCompressImage ? 1 : 0)
-    }
-
-    const handleAuthAddHeader = () => {
-        dispatch(updateAuthHeader(authHeader))
     }
 
     //* Cloudinary state
@@ -84,12 +79,6 @@ export default function AuthBuilderPanel(): ReactNode {
                                         setUrlToCloudinaryBg(response.secure_url)
                                     }
 
-                                    if (index === 0) {
-                                        dispatch(updateAuthLogoUrl(response.secure_url))
-                                    } else {
-                                        dispatch(updateAuthBackground(response.secure_url))
-                                    }
-
                                     setCloudinaryPublicId(response.public_id)
 
                                     if (index === 0) {
@@ -107,9 +96,9 @@ export default function AuthBuilderPanel(): ReactNode {
                         .then((response) => {
 
                             if (index === 0) {
-                                dispatch(updateAuthLogoUrl(response.secure_url))
+                                setUrlToCloudinaryLogo(response.secure_url)
                             } else {
-                                dispatch(updateAuthBackground(response.secure_url))
+                                setUrlToCloudinaryBg(response.secure_url)
                             }
 
                             setCloudinaryPublicId(response.public_id)
@@ -159,9 +148,9 @@ export default function AuthBuilderPanel(): ReactNode {
 
                 if (response.secure_url) {
                     if (index === 0) {
-                        dispatch(updateAuthLogoUrl(response.secure_url))
+                        setUrlToCloudinaryLogo(response.secure_url)
                     } else {
-                        dispatch(updateAuthBackground(response.secure_url))
+                        setUrlToCloudinaryBg(response.secure_url)
                     }
 
                     setCloudinaryPublicId(response.public_id)
@@ -206,7 +195,7 @@ export default function AuthBuilderPanel(): ReactNode {
         await dispatch(updateUIConfigurationAsync({
             id: currUI.id, newConfiguration: {
 
-                ...ui,
+                ...currUI,
                 auth: newAuthConfiguration
 
             }
@@ -214,7 +203,7 @@ export default function AuthBuilderPanel(): ReactNode {
     }
 
     useEffect(() => {
-        if (Object.keys(currUI).length > 0) {
+        if (currUI.auth) {
             setClickedAllowGoogle(currUI.auth.allowGoogle)
             setClickedCompressImage(currUI.auth.compressImage)
             setAuthHeader(currUI.auth.header)
@@ -263,9 +252,6 @@ export default function AuthBuilderPanel(): ReactNode {
                                 <label className='text-[0.8rem]' htmlFor="url">Add Header</label>
                                 <div className='relative'>
                                     <input value={authHeader} onChange={({ target }) => { setAuthHeader(target.value) }} className='w-full h-10 pr-10 truncate text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500' type="text" />
-                                    <button className='absolute top-1 right-1 w-[33px] h-[33px] rounded-[5px] bg-[#10100e] hover:bg-green-600 active:bg-[#10100e] transition-color duration-200' onClick={handleAuthAddHeader}>
-                                        <i className="text-[#ffffff] fa-solid fa-plus"></i>
-                                    </button>
                                 </div>
                             </div>
 
@@ -282,7 +268,7 @@ export default function AuthBuilderPanel(): ReactNode {
                                 ))
                             }
 
-                            <div className="flex gap-x-5">
+                            <div className="flex gap-x-2">
                                 {
                                     ['Upload Logo from URL', 'Upload Background from URL'].map((title, i) => (
                                         <UploadComponentFromUrl
