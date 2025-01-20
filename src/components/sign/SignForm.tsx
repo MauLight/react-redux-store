@@ -24,7 +24,7 @@ const schema = yup
     })
     .required()
 
-function SignForm({ isBuilder }: { isBuilder: boolean }): ReactNode {
+function SignForm({ isBuilder }: { isBuilder: boolean | undefined }): ReactNode {
     const navigate = useNavigate()
     const dispatch = useDispatch<AppDispatch>()
 

@@ -4,7 +4,7 @@ import { type ReactNode } from 'react'
 import video from '@/assets/video/Sign_video.webm'
 
 
-function Signup({ isBuilder }: { isBuilder: boolean }): ReactNode {
+function Signup({ isBuilder }: { isBuilder?: boolean }): ReactNode {
 
     return (
         <section className='relative w-full h-screen flex items-center justify-center overflow-hidden'>
