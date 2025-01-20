@@ -33,6 +33,7 @@ export interface uiProps {
         hero: {
             header: string
             subHeader: string
+            compressImage: boolean
             image: string
         }
     }

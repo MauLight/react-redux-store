@@ -11,6 +11,7 @@ interface homePanelProps {
     hero: {
         header: string
         subHeader: string
+        compressImage: boolean
         image: string
     },
     slider: {
@@ -100,6 +101,7 @@ export const uiSlice = createSlice({
                 hero: {
                     header: '',
                     subHeader: '',
+                    compressImage: true,
                     image: ''
                 }
 
