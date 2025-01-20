@@ -24,7 +24,7 @@ const schema = yup
 function LoginForm({ isBuilder }: { isBuilder: boolean | undefined }): ReactNode {
 
     //* Login UI state
-    const authUI = useSelector((state: StoreProps) => state.ui.ui.auth)
+    const authUI = useSelector((state: StoreProps) => state.ui.currUI.auth)
 
     const navigate = useNavigate()
     const { pathname } = useLocation()

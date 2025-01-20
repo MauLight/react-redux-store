@@ -67,11 +67,27 @@ export const updateUIConfigurationAsync = createAsyncThunk(
 export const uiSlice = createSlice({
     name: 'ui',
     initialState: {
-        authIsLoading: false,
-        authHasError: false,
-        homeIsLoading: false,
-        homeHasError: false,
-        currUI: {} as uiProps,
+        currUI: {
+            auth: {
+                allowGoogle: false,
+                compressImage: true,
+                header: '',
+                logoUrl: '',
+                background: ''
+            },
+            home: {
+                hero: {
+                    header: '',
+                    subHeader: '',
+                    compressImage: true,
+                    image: ''
+                },
+                slider: {
+                    savedSliders: [],
+                    currSlider: {}
+                }
+            }
+        },
         uiIsloading: false,
         uiHasError: false
     },

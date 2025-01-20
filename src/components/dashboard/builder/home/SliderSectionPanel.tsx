@@ -127,20 +127,31 @@ function SliderSectionPanel(): ReactNode {
                             list={['Slider 1', 'Slider 2', 'Slider 3']}
                         />
                     </div>
-                    {/* {errors.title && <small className="text-red-500">{errors.title.message}</small>} */}
                 </div>
 
-                <div className="flex flex-col gap-y-2">
-                    <div className="flex flex-col gap-y-1">
-                        <label className='text-[0.8rem]' htmlFor="description">{'Slider speed: (higher values equal faster motion)'}</label>
-                        <CustomDropdown
-                            defaultValue='Recommended'
-                            value={selectedSorting}
-                            setValue={setSelectedSorting}
-                            list={['0', '1', '3', '4', '5']}
-                        />
+                <div className="grid grid-cols-2 items-center gap-x-3">
+                    <div className="flex flex-col gap-y-2">
+                        <div className="flex flex-col gap-y-1">
+                            <label className='text-[0.8rem]' htmlFor="speed">{'Slider speed: (higher equals faster)'}</label>
+                            <CustomDropdown
+                                defaultValue='Recommended'
+                                value={selectedSorting}
+                                setValue={setSelectedSorting}
+                                list={['0', '1', '3', '4', '5']}
+                            />
+                        </div>
                     </div>
-                    {/* {errors.title && <small className="text-red-500">{errors.title.message}</small>} */}
+                    <div className="flex flex-col gap-y-2">
+                        <div className="flex flex-col gap-y-1">
+                            <label className='text-[0.8rem]' htmlFor="animation">{'Slider animation:'}</label>
+                            <CustomDropdown
+                                defaultValue='Recommended'
+                                value={selectedSorting}
+                                setValue={setSelectedSorting}
+                                list={['Slide', 'Fade']}
+                            />
+                        </div>
+                    </div>
                 </div>
 
                 <div className="flex flex-col gap-y-2">

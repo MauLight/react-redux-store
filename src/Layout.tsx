@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useLayoutEffect, useState } from 'react'
 import { Routes, Route, useLocation, useMatch } from 'react-router-dom'
 
 import TopBar from './components/common/TopBar'
@@ -7,6 +7,9 @@ import ErrorBoundary from './components/error/ErrorBoundary'
 import Fallback from './components/common/Fallback'
 import ScrollToTop from './ScrollToTop'
 import AnnouncementBar from './components/common/AnnouncementBar'
+import { getUIConfigurationAsync, postNewUIConfigurationAsync } from './features/ui/uiSlice'
+import { AppDispatch } from './store/store'
+import { useDispatch } from 'react-redux'
 
 const Sign = lazy(async () => await import('./routes/Sign'))
 const Login = lazy(async () => await import('./routes/Login'))
@@ -25,6 +28,7 @@ const NotFound = lazy(async () => await import('./routes/NotFound'))
 const Confirmation = lazy(async () => await import('@/routes/Confirmation'))
 
 function Layout() {
+    const dispatch: AppDispatch = useDispatch()
     const { pathname } = useLocation()
     const hideTopbar = pathname.includes('sign') || pathname.includes('login') || pathname.includes('admin') || pathname.includes('confirmation')
     const isAdmin = pathname.includes('admin')
@@ -41,6 +45,23 @@ function Layout() {
             behavior: 'smooth'
         })
     }
+
+    useLayoutEffect(() => {
+        async function getCurrentUIOrCreateNewUIConfiguration() {
+            {
+                try {
+                    const { payload } = await dispatch(getUIConfigurationAsync())
+                    if (payload.message) {
+                        const { payload } = await dispatch(postNewUIConfigurationAsync())
+                        console.log(payload)
+                    }
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+        }
+        getCurrentUIOrCreateNewUIConfiguration()
+    }, [])
 
     useEffect(() => {
         function handleScroll() {

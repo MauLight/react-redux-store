@@ -20,6 +20,7 @@ export interface ProductProps {
 }
 
 export interface wishListProduct { id: string, productId: string }
+export interface SliderProps { title: string, id: string, speed: number, animation: string, images: Array<string> }
 
 export interface uiProps {
     auth: {
@@ -35,6 +36,10 @@ export interface uiProps {
             subHeader: string
             compressImage: boolean
             image: string
+        },
+        slider: {
+            savedSliders: Array<SliderProps>
+            currSlider: SliderProps
         }
     }
     createdAt: string
@@ -101,39 +106,6 @@ export interface StoreProps {
         hasError: boolean
     },
     ui: {
-        ui: {
-            auth: {
-                allowGoogle: boolean
-                compressImages: boolean
-                header: string
-                logoUrl: string
-                background: string
-            },
-            home: {
-                hero: {
-                    header: string
-                    subHeader: string
-                    image: string
-                },
-                slider: {
-                    savedSliders: Array<string> //Slider list names
-                    sliderSpeed: number
-                    currentSlider: Array<string> //Current slider contains ordered list of images
-                },
-                collection: {
-                    collections: Array<string> // Collection list names
-                    defaultSorting: number
-                },
-                products: {
-                    itemsPerRow: number
-                    defaultSorting: number //This applies to home page
-                }
-            }
-        }
-        authIsLoading: boolean
-        authHasError: boolean
-        homeIsLoading: boolean
-        homeHasError: boolean
         currUI: uiProps
         uiIsLoading: boolean
         uiHasError: boolean
