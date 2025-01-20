@@ -29,6 +29,13 @@ export interface uiProps {
         logoUrl: string
         background: string
     },
+    home: {
+        hero: {
+            header: string
+            subHeader: string
+            image: string
+        }
+    }
     createdAt: string
     updatedAt: string
     id: string

@@ -1,15 +1,26 @@
 import { generateSignature, postToCloudinary } from '@/utils/functions'
-import { useRef, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { toast } from 'react-toastify'
 import Compressor from 'compressorjs'
 import axios from 'axios'
 import ErrorComponent from '@/components/common/ErrorComponent'
 import Fallback from '@/components/common/Fallback'
+import { AppDispatch } from '@/store/store'
+import { useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
+import { StoreProps } from '@/utils/types'
+import { updateUIConfigurationAsync } from '@/features/ui/uiSlice'
 
 const CloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME
 const CloudinaryAPIKEY = import.meta.env.VITE_CLOUDINARY_APIKEY
 
 function HeroSectionPanel(): ReactNode {
+    const dispatch: AppDispatch = useDispatch()
+    const { ui, currUI, authHasError, authIsLoading } = useSelector((state: StoreProps) => state.ui)
+    const hero = useSelector((state: StoreProps) => state.ui.currUI.home.hero)
+
+    const [header, setHeader] = useState<string>('')
+    const [subHeader, setSubHeader] = useState<string>('')
 
     const [cloudinaryPublicId, setCloudinaryPublicId] = useState<string>('')
     const [cloudinaryBackground, setCloudinaryBackground] = useState<string | null>(null)
@@ -90,6 +101,35 @@ function HeroSectionPanel(): ReactNode {
         setCloudinaryBackground(null)
     }
 
+    async function handleUpdateHeroConfiguration() {
+
+        const newHeroConfiguration = {
+            header,
+            subHeader,
+            image: cloudinaryBackground
+        }
+
+        await dispatch(updateUIConfigurationAsync({
+            id: currUI.id, newConfiguration: {
+
+                ...ui,
+                home: {
+                    ...ui.home,
+                    hero: newHeroConfiguration
+                }
+
+            }
+        }))
+    }
+
+    useEffect(() => {
+        if (hero) {
+            setHeader(hero.header)
+            setSubHeader(hero.subHeader)
+            setCloudinaryBackground(hero.image)
+        }
+    }, [])
+
     return (
         <section className='w-full flex flex-col gap-y-5'>
             <h2 className='text-[1rem] text-sym_gray-700'>Hero Section:</h2>
@@ -97,28 +137,30 @@ function HeroSectionPanel(): ReactNode {
 
                 <div className="flex flex-col gap-y-2">
                     <div className="flex flex-col gap-y-1">
-                        <label className='text-[0.8rem]' htmlFor="description">Header</label>
+                        <label className='text-[0.8rem]' htmlFor="header">Header</label>
                         <input
-                            // {...register('title')}
+                            id='header'
+                            value={header}
+                            onChange={({ target }) => { setHeader(target.value) }}
                             type="text"
                             className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`}
                             placeholder='Header'
                         />
                     </div>
-                    {/* {errors.title && <small className="text-red-500">{errors.title.message}</small>} */}
                 </div>
 
                 <div className="flex flex-col gap-y-2">
                     <div className="flex flex-col gap-y-1">
-                        <label className='text-[0.8rem]' htmlFor="description">Sub-header</label>
+                        <label className='text-[0.8rem]' htmlFor="subHeader">Sub-header</label>
                         <input
-                            // {...register('title')}
+                            id='subHeader'
+                            value={subHeader}
+                            onChange={({ target }) => { setSubHeader(target.value) }}
                             type="text"
                             className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`}
                             placeholder='Sub-header'
                         />
                     </div>
-                    {/* {errors.title && <small className="text-red-500">{errors.title.message}</small>} */}
                 </div>
 
                 <div className="flex flex-col gap-y-2">
@@ -166,6 +208,17 @@ function HeroSectionPanel(): ReactNode {
                     </>
                 </div>
 
+            </div>
+            <div className="h-[180px]"></div>
+            <div className="w-full flex justify-start gap-x-2">
+                <button className='w-[120px] h-10 bg-[#10100e] hover:bg-sym_gray-700 active:bg-[#10100e] transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
+                    <i className="fa-regular fa-eye"></i>
+                    Preview
+                </button>
+                <button onClick={handleUpdateHeroConfiguration} className='w-[120px] h-10 bg-green-600 hover:bg-green-500 active:bg-green-600 transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
+                    <i className="fa-solid fa-floppy-disk"></i>
+                    Save
+                </button>
             </div>
         </section>
     )

@@ -96,7 +96,14 @@ export const uiSlice = createSlice({
                 logoUrl: '',
                 background: ''
             },
-            home: {} as homePanelProps
+            home: {
+                hero: {
+                    header: '',
+                    subHeader: '',
+                    image: ''
+                }
+
+            } as homePanelProps
         },
         authIsLoading: false,
         authHasError: false,
