@@ -5,12 +5,10 @@ import HomeSection from '@/components/dashboard/builder/home/HomeSection'
 import AuthSection from '@/components/dashboard/builder/auth/AuthSection'
 import { getUIConfigurationAsync, postNewUIConfigurationAsync } from '@/features/ui/uiSlice'
 import { AppDispatch } from '@/store/store'
-import { StoreProps } from '@/utils/types'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 function Builder(): ReactNode {
     const dispatch: AppDispatch = useDispatch()
-    const currUI = useSelector((state: StoreProps) => state.ui.currUI)
     const [navState, setNavState] = useState<Record<string, boolean>>({
         one: true,
         two: false,

@@ -203,9 +203,7 @@ export default function AuthBuilderPanel(): ReactNode {
             background: urlToCloudinaryBg
         }
 
-        console.log('1. this is the configuration to send', newAuthConfiguration)
-
-        const { payload } = await dispatch(updateUIConfigurationAsync({
+        await dispatch(updateUIConfigurationAsync({
             id: currUI.id, newConfiguration: {
 
                 ...ui,
@@ -213,7 +211,6 @@ export default function AuthBuilderPanel(): ReactNode {
 
             }
         }))
-        console.log(payload)
     }
 
     useEffect(() => {
