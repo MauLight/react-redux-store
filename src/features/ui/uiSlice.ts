@@ -1,8 +1,9 @@
+import { uiProps } from "@/utils/types"
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios, { AxiosError } from "axios"
 import { toast } from "react-toastify"
 
-const url = import.meta.env.VITE_USERS_BACKEND_URL
+const url = import.meta.env.VITE_BACKEND_URL
 //const user = localStorage.getItem('marketplace-user') ? JSON.parse(localStorage.getItem('marketplace-user') as string) : {}
 //const token = user.token
 
@@ -87,68 +88,131 @@ export const updateUIConfigurationAsync = createAsyncThunk(
 export const uiSlice = createSlice({
     name: 'ui',
     initialState: {
-        auth: {
-            allowGoogle: false,
-            compressImages: false,
-            header: '',
-            logoUrl: '',
-            background: ''
+        ui: {
+            auth: {
+                allowGoogle: false,
+                compressImages: false,
+                header: '',
+                logoUrl: '',
+                background: ''
+            },
+            home: {} as homePanelProps
         },
         authIsLoading: false,
         authHasError: false,
-        home: {} as homePanelProps,
         homeIsLoading: false,
-        homeHasError: false
+        homeHasError: false,
+        currUI: {} as uiProps,
+        uiIsloading: false,
+        uiHasError: false
     },
     reducers: {
         updateAuthAllowGoogle: (state, action) => {
-            state.auth.allowGoogle = action.payload
+            state.ui.auth.allowGoogle = action.payload
         },
         updateAuthCompressImages: (state, action) => {
-            state.auth.compressImages = action.payload
+            state.ui.auth.compressImages = action.payload
         },
         updateAuthLogoUrl: (state, action) => {
-            state.auth.logoUrl = action.payload
+            state.ui.auth.logoUrl = action.payload
         },
         updateAuthHeader: (state, action) => {
-            state.auth.header = action.payload
+            state.ui.auth.header = action.payload
         },
         updateAuthBackground: (state, action) => {
-            state.auth.background = action.payload
+            state.ui.auth.background = action.payload
         },
         updateHeroHeroHeader: (state, action) => {
-            state.home.hero.header = action.payload
+            state.ui.home.hero.header = action.payload
         },
         updateHeroSubheader: (state, action) => {
-            state.home.hero.subHeader = action.payload
+            state.ui.home.hero.subHeader = action.payload
         },
         updateHeroImage: (state, action) => {
-            state.home.hero.image = action.payload
+            state.ui.home.hero.image = action.payload
         },
         updateSliderSavedSliders: (state, action) => {
-            state.home.slider.savedSliders = action.payload
+            state.ui.home.slider.savedSliders = action.payload
         },
         updateSliderSliderSpeed: (state, action) => {
-            state.home.slider.sliderSpeed = action.payload
+            state.ui.home.slider.sliderSpeed = action.payload
         },
         updateSliderCurrentSlider: (state, action) => {
-            state.home.slider.currentSlider = action.payload
+            state.ui.home.slider.currentSlider = action.payload
         },
         updateCollectionCollections: (state, action) => {
-            state.home.collection.collections = action.payload
+            state.ui.home.collection.collections = action.payload
         },
         updateCollectionsDefaultSorting: (state, action) => {
-            state.home.collection.defaultSorting = action.payload
+            state.ui.home.collection.defaultSorting = action.payload
         },
         updateProductsItemsPerRow: (state, action) => {
-            state.home.products.itemsPerRow = action.payload
+            state.ui.home.products.itemsPerRow = action.payload
         },
         updateProdcutsDefaultSorting: (state, action) => {
-            state.home.products.defaultSorting = action.payload
+            state.ui.home.products.defaultSorting = action.payload
         }
     },
     extraReducers: (builder) => {
         builder
+            .addCase(
+                getUIConfigurationAsync.pending, (state, _action) => {
+                    state.uiIsloading = true
+                    state.uiHasError = false
+                }
+            )
+            .addCase(
+                getUIConfigurationAsync.rejected, (state, _action) => {
+                    state.uiIsloading = false
+                    state.uiHasError = true
+                }
+            )
+            .addCase(
+                getUIConfigurationAsync.fulfilled, (state, action) => {
+                    state.uiIsloading = false
+                    state.uiHasError = false
+                    state.currUI = action.payload.ui
+                }
+            )
+            .addCase(
+                postNewUIConfigurationAsync.pending, (state, _action) => {
+                    state.uiIsloading = true
+                    state.uiHasError = false
+                }
+            )
+            .addCase(
+                postNewUIConfigurationAsync.rejected, (state, _action) => {
+                    state.uiIsloading = false
+                    state.uiHasError = true
+                }
+            )
+            .addCase(
+                postNewUIConfigurationAsync.fulfilled, (state, action) => {
+                    state.uiIsloading = false
+                    state.uiHasError = false
+                    state.currUI = action.payload.ui
+                }
+            )
+            .addCase(
+                updateUIConfigurationAsync.pending, (state, _action) => {
+                    state.uiIsloading = true
+                    state.uiHasError = false
+                }
+            )
+            .addCase(
+                updateUIConfigurationAsync.rejected, (state, _action) => {
+                    state.uiIsloading = false
+                    state.uiHasError = true
+                }
+            )
+            .addCase(
+                updateUIConfigurationAsync.fulfilled, (state, action) => {
+                    console.log(action.payload.updatedUI, 'this is the update')
+                    state.uiIsloading = false
+                    state.uiHasError = false
+                    state.currUI = action.payload.updatedUI
+                }
+            )
     }
 })
 

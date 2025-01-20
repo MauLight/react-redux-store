@@ -1,5 +1,5 @@
 import { postToCloudinary } from '@/utils/functions'
-import { useRef, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { toast } from 'react-toastify'
 import Compressor from 'compressorjs'
 import { Switch } from '@/components/common/Switch'
@@ -9,18 +9,17 @@ import { AppDispatch } from '@/store/store'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { StoreProps } from '@/utils/types'
-import { updateAuthAllowGoogle, updateAuthBackground, updateAuthHeader, updateAuthLogoUrl } from '@/features/ui/uiSlice'
-import { title } from 'process'
+import { updateAuthAllowGoogle, updateAuthBackground, updateAuthHeader, updateAuthLogoUrl, updateUIConfigurationAsync } from '@/features/ui/uiSlice'
 
 export default function AuthBuilderPanel(): ReactNode {
 
     const dispatch: AppDispatch = useDispatch()
-    const { auth, authHasError, authIsLoading } = useSelector((state: StoreProps) => state.ui)
+    const { ui, currUI, authHasError, authIsLoading } = useSelector((state: StoreProps) => state.ui)
 
     //* Switch state
 
-    const [clickedAllowGoogle, setClickedAllowGoogle] = useState<boolean>(auth.allowGoogle || false)
-    const [clickedCompressImage, setClickedCompressImage] = useState<boolean>(auth.compressImages || false)
+    const [clickedAllowGoogle, setClickedAllowGoogle] = useState<boolean>(false)
+    const [clickedCompressImage, setClickedCompressImage] = useState<boolean>(false)
     const [authHeader, setAuthHeader] = useState<string>('')
 
     const handleClickAllowGoogle = (): void => {
@@ -78,6 +77,12 @@ export default function AuthBuilderPanel(): ReactNode {
                             formData.append('upload_preset', 'marketplace')
                             postToCloudinary(formData, index === 0 ? setCloudinaryErrorOne : setCloudinaryErrorTwo)
                                 .then((response) => {
+
+                                    if (index === 0) {
+                                        setUrlToCloudinaryLogo(response.secure_url)
+                                    } else {
+                                        setUrlToCloudinaryBg(response.secure_url)
+                                    }
 
                                     if (index === 0) {
                                         dispatch(updateAuthLogoUrl(response.secure_url))
@@ -188,79 +193,130 @@ export default function AuthBuilderPanel(): ReactNode {
         }
     }
 
+    async function handleUpdateAuthConfiguration() {
+
+        const newAuthConfiguration = {
+            allowGoogle: clickedAllowGoogle,
+            compressImage: clickedCompressImage,
+            header: authHeader,
+            logoUrl: urlToCloudinaryLogo,
+            background: urlToCloudinaryBg
+        }
+
+        console.log('1. this is the configuration to send', newAuthConfiguration)
+
+        const { payload } = await dispatch(updateUIConfigurationAsync({
+            id: currUI.id, newConfiguration: {
+
+                ...ui,
+                auth: newAuthConfiguration
+
+            }
+        }))
+        console.log(payload)
+    }
+
+    useEffect(() => {
+        if (Object.keys(currUI).length > 0) {
+            setClickedAllowGoogle(currUI.auth.allowGoogle)
+            setClickedCompressImage(currUI.auth.compressImage)
+            setAuthHeader(currUI.auth.header)
+            setUrlToCloudinaryLogo(currUI.auth.logoUrl)
+            setUrlToCloudinaryBg(currUI.auth.background)
+        }
+    }, [currUI])
+
     return (
-        <section className='w-full h-full flex flex-col items-start justify-between gap-y-5'>
-            <div className='flex flex-col gap-y-10'>
-                <div>
-                    <h1 className='text-[1.2rem]'>Auth Builder:</h1>
-                    <p className='text-[0.9rem] text-sym_gray-600 text-balance'>
-                        Customize the login screen. Add your company logo, enable Google Authentication, change the background, and more.
-                    </p>
-                </div>
-
-                <div className="flex flex-col gap-y-2">
-                    <div className="flex items-center justify-between gap-x-2">
-                        <p>Allow users to log in with Google Auth</p>
-                        <Switch clicked={clickedAllowGoogle} handleClick={handleClickAllowGoogle} />
+        <>
+            {
+                authHasError && (
+                    <ErrorComponent />
+                )
+            }
+            {
+                !authHasError && authIsLoading && (
+                    <div className="w-full h-full flex justify-center items-center">
+                        <Fallback color='#6366f1' />
                     </div>
-                    <div className="flex items-center justify-between gap-x-2">
-                        <p>Compress images before Upload</p>
-                        <Switch clicked={clickedCompressImage} handleClick={handleClickCompressImage} />
-                    </div>
-                </div>
+                )
+            }
+            {
+                !authHasError && !authIsLoading && (
+                    <section className='w-full h-full flex flex-col items-start justify-between gap-y-5'>
+                        <div className='flex flex-col gap-y-10'>
+                            <div>
+                                <h1 className='text-[1.2rem]'>Auth Builder:</h1>
+                                <p className='text-[0.9rem] text-sym_gray-600 text-balance'>
+                                    Customize the login screen. Add your company logo, enable Google Authentication, change the background, and more.
+                                </p>
+                            </div>
 
-                <div className='flex flex-col gap-y-1'>
-                    <label className='text-[0.8rem]' htmlFor="url">Add Header</label>
-                    <div className='relative'>
-                        <input value={authHeader} onChange={({ target }) => { setAuthHeader(target.value) }} className='w-full h-10 pr-10 truncate text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500' type="text" />
-                        <button className='absolute top-1 right-1 w-[33px] h-[33px] rounded-[5px] bg-[#10100e] hover:bg-green-600 active:bg-[#10100e] transition-color duration-200' onClick={handleAuthAddHeader}>
-                            <i className="text-[#ffffff] fa-solid fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
+                            <div className="flex flex-col gap-y-2">
+                                <div className="flex items-center justify-between gap-x-2">
+                                    <p>Allow users to log in with Google Auth</p>
+                                    <Switch clicked={clickedAllowGoogle} handleClick={handleClickAllowGoogle} />
+                                </div>
+                                <div className="flex items-center justify-between gap-x-2">
+                                    <p>Compress images before Upload</p>
+                                    <Switch clicked={clickedCompressImage} handleClick={handleClickCompressImage} />
+                                </div>
+                            </div>
 
-                {
-                    ['Upload Logo', 'Upload Image/Video Background'].map((title, i) => (
-                        <UploadComponent
-                            index={i}
-                            title={title}
-                            key={title + i}
-                            error={i === 0 ? cloudinaryErrorOne : cloudinaryErrorTwo}
-                            isLoading={i === 0 ? cloudinaryLoadingOne : cloudinaryLoadingTwo}
-                            handleFileUpload={handleFileUpload}
-                        />
-                    ))
-                }
+                            <div className='flex flex-col gap-y-1'>
+                                <label className='text-[0.8rem]' htmlFor="url">Add Header</label>
+                                <div className='relative'>
+                                    <input value={authHeader} onChange={({ target }) => { setAuthHeader(target.value) }} className='w-full h-10 pr-10 truncate text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500' type="text" />
+                                    <button className='absolute top-1 right-1 w-[33px] h-[33px] rounded-[5px] bg-[#10100e] hover:bg-green-600 active:bg-[#10100e] transition-color duration-200' onClick={handleAuthAddHeader}>
+                                        <i className="text-[#ffffff] fa-solid fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
 
-                <div className="flex gap-x-5">
-                    {
-                        ['Upload Logo from URL', 'Upload Background from URL'].map((title, i) => (
-                            <UploadComponentFromUrl
-                                index={i}
-                                title={title}
-                                key={title + i}
-                                loading={i === 0 ? urlToCloudinaryLoadingLogo : urlToCloudinaryLoadingBg}
-                                urlToCloudinary={i === 0 ? urlToCloudinaryLogo : urlToCloudinaryBg}
-                                setUrlToCloudinary={i === 0 ? setUrlToCloudinaryLogo : setUrlToCloudinaryBg}
-                                urlToCloudinaryError={i === 0 ? urlToCloudinaryErrorLogo : urlToCloudinaryErrorBg}
-                                handleFileUploadFromUrl={handleFileUploadFromUrl}
-                            />
-                        ))
-                    }
-                </div>
+                            {
+                                ['Upload Logo', 'Upload Image/Video Background'].map((title, i) => (
+                                    <UploadComponent
+                                        index={i}
+                                        title={title}
+                                        key={title + i}
+                                        error={i === 0 ? cloudinaryErrorOne : cloudinaryErrorTwo}
+                                        isLoading={i === 0 ? cloudinaryLoadingOne : cloudinaryLoadingTwo}
+                                        handleFileUpload={handleFileUpload}
+                                    />
+                                ))
+                            }
 
-            </div>
-            <div className="w-full flex justify-start gap-x-2 mt-5">
-                <button className='w-[120px] h-10 bg-[#10100e] hover:bg-sym_gray-700 active:bg-[#10100e] transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
-                    <i className="fa-regular fa-eye"></i>
-                    Preview
-                </button>
-                <button className='w-[120px] h-10 bg-green-600 hover:bg-green-500 active:bg-green-600 transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
-                    <i className="fa-solid fa-floppy-disk"></i>
-                    Save
-                </button>
-            </div>
-        </section>
+                            <div className="flex gap-x-5">
+                                {
+                                    ['Upload Logo from URL', 'Upload Background from URL'].map((title, i) => (
+                                        <UploadComponentFromUrl
+                                            index={i}
+                                            title={title}
+                                            key={title + i}
+                                            loading={i === 0 ? urlToCloudinaryLoadingLogo : urlToCloudinaryLoadingBg}
+                                            urlToCloudinary={i === 0 ? urlToCloudinaryLogo : urlToCloudinaryBg}
+                                            setUrlToCloudinary={i === 0 ? setUrlToCloudinaryLogo : setUrlToCloudinaryBg}
+                                            urlToCloudinaryError={i === 0 ? urlToCloudinaryErrorLogo : urlToCloudinaryErrorBg}
+                                            handleFileUploadFromUrl={handleFileUploadFromUrl}
+                                        />
+                                    ))
+                                }
+                            </div>
+
+                        </div>
+                        <div className="w-full flex justify-start gap-x-2 mt-5">
+                            <button className='w-[120px] h-10 bg-[#10100e] hover:bg-sym_gray-700 active:bg-[#10100e] transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
+                                <i className="fa-regular fa-eye"></i>
+                                Preview
+                            </button>
+                            <button onClick={handleUpdateAuthConfiguration} className='w-[120px] h-10 bg-green-600 hover:bg-green-500 active:bg-green-600 transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
+                                <i className="fa-solid fa-floppy-disk"></i>
+                                Save
+                            </button>
+                        </div>
+                    </section>
+                )
+            }
+        </>
     )
 }
 

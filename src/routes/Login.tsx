@@ -11,7 +11,7 @@ function Login({ isBuilder }: { isBuilder?: boolean }): ReactNode {
     const navigate = useNavigate()
     const user = useSelector((state: StoreProps) => state.userAuth.user)
 
-    const authUI = useSelector((state: StoreProps) => state.ui.auth)
+    const authUI = useSelector((state: StoreProps) => state.ui.ui.auth)
 
     return (
         <section className={`relative ${isBuilder ? 'w-full h-full' : 'w-full h-screen'} flex items-center justify-center overflow-hidden`}>

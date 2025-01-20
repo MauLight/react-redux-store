@@ -29,7 +29,7 @@ function SignForm({ isBuilder }: { isBuilder: boolean }): ReactNode {
     const dispatch = useDispatch<AppDispatch>()
 
     //* Login UI state
-    const authUI = useSelector((state: StoreProps) => state.ui.auth)
+    const authUI = useSelector((state: StoreProps) => state.ui.ui.auth)
     const isLoading = useSelector((state: StoreProps) => state.userAuth.isLoading)
     const hasError = useSelector((state: StoreProps) => state.userAuth.hasError)
     const [error, setError] = useState<string>('')

@@ -21,6 +21,18 @@ export interface ProductProps {
 
 export interface wishListProduct { id: string, productId: string }
 
+export interface uiProps {
+    auth: {
+        allowGoogle: boolean
+        compressImage: boolean
+        header: string
+        logoUrl: string
+        background: string
+    },
+    createdAt: string
+    updatedAt: string
+    id: string
+}
 export interface StoreProps {
     inventory: {
         products: ProductProps[]
@@ -81,37 +93,42 @@ export interface StoreProps {
         hasError: boolean
     },
     ui: {
-        auth: {
-            allowGoogle: boolean
-            compressImages: boolean
-            header: string
-            logoUrl: string
-            background: string
-        },
-        authIsLoading: boolean
-        authHasError: boolean
-        home: {
-            hero: {
+        ui: {
+            auth: {
+                allowGoogle: boolean
+                compressImages: boolean
                 header: string
-                subHeader: string
-                image: string
+                logoUrl: string
+                background: string
             },
-            slider: {
-                savedSliders: Array<string> //Slider list names
-                sliderSpeed: number
-                currentSlider: Array<string> //Current slider contains ordered list of images
-            },
-            collection: {
-                collections: Array<string> // Collection list names
-                defaultSorting: number
-            },
-            products: {
-                itemsPerRow: number
-                defaultSorting: number //This applies to home page
+            home: {
+                hero: {
+                    header: string
+                    subHeader: string
+                    image: string
+                },
+                slider: {
+                    savedSliders: Array<string> //Slider list names
+                    sliderSpeed: number
+                    currentSlider: Array<string> //Current slider contains ordered list of images
+                },
+                collection: {
+                    collections: Array<string> // Collection list names
+                    defaultSorting: number
+                },
+                products: {
+                    itemsPerRow: number
+                    defaultSorting: number //This applies to home page
+                }
             }
         }
+        authIsLoading: boolean
+        authHasError: boolean
         homeIsLoading: boolean
         homeHasError: boolean
+        currUI: uiProps
+        uiIsLoading: boolean
+        uiHasError: boolean
     }
 }
 
