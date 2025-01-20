@@ -14,7 +14,7 @@ import { updateUIConfigurationAsync } from '@/features/ui/uiSlice'
 export default function AuthBuilderPanel(): ReactNode {
 
     const dispatch: AppDispatch = useDispatch()
-    const { currUI, authHasError, authIsLoading } = useSelector((state: StoreProps) => state.ui)
+    const { currUI, uiHasError, uiIsLoading } = useSelector((state: StoreProps) => state.ui)
 
     //* Switch state
 
@@ -194,7 +194,6 @@ export default function AuthBuilderPanel(): ReactNode {
 
         await dispatch(updateUIConfigurationAsync({
             id: currUI.id, newConfiguration: {
-
                 ...currUI,
                 auth: newAuthConfiguration
 
@@ -215,19 +214,19 @@ export default function AuthBuilderPanel(): ReactNode {
     return (
         <>
             {
-                authHasError && (
+                uiHasError && (
                     <ErrorComponent />
                 )
             }
             {
-                !authHasError && authIsLoading && (
+                !uiHasError && uiIsLoading && (
                     <div className="w-full h-full flex justify-center items-center">
                         <Fallback color='#6366f1' />
                     </div>
                 )
             }
             {
-                !authHasError && !authIsLoading && (
+                !uiHasError && !uiIsLoading && (
                     <section className='w-full h-full flex flex-col items-start justify-between gap-y-5'>
                         <div className='flex flex-col gap-y-10'>
                             <div>

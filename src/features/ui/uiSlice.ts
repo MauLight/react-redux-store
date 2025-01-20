@@ -1,4 +1,3 @@
-import { uiProps } from "@/utils/types"
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios, { AxiosError } from "axios"
 import { toast } from "react-toastify"
@@ -64,6 +63,25 @@ export const updateUIConfigurationAsync = createAsyncThunk(
     }
 )
 
+export const getAllSlidersAsync = createAsyncThunk(
+    'ui/getAllSliders', async (_, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.get(`${url}/administrator/sliders`,
+                // {
+                //     headers: {
+                //         'Authorization': `Bearer ${token}`,
+                //         'Content-Type': 'application/json'
+                //     }
+                // }
+            )
+            return data
+        } catch (error) {
+            toast.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
 export const uiSlice = createSlice({
     name: 'ui',
     initialState: {
@@ -88,6 +106,7 @@ export const uiSlice = createSlice({
                 }
             }
         },
+        sliders: [],
         uiIsloading: false,
         uiHasError: false
     },
@@ -146,10 +165,30 @@ export const uiSlice = createSlice({
             )
             .addCase(
                 updateUIConfigurationAsync.fulfilled, (state, action) => {
-                    console.log(action.payload.updatedUI, 'this is the update')
                     state.uiIsloading = false
                     state.uiHasError = false
                     state.currUI = action.payload.updatedUI
+                    toast.success('UI updated succesfully.')
+                }
+            )
+            .addCase(
+                getAllSlidersAsync.pending, (state, _action) => {
+                    state.uiIsloading = true
+                    state.uiHasError = false
+                }
+            )
+            .addCase(
+                getAllSlidersAsync.rejected, (state, _action) => {
+                    state.uiIsloading = false
+                    state.uiHasError = true
+                }
+            )
+            .addCase(
+                getAllSlidersAsync.fulfilled, (state, action) => {
+                    state.uiIsloading = false
+                    state.uiHasError = false
+                    state.sliders = action.payload.sliders
+
                 }
             )
     }

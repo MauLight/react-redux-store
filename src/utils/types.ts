@@ -20,7 +20,7 @@ export interface ProductProps {
 }
 
 export interface wishListProduct { id: string, productId: string }
-export interface SliderProps { title: string, id: string, speed: number, animation: string, images: Array<string> }
+export interface SliderProps { name: string, id: string, speed: number, animation: string, imageList: Array<string> }
 
 export interface uiProps {
     auth: {
@@ -107,6 +107,7 @@ export interface StoreProps {
     },
     ui: {
         currUI: uiProps
+        sliders: Array<SliderProps>
         uiIsLoading: boolean
         uiHasError: boolean
     }
@@ -198,7 +199,7 @@ export interface RegionProps {
 
 export interface DropdownProps {
     id?: string
-    value: string
+    value: any
     setValue: any
     list: string[]
     defaultValue?: string

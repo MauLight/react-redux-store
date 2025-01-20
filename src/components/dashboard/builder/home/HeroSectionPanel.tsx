@@ -1,24 +1,25 @@
-import { generateSignature, postToCloudinary } from '@/utils/functions'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { toast } from 'react-toastify'
+import { updateUIConfigurationAsync } from '@/features/ui/uiSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch } from '@/store/store'
 import Compressor from 'compressorjs'
 import axios from 'axios'
+
+import { generateSignature, postToCloudinary } from '@/utils/functions'
 import ErrorComponent from '@/components/common/ErrorComponent'
 import Fallback from '@/components/common/Fallback'
-import { AppDispatch } from '@/store/store'
-import { useDispatch } from 'react-redux'
-import { useSelector } from 'react-redux'
-import { StoreProps } from '@/utils/types'
-import { updateUIConfigurationAsync } from '@/features/ui/uiSlice'
-import SaveButtonBuilder from '../SaveButtonBuilder'
 import { Switch } from '@/components/common/Switch'
+import SaveButtonBuilder from '../SaveButtonBuilder'
+import { toast } from 'react-toastify'
+
+import { StoreProps } from '@/utils/types'
 
 const CloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME
 const CloudinaryAPIKEY = import.meta.env.VITE_CLOUDINARY_APIKEY
 
 function HeroSectionPanel(): ReactNode {
     const dispatch: AppDispatch = useDispatch()
-    const { ui, currUI, uiHasError, uiIsLoading } = useSelector((state: StoreProps) => state.ui)
+    const { currUI, uiHasError, uiIsLoading } = useSelector((state: StoreProps) => state.ui)
     const hero = useSelector((state: StoreProps) => state.ui.currUI.home.hero)
 
     const [header, setHeader] = useState<string>('')
@@ -121,9 +122,9 @@ function HeroSectionPanel(): ReactNode {
         await dispatch(updateUIConfigurationAsync({
             id: currUI.id, newConfiguration: {
 
-                ...ui,
+                ...currUI,
                 home: {
-                    ...ui.home,
+                    ...currUI.home,
                     hero: newHeroConfiguration
                 }
 

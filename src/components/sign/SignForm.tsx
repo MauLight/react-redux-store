@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { AppDispatch } from '@/store/store'
 import { useDispatch, useSelector } from 'react-redux'
 import { postLoginAsync, postNewUserAsync } from '@/features/userAuth/userAuthSlice'
@@ -86,6 +86,10 @@ function SignForm({ isBuilder }: { isBuilder: boolean | undefined }): ReactNode 
         reset()
         navigate('/')
     }
+
+    useEffect(() => {
+        console.log(authUI)
+    }, [authUI])
 
     return (
         <section className="w-[350px] flex flex-col rounded-[10px] gap-y-5 px-7 py-9 bg-[#ffffff]">
