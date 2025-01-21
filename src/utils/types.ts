@@ -38,6 +38,7 @@ export interface uiProps {
             subHeader: string
             compressImage: boolean
             image: string
+            image_public_id: string
         },
         slider: {
             savedSliders: Array<SliderProps>

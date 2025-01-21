@@ -8,7 +8,6 @@ import axios from 'axios'
 import { generateSignature, postToCloudinary } from '@/utils/functions'
 import ErrorComponent from '@/components/common/ErrorComponent'
 import Fallback from '@/components/common/Fallback'
-import { Switch } from '@/components/common/Switch'
 import SaveButtonBuilder from '../SaveButtonBuilder'
 import { toast } from 'react-toastify'
 
@@ -25,18 +24,14 @@ function HeroSectionPanel(): ReactNode {
     const [header, setHeader] = useState<string>('')
     const [debouncedHeader, setDebouncedHeader] = useState<string>('')
     const [subHeader, setSubHeader] = useState<string>('')
+    const [debouncedSubHeader, setDebouncedSubHeader] = useState<string>('')
     const [clickedCompressImage, setClickedCompressImage] = useState<boolean>(true)
-
-    const handleClickSwitch = () => {
-        setClickedCompressImage(!clickedCompressImage)
-        setCompress(compress === 0 ? 1 : 0)
-    }
 
     const [cloudinaryPublicId, setCloudinaryPublicId] = useState<string>('')
     const [cloudinaryBackground, setCloudinaryBackground] = useState<string | null>(null)
     const [cloudinaryLoading, setCloudinaryLoading] = useState<boolean>(false)
     const [cloudinaryError, setCloudinaryError] = useState<string | null>(null)
-    const [compress, setCompress] = useState<number>(1)
+    const [compress, _setCompress] = useState<number>(1)
 
     const fileInputRef = useRef<HTMLInputElement | null>(null)
 
@@ -63,10 +58,30 @@ function HeroSectionPanel(): ReactNode {
                             formData.append('file', res)
                             formData.append('upload_preset', 'marketplace')
                             postToCloudinary(formData, setCloudinaryError)
-                                .then((response) => {
-
+                                .then(async (response) => {
                                     setCloudinaryBackground(response.secure_url)
                                     setCloudinaryPublicId(response.public_id)
+
+                                    const newHeroConfiguration = {
+                                        header,
+                                        subHeader,
+                                        compressImage: clickedCompressImage,
+                                        image: response.secure_url,
+                                        image_public_id: response.public_id
+                                    }
+
+                                    await dispatch(updateUIConfigurationAsync({
+                                        id: currUI.id, newConfiguration: {
+
+                                            ...currUI,
+                                            home: {
+                                                ...currUI.home,
+                                                hero: newHeroConfiguration
+                                            }
+
+                                        }
+                                    }))
+
                                     setCloudinaryLoading(false)
 
                                 })
@@ -104,6 +119,27 @@ function HeroSectionPanel(): ReactNode {
         try {
             const response = await axios.post(`https://api.cloudinary.com/v1_1/${CloudinaryCloudName}/image/destroy`, formData)
             console.log('Image was deleted succesfully: ', response.data)
+
+            const newHeroConfiguration = {
+                header,
+                subHeader,
+                compressImage: clickedCompressImage,
+                image: '',
+                image_public_id: ''
+            }
+
+            await dispatch(updateUIConfigurationAsync({
+                id: currUI.id, newConfiguration: {
+
+                    ...currUI,
+                    home: {
+                        ...currUI.home,
+                        hero: newHeroConfiguration
+                    }
+
+                }
+            }))
+
         } catch (error) {
             console.error('There was an error deleting this image: ', error)
         }
@@ -134,11 +170,10 @@ function HeroSectionPanel(): ReactNode {
         setHeader('')
     }
 
-    async function handleUpdateHeroConfiguration() {
-
+    const handleResetSubHeaderText = async () => {
         const newHeroConfiguration = {
             header,
-            subHeader,
+            subHeader: '',
             compressImage: clickedCompressImage,
             image: cloudinaryBackground
         }
@@ -154,6 +189,8 @@ function HeroSectionPanel(): ReactNode {
 
             }
         }))
+
+        setSubHeader('')
     }
 
     useEffect(() => {
@@ -162,9 +199,11 @@ function HeroSectionPanel(): ReactNode {
             setSubHeader(hero.subHeader)
             setClickedCompressImage(hero.compressImage)
             setCloudinaryBackground(hero.image)
+            setCloudinaryPublicId(hero.image_public_id)
         }
     }, [])
 
+    //* Header debouncer
     useEffect(() => {
         const debouncer = setTimeout(() => {
             setDebouncedHeader(header)
@@ -183,7 +222,8 @@ function HeroSectionPanel(): ReactNode {
                     header: debouncedHeader,
                     subHeader,
                     compressImage: clickedCompressImage,
-                    image: cloudinaryBackground
+                    image: cloudinaryBackground,
+                    image_public_id: cloudinaryPublicId
                 }
 
                 await dispatch(updateUIConfigurationAsync({
@@ -202,6 +242,46 @@ function HeroSectionPanel(): ReactNode {
             handleUpdateHeroConfiguration()
         }
     }, [debouncedHeader])
+
+    //* Subheader debouncer
+    useEffect(() => {
+        const debouncer = setTimeout(() => {
+            setDebouncedSubHeader(subHeader)
+        }, 1500)
+
+        return () => {
+            clearTimeout(debouncer)
+        }
+    }, [subHeader])
+
+    useEffect(() => {
+        if (debouncedSubHeader.length > 0 && debouncedSubHeader !== currUI.home.hero.subHeader) {
+            async function handleUpdateHeroConfiguration() {
+
+                const newHeroConfiguration = {
+                    header,
+                    subHeader: debouncedSubHeader,
+                    compressImage: clickedCompressImage,
+                    image: cloudinaryBackground,
+                    image_public_id: cloudinaryPublicId
+                }
+
+                await dispatch(updateUIConfigurationAsync({
+                    id: currUI.id, newConfiguration: {
+
+                        ...currUI,
+                        home: {
+                            ...currUI.home,
+                            hero: newHeroConfiguration
+                        }
+
+                    }
+                }))
+            }
+
+            handleUpdateHeroConfiguration()
+        }
+    }, [debouncedSubHeader])
 
     return (
         <>
@@ -249,20 +329,24 @@ function HeroSectionPanel(): ReactNode {
                             <div className="flex flex-col gap-y-2">
                                 <div className="flex flex-col gap-y-1">
                                     <label className='text-[0.8rem]' htmlFor="subHeader">Sub-header</label>
-                                    <input
-                                        id='subHeader'
-                                        value={subHeader}
-                                        onChange={({ target }) => { setSubHeader(target.value) }}
-                                        type="text"
-                                        className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`}
-                                        placeholder='Sub-header'
-                                    />
+                                    <div className='relative'>
+                                        {
+                                            subHeader.length > 0 && (
+                                                <button type='button' onClick={handleResetSubHeaderText} className='absolute top-2 right-2 w-[20px] h-[20px] flex justify-center items-center rounded-full bg-indigo-500 text-[#ffffff] hover:bg-[#10100e] active:bg-indigo-500'>
+                                                    <i className="fa-solid fa-xmark"></i>
+                                                </button>
+                                            )
+                                        }
+                                        <input
+                                            id='subHeader'
+                                            value={subHeader}
+                                            onChange={({ target }) => { setSubHeader(target.value) }}
+                                            type="text"
+                                            className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`}
+                                            placeholder='Sub-header'
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div className="flex items-center justify-between gap-x-2">
-                                <p>Compress images before Upload</p>
-                                <Switch clicked={clickedCompressImage} handleClick={handleClickSwitch} />
                             </div>
 
                             <div className="flex flex-col gap-y-2">
@@ -311,8 +395,6 @@ function HeroSectionPanel(): ReactNode {
                             </div>
 
                         </div>
-                        <div className="h-[120px]"></div>
-                        <SaveButtonBuilder handleSaveConfiguration={handleUpdateHeroConfiguration} />
                     </section>
                 )
             }
