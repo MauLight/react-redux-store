@@ -15,6 +15,7 @@ export interface DropdownProps {
 }
 
 function CustomDropdownWithCreate({
+    value,
     setValue,
     list,
     defaultValue,
@@ -29,10 +30,17 @@ function CustomDropdownWithCreate({
     const [choice, setChoice] = useState<string>(defaultValue || '')
 
     useEffect(() => {
-        if (choice !== '') {
+        if (value && choice === defaultValue) {
+            setChoice(value)
+        }
+    }, [value])
+
+    useEffect(() => {
+        if (choice !== '' && choice !== value) {
             setValue(choice)
         }
     }, [choice])
+
 
     return (
         <div id={id} onClick={() => { setIsOpen(!isOpen) }} className='relative w-full h-9 flex justify-between items-center bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 cursor-pointer'>

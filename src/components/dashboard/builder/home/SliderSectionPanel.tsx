@@ -245,9 +245,7 @@ function SliderSectionPanel(): ReactNode {
     }, [sliders])
 
     useEffect(() => {
-        console.log('1. Started')
         const currSlider = sliders.find(slider => slider.name === selectedSliderName)
-        console.log('2. currSlider', currSlider)
         if (currSlider) {
             setSelectedSlider(currSlider)
         }
@@ -328,8 +326,8 @@ function SliderSectionPanel(): ReactNode {
                                 <div className="flex flex-col gap-y-2">
                                     <div className="flex flex-col gap-y-1">
                                         <label className='text-[0.8rem]' htmlFor="speed">{'Slider speed: (higher equals faster)'}</label>
-                                        <CustomDropdown
-                                            defaultValue={selectedSlider?.speed || 'Recommended'}
+                                        <CustomDropdownWithCreate
+                                            defaultValue='Recommended'
                                             value={selectedSpeed}
                                             setValue={setSelectedSpeed}
                                             list={['0', '1', '3', '4', '5']}
@@ -339,7 +337,7 @@ function SliderSectionPanel(): ReactNode {
                                 <div className="flex flex-col gap-y-2">
                                     <div className="flex flex-col gap-y-1">
                                         <label className='text-[0.8rem]' htmlFor="animation">{'Slider animation:'}</label>
-                                        <CustomDropdown
+                                        <CustomDropdownWithCreate
                                             defaultValue='Recommended'
                                             value={selectedAnimation}
                                             setValue={setSelectedAnimation}
