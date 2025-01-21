@@ -8,9 +8,15 @@ function CustomDropdown({ value, setValue, list, defaultValue, loading, error, i
 
     useEffect(() => {
         if (choice !== '') {
-            setValue((value as "firstname" | "lastname" | "street" | "street_number" | "house_number" | "city" | "state" | "country" | "phone" | "zipcode" | "email"), choice)
+            setValue(value, choice)
         }
     }, [choice])
+
+    useEffect(() => {
+        if (value !== '' && value !== choice) {
+            setChoice(value)
+        }
+    }, [value])
 
     return (
         <div id={id} onClick={() => { setIsOpen(!isOpen) }} className='relative w-full h-9 flex justify-between items-center bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 cursor-pointer'>

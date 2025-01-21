@@ -15,7 +15,6 @@ export interface DropdownProps {
 }
 
 function CustomDropdownWithCreate({
-    value,
     setValue,
     list,
     defaultValue,
@@ -31,7 +30,7 @@ function CustomDropdownWithCreate({
 
     useEffect(() => {
         if (choice !== '') {
-            setValue(value, choice)
+            setValue(choice)
         }
     }, [choice])
 

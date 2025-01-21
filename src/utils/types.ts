@@ -205,7 +205,7 @@ export interface DropdownProps {
     value: any
     setValue: any
     list: string[]
-    defaultValue?: string
+    defaultValue?: any
     loading?: boolean
     error?: boolean
 }

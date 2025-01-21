@@ -69,7 +69,9 @@ function SliderSectionPanel(): ReactNode {
     const dispatch: AppDispatch = useDispatch()
     const { sliders, uiHasError, uiIsLoading } = useSelector((state: StoreProps) => state.ui)
     const [selectedSliderName, setSelectedSliderName] = useState<string>('')
-    const [selectedSorting, setSelectedSorting] = useState<string>('')
+
+    const [selectedSpeed, setSelectedSpeed] = useState<number>(0)
+    const [selectedAnimation, setSelectedAnimation] = useState<string>('')
 
     const [openCreateNewSlider, setOpenCreateNewSlider] = useState<boolean>(false)
     const [sliderName, setSliderName] = useState<string>('')
@@ -142,20 +144,25 @@ function SliderSectionPanel(): ReactNode {
     }
 
     const handleResetUploadImage = async (image: string) => {
-        const timestamp = Math.floor(Date.now() / 1000)
-        const signature = generateSignature({ public_id: cloudinaryPublicId, timestamp })
 
-        const formData = new FormData()
-        formData.append('public_id', cloudinaryPublicId as string)
-        formData.append('timestamp', timestamp.toString())
-        formData.append('api_key', CloudinaryAPIKEY)
-        formData.append('signature', signature)
+        const imageIndex = imageList.findIndex(img => img === image)
+        if (imageIndex) {
+            const imagePublicId = cloudinaryPublicId[imageIndex]
+            const timestamp = Math.floor(Date.now() / 1000)
+            const signature = generateSignature({ public_id: cloudinaryPublicId, timestamp })
 
-        try {
-            const response = await axios.post(`https://api.cloudinary.com/v1_1/${CloudinaryCloudName}/image/destroy`, formData)
-            console.log('Image was deleted succesfully: ', response.data)
-        } catch (error) {
-            console.error('There was an error deleting this image: ', error)
+            const formData = new FormData()
+            formData.append('public_id', imagePublicId)
+            formData.append('timestamp', timestamp.toString())
+            formData.append('api_key', CloudinaryAPIKEY)
+            formData.append('signature', signature)
+
+            try {
+                const response = await axios.post(`https://api.cloudinary.com/v1_1/${CloudinaryCloudName}/image/destroy`, formData)
+                console.log('Image was deleted succesfully: ', response.data)
+            } catch (error) {
+                console.error('There was an error deleting this image: ', error)
+            }
         }
 
         setImageList(imageList.filter(elem => elem !== image))
@@ -235,14 +242,23 @@ function SliderSectionPanel(): ReactNode {
             setSliderNameList(sliderNames)
         }
 
-    }, [])
+    }, [sliders])
 
     useEffect(() => {
+        console.log('1. Started')
         const currSlider = sliders.find(slider => slider.name === selectedSliderName)
+        console.log('2. currSlider', currSlider)
         if (currSlider) {
             setSelectedSlider(currSlider)
         }
     }, [selectedSliderName])
+
+    useEffect(() => {
+        if (selectedSlider) {
+            setSelectedSpeed(selectedSlider.speed)
+            setSelectedAnimation(selectedSlider.animation)
+        }
+    }, [selectedSlider])
 
     return (
         <>
@@ -313,9 +329,9 @@ function SliderSectionPanel(): ReactNode {
                                     <div className="flex flex-col gap-y-1">
                                         <label className='text-[0.8rem]' htmlFor="speed">{'Slider speed: (higher equals faster)'}</label>
                                         <CustomDropdown
-                                            defaultValue='Recommended'
-                                            value={selectedSlider?.speed}
-                                            setValue={setSelectedSorting}
+                                            defaultValue={selectedSlider?.speed || 'Recommended'}
+                                            value={selectedSpeed}
+                                            setValue={setSelectedSpeed}
                                             list={['0', '1', '3', '4', '5']}
                                         />
                                     </div>
@@ -325,8 +341,8 @@ function SliderSectionPanel(): ReactNode {
                                         <label className='text-[0.8rem]' htmlFor="animation">{'Slider animation:'}</label>
                                         <CustomDropdown
                                             defaultValue='Recommended'
-                                            value={selectedSorting}
-                                            setValue={setSelectedSorting}
+                                            value={selectedAnimation}
+                                            setValue={setSelectedAnimation}
                                             list={['Slide', 'Fade']}
                                         />
                                     </div>
