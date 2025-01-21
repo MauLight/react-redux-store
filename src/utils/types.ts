@@ -28,7 +28,9 @@ export interface uiProps {
         compressImage: boolean
         header: string
         logoUrl: string
+        logo_public_id: string
         background: string
+        background_public_id: string
     },
     home: {
         hero: {
