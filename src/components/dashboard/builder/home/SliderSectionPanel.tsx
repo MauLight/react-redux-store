@@ -82,6 +82,8 @@ function SliderSectionPanel(): ReactNode {
 
     const [cloudinaryLoading, setCloudinaryLoading] = useState<boolean>(false)
     const [cloudinaryError, setCloudinaryError] = useState<string | null>(null)
+    const [cloudinaryEnd, setCloudinaryEnd] = useState<boolean>(false)
+
     const [compress, _setCompress] = useState<number>(1)
 
     const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -132,8 +134,8 @@ function SliderSectionPanel(): ReactNode {
                             })
                     }
                 })
-                //setCloudinaryPublicId(response.public_id)
                 setCloudinaryLoading(false)
+                setCloudinaryEnd(true)
 
             } catch (error) {
                 console.log(error)
@@ -221,8 +223,7 @@ function SliderSectionPanel(): ReactNode {
 
     async function handleUpdateCurrentSlider(id: string, newConfiguration: any) {
         try {
-            const { payload } = await dispatch(updateSliderConfigurationAsync({ id, newConfiguration }))
-            console.log(payload)
+            await dispatch(updateSliderConfigurationAsync({ id, newConfiguration }))
         } catch (error) {
             console.log(error)
         }
@@ -231,7 +232,6 @@ function SliderSectionPanel(): ReactNode {
     useEffect(() => {
         async function getCurrentSlider() {
             const { payload } = await dispatch(getSliderByIdAsync(currUI.home.slider.currSlider))
-            console.log(payload.slider, 'this is the current slider')
             setSelectedSlider(payload.slider)
             setSelectedSliderName(payload.slider.name)
             setSelectedSpeed(payload.slider.speed)
@@ -278,6 +278,7 @@ function SliderSectionPanel(): ReactNode {
         }
     }, [selectedSliderName])
 
+    //* Update UI to reflect last chosen slider, load chosen slider's data to inputs.
     useEffect(() => {
         if (selectedSlider) {
             setSelectedSliderName(selectedSlider.name)
@@ -289,8 +290,9 @@ function SliderSectionPanel(): ReactNode {
         }
     }, [selectedSlider])
 
+    //* Update slider images after getting them back from cloudinary.
     useEffect(() => {
-        if (imageList.length > 0 && selectedSlider) {
+        if (imageList.length > 0 && selectedSlider && cloudinaryEnd) {
             const imageListWithId = imageList.map((item, i) => ({ image: item, public_id: cloudinaryPublicId[i] }))
 
             const newConfiguration = {
@@ -301,8 +303,37 @@ function SliderSectionPanel(): ReactNode {
             }
 
             handleUpdateCurrentSlider(selectedSlider.id, newConfiguration)
+            setCloudinaryEnd(false)
         }
     }, [imageList])
+
+    //* Update speed property in db after selecting a new value in UI.
+    useEffect(() => {
+        if (selectedSlider && selectedSpeed !== selectedSlider.speed) {
+            const newConfiguration = {
+                name: selectedSliderName,
+                speed: selectedSpeed,
+                animation: selectedAnimation,
+                imageList: selectedSlider.imageList
+            }
+            handleUpdateCurrentSlider(selectedSlider.id, newConfiguration)
+        }
+
+    }, [selectedSpeed])
+
+    //* Update animation property in db after selecting a new value in UI.
+    useEffect(() => {
+        if (selectedSlider && selectedAnimation !== selectedSlider.animation) {
+            const newConfiguration = {
+                name: selectedSliderName,
+                speed: selectedSpeed,
+                animation: selectedAnimation,
+                imageList: selectedSlider.imageList
+            }
+            handleUpdateCurrentSlider(selectedSlider.id, newConfiguration)
+        }
+
+    }, [selectedAnimation])
 
     return (
         <>
