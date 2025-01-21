@@ -83,11 +83,47 @@ export const getAllSlidersAsync = createAsyncThunk(
     }
 )
 
+export const getSliderByIdAsync = createAsyncThunk(
+    'ui/getSliderById', async (id: string, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.get(`${url}/administrator/sliders/${id}`,
+                // {
+                //     headers: {
+                //         'Authorization': `Bearer ${token}`,
+                //         'Content-Type': 'application/json'
+                //     }
+                // }
+            )
+            return data
+        } catch (error) {
+            toast.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
 export const postNewSliderAsync = createAsyncThunk(
     'ui/postNewSlider', async ({ sliderName }: { sliderName: string }, { rejectWithValue }) => {
-        console.log(sliderName, 'This is the slider name in the client.')
         try {
             const { data } = await axios.post(`${url}/administrator/sliders/client`, { name: sliderName },
+                // {
+                //     headers: {
+                //         'Authorization': `Bearer ${token}`,
+                //         'Content-Type': 'application/json'
+                //     }
+                // }
+            )
+            return data
+        } catch (error) {
+            toast.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+export const updateSliderConfigurationAsync = createAsyncThunk(
+    'ui/updateSliderConfiguration', async ({ id, newConfiguration }: { id: string, newConfiguration: { name: string, imageList: Array<string>, speed: number, animation: string } }, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.put(`${url}/administrator/sliders/${id}`, { newConfiguration },
                 // {
                 //     headers: {
                 //         'Authorization': `Bearer ${token}`,
@@ -128,6 +164,7 @@ export const uiSlice = createSlice({
             }
         },
         sliders: [] as SliderProps[],
+        currSlider: {},
         uiIsloading: false,
         uiHasError: false
     },
@@ -213,6 +250,26 @@ export const uiSlice = createSlice({
                 }
             )
             .addCase(
+                getSliderByIdAsync.pending, (state, _action) => {
+                    state.uiIsloading = true
+                    state.uiHasError = false
+                }
+            )
+            .addCase(
+                getSliderByIdAsync.rejected, (state, _action) => {
+                    state.uiIsloading = false
+                    state.uiHasError = true
+                }
+            )
+            .addCase(
+                getSliderByIdAsync.fulfilled, (state, action) => {
+                    state.uiIsloading = false
+                    state.uiHasError = false
+                    state.currSlider = action.payload.slider
+
+                }
+            )
+            .addCase(
                 postNewSliderAsync.pending, (state, _action) => {
                     state.uiIsloading = true
                     state.uiHasError = false
@@ -231,6 +288,26 @@ export const uiSlice = createSlice({
                     const newSlider: SliderProps = action.payload.newSlider
                     state.sliders = [...state.sliders, newSlider]
                     toast.success('New Slider created succesfully')
+                }
+            )
+            .addCase(
+                updateSliderConfigurationAsync.pending, (state, _action) => {
+                    state.uiIsloading = true
+                    state.uiHasError = false
+                }
+            )
+            .addCase(
+                updateSliderConfigurationAsync.rejected, (state, _action) => {
+                    state.uiIsloading = false
+                    state.uiHasError = true
+                }
+            )
+            .addCase(
+                updateSliderConfigurationAsync.fulfilled, (state, action) => {
+                    state.uiIsloading = false
+                    state.uiHasError = false
+                    state.currSlider = action.payload.updatedSlider
+                    toast.success('Slider updated succesfully')
                 }
             )
     }

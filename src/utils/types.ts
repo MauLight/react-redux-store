@@ -41,8 +41,8 @@ export interface uiProps {
             image_public_id: string
         },
         slider: {
-            savedSliders: Array<SliderProps>
-            currSlider: SliderProps
+            savedSliders: Array<string>
+            currSlider: string
         }
     }
     createdAt: string
@@ -111,6 +111,7 @@ export interface StoreProps {
     ui: {
         currUI: uiProps
         sliders: Array<SliderProps>
+        currSlider: SliderProps
         uiIsLoading: boolean
         uiHasError: boolean
     }

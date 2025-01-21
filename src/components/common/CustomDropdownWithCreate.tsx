@@ -47,11 +47,11 @@ function CustomDropdownWithCreate({
             <p className={`capitalize ${choice === '' ? 'text-sym_gray-300' : 'text-[#10100e]'}`}>{choice === '' ? 'State' : choice}</p>
             {
                 isOpen ? (
-                    <i className="fa-solid fa-arrow-up"></i>
+                    <i className="fa-solid fa-sm fa-arrow-up"></i>
                 )
                     :
                     (
-                        <i className="fa-solid fa-arrow-down"></i>
+                        <i className="fa-solid fa-sm fa-arrow-down"></i>
                     )
             }
             {

@@ -4,14 +4,13 @@ import { CleanupFn } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine'
 import Compressor from 'compressorjs'
 
-import CustomDropdown from '@/components/common/CustomDropdown'
 import { generateSignature, postToCloudinary } from '@/utils/functions'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 import ErrorComponent from '@/components/common/ErrorComponent'
 import Fallback from '@/components/common/Fallback'
 import SaveButtonBuilder from '../SaveButtonBuilder'
-import { getAllSlidersAsync, postNewSliderAsync, updateUIConfigurationAsync } from '@/features/ui/uiSlice'
+import { getAllSlidersAsync, getSliderByIdAsync, postNewSliderAsync, updateSliderConfigurationAsync, updateUIConfigurationAsync } from '@/features/ui/uiSlice'
 import { SliderProps, StoreProps } from '@/utils/types'
 import { useSelector, useDispatch } from 'react-redux'
 import { AppDispatch } from '@/store/store'
@@ -67,7 +66,7 @@ function BuilderCard({ card, onDrop, handleReset }: { card: { id: number, image:
 
 function SliderSectionPanel(): ReactNode {
     const dispatch: AppDispatch = useDispatch()
-    const { sliders, uiHasError, uiIsLoading } = useSelector((state: StoreProps) => state.ui)
+    const { sliders, currUI, currSlider, uiHasError, uiIsLoading } = useSelector((state: StoreProps) => state.ui)
     const [selectedSliderName, setSelectedSliderName] = useState<string>('')
 
     const [selectedSpeed, setSelectedSpeed] = useState<number>(0)
@@ -119,6 +118,7 @@ function SliderSectionPanel(): ReactNode {
                                 postToCloudinary(formData, setCloudinaryError)
                                     .then((response) => {
                                         setImageList(prevList => [...prevList, response.secure_url])
+                                        setCloudinaryPublicId(prevList => [...prevList, response.public_id])
                                     })
                             }
                         })
@@ -201,28 +201,55 @@ function SliderSectionPanel(): ReactNode {
         setOpenCreateNewSlider(false)
     }
 
-    // async function handleUpdateHeroConfiguration() {
+    async function handleUpdateSelectedSlider() {
 
-    //     const newSliderConfiguration = {
-    //         header,
-    //         subHeader,
-    //         compressImage: clickedCompressImage,
-    //         image: cloudinaryBackground
-    //     }
+        await dispatch(updateUIConfigurationAsync({
+            id: currUI.id, newConfiguration: {
 
-    //     await dispatch(updateUIConfigurationAsync({
-    //         id: currUI.id, newConfiguration: {
+                ...currUI,
+                home: {
+                    ...currUI.home,
+                    slider: {
+                        ...currUI.home.slider,
+                        currSlider: selectedSlider?.id
+                    }
+                }
 
-    //             ...currUI,
-    //             home: {
-    //                 ...currUI.home,
-    //                 hero: newHeroConfiguration
-    //             }
+            }
+        }))
+    }
 
-    //         }
-    //     }))
-    //     toast.success('Hero section configuration saved.')
-    // }
+    async function handleUpdateCurrentSlider(id: string, newConfiguration: any) {
+        try {
+            const { payload } = await dispatch(updateSliderConfigurationAsync({ id, newConfiguration }))
+            console.log(payload)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        async function getCurrentSlider() {
+            const { payload } = await dispatch(getSliderByIdAsync(currUI.home.slider.currSlider))
+            console.log(payload.slider, 'this is the current slider')
+            setSelectedSlider(payload.slider)
+            setSelectedSliderName(payload.slider.name)
+            setSelectedSpeed(payload.slider.speed)
+            setSelectedAnimation(payload.slider.animation)
+            if (payload.slider.imageList.length > 0) {
+                const images = payload.slider.imageList.map((item: { image: string, public_id: string }) => item.image)
+                const ids = payload.slider.imageList.map((item: { image: string, public_id: string }) => item.public_id)
+
+                setImageList(images)
+                setCloudinaryPublicId(ids)
+            }
+        }
+
+        if (currUI && currUI.home.slider.currSlider) {
+            getCurrentSlider()
+        }
+
+    }, [currUI])
 
     useEffect(() => {
         async function getSliders() {
@@ -253,10 +280,29 @@ function SliderSectionPanel(): ReactNode {
 
     useEffect(() => {
         if (selectedSlider) {
+            setSelectedSliderName(selectedSlider.name)
             setSelectedSpeed(selectedSlider.speed)
             setSelectedAnimation(selectedSlider.animation)
         }
+        if (selectedSlider && selectedSlider.id !== currSlider.id) {
+            handleUpdateSelectedSlider()
+        }
     }, [selectedSlider])
+
+    useEffect(() => {
+        if (imageList.length > 0 && selectedSlider) {
+            const imageListWithId = imageList.map((item, i) => ({ image: item, public_id: cloudinaryPublicId[i] }))
+
+            const newConfiguration = {
+                name: selectedSliderName,
+                speed: selectedSpeed,
+                animation: selectedAnimation,
+                imageList: imageListWithId
+            }
+
+            handleUpdateCurrentSlider(selectedSlider.id, newConfiguration)
+        }
+    }, [imageList])
 
     return (
         <>
@@ -273,7 +319,7 @@ function SliderSectionPanel(): ReactNode {
                 )
             }
             {
-                !uiHasError && !uiIsLoading && (
+                !uiHasError && !uiIsLoading && selectedSlider && (
                     <section className='w-full flex flex-col gap-y-5'>
                         <h2 className='text-[1rem] text-sym_gray-700'>Slider Section:</h2>
                         <div className="flex flex-col gap-y-10">
@@ -286,7 +332,7 @@ function SliderSectionPanel(): ReactNode {
                                         label='Add New Slider'
                                         buttonFunction={handleOpenCreateNewSlider}
                                         id='Saved sliders'
-                                        defaultValue={sliderNameList[0]}
+                                        defaultValue={selectedSlider?.name || 'Recommended'}
                                         value={selectedSliderName}
                                         setValue={setSelectedSliderName}
                                         list={sliderNameList}
