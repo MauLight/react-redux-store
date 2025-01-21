@@ -21,7 +21,6 @@ export default function AuthBuilderPanel(): ReactNode {
     const { currUI, uiHasError, uiIsLoading } = useSelector((state: StoreProps) => state.ui)
 
     //* Switch state
-
     const [clickedAllowGoogle, setClickedAllowGoogle] = useState<boolean>(false)
     const [clickedCompressImage, setClickedCompressImage] = useState<boolean>(false)
     const [authHeader, setAuthHeader] = useState<string>('')
@@ -78,7 +77,6 @@ export default function AuthBuilderPanel(): ReactNode {
     const [cloudinaryLoadingTwo, setCloudinaryLoadingTwo] = useState<boolean>(false)
     const [cloudinaryErrorOne, setCloudinaryErrorOne] = useState<string | null>(null)
     const [cloudinaryErrorTwo, setCloudinaryErrorTwo] = useState<string | null>(null)
-
 
     const [urlToCloudinaryLogo, setUrlToCloudinaryLogo] = useState<string>('')
     const [urlToLogoPublicId, setUrlToLogoPublicId] = useState<string>('')
@@ -174,14 +172,50 @@ export default function AuthBuilderPanel(): ReactNode {
                     formData.append('file', file)
                     formData.append('upload_preset', 'marketplace')
                     postToCloudinary(formData, index === 0 ? setCloudinaryErrorOne : setCloudinaryErrorTwo)
-                        .then((response) => {
+                        .then(async (response) => {
 
                             if (index === 0) {
                                 setUrlToCloudinaryLogo(response.secure_url)
                                 setUrlToLogoPublicId(response.public_id)
+
+                                const newAuthConfiguration = {
+                                    allowGoogle: clickedAllowGoogle,
+                                    compressImage: clickedCompressImage,
+                                    header: authHeader,
+                                    logoUrl: response.secure_url,
+                                    logo_public_id: response.public_id,
+                                    background: urlToCloudinaryBg,
+                                    background_public_id: urlToBgPublicId
+                                }
+
+                                await dispatch(updateUIConfigurationAsync({
+                                    id: currUI.id, newConfiguration: {
+                                        ...currUI,
+                                        auth: newAuthConfiguration
+
+                                    }
+                                }))
                             } else {
                                 setUrlToCloudinaryBg(response.secure_url)
                                 setUrlToBgPublicId(response.public_id)
+
+                                const newAuthConfiguration = {
+                                    allowGoogle: clickedAllowGoogle,
+                                    compressImage: clickedCompressImage,
+                                    header: authHeader,
+                                    logoUrl: urlToCloudinaryLogo,
+                                    logo_public_id: urlToLogoPublicId,
+                                    background: response.secure_url,
+                                    background_public_id: response.public_id
+                                }
+
+                                await dispatch(updateUIConfigurationAsync({
+                                    id: currUI.id, newConfiguration: {
+                                        ...currUI,
+                                        auth: newAuthConfiguration
+
+                                    }
+                                }))
                             }
 
                             setCloudinaryPublicId(response.public_id)
@@ -233,9 +267,47 @@ export default function AuthBuilderPanel(): ReactNode {
                     if (index === 0) {
                         setUrlToCloudinaryLogo(response.secure_url)
                         setUrlToLogoPublicId(response.public_id)
+
+                        const newAuthConfiguration = {
+                            allowGoogle: clickedAllowGoogle,
+                            compressImage: clickedCompressImage,
+                            header: authHeader,
+                            logoUrl: response.secure_url,
+                            logo_public_id: response.public_id,
+                            background: urlToCloudinaryBg,
+                            background_public_id: urlToBgPublicId
+                        }
+
+                        await dispatch(updateUIConfigurationAsync({
+                            id: currUI.id, newConfiguration: {
+                                ...currUI,
+                                auth: newAuthConfiguration
+
+                            }
+                        }))
+
                     } else {
                         setUrlToCloudinaryBg(response.secure_url)
                         setUrlToBgPublicId(response.public_id)
+
+                        const newAuthConfiguration = {
+                            allowGoogle: clickedAllowGoogle,
+                            compressImage: clickedCompressImage,
+                            header: authHeader,
+                            logoUrl: urlToCloudinaryLogo,
+                            logo_public_id: urlToLogoPublicId,
+                            background: response.secure_url,
+                            background_public_id: response.public_id
+                        }
+
+                        await dispatch(updateUIConfigurationAsync({
+                            id: currUI.id, newConfiguration: {
+                                ...currUI,
+                                auth: newAuthConfiguration
+
+                            }
+                        }))
+
                     }
 
                     setCloudinaryPublicId(response.public_id)
@@ -325,6 +397,28 @@ export default function AuthBuilderPanel(): ReactNode {
         }
     }
 
+    const handleResetHeaderText = async () => {
+        const newAuthConfiguration = {
+            allowGoogle: clickedAllowGoogle,
+            compressImage: clickedCompressImage,
+            header: '',
+            logoUrl: urlToCloudinaryLogo,
+            logo_public_id: urlToLogoPublicId,
+            background: urlToCloudinaryBg,
+            background_public_id: urlToBgPublicId
+        }
+
+        await dispatch(updateUIConfigurationAsync({
+            id: currUI.id, newConfiguration: {
+                ...currUI,
+                auth: newAuthConfiguration
+
+            }
+        }))
+
+        setAuthHeader('')
+    }
+
     async function handleUpdateAuthConfiguration() {
 
         const newAuthConfiguration = {
@@ -369,28 +463,27 @@ export default function AuthBuilderPanel(): ReactNode {
     }, [authHeader])
 
     useEffect(() => {
-        if (debouncedAuthHeader.length > 0) {
-            async function handleUpdateAuthConfiguration() {
+        async function handleUpdateAuthConfiguration() {
 
-                const newAuthConfiguration = {
-                    allowGoogle: clickedAllowGoogle,
-                    compressImage: clickedCompressImage,
-                    header: debouncedAuthHeader,
-                    logoUrl: urlToCloudinaryLogo,
-                    logo_public_id: urlToLogoPublicId,
-                    background: urlToCloudinaryBg,
-                    background_public_id: urlToBgPublicId
-                }
-
-                await dispatch(updateUIConfigurationAsync({
-                    id: currUI.id, newConfiguration: {
-                        ...currUI,
-                        auth: newAuthConfiguration
-
-                    }
-                }))
+            const newAuthConfiguration = {
+                allowGoogle: clickedAllowGoogle,
+                compressImage: clickedCompressImage,
+                header: debouncedAuthHeader,
+                logoUrl: urlToCloudinaryLogo,
+                logo_public_id: urlToLogoPublicId,
+                background: urlToCloudinaryBg,
+                background_public_id: urlToBgPublicId
             }
 
+            await dispatch(updateUIConfigurationAsync({
+                id: currUI.id, newConfiguration: {
+                    ...currUI,
+                    auth: newAuthConfiguration
+
+                }
+            }))
+        }
+        if (debouncedAuthHeader.length > 0) {
             handleUpdateAuthConfiguration()
         }
 
@@ -435,6 +528,13 @@ export default function AuthBuilderPanel(): ReactNode {
                             <div className='flex flex-col gap-y-1'>
                                 <label className='text-[0.8rem]' htmlFor="url">Add Header</label>
                                 <div className='relative'>
+                                    {
+                                        authHeader.length > 0 && (
+                                            <button type='button' onClick={handleResetHeaderText} className='absolute top-2 right-2 w-[20px] h-[20px] flex justify-center items-center rounded-full bg-indigo-500 text-[#ffffff] hover:bg-[#10100e] active:bg-indigo-500'>
+                                                <i className="fa-solid fa-xmark"></i>
+                                            </button>
+                                        )
+                                    }
                                     <input value={authHeader} onChange={({ target }) => { setAuthHeader(target.value) }} className='w-full h-10 pr-10 truncate text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500' type="text" />
                                 </div>
                             </div>
@@ -519,8 +619,6 @@ function UploadComponent({
             fileInputRef.current.click()
         }
     }
-
-
 
     return (
         <>

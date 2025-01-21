@@ -100,16 +100,26 @@ function LoginForm({ isBuilder }: { isBuilder: boolean | undefined }): ReactNode
                     !isLoading && (
                         <>
                             {
-                                authUI.logoUrl ? (
+                                authUI.logoUrl && (
                                     <div className="w-full flex justify-center items-center">
                                         <img className='w-[60px]' src={authUI.logoUrl} alt="logo" />
                                     </div>
                                 )
-                                    :
-                                    (
-                                        <h1 className='font-body text-[#10100e] text-4xl text-center uppercase'>{isAdmin ? 'Admin' : 'Login'}</h1>
-                                    )
                             }
+                            <>
+                                {
+                                    authUI.header !== '' && (
+                                        <h1 className='font-body text-[#10100e] text-4xl text-center'>{authUI.header}</h1>
+                                    )
+                                }
+                            </>
+                            <>
+                                {
+                                    !authUI.logoUrl && authUI.header === '' && (
+                                        <h1 className='font-body text-[#10100e] text-4xl text-center uppercase'>Welcome</h1>
+                                    )
+                                }
+                            </>
                             <form onSubmit={isAdmin ? handleSubmit(handleAdminLogin) : handleSubmit(handleLogin)} className="flex flex-col gap-y-2 pt-5 text-[0.9rem]">
                                 <input {...register('email')} type='text' className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.email !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Email' />
                                 <input {...register('password')} type='password' className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.password !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Password' />
