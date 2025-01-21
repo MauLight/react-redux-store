@@ -11,10 +11,11 @@ import axios from 'axios'
 import ErrorComponent from '@/components/common/ErrorComponent'
 import Fallback from '@/components/common/Fallback'
 import SaveButtonBuilder from '../SaveButtonBuilder'
-import { getAllSlidersAsync, updateUIConfigurationAsync } from '@/features/ui/uiSlice'
+import { getAllSlidersAsync, postNewSliderAsync, updateUIConfigurationAsync } from '@/features/ui/uiSlice'
 import { SliderProps, StoreProps } from '@/utils/types'
 import { useSelector, useDispatch } from 'react-redux'
 import { AppDispatch } from '@/store/store'
+import CustomDropdownWithCreate from '@/components/common/CustomDropdownWithCreate'
 
 const CloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME
 const CloudinaryAPIKEY = import.meta.env.VITE_CLOUDINARY_APIKEY
@@ -70,14 +71,17 @@ function SliderSectionPanel(): ReactNode {
     const [selectedSliderName, setSelectedSliderName] = useState<string>('')
     const [selectedSorting, setSelectedSorting] = useState<string>('')
 
+    const [openCreateNewSlider, setOpenCreateNewSlider] = useState<boolean>(false)
+    const [sliderName, setSliderName] = useState<string>('')
+
     const [sliderNameList, setSliderNameList] = useState<Array<string>>([])
     const [selectedSlider, setSelectedSlider] = useState<SliderProps | null>(null)
     const [imageList, setImageList] = useState<Array<string>>([])
+    const [cloudinaryPublicId, setCloudinaryPublicId] = useState<Array<string>>([])
 
-    const [cloudinaryPublicId, setCloudinaryPublicId] = useState<string>('')
     const [cloudinaryLoading, setCloudinaryLoading] = useState<boolean>(false)
     const [cloudinaryError, setCloudinaryError] = useState<string | null>(null)
-    const [compress, setCompress] = useState<number>(1)
+    const [compress, _setCompress] = useState<number>(1)
 
     const fileInputRef = useRef<HTMLInputElement | null>(null)
 
@@ -94,34 +98,41 @@ function SliderSectionPanel(): ReactNode {
             try {
                 setCloudinaryLoading(true)
 
-                const file = event.target.files[0]
-                const formData = new FormData()
-                if (compress === 1) {
-                    new Compressor(file, {
-                        quality: 0.6,
-                        success(res) {
-                            console.log(res.size, 'This is the new size.')
-                            formData.append('file', res)
-                            formData.append('upload_preset', 'marketplace')
-                            postToCloudinary(formData, setCloudinaryError)
-                                .then((response) => {
-                                    setImageList([...imageList, response.secure_url])
-                                    setCloudinaryPublicId(response.public_id)
-                                    setCloudinaryLoading(false)
+                const files = Array.from(event.target.files)
 
-                                })
-                        }
-                    })
-                } else {
-                    formData.append('file', file)
-                    formData.append('upload_preset', 'marketplace')
-                    postToCloudinary(formData, setCloudinaryError)
-                        .then((response) => {
-                            setImageList([...imageList, response.secure_url])
-                            setCloudinaryPublicId(response.public_id)
-                            setCloudinaryLoading(false)
-                        })
+                if (files.length > 5) {
+                    toast.error('You can add up to 5 images to the slider.')
+                    return
                 }
+
+                files.forEach(file => {
+                    const formData = new FormData()
+                    if (compress === 1) {
+                        new Compressor(file, {
+                            quality: 0.6,
+                            success(res) {
+                                console.log(res.size, 'This is the new size.')
+                                formData.append('file', res)
+                                formData.append('upload_preset', 'marketplace')
+                                postToCloudinary(formData, setCloudinaryError)
+                                    .then((response) => {
+                                        setImageList(prevList => [...prevList, response.secure_url])
+                                    })
+                            }
+                        })
+                    } else {
+                        formData.append('file', file)
+                        formData.append('upload_preset', 'marketplace')
+                        postToCloudinary(formData, setCloudinaryError)
+                            .then((response) => {
+                                setImageList(prevList => [...prevList, response.secure_url])
+                                setCloudinaryPublicId(prevList => [...prevList, response.public_id])
+                            })
+                    }
+                })
+                //setCloudinaryPublicId(response.public_id)
+                setCloudinaryLoading(false)
+
             } catch (error) {
                 console.log(error)
                 setCloudinaryLoading(false)
@@ -164,6 +175,25 @@ function SliderSectionPanel(): ReactNode {
         setImageList(updatedSliderList)
     }
 
+    function handleOpenCreateNewSlider() {
+        setOpenCreateNewSlider(true)
+    }
+
+    async function handleCreateNewSlider() {
+        try {
+            await dispatch(postNewSliderAsync({ sliderName }))
+            setSliderName('')
+            setOpenCreateNewSlider(false)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    function handleCancelCreateNewSlider() {
+        setSliderName('')
+        setOpenCreateNewSlider(false)
+    }
+
     // async function handleUpdateHeroConfiguration() {
 
     //     const newSliderConfiguration = {
@@ -200,6 +230,9 @@ function SliderSectionPanel(): ReactNode {
 
         if (!sliders.length) {
             getSliders()
+        } else {
+            const sliderNames = sliders.map((slider: SliderProps) => slider.name)
+            setSliderNameList(sliderNames)
         }
 
     }, [])
@@ -234,7 +267,10 @@ function SliderSectionPanel(): ReactNode {
                             <div className="flex flex-col gap-y-2">
                                 <div className="flex flex-col gap-y-1">
                                     <label className='text-[0.8rem]' htmlFor="Saved sliders">Saved Sliders</label>
-                                    <CustomDropdown
+                                    <CustomDropdownWithCreate
+                                        create
+                                        label='Add New Slider'
+                                        buttonFunction={handleOpenCreateNewSlider}
                                         id='Saved sliders'
                                         defaultValue={sliderNameList[0]}
                                         value={selectedSliderName}
@@ -243,6 +279,34 @@ function SliderSectionPanel(): ReactNode {
                                     />
                                 </div>
                             </div>
+
+                            {
+                                openCreateNewSlider && (
+                                    <div className="flex flex-col gap-y-2 p-2 border border-indigo-500 rounded-[5px]">
+                                        <div className="flex flex-col gap-y-1">
+                                            <label className='text-[0.8rem]' htmlFor="slider_name">New Slider Name</label>
+                                            <input
+                                                id='slider_name'
+                                                value={sliderName}
+                                                onChange={({ target }) => { setSliderName(target.value) }}
+                                                type="text"
+                                                className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-400`}
+                                                placeholder='eg. mySlider'
+                                            />
+                                        </div>
+                                        <div className="flex justify-end gap-x-2 pt-2">
+                                            <button onClick={handleCancelCreateNewSlider} className='w-[100px] h-8 bg-red-600 hover:bg-red-500 active:bg-red-600 transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[5px]'>
+                                                <i className="fa-solid fa-xmark"></i>
+                                                Cancel
+                                            </button>
+                                            <button onClick={handleCreateNewSlider} className='w-[100px] h-8 bg-green-600 hover:bg-green-500 active:bg-green-600 transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[5px]'>
+                                                <i className="fa-solid fa-floppy-disk"></i>
+                                                Save
+                                            </button>
+                                        </div>
+                                    </div>
+                                )
+                            }
 
                             <div className="grid grid-cols-2 items-center gap-x-3">
                                 <div className="flex flex-col gap-y-2">
@@ -292,7 +356,7 @@ function SliderSectionPanel(): ReactNode {
                                                         <i className="fa-solid fa-cloud-arrow-up fa-xl"></i>
                                                         Upload image
                                                     </button>
-                                                    <input type='file' ref={fileInputRef} onChange={handleFileUpload} className='hidden' />
+                                                    <input multiple accept="image/*" type='file' ref={fileInputRef} onChange={handleFileUpload} className='hidden' />
                                                 </div>
                                                 {
                                                     imageList.map((elem, i) => (

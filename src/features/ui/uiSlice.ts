@@ -1,3 +1,4 @@
+import { SliderProps } from "@/utils/types"
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios, { AxiosError } from "axios"
 import { toast } from "react-toastify"
@@ -82,6 +83,26 @@ export const getAllSlidersAsync = createAsyncThunk(
     }
 )
 
+export const postNewSliderAsync = createAsyncThunk(
+    'ui/postNewSlider', async ({ sliderName }: { sliderName: string }, { rejectWithValue }) => {
+        console.log(sliderName, 'This is the slider name in the client.')
+        try {
+            const { data } = await axios.post(`${url}/administrator/sliders/client`, { name: sliderName },
+                // {
+                //     headers: {
+                //         'Authorization': `Bearer ${token}`,
+                //         'Content-Type': 'application/json'
+                //     }
+                // }
+            )
+            return data
+        } catch (error) {
+            toast.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
 export const uiSlice = createSlice({
     name: 'ui',
     initialState: {
@@ -106,7 +127,7 @@ export const uiSlice = createSlice({
                 }
             }
         },
-        sliders: [],
+        sliders: [] as SliderProps[],
         uiIsloading: false,
         uiHasError: false
     },
@@ -189,6 +210,27 @@ export const uiSlice = createSlice({
                     state.uiHasError = false
                     state.sliders = action.payload.sliders
 
+                }
+            )
+            .addCase(
+                postNewSliderAsync.pending, (state, _action) => {
+                    state.uiIsloading = true
+                    state.uiHasError = false
+                }
+            )
+            .addCase(
+                postNewSliderAsync.rejected, (state, _action) => {
+                    state.uiIsloading = false
+                    state.uiHasError = true
+                }
+            )
+            .addCase(
+                postNewSliderAsync.fulfilled, (state, action) => {
+                    state.uiIsloading = false
+                    state.uiHasError = false
+                    const newSlider: SliderProps = action.payload.newSlider
+                    state.sliders = [...state.sliders, newSlider]
+                    toast.success('New Slider created succesfully')
                 }
             )
     }
