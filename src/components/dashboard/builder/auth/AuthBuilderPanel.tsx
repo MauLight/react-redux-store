@@ -419,27 +419,6 @@ export default function AuthBuilderPanel(): ReactNode {
         setAuthHeader('')
     }
 
-    async function handleUpdateAuthConfiguration() {
-
-        const newAuthConfiguration = {
-            allowGoogle: clickedAllowGoogle,
-            compressImage: clickedCompressImage,
-            header: authHeader,
-            logoUrl: urlToCloudinaryLogo,
-            logo_public_id: urlToLogoPublicId,
-            background: urlToCloudinaryBg,
-            background_public_id: urlToBgPublicId
-        }
-
-        await dispatch(updateUIConfigurationAsync({
-            id: currUI.id, newConfiguration: {
-                ...currUI,
-                auth: newAuthConfiguration
-
-            }
-        }))
-    }
-
     useEffect(() => {
         if (currUI.auth) {
             setClickedAllowGoogle(currUI.auth.allowGoogle)
@@ -483,7 +462,7 @@ export default function AuthBuilderPanel(): ReactNode {
                 }
             }))
         }
-        if (debouncedAuthHeader.length > 0) {
+        if (debouncedAuthHeader.length > 0 && debouncedAuthHeader !== currUI.auth.header) {
             handleUpdateAuthConfiguration()
         }
 
@@ -572,16 +551,6 @@ export default function AuthBuilderPanel(): ReactNode {
                                 }
                             </div>
 
-                        </div>
-                        <div className="w-full flex justify-start gap-x-2 mt-5">
-                            <button className='w-[120px] h-10 bg-[#10100e] hover:bg-sym_gray-700 active:bg-[#10100e] transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
-                                <i className="fa-regular fa-eye"></i>
-                                Preview
-                            </button>
-                            <button onClick={handleUpdateAuthConfiguration} className='w-[120px] h-10 bg-green-600 hover:bg-green-500 active:bg-green-600 transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
-                                <i className="fa-solid fa-floppy-disk"></i>
-                                Save
-                            </button>
                         </div>
                     </section>
                 )

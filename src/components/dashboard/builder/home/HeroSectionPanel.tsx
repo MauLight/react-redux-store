@@ -23,6 +23,7 @@ function HeroSectionPanel(): ReactNode {
     const hero = useSelector((state: StoreProps) => state.ui.currUI.home.hero)
 
     const [header, setHeader] = useState<string>('')
+    const [debouncedHeader, setDebouncedHeader] = useState<string>('')
     const [subHeader, setSubHeader] = useState<string>('')
     const [clickedCompressImage, setClickedCompressImage] = useState<boolean>(true)
 
@@ -110,6 +111,29 @@ function HeroSectionPanel(): ReactNode {
         setCloudinaryBackground(null)
     }
 
+    const handleResetHeaderText = async () => {
+        const newHeroConfiguration = {
+            header: '',
+            subHeader,
+            compressImage: clickedCompressImage,
+            image: cloudinaryBackground
+        }
+
+        await dispatch(updateUIConfigurationAsync({
+            id: currUI.id, newConfiguration: {
+
+                ...currUI,
+                home: {
+                    ...currUI.home,
+                    hero: newHeroConfiguration
+                }
+
+            }
+        }))
+
+        setHeader('')
+    }
+
     async function handleUpdateHeroConfiguration() {
 
         const newHeroConfiguration = {
@@ -130,7 +154,6 @@ function HeroSectionPanel(): ReactNode {
 
             }
         }))
-        toast.success('Hero section configuration saved.')
     }
 
     useEffect(() => {
@@ -141,6 +164,44 @@ function HeroSectionPanel(): ReactNode {
             setCloudinaryBackground(hero.image)
         }
     }, [])
+
+    useEffect(() => {
+        const debouncer = setTimeout(() => {
+            setDebouncedHeader(header)
+        }, 1500)
+
+        return () => {
+            clearTimeout(debouncer)
+        }
+    }, [header])
+
+    useEffect(() => {
+        if (debouncedHeader.length > 0 && debouncedHeader !== currUI.home.hero.header) {
+            async function handleUpdateHeroConfiguration() {
+
+                const newHeroConfiguration = {
+                    header: debouncedHeader,
+                    subHeader,
+                    compressImage: clickedCompressImage,
+                    image: cloudinaryBackground
+                }
+
+                await dispatch(updateUIConfigurationAsync({
+                    id: currUI.id, newConfiguration: {
+
+                        ...currUI,
+                        home: {
+                            ...currUI.home,
+                            hero: newHeroConfiguration
+                        }
+
+                    }
+                }))
+            }
+
+            handleUpdateHeroConfiguration()
+        }
+    }, [debouncedHeader])
 
     return (
         <>
@@ -165,14 +226,23 @@ function HeroSectionPanel(): ReactNode {
                             <div className="flex flex-col gap-y-2">
                                 <div className="flex flex-col gap-y-1">
                                     <label className='text-[0.8rem]' htmlFor="header">Header</label>
-                                    <input
-                                        id='header'
-                                        value={header}
-                                        onChange={({ target }) => { setHeader(target.value) }}
-                                        type="text"
-                                        className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`}
-                                        placeholder='Header'
-                                    />
+                                    <div className='relative'>
+                                        {
+                                            header.length > 0 && (
+                                                <button type='button' onClick={handleResetHeaderText} className='absolute top-2 right-2 w-[20px] h-[20px] flex justify-center items-center rounded-full bg-indigo-500 text-[#ffffff] hover:bg-[#10100e] active:bg-indigo-500'>
+                                                    <i className="fa-solid fa-xmark"></i>
+                                                </button>
+                                            )
+                                        }
+                                        <input
+                                            id='header'
+                                            value={header}
+                                            onChange={({ target }) => { setHeader(target.value) }}
+                                            type="text"
+                                            className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`}
+                                            placeholder='Header'
+                                        />
+                                    </div>
                                 </div>
                             </div>
 

@@ -19,10 +19,15 @@ export default function AuthSection(): ReactNode {
                 <AuthBuilderPanel />
             </div>
             <div className="col-span-4 h-full flex flex-col rounded-[5px] overflow-hidden">
-                <div className="h-10 flex justify-center gap-x-5">
-                    <p>Login</p>
-                    <Switch clicked={clicked} handleClick={handleClick} />
-                    <p>Sign Up</p>
+                <div className="grid grid-cols-4">
+                    <div></div>
+                    <div className="col-span-2 h-10 flex justify-center gap-x-5">
+                        <p>Login</p>
+                        <Switch clicked={clicked} handleClick={handleClick} />
+                        <p>Sign Up</p>
+                    </div>
+                    <div className='flex items-center'>
+                    </div>
                 </div>
                 <div className="w-full h-[700px] flex justify-center items-center rounded-[5px] overflow-hidden">
                     {
