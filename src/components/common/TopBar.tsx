@@ -5,6 +5,7 @@ import Hamburger from 'hamburger-react'
 import { useState, type ReactElement } from 'react'
 import { useSelector } from 'react-redux'
 import { Link, useLocation } from 'react-router-dom'
+import Searchbar from './Searchbar'
 
 const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement => {
   const user = useSelector((state: StoreProps) => state.userAuth.user)
@@ -25,14 +26,15 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
   }
 
   return (
-    <main className={`fixed ${announcementBar ? 'top-8' : 'top-2'} w-full flex justify-center z-50`}>
+    <main className={`fixed ${announcementBar ? 'top-10' : 'top-2'} w-full flex justify-center z-50`}>
       <section className={`h-[50px] w-full min-[1440px]:w-web px-3 rounded-[10px] ${yPosition > 50 ? 'bg-[#10100e] bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70' : 'bg-transparent'} transition-all duration-200`}>
         <nav className="flex h-full w-full justify-between items-center">
           <Link to={'/'} className="block">
             <h1 className={`leading-none text-[18px] ${topBarText} antialiased cursor-pointer`}>eMOTIONs</h1>
           </Link>
           <div className="flex items-center gap-x-8">
-            <div className="hidden sm:flex items-center gap-x-8">
+            <Searchbar />
+            <div className="hidden sm:flex items-center gap-x-8 shrink-0">
               <Link to={user.email ? '/profile' : '/login'} className={`${topBarText} flex items-center gap-x-2 overflow-hidden`}>
                 <i className='fa-solid fa-user'></i>
                 <p className='w-[120px] truncate'>{user.email ? `${user.email}` : 'Sign in'}</p>

@@ -46,9 +46,7 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
         setOpenSortMenu(false)
     }
 
-    interface HandleSubmitSearchEvent extends React.KeyboardEvent<HTMLInputElement> { }
-
-    async function handleSubmitSearch(e: HandleSubmitSearchEvent): Promise<void> {
+    async function handleSubmitSearch(e: React.KeyboardEvent<HTMLInputElement>): Promise<void> {
         if (e.key === 'Enter') {
             if (!isSearching) {
                 setIsSearching(true)
