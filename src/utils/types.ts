@@ -62,6 +62,8 @@ export interface StoreProps {
         sortedProducts: ProductProps[]
         productsAreLoading: boolean
         productsHasError: boolean
+        searchIsLoading: boolean
+        searchHasError: boolean
         errorMessage: string
     }
     collections: {
