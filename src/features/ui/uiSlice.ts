@@ -307,7 +307,6 @@ export const uiSlice = createSlice({
                     state.uiIsloading = false
                     state.uiHasError = false
                     state.currSlider = action.payload.updatedSlider
-                    toast.success('Slider updated succesfully')
                 }
             )
     }

@@ -84,7 +84,7 @@ function SliderSectionPanel(): ReactNode {
 
     const [cloudinaryLoading, setCloudinaryLoading] = useState<boolean>(false)
     const [cloudinaryError, setCloudinaryError] = useState<string | null>(null)
-    const [cloudinaryEnd, setCloudinaryEnd] = useState<boolean>(false)
+    const [, setCloudinaryEnd] = useState<boolean>(false)
 
     const [compress, _setCompress] = useState<number>(1)
 
@@ -117,37 +117,42 @@ function SliderSectionPanel(): ReactNode {
                     return
                 }
 
-                files.forEach(file => {
+                const uploadPromises = files.map(file => {
                     const formData = new FormData()
                     if (compress === 1) {
-                        const aux: { image: string, public_id: string }[] = []
-                        new Compressor(file, {
-                            quality: 0.6,
-                            success(res) {
-                                console.log(res.size, 'This is the new size.')
-                                formData.append('file', res)
-                                formData.append('upload_preset', 'marketplace')
-                                postToCloudinary(formData, setCloudinaryError)
-                                    .then((response) => {
-                                        setImageList(prevList => [...prevList, response.secure_url])
-                                        setCloudinaryPublicId(prevList => [...prevList, response.public_id])
-                                        aux.push({ image: response.secure_url, public_id: response.public_id })
-                                    })
-                            }
+                        return new Promise<void>((resolve, reject) => {
+                            new Compressor(file, {
+                                quality: 0.6,
+                                success(res) {
+                                    console.log(res.size, 'This is the new size.')
+                                    formData.append('file', res)
+                                    formData.append('upload_preset', 'marketplace')
+                                    postToCloudinary(formData, setCloudinaryError)
+                                        .then((response) => {
+                                            setImageList(prevList => [...prevList, response.secure_url])
+                                            setCloudinaryPublicId(prevList => [...prevList, response.public_id])
+                                            resolve()
+                                        })
+                                        .catch(reject)
+                                },
+                                error(err) {
+                                    reject(err)
+                                }
+                            })
                         })
-
-                        console.log(aux, 'this is the AUX array')
-
                     } else {
                         formData.append('file', file)
                         formData.append('upload_preset', 'marketplace')
-                        postToCloudinary(formData, setCloudinaryError)
+                        return postToCloudinary(formData, setCloudinaryError)
                             .then((response) => {
                                 setImageList(prevList => [...prevList, response.secure_url])
                                 setCloudinaryPublicId(prevList => [...prevList, response.public_id])
                             })
                     }
                 })
+
+                await Promise.all(uploadPromises)
+                toast.success('Slider updated succesfully')
                 setCloudinaryLoading(false)
                 setCloudinaryEnd(true)
 
@@ -161,11 +166,9 @@ function SliderSectionPanel(): ReactNode {
 
     const handleResetUploadImage = async (image: string) => {
 
-        const imageIndex = imageList.findIndex(img => img === image)
-        console.log(imageIndex)
+        const imageIndex = currSlider.imageList.findIndex(img => img.image === image)
         if (imageIndex !== -1) {
             const imagePublicId = cloudinaryPublicId[imageIndex]
-            console.log(imagePublicId, 'this is the id')
             const timestamp = Math.floor(Date.now() / 1000)
             const signature = generateSignature({ public_id: imagePublicId, timestamp })
 
@@ -183,12 +186,14 @@ function SliderSectionPanel(): ReactNode {
             }
         }
 
+        const updatedImageList = selectedSlider?.imageList.filter(item => item.public_id !== cloudinaryPublicId[imageIndex])
+
         if (selectedSlider) {
             const newConfiguration = {
                 name: selectedSlider?.name,
                 speed: selectedSlider?.speed,
                 animation: selectedSlider?.animation,
-                imageList: selectedSlider?.imageList.filter(item => item.public_id !== cloudinaryPublicId[imageIndex])
+                imageList: updatedImageList
             }
 
             handleUpdateCurrentSlider(selectedSlider.id, newConfiguration)
@@ -210,6 +215,25 @@ function SliderSectionPanel(): ReactNode {
         updatedSliderList[sourceIndex] = updatedSliderList[targetIndex]
         updatedSliderList[targetIndex] = temp
         setImageList(updatedSliderList)
+
+        if (selectedSlider) {
+            const auxSelectedSliderImages = selectedSlider?.imageList
+            const sourceObjectIndex = auxSelectedSliderImages.findIndex(item => item.image === source)
+            const targetObjectIndex = auxSelectedSliderImages.findIndex(item => item.image === target)
+
+            if (sourceObjectIndex === -1 || targetObjectIndex === -1) return
+            const temp = auxSelectedSliderImages[sourceObjectIndex]
+            auxSelectedSliderImages[sourceObjectIndex] = auxSelectedSliderImages[targetObjectIndex]
+            auxSelectedSliderImages[targetObjectIndex] = temp
+
+            const newConfiguration = {
+                name: selectedSlider.name,
+                speed: selectedSlider.speed,
+                animation: selectedSlider.animation,
+                imageList: auxSelectedSliderImages
+            }
+            handleUpdateCurrentSlider(selectedSlider.id, newConfiguration)
+        }
     }
 
     function handleOpenCreateNewSlider() {
@@ -331,7 +355,7 @@ function SliderSectionPanel(): ReactNode {
 
     //* Update slider images after getting them back from cloudinary.
     useEffect(() => {
-        if (imageList.length > 0 && selectedSlider && !cloudinaryLoading && cloudinaryEnd) {
+        if (imageList.length > 0 && selectedSlider && !cloudinaryLoading) {
             const imageListWithId = imageList.map((item, i) => ({ image: item, public_id: cloudinaryPublicId[i] }))
 
             const newConfiguration = {
