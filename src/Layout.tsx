@@ -81,7 +81,7 @@ function Layout() {
     return (
         <main className={`relative ${pathname.length === 1 || pathname === '/collection' ? 'bg-[#10100e]' : ''}`}>
             {
-                announcementBar && (
+                announcementBar && !hideTopbar && (
                     <AnnouncementBar />
                 )
             }
