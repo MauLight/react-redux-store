@@ -15,6 +15,8 @@ import { SliderProps, StoreProps } from '@/utils/types'
 import { useSelector, useDispatch } from 'react-redux'
 import { AppDispatch } from '@/store/store'
 import CustomDropdownWithCreate from '@/components/common/CustomDropdownWithCreate'
+import { Modal } from '@/components/common/Modal'
+import Carousel from '@/components/home/Carousel'
 
 const CloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME
 const CloudinaryAPIKEY = import.meta.env.VITE_CLOUDINARY_APIKEY
@@ -86,7 +88,14 @@ function SliderSectionPanel(): ReactNode {
 
     const [compress, _setCompress] = useState<number>(1)
 
+    //* handleOpen preview modal
+    const [openModal, setOpenModal] = useState<boolean>(false)
+
     const fileInputRef = useRef<HTMLInputElement | null>(null)
+
+    function handleOpenPreview() {
+        setOpenModal(!openModal)
+    }
 
     const handleFileButtonClick = (): void => {
         if (fileInputRef.current) {
@@ -97,7 +106,7 @@ function SliderSectionPanel(): ReactNode {
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
         event.preventDefault()
 
-        if (event.target.files !== null) {
+        if (event.target.files !== null && selectedSlider) {
             try {
                 setCloudinaryLoading(true)
 
@@ -111,6 +120,7 @@ function SliderSectionPanel(): ReactNode {
                 files.forEach(file => {
                     const formData = new FormData()
                     if (compress === 1) {
+                        const aux: { image: string, public_id: string }[] = []
                         new Compressor(file, {
                             quality: 0.6,
                             success(res) {
@@ -121,9 +131,13 @@ function SliderSectionPanel(): ReactNode {
                                     .then((response) => {
                                         setImageList(prevList => [...prevList, response.secure_url])
                                         setCloudinaryPublicId(prevList => [...prevList, response.public_id])
+                                        aux.push({ image: response.secure_url, public_id: response.public_id })
                                     })
                             }
                         })
+
+                        console.log(aux, 'this is the AUX array')
+
                     } else {
                         formData.append('file', file)
                         formData.append('upload_preset', 'marketplace')
@@ -148,10 +162,12 @@ function SliderSectionPanel(): ReactNode {
     const handleResetUploadImage = async (image: string) => {
 
         const imageIndex = imageList.findIndex(img => img === image)
-        if (imageIndex) {
+        console.log(imageIndex)
+        if (imageIndex !== -1) {
             const imagePublicId = cloudinaryPublicId[imageIndex]
+            console.log(imagePublicId, 'this is the id')
             const timestamp = Math.floor(Date.now() / 1000)
-            const signature = generateSignature({ public_id: cloudinaryPublicId, timestamp })
+            const signature = generateSignature({ public_id: imagePublicId, timestamp })
 
             const formData = new FormData()
             formData.append('public_id', imagePublicId)
@@ -167,7 +183,19 @@ function SliderSectionPanel(): ReactNode {
             }
         }
 
-        setImageList(imageList.filter(elem => elem !== image))
+        if (selectedSlider) {
+            const newConfiguration = {
+                name: selectedSlider?.name,
+                speed: selectedSlider?.speed,
+                animation: selectedSlider?.animation,
+                imageList: selectedSlider?.imageList.filter(item => item.public_id !== cloudinaryPublicId[imageIndex])
+            }
+
+            handleUpdateCurrentSlider(selectedSlider.id, newConfiguration)
+        }
+
+        const newImageList = imageList.filter(elem => elem !== image)
+        setImageList(newImageList)
     }
 
     function handleDropElement(source: string, target: string) {
@@ -284,6 +312,17 @@ function SliderSectionPanel(): ReactNode {
             setSelectedSliderName(selectedSlider.name)
             setSelectedSpeed(selectedSlider.speed)
             setSelectedAnimation(selectedSlider.animation)
+            if (selectedSlider.imageList.length > 0) {
+                const images = selectedSlider.imageList.map((item: { image: string, public_id: string }) => item.image)
+                const ids = selectedSlider.imageList.map((item: { image: string, public_id: string }) => item.public_id)
+
+                setImageList(images)
+                setCloudinaryPublicId(ids)
+            } else {
+                setImageList([])
+                setCloudinaryPublicId([])
+            }
+
         }
         if (selectedSlider && selectedSlider.id !== currSlider.id) {
             handleUpdateSelectedSlider()
@@ -292,7 +331,7 @@ function SliderSectionPanel(): ReactNode {
 
     //* Update slider images after getting them back from cloudinary.
     useEffect(() => {
-        if (imageList.length > 0 && selectedSlider && cloudinaryEnd) {
+        if (imageList.length > 0 && selectedSlider && !cloudinaryLoading && cloudinaryEnd) {
             const imageListWithId = imageList.map((item, i) => ({ image: item, public_id: cloudinaryPublicId[i] }))
 
             const newConfiguration = {
@@ -460,7 +499,10 @@ function SliderSectionPanel(): ReactNode {
                                 </ul>
                             </div>
 
-                            <SaveButtonBuilder handleSaveConfiguration={async () => { }} />
+                            <SaveButtonBuilder handlePreview={handleOpenPreview} handleSaveConfiguration={async () => { }} />
+                            <Modal width='w-[1100px]' height='h-[700px]' openModal={openModal} handleOpenModal={handleOpenPreview}>
+                                <Carousel isBuilder />
+                            </Modal>
 
                         </div>
                     </section>

@@ -6,9 +6,10 @@ interface ModalProps {
   openModal: boolean
   handleOpenModal: () => void
   width?: string
+  height?: string
 }
 
-export const Modal = ({ width, children, openModal, handleOpenModal }: ModalProps): ReactElement => {
+export const Modal = ({ width, height, children, openModal, handleOpenModal }: ModalProps): ReactElement => {
   return (
     <Transition appear show={openModal} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={handleOpenModal}>
@@ -36,7 +37,7 @@ export const Modal = ({ width, children, openModal, handleOpenModal }: ModalProp
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <DialogPanel className={`${width ? width : 'w-1/2'} flex flex-col py-10 px-5 border border-gray-200 rounded-xl bg-[#ffffff] overflow-hidden`}>
+              <DialogPanel className={`${width ? width : 'w-1/2'} ${height ? height : ''} flex flex-col py-10 px-5 border border-gray-200 rounded-xl bg-[#ffffff] overflow-hidden`}>
                 {
                   children
                 }

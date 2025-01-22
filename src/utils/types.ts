@@ -20,7 +20,7 @@ export interface ProductProps {
 }
 
 export interface wishListProduct { id: string, productId: string }
-export interface SliderProps { name: string, id: string, speed: number, animation: string, imageList: Array<string> }
+export interface SliderProps { name: string, id: string, speed: number, animation: string, imageList: Array<{ image: string, public_id: string }> }
 
 export interface uiProps {
     auth: {
