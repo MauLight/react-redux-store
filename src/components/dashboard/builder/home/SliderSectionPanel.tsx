@@ -525,7 +525,7 @@ function SliderSectionPanel(): ReactNode {
                             {
                                 currSlider.imageList.length > 0 && (
                                     <div className="w-full flex justify-start gap-x-2">
-                                        <button onClick={handleOpenPreview} className='w-[120px] h-10 bg-[#10100e] hover:bg-sym_gray-700 active:bg-[#10100e] transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
+                                        <button onClick={handleOpenPreview} className='w-[120px] h-10 bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e] transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
                                             <i className="fa-regular fa-eye"></i>
                                             Preview
                                         </button>
