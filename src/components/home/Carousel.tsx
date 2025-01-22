@@ -42,7 +42,7 @@ function Carousel({ isBuilder }: { isBuilder?: boolean }): ReactNode {
         slidesToShow: 1,
         slidesToScroll: 1,
         autoplay: true,
-        speed: 2000,
+        speed: currSlider.speed ? (currSlider.speed * 1000) : 2000,
         autoplaySpeed: 5000,
         fade: currSlider.animation.toLowerCase() === 'fade' ? true : false,
         waitForAnimate: false,
