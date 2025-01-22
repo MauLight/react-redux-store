@@ -1,5 +1,5 @@
 export interface ProductProps {
-    id?: string
+    id: string
     description: string
     title: string
     brand?: string
@@ -11,7 +11,7 @@ export interface ProductProps {
         ratings: Array<number>
         averageRating: number
     }
-    quantity?: number
+    quantity: number
     tags?: Array<string>
     weight?: number,
     height?: number,

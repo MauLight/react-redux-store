@@ -1,23 +1,23 @@
 import { type ReactNode } from "react"
 import { useDispatch } from "react-redux"
 import { addItem } from "@/features/cart/cartSlice"
-
-interface ProductProps {
-    title: string
-    price: number
-    fullPrice: number
-    image?: string
-}
+import { ProductProps } from "@/utils/types"
 
 export const PriceCard = ({ product }: { product: ProductProps }): ReactNode => {
     const dispatch = useDispatch()
+
+    function getPercentage() {
+        const percentage = product.discount
+        const price = product.price
+        const discount = percentage ? (percentage / 100) * price : 0
+        return (price - discount)
+    }
 
     const handleAddItemToCart = () => {
         const itemToAdd = {
             title: product.title,
             image: product.image,
             price: product.price,
-            fullPrice: product.fullPrice
         }
         dispatch(addItem(itemToAdd))
     }
@@ -27,8 +27,12 @@ export const PriceCard = ({ product }: { product: ProductProps }): ReactNode => 
             <div className="flex flex-col">
                 <h1 className='text-[18px] uppercase antialiazed text-[#ffffff] leading-tight'>{product.title}</h1>
                 <div className="flex gap-x-2">
-                    <p className='text-[12px] uppercase antialiazed text-[#ffffff]'>{`${product.price}$`}</p>
-                    <p className='text-[10px] uppercase antialiazed text-gray-100 line-through'>{`${product.fullPrice}$`}</p>
+                    <p className='text-[12px] uppercase antialiazed text-[#ffffff]'>{`${getPercentage()}$`}</p>
+                    {
+                        product.discount && (
+                            <p className='text-[12px] uppercase antialiazed text-[#ffffff]'>{`${product.price}$`}</p>
+                        )
+                    }
                 </div>
             </div>
             <button onClick={handleAddItemToCart} className='h-[50px] w-[50px] z-50 rounded-full bg-gray-900 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70 flex justify-center items-center pb-1 cursor-pointer'>

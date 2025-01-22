@@ -1,9 +1,10 @@
 import { changeItemQuantity, removeItem } from '@/features/cart/cartSlice'
+import { ProductProps } from '@/utils/types'
 import { type ReactElement } from 'react'
 import { useLocation } from 'react-router-dom'
 
 interface CheckoutCardProps {
-  product: any
+  product: ProductProps
   dispatch: any
   isConfirmation?: boolean
 }
@@ -18,11 +19,11 @@ export const CheckoutCard = ({ product, dispatch, isConfirmation }: CheckoutCard
       return
     }
     const id = product.id
-    const newQuantity = type === 1 ? product.quantity + 1 : product.quantity - 1
+    const newQuantity = product.quantity ? type === 1 ? product.quantity + 1 : product.quantity - 1 : type === 1 ? 1 + 1 : 1 - 1
     dispatch(changeItemQuantity({ id, newQuantity }))
   }
 
-  function handleRemoveProduct(id: number) {
+  function handleRemoveProduct(id: string) {
     dispatch(removeItem(id))
   }
 
@@ -67,7 +68,7 @@ export const CheckoutCard = ({ product, dispatch, isConfirmation }: CheckoutCard
         </div>
         <div className="w-full h-full flex justify-between item-end">
           {
-            !isConfirmation && (
+            !isConfirmation && product && (
               <div className="flex gap-x-5 items-end">
                 <button onClick={() => { handleRemoveProduct(product.id) }} className="h-10 flex items-center gap-x-1 py-1 cursor-pointer text-[#10100e] hover:text-red-600 transition-color duration-200">
                   <i className="fa-solid fa-trash-can pb-[3.5px]"></i>

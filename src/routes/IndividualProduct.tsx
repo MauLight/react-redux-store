@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react'
+import { memo, useEffect, type ReactNode } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch } from '@/store/store'
 import { getProductById } from '@/features/products/productsSlice'
@@ -19,7 +19,7 @@ function IndividualProduct({ id }: { id: string | undefined }): ReactNode {
         if (id) {
             dispatch(getProductById(id))
         }
-    }, [])
+    }, [id])
 
     return (
         <div className='relative w-screen h-screen flex justify-center items-center sm:max-lg:pt-[350px]'>
@@ -49,4 +49,8 @@ function IndividualProduct({ id }: { id: string | undefined }): ReactNode {
     )
 }
 
-export default IndividualProduct
+function areEqual(prevProps: { id: string | undefined }, nextProps: { id: string | undefined }) {
+    return prevProps.id === nextProps.id
+}
+
+export default memo(IndividualProduct, areEqual)

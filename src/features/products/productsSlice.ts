@@ -157,6 +157,8 @@ export const productsSlice = createSlice({
         sortedProducts: [] as ProductProps[],
         productsAreLoading: false,
         productsHasError: false,
+        searchIsLoading: false,
+        searchHasError: false,
         errorMessage: ''
     },
     reducers: {
@@ -287,21 +289,21 @@ export const productsSlice = createSlice({
             )
             .addCase(
                 getProductsBySearchWordAsync.pending, (state, _action) => {
-                    state.productsAreLoading = true
-                    state.productsHasError = false
+                    state.searchIsLoading = true
+                    state.searchHasError = false
                 }
             )
             .addCase(
                 getProductsBySearchWordAsync.fulfilled, (state, action) => {
-                    state.productsAreLoading = false
-                    state.productsHasError = false
+                    state.searchIsLoading = false
+                    state.searchHasError = false
                     state.sortedProducts = action.payload.products
                 }
             )
             .addCase(
                 getProductsBySearchWordAsync.rejected, (state, _action) => {
-                    state.productsAreLoading = false
-                    state.productsHasError = true
+                    state.searchIsLoading = false
+                    state.searchHasError = true
                 }
             )
             .addCase(
