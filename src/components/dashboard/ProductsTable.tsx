@@ -1,11 +1,12 @@
 import { type ReactNode } from 'react'
 import { selector, useRecoilValue, useSetRecoilState } from 'recoil'
 import { currentPageState, productsListState } from '@/utils/recoil'
-import { useFetchProducts } from '@/hooks/useFetchProductList'
+import { useFetchProductsWithPagination } from '@/hooks/useFetchProductList'
 
 import DashboardCard from './DashboardCard'
-import { ProductProps } from '@/utils/types'
+import { ProductProps, StoreProps } from '@/utils/types'
 import EmptyList from '../common/EmptyList'
+import { useSelector } from 'react-redux'
 
 const pageSize = 10
 
@@ -22,35 +23,43 @@ function ProductsTable(): ReactNode {
     const products = useRecoilValue(paginatedProductsSelector)
     const setCurrentPage = useSetRecoilState(currentPageState)
     const currentPage = useRecoilValue(currentPageState)
+    const totalPages = useSelector((state: StoreProps) => state.inventory.rangeProducts.totalPages)
 
-    useFetchProducts(currentPage, pageSize)
+    useFetchProductsWithPagination(currentPage, 9)
 
-    function loadMore() {
-        setCurrentPage((prev) => prev + 1)
+    function loadMore(currPage: number) {
+        setCurrentPage(currPage)
     }
 
     return (
-        <div className='flex flex-col rounded-[10px] overflow-hidden'>
-            <Tableheader />
-            {
-                products.length > 0 ? products.map((product: ProductProps) => (
-                    <DashboardCard key={product.id} product={product} />
-                ))
-                    :
-                    (
-                        <EmptyList legend='There are no items to display.' />
-                    )
-            }
-            <button disabled={!products.length} onClick={loadMore} className={`w-full h-10 px-5 border-b ${!products.length ? 'bg-sym_gray-200 text-sym_gray-500 cursor-not-allowed' : 'bg-[#ffffff] text-[#10100e] hover:bg-[#10100e] hover:text-[#ffffff]'} transition-color duration-200`}>
-                Load More
-            </button>
+        <div className='flex flex-col rounded-[10px] overflow-hidden gap-y-10'>
+            <div>
+                <Tableheader />
+
+                {
+                    products.length > 0 ? products.map((product: ProductProps) => (
+                        <DashboardCard key={product.id} product={product} />
+                    ))
+                        :
+                        (
+                            <EmptyList legend='There are no items to display.' />
+                        )
+                }
+            </div>
+            <div className="flex justify-center items-center gap-x-2">
+                {
+                    Array.from({ length: totalPages }).map((_, i) => (
+                        <button onClick={() => { loadMore(i + 1) }} key={i} className={`w-[30px] h-[30px] rounded-full border hover:bg-indigo-500 hover:text-[#ffffff] transition-color duration-200 ${currentPage === i + 1 ? 'bg-indigo-500 text-[#ffffff]' : 'bg-[#FFFFFF]'}`}>{i + 1}</button>
+                    ))
+                }
+            </div>
         </div>
     )
 }
 
 function Tableheader() {
     return (
-        <div className='h-20 w-full grid grid-cols-11 gap-x-5 px-10 border-b bg-sym_gray-400 text-[#ffffff] content-center overflow-x-scroll'>
+        <div className='h-12 w-full grid grid-cols-11 gap-x-5 px-10 border-b bg-sym_gray-400 text-[#ffffff] content-center overflow-x-scroll'>
             <p className='text-balance truncate uppercase'>Id</p>
             <p className='col-span-2 text-balance truncate uppercase'>Title</p>
             <p className='text-balance truncate uppercase'>Brand</p>

@@ -94,7 +94,9 @@ function Layout() {
                 )
             }
             <ErrorBoundary>
-                <Suspense fallback={<Fallback />}>
+                <Suspense fallback={<div className='w-full h-[900px] flex justify-center items-center'>
+                    <Fallback />
+                </div>}>
                     <ScrollToTop>
                         <>
                             {

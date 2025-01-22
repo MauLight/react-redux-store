@@ -60,3 +60,22 @@ export const infiniteScrollFetch = () => {
         return () => window.removeEventListener('scroll', handleScroll)
     }, [setCurrentPage])
 }
+
+export const useFetchProductsWithPagination = (currentPage: number, rangeSize: number) => {
+    const dispatch: AppDispatch = useDispatch()
+    const setProducts = useSetRecoilState(productsListState)
+    const setCurrentPage = useSetRecoilState(currentPageState)
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            const { payload } = await dispatch(getProductsByRangeAsync({ page: currentPage, rangeSize }))
+            setProducts(payload.products)
+        }
+
+        fetchProducts()
+    }, [dispatch, setProducts, currentPage])
+
+    useEffect(() => {
+        setCurrentPage(currentPage)
+    }, [currentPage])
+}
