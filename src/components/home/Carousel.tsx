@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import Slider from 'react-slick'
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
@@ -34,21 +34,20 @@ function NextArrow({ next }: { next: () => void }) {
 function Carousel({ isBuilder }: { isBuilder?: boolean }): ReactNode {
     const dispatch: AppDispatch = useDispatch()
     const { currUI, currSlider, uiHasError, uiIsLoading } = useSelector((state: StoreProps) => state.ui)
-    let sliderRef = useRef(null)
-
-    const settings = {
+    const [carouselSettings, setCarouselSettings] = useState<Record<string, any>>({
         dots: true,
         infinite: true,
         slidesToShow: 1,
         slidesToScroll: 1,
         autoplay: true,
-        speed: currSlider.speed ? (currSlider.speed * 1000) : 2000,
+        speed: 2000,
         autoplaySpeed: 5000,
-        fade: currSlider.animation.toLowerCase() === 'fade' ? true : false,
+        fade: false,
         waitForAnimate: false,
         arrows: false,
         pauseOnHover: true
-    }
+    })
+    let sliderRef = useRef(null)
 
     function prevSlide() {
         if (sliderRef.current) {
@@ -65,7 +64,22 @@ function Carousel({ isBuilder }: { isBuilder?: boolean }): ReactNode {
         async function getCurrentSlider() {
             const { payload } = await dispatch(getSliderByIdAsync(currUI.home.slider.currSlider))
             if (payload.slider.imageList.length > 0) {
+                console.log(payload.slider)
                 console.log(payload.slider.imageList)
+
+                setCarouselSettings({
+                    dots: true,
+                    infinite: true,
+                    slidesToShow: 1,
+                    slidesToScroll: 1,
+                    autoplay: true,
+                    speed: payload.slider.speed ? (payload.slider.speed * 1000) : 2000,
+                    autoplaySpeed: 5000,
+                    fade: payload.slider.animation.toLowerCase() === 'fade' ? true : false || false,
+                    waitForAnimate: false,
+                    arrows: false,
+                    pauseOnHover: true
+                })
             }
         }
 
@@ -74,10 +88,6 @@ function Carousel({ isBuilder }: { isBuilder?: boolean }): ReactNode {
         }
 
     }, [currUI])
-
-    useEffect(() => {
-        console.log(currSlider.imageList)
-    }, [currSlider])
 
     return (
         <>
@@ -94,11 +104,11 @@ function Carousel({ isBuilder }: { isBuilder?: boolean }): ReactNode {
                 )
             }
             {
-                !uiHasError && !uiIsLoading && currSlider && (
+                !uiHasError && !uiIsLoading && currSlider && currSlider.imageList && (
                     <div className='relative slide-container flex justify-center h-full'>
                         <PrevArrow prev={prevSlide} />
                         <NextArrow next={nextSlide} />
-                        <Slider ref={sliderRef} className={isBuilder ? 'h-full w-full' : 'h-[900px] w-full'} {...settings} >
+                        <Slider ref={sliderRef} className={isBuilder ? 'h-full w-full' : 'h-[900px] w-full'} {...carouselSettings} >
                             {
                                 currSlider.imageList.map((item: { image: string, public_id: string }) => (
                                     <img className={isBuilder ? 'h-[620px] object-cover' : 'h-[900px] object-cover'} key={item.public_id} src={item.image} />
