@@ -31,24 +31,24 @@ function NextArrow({ next }: { next: () => void }) {
     )
 }
 
-const settings = {
-    dots: true,
-    infinite: true,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    speed: 2000,
-    autoplaySpeed: 5000,
-    fade: false,
-    waitForAnimate: false,
-    arrows: false,
-    pauseOnHover: true
-}
-
 function Carousel({ isBuilder }: { isBuilder?: boolean }): ReactNode {
     const dispatch: AppDispatch = useDispatch()
     const { currUI, currSlider, uiHasError, uiIsLoading } = useSelector((state: StoreProps) => state.ui)
     let sliderRef = useRef(null)
+
+    const settings = {
+        dots: true,
+        infinite: true,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        autoplay: true,
+        speed: 2000,
+        autoplaySpeed: 5000,
+        fade: currSlider.animation.toLowerCase() === 'fade' ? true : false,
+        waitForAnimate: false,
+        arrows: false,
+        pauseOnHover: true
+    }
 
     function prevSlide() {
         if (sliderRef.current) {

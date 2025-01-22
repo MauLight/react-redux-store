@@ -84,7 +84,7 @@ function SliderSectionPanel(): ReactNode {
 
     const [cloudinaryLoading, setCloudinaryLoading] = useState<boolean>(false)
     const [cloudinaryError, setCloudinaryError] = useState<string | null>(null)
-    const [, setCloudinaryEnd] = useState<boolean>(false)
+    const [cloudinaryEnd, setCloudinaryEnd] = useState<boolean>(false)
 
     const [compress, _setCompress] = useState<number>(1)
 
@@ -152,7 +152,6 @@ function SliderSectionPanel(): ReactNode {
                 })
 
                 await Promise.all(uploadPromises)
-                toast.success('Slider updated succesfully')
                 setCloudinaryLoading(false)
                 setCloudinaryEnd(true)
 
@@ -168,6 +167,20 @@ function SliderSectionPanel(): ReactNode {
 
         const imageIndex = currSlider.imageList.findIndex(img => img.image === image)
         if (imageIndex !== -1) {
+
+            const updatedImageList = currSlider.imageList.filter(item => item.image !== image)
+
+            if (selectedSlider) {
+                const newConfiguration = {
+                    name: selectedSlider?.name,
+                    speed: selectedSlider?.speed,
+                    animation: selectedSlider?.animation,
+                    imageList: updatedImageList
+                }
+
+                handleUpdateCurrentSlider(selectedSlider.id, newConfiguration)
+            }
+
             const imagePublicId = cloudinaryPublicId[imageIndex]
             const timestamp = Math.floor(Date.now() / 1000)
             const signature = generateSignature({ public_id: imagePublicId, timestamp })
@@ -184,19 +197,6 @@ function SliderSectionPanel(): ReactNode {
             } catch (error) {
                 console.error('There was an error deleting this image: ', error)
             }
-        }
-
-        const updatedImageList = selectedSlider?.imageList.filter(item => item.public_id !== cloudinaryPublicId[imageIndex])
-
-        if (selectedSlider) {
-            const newConfiguration = {
-                name: selectedSlider?.name,
-                speed: selectedSlider?.speed,
-                animation: selectedSlider?.animation,
-                imageList: updatedImageList
-            }
-
-            handleUpdateCurrentSlider(selectedSlider.id, newConfiguration)
         }
 
         const newImageList = imageList.filter(elem => elem !== image)
@@ -355,7 +355,7 @@ function SliderSectionPanel(): ReactNode {
 
     //* Update slider images after getting them back from cloudinary.
     useEffect(() => {
-        if (imageList.length > 0 && selectedSlider && !cloudinaryLoading) {
+        if (imageList.length > 0 && selectedSlider && !cloudinaryLoading && cloudinaryEnd) {
             const imageListWithId = imageList.map((item, i) => ({ image: item, public_id: cloudinaryPublicId[i] }))
 
             const newConfiguration = {
