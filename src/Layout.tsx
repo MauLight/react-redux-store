@@ -24,6 +24,7 @@ const AdminLogin = lazy(async () => await import('./routes/AdminLogin'))
 
 const Dashboard = lazy(async () => await import('./routes/Dashboard'))
 const Products = lazy(async () => await import('./routes/Products'))
+const Collections = lazy(async () => await import('./routes/Collections'))
 const Builder = lazy(async () => await import('./routes/Builder'))
 
 const Checkout = lazy(async () => await import('./routes/Checkout'))
@@ -123,6 +124,7 @@ function Layout() {
                                         <Route path='/admin/login' element={<AdminLogin />} />
                                         <Route path='/admin' element={<Dashboard />} />
                                         <Route path='/admin/products' element={<Products />} />
+                                        <Route path='/admin/collections' element={<Collections />} />
                                         <Route path='/admin/builder' element={<Builder />} />
                                         <Route path='/checkout' element={<Checkout />} />
                                         <Route path='/confirmation' element={<Confirmation />} />

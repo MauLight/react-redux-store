@@ -43,8 +43,7 @@ export default function UpdateCollectionModal({ productId, closeModal }: UpdateC
 
     useEffect(() => {
         async function getCollectionTitles() {
-            const { payload } = await dispatch(getAllCollectionsTitlesAsync())
-            console.log(payload)
+            await dispatch(getAllCollectionsTitlesAsync())
         }
 
         if (collectionTitles.length === 0) {
