@@ -12,7 +12,7 @@ export default function Products(): ReactNode {
     })
 
     return (
-        <section className={navState.three ? 'relative py-[70px] flex justify-start items-center pl-[265px]' : 'relative pt-20 flex justify-start items-center pl-[420px]'}>
+        <section className={navState.three ? 'relative pt-[100px] flex justify-start items-center pl-[265px]' : 'relative pt-20 flex justify-start items-center pl-[420px]'}>
             <div className={navState.three ? 'w-[1400px]' : 'w-[1100px]'}>
                 {
                     navState.one && <IndividualProduct />
@@ -22,7 +22,7 @@ export default function Products(): ReactNode {
                 }
                 {
                     navState.three && (
-                        <div className="min-h-[800px] overflow-scroll rounded-[10px]">
+                        <div className="overflow-scroll rounded-[10px]">
                             <ProductsTable />
                         </div>
                     )
