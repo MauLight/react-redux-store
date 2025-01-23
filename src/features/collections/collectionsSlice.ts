@@ -30,9 +30,10 @@ export const getAllCollectionsTitlesAsync = createAsyncThunk(
 )
 
 export const getCollectionByTitleAsync = createAsyncThunk(
-    'products/getCollectionByTitle', async (title, { rejectWithValue }) => {
+    'products/getCollectionByTitle', async (title: string, { rejectWithValue }) => {
         try {
-            const { data } = await axios.get(`${url}/products/col/title/${title}`)
+            console.log(`${url}/products/col/bytitle/title/${title}`)
+            const { data } = await axios.get(`${url}/products/col/bytitle/title/${title}`)
             return data
         } catch (error) {
             console.error((error as AxiosError).message)
@@ -124,6 +125,9 @@ export const collectionsSlice = createSlice({
     reducers: {
         addCollectionToNav: (state, action) => {
             state.nav = [...state.nav, action.payload]
+        },
+        resetErrorState: (state) => {
+            state.hasErrors = false
         }
     },
     extraReducers: (builder) => {
@@ -203,7 +207,7 @@ export const collectionsSlice = createSlice({
                     state.hasErrors = false
                     const updatedCollection = action.payload.updatedCollection
                     state.collections = state.collections.map((col) => col.id === updatedCollection.id ? updatedCollection : col)
-                    toast.success('Collection updated succesfully.')
+                    toast.success('Product added to collection succesfully.')
                 }
             )
             .addCase(
@@ -273,6 +277,6 @@ export const collectionsSlice = createSlice({
     }
 })
 
-export const { addCollectionToNav } = collectionsSlice.actions
+export const { addCollectionToNav, resetErrorState } = collectionsSlice.actions
 const collectionsReducer = collectionsSlice.reducer
 export default collectionsReducer

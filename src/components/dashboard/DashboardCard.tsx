@@ -8,16 +8,21 @@ import ProductDescription from '../common/ProductDescription'
 import UpdateProductForm from './UpdateProductForm'
 import Fallback from '../common/Fallback'
 import UpdateCollectionModal from './collections/UpdateCollectionModal'
+import { resetErrorState } from '@/features/collections/collectionsSlice'
 
 export default function DashboardCard({ product }: { product: ProductProps }): ReactNode {
     const dispatch: AppDispatch = useDispatch()
     const productsAreLoading = useSelector((state: StoreProps) => state.inventory.productsAreLoading)
+    const collectionHasError = useSelector((state: StoreProps) => state.collections.hasErrors)
     const [modalIsOpen, setModalIsOpen] = useState<boolean>(false)
     const [updateIsOpen, setUpdateIsOpen] = useState<boolean>(false)
     const [collectionIsOpen, setCollectionIsOpen] = useState<boolean>(false)
 
     function handleOpenCollectionDialogue() {
         setCollectionIsOpen(!collectionIsOpen)
+        if (collectionHasError) {
+            dispatch(resetErrorState())
+        }
     }
 
     function handleOpenUpdateProduct() {
@@ -104,7 +109,7 @@ export default function DashboardCard({ product }: { product: ProductProps }): R
                         :
                         (
                             <section className='flex flex-col'>
-                                <UpdateCollectionModal closeModal={handleOpenCollectionDialogue} />
+                                <UpdateCollectionModal productId={product.id} closeModal={handleOpenCollectionDialogue} />
                             </section>
                         )
                 }

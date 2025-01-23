@@ -1,7 +1,7 @@
 import CustomDropdownWithCreate from '@/components/common/CustomDropdownWithCreate'
 import ErrorComponent from '@/components/common/ErrorComponent'
 import Fallback from '@/components/common/Fallback'
-import { getAllCollectionsTitlesAsync } from '@/features/collections/collectionsSlice'
+import { getAllCollectionsTitlesAsync, getCollectionByTitleAsync, updateCollectionByIdAsync } from '@/features/collections/collectionsSlice'
 import { AppDispatch } from '@/store/store'
 import { StoreProps } from '@/utils/types'
 import { useEffect, useState, type ReactNode } from 'react'
@@ -9,10 +9,11 @@ import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 
 interface UpdateCollectionModalProps {
+    productId: string
     closeModal: () => void
 }
 
-export default function UpdateCollectionModal({ closeModal }: UpdateCollectionModalProps): ReactNode {
+export default function UpdateCollectionModal({ productId, closeModal }: UpdateCollectionModalProps): ReactNode {
     const dispatch: AppDispatch = useDispatch()
     const collectionTitles = useSelector((state: StoreProps) => state.collections.titles)
     const collectionIsLoading = useSelector((state: StoreProps) => state.collections.isLoading)
@@ -20,6 +21,25 @@ export default function UpdateCollectionModal({ closeModal }: UpdateCollectionMo
 
     const [titles, setTitles] = useState<string[]>([])
     const [inputValue, setInputValue] = useState<string>('')
+    const [updateError, setUpdateError] = useState<string>('')
+
+    async function handleUpdateCollection() {
+        try {
+            const title = inputValue.replaceAll(' ', '_')
+            const { payload } = await dispatch(getCollectionByTitleAsync(title))
+            const id = payload.collection.id
+            if (id) {
+                const { payload } = await dispatch(updateCollectionByIdAsync({ id, productId }))
+                if (payload.updatedCollection) {
+                    closeModal()
+                } else {
+                    setUpdateError(payload.error)
+                }
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     useEffect(() => {
         async function getCollectionTitles() {
@@ -42,7 +62,7 @@ export default function UpdateCollectionModal({ closeModal }: UpdateCollectionMo
         <div className=''>
             {
                 collectionHasError && (
-                    <ErrorComponent />
+                    <ErrorComponent error={updateError} />
                 )
             }
             {
@@ -74,7 +94,7 @@ export default function UpdateCollectionModal({ closeModal }: UpdateCollectionMo
                                 <i className="fa-solid fa-ban"></i>
                                 Cancel
                             </button>
-                            <button onClick={() => { }} className='w-[120px] h-10 bg-green-600 hover:bg-green-500 active:bg-green-600 transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
+                            <button onClick={handleUpdateCollection} className='w-[120px] h-10 bg-green-600 hover:bg-green-500 active:bg-green-600 transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
                                 <i className="fa-solid fa-floppy-disk"></i>
                                 Save
                             </button>
