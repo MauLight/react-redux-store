@@ -7,12 +7,18 @@ import { Modal } from '../common/Modal'
 import ProductDescription from '../common/ProductDescription'
 import UpdateProductForm from './UpdateProductForm'
 import Fallback from '../common/Fallback'
+import UpdateCollectionModal from './collections/UpdateCollectionModal'
 
 export default function DashboardCard({ product }: { product: ProductProps }): ReactNode {
     const dispatch: AppDispatch = useDispatch()
     const productsAreLoading = useSelector((state: StoreProps) => state.inventory.productsAreLoading)
     const [modalIsOpen, setModalIsOpen] = useState<boolean>(false)
     const [updateIsOpen, setUpdateIsOpen] = useState<boolean>(false)
+    const [collectionIsOpen, setCollectionIsOpen] = useState<boolean>(false)
+
+    function handleOpenCollectionDialogue() {
+        setCollectionIsOpen(!collectionIsOpen)
+    }
 
     function handleOpenUpdateProduct() {
         setUpdateIsOpen(!updateIsOpen)
@@ -37,11 +43,14 @@ export default function DashboardCard({ product }: { product: ProductProps }): R
             <p className='text-balance truncate'>{product.discount}</p>
             <a target='_blank' aria-label='image' href={product.image} className='text-balance font-light truncate'>{product.image}</a>
             <p className='text-balance truncate'>{product.rating?.averageRating}</p>
-            <div className="flex gap-x-2 justify-center">
-                <button onClick={handleOpenUpdateProduct} className='h-10 w-[50px] bg-[#10100e] text-[#ffffff] hover:bg-indigo-500 transition-color duration-200 rounded-[10px]'>
+            <div className="flex gap-x-2 justify-center items-center">
+                <button onClick={handleOpenCollectionDialogue} className='h-[30px] w-[30px] bg-[#10100e] text-[#ffffff] hover:bg-indigo-500 transition-color duration-200 rounded-[10px]'>
+                    <i className="fa-solid fa-layer-group"></i>
+                </button>
+                <button onClick={handleOpenUpdateProduct} className='h-[30px] w-[30px] bg-[#10100e] text-[#ffffff] hover:bg-indigo-500 transition-color duration-200 rounded-[10px]'>
                     <i className="fa-solid fa-pen-to-square"></i>
                 </button>
-                <button onClick={handleOpenDeleteProduct} className='h-10 w-[50px] bg-[#10100e] text-[#ffffff] hover:bg-red-500 transition-color duration-200 rounded-[10px]'>
+                <button onClick={handleOpenDeleteProduct} className='h-[30px] w-[30px] bg-[#10100e] text-[#ffffff] hover:bg-red-500 transition-color duration-200 rounded-[10px]'>
                     <i className="fa-solid fa-trash"></i>
                 </button>
             </div>
@@ -81,6 +90,21 @@ export default function DashboardCard({ product }: { product: ProductProps }): R
                                     closeModal={handleOpenUpdateProduct}
                                     handleOpenUpdateProduct={handleOpenUpdateProduct}
                                 />
+                            </section>
+                        )
+                }
+            </Modal>
+            <Modal width='w-[500px]' openModal={collectionIsOpen} handleOpenModal={handleOpenCollectionDialogue}>
+                {
+                    productsAreLoading ? (
+                        <div className='min-h-[436px] flex justify-center items-center'>
+                            <Fallback color='#6366f1' />
+                        </div>
+                    )
+                        :
+                        (
+                            <section className='flex flex-col'>
+                                <UpdateCollectionModal closeModal={handleOpenCollectionDialogue} />
                             </section>
                         )
                 }

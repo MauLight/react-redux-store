@@ -8,7 +8,7 @@ const url = import.meta.env.VITE_BACKEND_URL
 export const getAllCollectionsAsync = createAsyncThunk(
     'products/getAllCollections', async (_, { rejectWithValue }) => {
         try {
-            const { data } = await axios.get(`${url}/collections`)
+            const { data } = await axios.get(`${url}/products/col/collections`)
             return data
         } catch (error) {
             console.error((error as AxiosError).message)
@@ -20,7 +20,7 @@ export const getAllCollectionsAsync = createAsyncThunk(
 export const getAllCollectionsTitlesAsync = createAsyncThunk(
     'products/getAllCollectionsTitles', async (_, { rejectWithValue }) => {
         try {
-            const { data } = await axios.get(`${url}/collections/titles`)
+            const { data } = await axios.get(`${url}/products/col/titles`)
             return data
         } catch (error) {
             console.error((error as AxiosError).message)
@@ -32,7 +32,7 @@ export const getAllCollectionsTitlesAsync = createAsyncThunk(
 export const getCollectionByTitleAsync = createAsyncThunk(
     'products/getCollectionByTitle', async (title, { rejectWithValue }) => {
         try {
-            const { data } = await axios.get(`${url}/collections/title/${title}`)
+            const { data } = await axios.get(`${url}/products/col/title/${title}`)
             return data
         } catch (error) {
             console.error((error as AxiosError).message)
@@ -47,7 +47,7 @@ export const postNewCollectionAsync = createAsyncThunk(
         const token = user.token
 
         try {
-            const { data } = await axios.post(`${url}/collections`, collection, {
+            const { data } = await axios.post(`${url}/products/col/collections`, collection, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -62,11 +62,11 @@ export const postNewCollectionAsync = createAsyncThunk(
 )
 
 export const updateCollectionByIdAsync = createAsyncThunk(
-    'products/updateCollectionById', async (id, { rejectWithValue }) => {
+    'products/updateCollectionById', async ({ id, productId }: { id: string, productId: string }, { rejectWithValue }) => {
         const user = localStorage.getItem('marketplace-user') ? JSON.parse(localStorage.getItem('marketplace-user') as string) : {}
         const token = user.token
         try {
-            const { data } = await axios.get(`${url}/collections/${id}`, {
+            const { data } = await axios.put(`${url}/products/col/collections/${id}`, { productId }, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -85,7 +85,7 @@ export const updateCollectionByIdInBulkAsync = createAsyncThunk(
         const user = localStorage.getItem('marketplace-user') ? JSON.parse(localStorage.getItem('marketplace-user') as string) : {}
         const token = user.token
         try {
-            const { data } = await axios.put(`${url}/collections/inbulk/${id}`, productIds, {
+            const { data } = await axios.put(`${url}/products/col/inbulk/${id}`, productIds, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -102,7 +102,7 @@ export const updateCollectionByIdInBulkAsync = createAsyncThunk(
 export const deleteCollectionByIdAsync = createAsyncThunk(
     'products/deleteCollectionById', async (id, { rejectWithValue }) => {
         try {
-            const { data } = await axios.delete(`${url}/collections/${id}`)
+            const { data } = await axios.delete(`${url}/products/col/collections/${id}`)
             return data
         } catch (error) {
             console.error((error as AxiosError).message)
@@ -117,7 +117,7 @@ export const collectionsSlice = createSlice({
         collections: [] as CollectionProps[],
         collection: {} as CollectionProps,
         nav: [] as string[],
-        titles: [] as Array<string>,
+        titles: [] as Array<{ title: string, id: string }>,
         isLoading: false,
         hasErrors: false
     },
@@ -201,7 +201,8 @@ export const collectionsSlice = createSlice({
                 updateCollectionByIdAsync.fulfilled, (state, action) => {
                     state.isLoading = false
                     state.hasErrors = false
-                    state.collection = action.payload.updatedCollection
+                    const updatedCollection = action.payload.updatedCollection
+                    state.collections = state.collections.map((col) => col.id === updatedCollection.id ? updatedCollection : col)
                     toast.success('Collection updated succesfully.')
                 }
             )
