@@ -39,8 +39,8 @@ function DashboardNavbar(): ReactNode {
             navigate('/admin/products')
         } else if (three && !pathname.includes('collections')) {
             navigate('/admin/collections')
-        } else if (three && !pathname.includes('settings')) {
-            //navigate('/admin/collections')
+        } else if (four && !pathname.includes('settings')) {
+            navigate('/admin/settings')
         }
     }, [one, two, three])
 
