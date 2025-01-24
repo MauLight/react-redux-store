@@ -43,14 +43,14 @@ function Home() {
 
     const collection: ProductProps[] = products.slice(1)
 
-    async function getCollection() {
+    async function getProducts() {
         const { payload } = await dispatch(getAllProductsAsync())
         return payload
     }
 
     useLayoutEffect(() => {
         if (products.length === 0) {
-            getCollection()
+            getProducts()
         }
     }, [])
 

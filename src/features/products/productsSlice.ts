@@ -20,7 +20,6 @@ export const getAllProductsAsync = createAsyncThunk(
 export const getProductsByRangeAsync = createAsyncThunk(
     'products/getProductsByRange', async ({ page, rangeSize }: { page: number, rangeSize?: number }, { rejectWithValue }) => {
         try {
-            console.log('1. start')
             const { data } = await axios.get(`${url}/products/by-range?page=${page}&rangeSize=${rangeSize}`)
             return data
         } catch (error) {

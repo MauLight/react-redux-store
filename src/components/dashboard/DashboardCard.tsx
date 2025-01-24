@@ -1,7 +1,7 @@
 import { deleteProductByIdAsync } from '@/features/products/productsSlice'
 import { AppDispatch } from '@/store/store'
 import { ProductProps, StoreProps } from '@/utils/types'
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Modal } from '../common/Modal'
 import ProductDescription from '../common/ProductDescription'
@@ -10,13 +10,24 @@ import Fallback from '../common/Fallback'
 import UpdateCollectionModal from './collections/UpdateCollectionModal'
 import { resetErrorState } from '@/features/collections/collectionsSlice'
 
-export default function DashboardCard({ product }: { product: ProductProps }): ReactNode {
+interface DashboardCardProps {
+    product: ProductProps
+    isCollection?: boolean
+    addProducts?: (productId: string) => Promise<void>
+    removeProducts?: (productId: string) => Promise<void>
+}
+
+export default function DashboardCard({ product, isCollection, addProducts, removeProducts }: DashboardCardProps): ReactNode {
     const dispatch: AppDispatch = useDispatch()
     const productsAreLoading = useSelector((state: StoreProps) => state.inventory.productsAreLoading)
     const collectionHasError = useSelector((state: StoreProps) => state.collections.hasErrors)
     const [modalIsOpen, setModalIsOpen] = useState<boolean>(false)
     const [updateIsOpen, setUpdateIsOpen] = useState<boolean>(false)
     const [collectionIsOpen, setCollectionIsOpen] = useState<boolean>(false)
+
+    const [wasAdded, setWasAdded] = useState<boolean>(false)
+
+    const collectionProducts = useSelector((state: StoreProps) => state.collections.collection.products)
 
     function handleOpenCollectionDialogue() {
         setCollectionIsOpen(!collectionIsOpen)
@@ -38,6 +49,13 @@ export default function DashboardCard({ product }: { product: ProductProps }): R
         setModalIsOpen(false)
     }
 
+    useEffect(() => {
+        const wasAdded = collectionProducts.find((elem) => elem.id === product.id)
+        if (wasAdded) {
+            setWasAdded(true)
+        }
+    }, [collectionProducts])
+
     return (
         <div className='h-20 w-full grid grid-cols-11 gap-x-5 px-10 border-b bg-[#ffffff] content-center overflow-x-scroll'>
             <p className='text-balance truncate'>{product.id}</p>
@@ -48,17 +66,32 @@ export default function DashboardCard({ product }: { product: ProductProps }): R
             <p className='text-balance truncate'>{product.discount}</p>
             <a target='_blank' aria-label='image' href={product.image} className='text-balance font-light truncate'>{product.image}</a>
             <p className='text-balance truncate'>{product.rating?.averageRating}</p>
-            <div className="flex gap-x-2 justify-center items-center">
-                <button onClick={handleOpenCollectionDialogue} className='h-[30px] w-[30px] bg-[#10100e] text-[#ffffff] hover:bg-indigo-500 transition-color duration-200 rounded-[10px]'>
-                    <i className="fa-solid fa-layer-group"></i>
-                </button>
-                <button onClick={handleOpenUpdateProduct} className='h-[30px] w-[30px] bg-[#10100e] text-[#ffffff] hover:bg-indigo-500 transition-color duration-200 rounded-[10px]'>
-                    <i className="fa-solid fa-pen-to-square"></i>
-                </button>
-                <button onClick={handleOpenDeleteProduct} className='h-[30px] w-[30px] bg-[#10100e] text-[#ffffff] hover:bg-red-500 transition-color duration-200 rounded-[10px]'>
-                    <i className="fa-solid fa-trash"></i>
-                </button>
-            </div>
+            {
+                isCollection && addProducts && removeProducts ? (
+                    <div className="flex gap-x-2 justify-center items-center">
+                        <button disabled={wasAdded} onClick={() => { addProducts(product.id) }} className={`h-[30px] w-[30px] transition-color duration-200 rounded-[10px] ${wasAdded ? 'bg-gray-200 text-[#ffffff] cursor-not-allowed' : 'bg-[#10100e] text-[#ffffff] hover:bg-indigo-500'}`}>
+                            <i className="fa-solid fa-circle-plus"></i>
+                        </button>
+                        <button onClick={() => { removeProducts(product.id) }} className='h-[30px] w-[30px] bg-[#10100e] text-[#ffffff] hover:bg-red-500 transition-color duration-200 rounded-[10px]'>
+                            <i className="fa-solid fa-circle-minus"></i>
+                        </button>
+                    </div>
+                )
+                    :
+                    (
+                        <div className="flex gap-x-2 justify-center items-center">
+                            <button onClick={handleOpenCollectionDialogue} className='h-[30px] w-[30px] bg-[#10100e] text-[#ffffff] hover:bg-indigo-500 transition-color duration-200 rounded-[10px]'>
+                                <i className="fa-solid fa-layer-group"></i>
+                            </button>
+                            <button onClick={handleOpenUpdateProduct} className='h-[30px] w-[30px] bg-[#10100e] text-[#ffffff] hover:bg-indigo-500 transition-color duration-200 rounded-[10px]'>
+                                <i className="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button onClick={handleOpenDeleteProduct} className='h-[30px] w-[30px] bg-[#10100e] text-[#ffffff] hover:bg-red-500 transition-color duration-200 rounded-[10px]'>
+                                <i className="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    )
+            }
             <Modal openModal={modalIsOpen} handleOpenModal={handleOpenDeleteProduct}>
                 {
                     productsAreLoading ? (

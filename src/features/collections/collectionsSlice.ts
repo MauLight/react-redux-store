@@ -32,7 +32,6 @@ export const getAllCollectionsTitlesAsync = createAsyncThunk(
 export const getCollectionByTitleAsync = createAsyncThunk(
     'products/getCollectionByTitle', async (title: string, { rejectWithValue }) => {
         try {
-            console.log(`${url}/products/col/bytitle/title/${title}`)
             const { data } = await axios.get(`${url}/products/col/bytitle/title/${title}`)
             return data
         } catch (error) {
@@ -68,6 +67,25 @@ export const updateCollectionByIdAsync = createAsyncThunk(
         const token = user.token
         try {
             const { data } = await axios.put(`${url}/products/col/collections/${id}`, { productId }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            return data
+        } catch (error) {
+            console.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
+export const updateCollectionDeleteProductByIdAsync = createAsyncThunk(
+    'products/updateCollectionDeleteProductById', async ({ id, productId }: { id: string, productId: string }, { rejectWithValue }) => {
+        const user = localStorage.getItem('marketplace-user') ? JSON.parse(localStorage.getItem('marketplace-user') as string) : {}
+        const token = user.token
+        try {
+            const { data } = await axios.put(`${url}/products/col/collections/delete/${id}`, { productId }, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -205,9 +223,28 @@ export const collectionsSlice = createSlice({
                 updateCollectionByIdAsync.fulfilled, (state, action) => {
                     state.isLoading = false
                     state.hasErrors = false
-                    const updatedCollection = action.payload.updatedCollection
-                    state.collections = state.collections.map((col) => col.id === updatedCollection.id ? updatedCollection : col)
+                    state.collection = action.payload.updatedCollection
                     toast.success('Product added to collection succesfully.')
+                }
+            )
+            .addCase(
+                updateCollectionDeleteProductByIdAsync.pending, (state, _action) => {
+                    state.isLoading = true
+                    state.hasErrors = false
+                }
+            )
+            .addCase(
+                updateCollectionDeleteProductByIdAsync.rejected, (state, _action) => {
+                    state.isLoading = false
+                    state.hasErrors = true
+                }
+            )
+            .addCase(
+                updateCollectionDeleteProductByIdAsync.fulfilled, (state, action) => {
+                    state.isLoading = false
+                    state.hasErrors = false
+                    state.collection = action.payload.updatedCollection
+                    toast.success('Product removed from collection succesfully.')
                 }
             )
             .addCase(
