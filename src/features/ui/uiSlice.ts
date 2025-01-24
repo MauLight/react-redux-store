@@ -143,6 +143,10 @@ export const uiSlice = createSlice({
     name: 'ui',
     initialState: {
         currUI: {
+            global: {
+                ui: {},
+                general: {}
+            },
             auth: {
                 allowGoogle: false,
                 compressImage: true,

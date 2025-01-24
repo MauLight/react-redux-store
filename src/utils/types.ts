@@ -23,6 +23,10 @@ export interface wishListProduct { id: string, productId: string }
 export interface SliderProps { name: string, id: string, speed: number, animation: string, imageList: Array<{ image: string, public_id: string }> }
 
 export interface uiProps {
+    global: {
+        ui: {},
+        general: {}
+    },
     auth: {
         allowGoogle: boolean
         compressImage: boolean
