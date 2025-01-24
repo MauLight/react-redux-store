@@ -5,54 +5,54 @@ import AddTagsComponent from './products/AddTagsComponent'
 import { generateWithGemini } from '@/gemini/gemini'
 interface IndividualProductFormProps {
     register: UseFormRegister<{
-        length?: number | undefined;
-        image?: string | undefined;
-        brand?: string | undefined;
-        weight?: number | undefined;
-        height?: number | undefined;
-        width?: number | undefined;
-        discount?: number | undefined;
-        quantity?: number | undefined;
-        title: string;
-        description: string;
-        price: number;
+        length?: number | undefined
+        image?: string | undefined
+        brand?: string | undefined
+        weight?: number | undefined
+        height?: number | undefined
+        width?: number | undefined
+        discount?: number | undefined
+        quantity: number
+        title: string
+        description: string
+        price: number
     }> | UseFormRegister<{
-        image?: string | undefined;
-        brand?: string | undefined;
-        weight?: number | undefined;
-        height?: number | undefined;
-        width?: number | undefined;
-        length?: number | undefined;
-        quantity?: number | undefined;
-        title: string;
-        description: string;
-        price: number;
-        discount: number;
+        image?: string | undefined
+        brand?: string | undefined
+        weight?: number | undefined
+        height?: number | undefined
+        width?: number | undefined
+        length?: number | undefined
+        quantity: number | undefined
+        title: string
+        description: string
+        price: number
+        discount: number
     }>
     setValue: UseFormSetValue<{
-        length?: number | undefined;
-        image?: string | undefined;
-        quantity?: number | undefined;
-        brand?: string | undefined;
-        discount?: number | undefined;
-        weight?: number | undefined;
-        height?: number | undefined;
-        width?: number | undefined;
-        title: string;
-        price: number;
-        description: string;
+        length?: number | undefined
+        image?: string | undefined
+        quantity: number
+        brand?: string | undefined
+        discount?: number | undefined
+        weight?: number | undefined
+        height?: number | undefined
+        width?: number | undefined
+        title: string
+        price: number
+        description: string
     }> | UseFormSetValue<{
-        length?: number | undefined;
-        image?: string | undefined;
-        brand?: string | undefined;
-        weight?: number | undefined;
-        height?: number | undefined;
-        width?: number | undefined;
-        quantity?: number | undefined;
-        title: string;
-        description: string;
-        price: number;
-        discount: number;
+        length?: number | undefined
+        image?: string | undefined
+        brand?: string | undefined
+        weight?: number | undefined
+        height?: number | undefined
+        width?: number | undefined
+        quantity: number
+        title: string
+        description: string
+        price: number
+        discount: number
     }>
     errors: FieldErrors<{
         image?: string | undefined
@@ -65,7 +65,7 @@ interface IndividualProductFormProps {
         length: number | undefined
         price: number | undefined
         discount: number | undefined
-        quantity: number | undefined
+        quantity: number
     }>
     cloudinaryFileUpload: string | null
     priceWithDiscount: number

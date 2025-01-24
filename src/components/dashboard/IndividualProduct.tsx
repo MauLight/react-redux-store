@@ -18,7 +18,7 @@ import ConfirmationModal from './ConfirmationModal'
 
 import { generateSignature, postToCloudinary } from '@/utils/functions'
 import { useSelector } from 'react-redux'
-import { StoreProps } from '@/utils/types'
+import { ProductProps, StoreProps } from '@/utils/types'
 
 const CloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME
 const CloudinaryAPIKEY = import.meta.env.VITE_CLOUDINARY_APIKEY
@@ -34,7 +34,7 @@ export const productSchema = yup.object().shape({
     length: yup.number(),
     price: yup.number().required('Price is required'),
     discount: yup.number(),
-    quantity: yup.number(),
+    quantity: yup.number().required(),
 })
 
 function IndividualProduct(): ReactNode {
@@ -291,7 +291,7 @@ function IndividualProduct(): ReactNode {
                 confirmationDialogue && (
                     <Modal openModal={confirmationDialogue} handleOpenModal={() => { setConfirmationDialogue(!confirmationDialogue) }}>
                         <ConfirmationModal
-                            product={{ ...getValues() }}
+                            product={{ ...getValues() } as ProductProps}
                             errorMessage={postProductErrorMessage}
                             handlePostProduct={handlePostProduct}
                             postProductError={postProductError}

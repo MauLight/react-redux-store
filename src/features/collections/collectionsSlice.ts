@@ -42,12 +42,12 @@ export const getCollectionByTitleAsync = createAsyncThunk(
 )
 
 export const postNewCollectionAsync = createAsyncThunk(
-    'products/postNewCollection', async (collection, { rejectWithValue }) => {
+    'products/postNewCollection', async ({ title }: { title: string }, { rejectWithValue }) => {
         const user = localStorage.getItem('marketplace-user') ? JSON.parse(localStorage.getItem('marketplace-user') as string) : {}
         const token = user.token
 
         try {
-            const { data } = await axios.post(`${url}/products/col/collections`, collection, {
+            const { data } = await axios.post(`${url}/products/col/collections`, { title }, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -138,7 +138,8 @@ export const collectionsSlice = createSlice({
         nav: [] as string[],
         titles: [] as Array<{ title: string, id: string }>,
         isLoading: false,
-        hasErrors: false
+        hasErrors: false,
+        error: ''
     },
     reducers: {
         addCollectionToNav: (state, action) => {
@@ -274,9 +275,11 @@ export const collectionsSlice = createSlice({
                 }
             )
             .addCase(
-                postNewCollectionAsync.rejected, (state, _action) => {
+                postNewCollectionAsync.rejected, (state, action) => {
+                    console.log(action.payload, 'this is the error payload')
                     state.isLoading = false
                     state.hasErrors = true
+                    state.error = (action.payload as { error: string }).error
                 }
             )
             .addCase(
@@ -286,6 +289,7 @@ export const collectionsSlice = createSlice({
                     state.collection = action.payload.newCollection
                     state.collections = [...state.collections, action.payload.newCollection]
                     state.titles = [...state.titles, action.payload.newCollection.title]
+                    console.log([...state.titles, action.payload.newCollection.title])
                     toast.success('Collection posted succesfully.')
                 }
             )

@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch } from '@/store/store'
-import { getAllCollectionsTitlesAsync, getCollectionByTitleAsync, updateCollectionByIdAsync, updateCollectionDeleteProductByIdAsync } from '@/features/collections/collectionsSlice'
+import { getAllCollectionsTitlesAsync, getCollectionByTitleAsync, resetErrorState, updateCollectionByIdAsync, updateCollectionDeleteProductByIdAsync } from '@/features/collections/collectionsSlice'
 
 import CustomDropdownWithCreate from '@/components/common/CustomDropdownWithCreate'
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar'
@@ -13,6 +13,7 @@ import { Modal } from '@/components/common/Modal'
 import AddProductsToCollection from '@/components/dashboard/collections/AddProductsToCollection'
 import Fallback from '@/components/common/Fallback'
 import ErrorComponent from '@/components/common/ErrorComponent'
+import AddNewCollection from '@/components/dashboard/collections/AddNewCollection'
 
 function Collections(): ReactNode {
     const dispatch: AppDispatch = useDispatch()
@@ -23,17 +24,28 @@ function Collections(): ReactNode {
 
     const [products, setProducts] = useState<any[]>([])
     const [titles, setTitles] = useState<string[]>([])
-    const [inputValue, setInputValue] = useState<string>('')
+    const [inputValue, setInputValue] = useState<string>('Choose a collection')
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [openModal, setOpenModal] = useState<boolean>(false)
+    const [openModalCreateCollection, setOpenModalCreateCollection] = useState<boolean>(false)
     const [navState, setNavState] = useState<Record<string, boolean>>({
         one: true,
         two: false,
         three: false
     })
 
+    function handleSetInputValue(value: string) {
+        setInputValue(value)
+        setProducts([])
+    }
+
     function handleOpenModal() {
         setOpenModal(!openModal)
+    }
+
+    function handleOpenModalCreateCollection() {
+        setOpenModalCreateCollection(!openModalCreateCollection)
+        dispatch(resetErrorState())
     }
 
     async function getProductsFromCollection() {
@@ -48,17 +60,13 @@ function Collections(): ReactNode {
     }
 
     async function handleAddProductsToCollection(productId: string) {
-        console.log('triggered!', productId)
-        const { payload } = await dispatch(updateCollectionByIdAsync({ id: currCollection.id, productId }))
+        await dispatch(updateCollectionByIdAsync({ id: currCollection.id, productId }))
         getProductsFromCollection()
-        console.log(payload)
     }
 
     async function handleRemoveProductsFromCollection(productId: string) {
-        console.log('triggered!', productId)
-        const { payload } = await dispatch(updateCollectionDeleteProductByIdAsync({ id: currCollection.id, productId }))
+        await dispatch(updateCollectionDeleteProductByIdAsync({ id: currCollection.id, productId }))
         getProductsFromCollection()
-        console.log(payload)
     }
 
     useEffect(() => {
@@ -79,7 +87,7 @@ function Collections(): ReactNode {
     }, [collectionTitles])
 
     useEffect(() => {
-        if (inputValue !== 'Choose a collection' && products.length === 0 && !isLoading) {
+        if (inputValue !== 'Choose a collection' && products.length === 0) {
             getProductsFromCollection()
         }
     }, [inputValue])
@@ -110,10 +118,13 @@ function Collections(): ReactNode {
                                             <div className='flex flex-col gap-y-1 w-[250px]'>
                                                 <label className='text-[0.8rem]' htmlFor="collections">Collections</label>
                                                 <CustomDropdownWithCreate
+                                                    create
+                                                    label='Add New Collection'
+                                                    buttonFunction={handleOpenModalCreateCollection}
                                                     list={titles}
                                                     value={inputValue}
-                                                    setValue={setInputValue}
-                                                    defaultValue='Choose a collection'
+                                                    setValue={handleSetInputValue}
+                                                    defaultValue={inputValue}
                                                 />
                                             </div>
                                         )
@@ -140,7 +151,13 @@ function Collections(): ReactNode {
 
                                             {
                                                 products.length > 0 ? products.map((product: ProductProps) => (
-                                                    <DashboardCard isCollection addProducts={handleAddProductsToCollection} removeProducts={handleRemoveProductsFromCollection} key={product.id} product={product} />
+                                                    <DashboardCard
+                                                        isCollection
+                                                        key={product.id}
+                                                        product={product}
+                                                        addProducts={handleAddProductsToCollection}
+                                                        removeProducts={handleRemoveProductsFromCollection}
+                                                    />
                                                 ))
                                                     :
                                                     (
@@ -166,6 +183,9 @@ function Collections(): ReactNode {
                     addProducts={handleAddProductsToCollection}
                     removeProducts={handleRemoveProductsFromCollection}
                 />
+            </Modal>
+            <Modal openModal={openModalCreateCollection} handleOpenModal={handleOpenModalCreateCollection}>
+                <AddNewCollection hasError={collectionHasError} closeModal={handleOpenModalCreateCollection} />
             </Modal>
         </div>
     )

@@ -1,5 +1,5 @@
 export interface ProductProps {
-    id: string
+    id?: string
     description: string
     title: string
     brand?: string
@@ -73,6 +73,7 @@ export interface StoreProps {
         titles: { title: string, id: string }[]
         isLoading: boolean
         hasErrors: boolean
+        error: string
     }
     userAuth: {
         user: Record<string, any>
