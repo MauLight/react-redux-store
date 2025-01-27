@@ -299,7 +299,6 @@ export const uiSlice = createSlice({
                 getUIConfigurationAsync.fulfilled, (state, action) => {
                     state.uiIsLoading = false
                     state.uiHasError = false
-                    console.log(action.payload.ui, 'THE UI')
                     state.currConfig = action.payload.ui.currConfig
                     state.id = action.payload.ui.id
                     state.currentTemplateId = action.payload.ui.currentTemplate
