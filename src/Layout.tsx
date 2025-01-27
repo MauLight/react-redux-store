@@ -151,7 +151,7 @@ function Layout() {
             </ErrorBoundary>
             {
                 showScrollButton && (
-                    <button onClick={scrollToTop} className='fixed bottom-10 right-10 w-[50px] h-[50px] rounded-full border bg-[#ffffff]'>
+                    <button onClick={scrollToTop} className='fixed bottom-10 right-10 z-50 w-[50px] h-[50px] rounded-full border bg-[#ffffff]'>
                         <i className="fa-solid fa-arrow-up"></i>
                     </button>
                 )

@@ -89,7 +89,10 @@ function Home() {
                             <div className="grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3">
                                 {
                                     collection.length > 0 && collection.map(product => (
-                                        <div key={product.id} className="h-[700px]">
+                                        // <div key={product.id} className="h-[700px]">
+                                        //     <ProductCard product={product} />
+                                        // </div>
+                                        <div key={product.id}>
                                             <ProductCard product={product} />
                                         </div>
                                     ))

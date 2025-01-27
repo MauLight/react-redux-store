@@ -11,9 +11,21 @@ export const classicTemplate = {
     title: 'classic',
     preview: '',
     card: {
-        layout: 'grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3 gap-10 px-10 bg-[#ffffff]',
-        card: 'col-span-1 overflow-hidden rounded-[20px] flex flex-col',
+        layout: 'grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3 gap-10 px-10 py-20 bg-gray-200',
+        card: 'h-[600px] col-span-1 overflow-hidden rounded-[15px] flex flex-col',
         image: 'h-[480px] z-10',
+        textLayout: 'w-full h-[120px] py-10 flex justify-between px-10 z-20 transition-all duration-300 text-[1rem] min-[400px]:text-[1.5rem] bg-[#ffffff] antialiazed text-[#10100e] leading-tight',
+        gradient: false
+    }
+}
+
+export const techTemplate = {
+    title: 'tech',
+    preview: '',
+    card: {
+        layout: 'grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3 gap-12 px-12 py-20 bg-[#ffffff]',
+        card: 'h-[500px] col-span-1 overflow-hidden flex flex-col hover:shadow-xl',
+        image: 'h-[380px] z-10',
         textLayout: 'w-full h-[120px] py-10 flex justify-between px-10 z-20 transition-all duration-300 text-[1rem] min-[400px]:text-[1.5rem] bg-[#ffffff] antialiazed text-[#10100e] leading-tight',
         gradient: false
     }
@@ -24,8 +36,8 @@ export const modernTemplate = {
     preview: '',
     card: {
         layout: 'grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3',
-        card: 'h-full col-span-1 overflow-hidden',
-        image: '',
+        card: 'h-[700px] col-span-1 overflow-hidden',
+        image: 'h-full',
         textLayout: 'w-full absolute bottom-5 flex justify-between px-5 z-10 transition-all duration-300 text-[1rem] min-[400px]:text-[22px] uppercase antialiazed text-[#ffffff] leading-tight',
         gradient: true
     }

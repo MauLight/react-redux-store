@@ -35,15 +35,15 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
   }
 
   return (
-    <section className={`group relative ${pathname === '/collection' ? 'h-[460px]' : ''} h-[600px] col-span-1 overflow-hidden rounded-[20px] flex flex-col`}>
+    <section className={`group relative ${pathname === '/collection' ? 'h-[460px]' : ''} h-[700px] col-span-1 overflow-hidden`}>
 
-      <div className='h-[480px] z-10'>
+      <div className='h-full'>
         <img key={product.id} src={product.image} alt="product" className="w-full sm:h-full object-cover" />
       </div>
 
       {
         isCollection && (
-          <div className="w-full h-[120px] py-10 flex justify-between px-10 z-20 transition-all duration-300 text-[1rem] min-[400px]:text-[1.5rem] bg-[#ffffff] antialiazed text-[#10100e] leading-tight">
+          <div className="w-full absolute bottom-5 flex justify-between px-5 z-10 transition-all duration-300 text-[1rem] min-[400px]:text-[22px] uppercase antialiazed text-[#ffffff] leading-tight">
             <Link to={`/product/${product.id}`} className="flex flex-col">
               <h1 aria-label={product.title} className=''>{product.title}</h1>
               <div className="flex gap-x-2">
@@ -74,7 +74,7 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
           </div>
         )
       }
-      <div className='w-full h-full absolute top-0 left-0 bg-gradient-to-t from-[#10100e] to-transparent opacity-50'></div>
+      <div className='w-full h-full absolute top-0 left-0 bg-gradient-to-t from-[#10100e] to-transparent opacity-30'></div>
       <Link to={`/product/${product.id}`} className="absolute top-0 left-0 w-full sm:h-full bg-[#10100e] opacity-0 group-hover:opacity-30 z-10 transition-all duration-200"></Link>
     </section>
   )
