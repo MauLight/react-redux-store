@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { AppDispatch } from '@/store/store'
 import { useDispatch, useSelector } from 'react-redux'
 import { postLoginAsync, postNewUserAsync } from '@/features/userAuth/userAuthSlice'
@@ -29,7 +29,7 @@ function SignForm({ isBuilder }: { isBuilder: boolean | undefined }): ReactNode 
     const dispatch = useDispatch<AppDispatch>()
 
     //* Login UI state
-    const authUI = useSelector((state: StoreProps) => state.ui.currUI.auth)
+    const { auth } = useSelector((state: StoreProps) => state.ui.currConfig)
     const isLoading = useSelector((state: StoreProps) => state.userAuth.isLoading)
     const hasError = useSelector((state: StoreProps) => state.userAuth.hasError)
     const [error, setError] = useState<string>('')
@@ -87,10 +87,6 @@ function SignForm({ isBuilder }: { isBuilder: boolean | undefined }): ReactNode 
         navigate('/')
     }
 
-    useEffect(() => {
-        console.log(authUI)
-    }, [authUI])
-
     return (
         <section className="w-[350px] flex flex-col rounded-[10px] gap-y-5 px-7 py-9 bg-[#ffffff]">
             <>
@@ -110,23 +106,23 @@ function SignForm({ isBuilder }: { isBuilder: boolean | undefined }): ReactNode 
                             <>
                                 <>
                                     {
-                                        authUI.logoUrl && (
+                                        auth.logoUrl && (
                                             <div className="w-full flex justify-center items-center">
-                                                <img className='w-[60px]' src={authUI.logoUrl} alt="logo" />
+                                                <img className='w-[60px]' src={auth.logoUrl} alt="logo" />
                                             </div>
                                         )
                                     }
                                 </>
                                 <>
                                     {
-                                        authUI.header !== '' && (
-                                            <h1 className='font-body text-[#10100e] text-4xl text-center'>{authUI.header}</h1>
+                                        auth.header !== '' && (
+                                            <h1 className='font-body text-[#10100e] text-4xl text-center'>{auth.header}</h1>
                                         )
                                     }
                                 </>
                                 <>
                                     {
-                                        !authUI.logoUrl && authUI.header === '' && (
+                                        !auth.logoUrl && auth.header === '' && (
                                             <h1 className='font-body text-[#10100e] text-4xl text-center uppercase'>Welcome</h1>
                                         )
                                     }
@@ -148,7 +144,7 @@ function SignForm({ isBuilder }: { isBuilder: boolean | undefined }): ReactNode 
                                 </form>
                                 <div className="flex flex-col gap-y-2">
                                     {
-                                        authUI.allowGoogle && (
+                                        auth.allowGoogle && (
                                             <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
                                                 <div className="flex items-center justify-center gap-x-1 cursor-pointer">
                                                     <GoogleButton operation={1} handleLogin={handleLogin} />

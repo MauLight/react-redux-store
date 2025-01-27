@@ -183,7 +183,7 @@ function Settings(): ReactNode {
                                     <Switch clicked={clickedAllowAI} handleClick={handleOpenAISuggestions} />
                                 </div>
                                 <div className="flex items-center justify-between gap-x-2">
-                                    <p>Compress images before Upload</p>
+                                    <p>Compress images before upload</p>
                                     <Switch clicked={clickedCompressImage} handleClick={handleClickCompressImage} />
                                 </div>
                                 <div className="flex items-center justify-between gap-x-2">
@@ -211,7 +211,7 @@ function Settings(): ReactNode {
                     )
                 }
             </div>
-            <DashboardSidebarReducer state={navState} dispatcher={dispatchNav} titles={['UI Settings', 'Global Settings', 'Account Settings']} />
+            <DashboardSidebarReducer state={navState} dispatcher={dispatchNav} titles={['UI Settings', 'Global Settings']} />
         </div>
     )
 }

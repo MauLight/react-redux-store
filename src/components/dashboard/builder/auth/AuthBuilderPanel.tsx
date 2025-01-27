@@ -11,6 +11,7 @@ import ErrorComponent from '@/components/common/ErrorComponent'
 import Fallback from '@/components/common/Fallback'
 import { Switch } from '@/components/common/Switch'
 import { StoreProps } from '@/utils/types'
+import { Modal } from '@/components/common/Modal'
 
 const CloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME
 const CloudinaryAPIKEY = import.meta.env.VITE_CLOUDINARY_APIKEY
@@ -18,16 +19,25 @@ const CloudinaryAPIKEY = import.meta.env.VITE_CLOUDINARY_APIKEY
 export default function AuthBuilderPanel(): ReactNode {
 
     const dispatch: AppDispatch = useDispatch()
-    const { id, currConfig, uiHasError, uiIsLoading } = useSelector((state: StoreProps) => state.ui)
+    const { id, currConfig, uiHasError } = useSelector((state: StoreProps) => state.ui)
 
     //* Switch state
+    const [openAllowGoogle, setOpenAllowGoogle] = useState<boolean>(false)
     const [clickedAllowGoogle, setClickedAllowGoogle] = useState<boolean>(false)
     const [clickedCompressImage, setClickedCompressImage] = useState<boolean>(false)
     const [authHeader, setAuthHeader] = useState<string>('')
     const [debouncedAuthHeader, setDebouncedAuthHeader] = useState(authHeader)
 
+    function handleOpenAllowGoogle() {
+        if (clickedAllowGoogle) {
+            handleClickAllowGoogle()
+            setClickedAllowGoogle(false)
+            return
+        }
+        setOpenAllowGoogle(!openAllowGoogle)
+    }
+
     const handleClickAllowGoogle = async (): Promise<void> => {
-        setClickedAllowGoogle(!clickedAllowGoogle)
         const newAuthConfiguration = {
             allowGoogle: clickedAllowGoogle === false ? true : false,
             compressImage: clickedCompressImage,
@@ -45,33 +55,12 @@ export default function AuthBuilderPanel(): ReactNode {
 
             }
         }))
-    }
-
-    const handleClickCompressImage = async (): Promise<void> => {
-        setClickedCompressImage(!clickedCompressImage)
-        setCompress(clickedCompressImage ? 1 : 0)
-
-        const newAuthConfiguration = {
-            allowGoogle: clickedAllowGoogle,
-            compressImage: clickedCompressImage === false ? true : false,
-            header: authHeader,
-            logoUrl: urlToCloudinaryLogo,
-            logo_public_id: urlToLogoPublicId,
-            background: urlToCloudinaryBg,
-            background_public_id: urlToBgPublicId
-        }
-
-        await dispatch(updateUIConfigurationAsync({
-            id: id as string, newConfiguration: {
-                ...currConfig,
-                auth: newAuthConfiguration
-
-            }
-        }))
+        setClickedAllowGoogle(!clickedAllowGoogle)
+        setOpenAllowGoogle(false)
     }
 
     //* Cloudinary state
-    const [compress, setCompress] = useState<number>(1)
+    const [compress, _setCompress] = useState<number>(1)
 
     const [cloudinaryLoadingOne, setCloudinaryLoadingOne] = useState<boolean>(false)
     const [cloudinaryLoadingTwo, setCloudinaryLoadingTwo] = useState<boolean>(false)
@@ -466,14 +455,7 @@ export default function AuthBuilderPanel(): ReactNode {
                 )
             }
             {
-                !uiHasError && uiIsLoading && (
-                    <div className="w-full h-full flex justify-center items-center">
-                        <Fallback color='#6366f1' />
-                    </div>
-                )
-            }
-            {
-                !uiHasError && !uiIsLoading && (
+                !uiHasError && (
                     <section className='w-full h-full flex flex-col items-start justify-between gap-y-5'>
                         <div className='flex flex-col gap-y-10'>
                             <div>
@@ -486,11 +468,7 @@ export default function AuthBuilderPanel(): ReactNode {
                             <div className="flex flex-col gap-y-2">
                                 <div className="flex items-center justify-between gap-x-2">
                                     <p>Allow users to log in with Google Auth</p>
-                                    <Switch clicked={clickedAllowGoogle} handleClick={handleClickAllowGoogle} />
-                                </div>
-                                <div className="flex items-center justify-between gap-x-2">
-                                    <p>Compress images before Upload</p>
-                                    <Switch clicked={clickedCompressImage} handleClick={handleClickCompressImage} />
+                                    <Switch clicked={clickedAllowGoogle} handleClick={handleOpenAllowGoogle} />
                                 </div>
                             </div>
 
@@ -542,6 +520,22 @@ export default function AuthBuilderPanel(): ReactNode {
                             </div>
 
                         </div>
+                        <Modal openModal={openAllowGoogle} handleOpenModal={handleOpenAllowGoogle}>
+                            <>
+                                <p className='text-balance'>Allowing login with Google involves sharing your marketplace users data with Google, are you sure you want to continue?</p>
+                                <div className="w-full flex justify-end gap-x-2 mt-10">
+                                    <button onClick={handleOpenAllowGoogle} className='w-[120px] h-10 bg-[#10100e] hover:bg-red-500 active:bg-[#10100e] transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
+                                        <i className="fa-solid fa-ban"></i>
+                                        Cancel
+                                    </button>
+                                    <button onClick={handleClickAllowGoogle} className='w-[120px] h-10 bg-green-600 hover:bg-green-500 active:bg-green-600 transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
+                                        <i className="fa-solid fa-floppy-disk"></i>
+                                        Confirm
+                                    </button>
+
+                                </div>
+                            </>
+                        </Modal>
                     </section>
                 )
             }
