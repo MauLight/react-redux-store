@@ -42,6 +42,7 @@ export interface TemplateProps {
 
 export interface uiProps {
     global: {
+        allowAI: boolean,
         compress: boolean,
         invitees: boolean
     }

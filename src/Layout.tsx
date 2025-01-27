@@ -34,9 +34,7 @@ const Confirmation = lazy(async () => await import('@/routes/Confirmation'))
 
 function Layout() {
     const dispatch: AppDispatch = useDispatch()
-    const { currConfig } = useSelector((state: StoreProps) => state.ui)
-    const uiIsLoading = useSelector((state: StoreProps) => state.ui.uiIsLoading)
-    const uiHasError = useSelector((state: StoreProps) => state.ui.uiHasError)
+    const { currConfig, uiHasError } = useSelector((state: StoreProps) => state.ui)
 
     const { pathname } = useLocation()
     const hideTopbar = pathname.includes('sign') || pathname.includes('login') || pathname.includes('admin') || pathname.includes('confirmation')
@@ -121,14 +119,7 @@ function Layout() {
                                 )
                             }
                             {
-                                !uiHasError && uiIsLoading && (
-                                    <div className="w-full h-full flex justify-center items-center">
-                                        <Fallback />
-                                    </div>
-                                )
-                            }
-                            {
-                                !uiHasError && !uiIsLoading && currConfig && (
+                                !uiHasError && currConfig && (
                                     <Routes>
                                         <Route path='/' element={<Home />} />
                                         <Route path='/sign' element={<Sign />} />

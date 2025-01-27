@@ -93,7 +93,7 @@ export const postNewUIConfigurationAsync = createAsyncThunk(
     }
 )
 
-export const updateUIConfigurationAsync = createAsyncThunk(
+export const updateCurrentTemplateAsync = createAsyncThunk(
     'ui/updateUIConfiguration', async ({ uiId, templateId }: { uiId: string, templateId: string }, { rejectWithValue }) => {
         try {
             const { data } = await axios.put(`${url}/administrator/ui/template/${uiId}`, { templateId },
@@ -112,7 +112,7 @@ export const updateUIConfigurationAsync = createAsyncThunk(
     }
 )
 
-export const updateCurrentTemplateAsync = createAsyncThunk(
+export const updateUIConfigurationAsync = createAsyncThunk(
     'ui/updateCurrentTemplate', async ({ id, newConfiguration }: { id: string, newConfiguration: Record<string, any> }, { rejectWithValue }) => {
         try {
             const { data } = await axios.put(`${url}/administrator/ui/${id}`, newConfiguration,
@@ -249,6 +249,7 @@ export const uiSlice = createSlice({
     initialState: {
         currConfig: {
             global: {
+                allowAI: false,
                 compress: true,
                 invitees: false
             },
@@ -339,7 +340,7 @@ export const uiSlice = createSlice({
                 updateUIConfigurationAsync.fulfilled, (state, action) => {
                     state.uiIsLoading = false
                     state.uiHasError = false
-                    state.currConfig = action.payload.updatedUI
+                    state.currConfig = action.payload.updatedUI.currConfig
                     toast.success('UI updated succesfully.')
                 }
             )
@@ -353,6 +354,7 @@ export const uiSlice = createSlice({
                 updateCurrentTemplateAsync.rejected, (state, _action) => {
                     state.uiIsLoading = false
                     state.uiHasError = true
+                    toast.error('There was an error updating UI configuration.')
                 }
             )
             .addCase(
