@@ -17,8 +17,8 @@ const CloudinaryAPIKEY = import.meta.env.VITE_CLOUDINARY_APIKEY
 
 function HeroSectionPanel(): ReactNode {
     const dispatch: AppDispatch = useDispatch()
-    const { currUI, uiHasError, uiIsLoading } = useSelector((state: StoreProps) => state.ui)
-    const hero = useSelector((state: StoreProps) => state.ui.currUI.home.hero)
+    const { id, currConfig, uiHasError, uiIsLoading } = useSelector((state: StoreProps) => state.ui)
+    const hero = useSelector((state: StoreProps) => state.ui.currConfig.home.hero)
 
     const [header, setHeader] = useState<string>('')
     const [debouncedHeader, setDebouncedHeader] = useState<string>('')
@@ -70,14 +70,12 @@ function HeroSectionPanel(): ReactNode {
                                     }
 
                                     await dispatch(updateUIConfigurationAsync({
-                                        id: currUI.id, newConfiguration: {
-
-                                            ...currUI,
+                                        id: id as string, newConfiguration: {
+                                            ...currConfig,
                                             home: {
-                                                ...currUI.home,
+                                                ...currConfig.home,
                                                 hero: newHeroConfiguration
                                             }
-
                                         }
                                     }))
 
@@ -128,14 +126,12 @@ function HeroSectionPanel(): ReactNode {
             }
 
             await dispatch(updateUIConfigurationAsync({
-                id: currUI.id, newConfiguration: {
-
-                    ...currUI,
+                id: id as string, newConfiguration: {
+                    ...currConfig,
                     home: {
-                        ...currUI.home,
+                        ...currConfig.home,
                         hero: newHeroConfiguration
                     }
-
                 }
             }))
 
@@ -155,14 +151,12 @@ function HeroSectionPanel(): ReactNode {
         }
 
         await dispatch(updateUIConfigurationAsync({
-            id: currUI.id, newConfiguration: {
-
-                ...currUI,
+            id: id as string, newConfiguration: {
+                ...currConfig,
                 home: {
-                    ...currUI.home,
+                    ...currConfig.home,
                     hero: newHeroConfiguration
                 }
-
             }
         }))
 
@@ -178,14 +172,12 @@ function HeroSectionPanel(): ReactNode {
         }
 
         await dispatch(updateUIConfigurationAsync({
-            id: currUI.id, newConfiguration: {
-
-                ...currUI,
+            id: id as string, newConfiguration: {
+                ...currConfig,
                 home: {
-                    ...currUI.home,
+                    ...currConfig.home,
                     hero: newHeroConfiguration
                 }
-
             }
         }))
 
@@ -214,7 +206,7 @@ function HeroSectionPanel(): ReactNode {
     }, [header])
 
     useEffect(() => {
-        if (debouncedHeader.length > 0 && debouncedHeader !== currUI.home.hero.header) {
+        if (debouncedHeader.length > 0 && debouncedHeader !== currConfig.home.hero.header) {
             async function handleUpdateHeroConfiguration() {
 
                 const newHeroConfiguration = {
@@ -226,14 +218,12 @@ function HeroSectionPanel(): ReactNode {
                 }
 
                 await dispatch(updateUIConfigurationAsync({
-                    id: currUI.id, newConfiguration: {
-
-                        ...currUI,
+                    id: id as string, newConfiguration: {
+                        ...currConfig,
                         home: {
-                            ...currUI.home,
+                            ...currConfig.home,
                             hero: newHeroConfiguration
                         }
-
                     }
                 }))
             }
@@ -254,7 +244,7 @@ function HeroSectionPanel(): ReactNode {
     }, [subHeader])
 
     useEffect(() => {
-        if (debouncedSubHeader.length > 0 && debouncedSubHeader !== currUI.home.hero.subHeader) {
+        if (debouncedSubHeader.length > 0 && debouncedSubHeader !== currConfig.home.hero.subHeader) {
             async function handleUpdateHeroConfiguration() {
 
                 const newHeroConfiguration = {
@@ -266,14 +256,12 @@ function HeroSectionPanel(): ReactNode {
                 }
 
                 await dispatch(updateUIConfigurationAsync({
-                    id: currUI.id, newConfiguration: {
-
-                        ...currUI,
+                    id: id as string, newConfiguration: {
+                        ...currConfig,
                         home: {
-                            ...currUI.home,
+                            ...currConfig.home,
                             hero: newHeroConfiguration
                         }
-
                     }
                 }))
             }

@@ -50,9 +50,11 @@ export default function DashboardCard({ product, isCollection, addProducts, remo
     }
 
     useEffect(() => {
-        const wasAdded = collectionProducts.find((elem) => elem.id === product.id)
-        if (wasAdded) {
-            setWasAdded(true)
+        if (collectionProducts) {
+            const wasAdded = collectionProducts.find((elem) => elem.id === product.id)
+            if (wasAdded) {
+                setWasAdded(true)
+            }
         }
     }, [collectionProducts])
 
@@ -69,10 +71,10 @@ export default function DashboardCard({ product, isCollection, addProducts, remo
             {
                 isCollection && addProducts && removeProducts ? (
                     <div className="flex gap-x-2 justify-center items-center">
-                        <button disabled={wasAdded} onClick={() => { addProducts(product.id) }} className={`h-[30px] w-[30px] transition-color duration-200 rounded-[10px] ${wasAdded ? 'bg-gray-200 text-[#ffffff] cursor-not-allowed' : 'bg-[#10100e] text-[#ffffff] hover:bg-indigo-500'}`}>
+                        <button disabled={wasAdded} onClick={() => { addProducts(product.id as string) }} className={`h-[30px] w-[30px] transition-color duration-200 rounded-[10px] ${wasAdded ? 'bg-gray-200 text-[#ffffff] cursor-not-allowed' : 'bg-[#10100e] text-[#ffffff] hover:bg-indigo-500'}`}>
                             <i className="fa-solid fa-circle-plus"></i>
                         </button>
-                        <button onClick={() => { removeProducts(product.id) }} className='h-[30px] w-[30px] bg-[#10100e] text-[#ffffff] hover:bg-red-500 transition-color duration-200 rounded-[10px]'>
+                        <button onClick={() => { removeProducts(product.id as string) }} className='h-[30px] w-[30px] bg-[#10100e] text-[#ffffff] hover:bg-red-500 transition-color duration-200 rounded-[10px]'>
                             <i className="fa-solid fa-circle-minus"></i>
                         </button>
                     </div>
@@ -142,7 +144,7 @@ export default function DashboardCard({ product, isCollection, addProducts, remo
                         :
                         (
                             <section className='flex flex-col'>
-                                <UpdateCollectionModal productId={product.id} closeModal={handleOpenCollectionDialogue} />
+                                <UpdateCollectionModal productId={product.id as string} closeModal={handleOpenCollectionDialogue} />
                             </section>
                         )
                 }

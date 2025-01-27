@@ -21,12 +21,25 @@ export interface ProductProps {
 
 export interface wishListProduct { id: string, productId: string }
 export interface SliderProps { name: string, id: string, speed: number, animation: string, imageList: Array<{ image: string, public_id: string }> }
+export interface TemplateProps {
+    title: string
+    preview: string
+    card: {
+        card: string
+        layout: string
+        button: string
+        preview: string
+        image: string
+        textLayout: string
+        gradient: boolean
+    }
+}
 
 export interface uiProps {
     global: {
-        ui: {},
-        general: {}
-    },
+        compress: boolean,
+        invitees: boolean
+    }
     auth: {
         allowGoogle: boolean
         compressImage: boolean
@@ -43,15 +56,8 @@ export interface uiProps {
             compressImage: boolean
             image: string
             image_public_id: string
-        },
-        slider: {
-            savedSliders: Array<string>
-            currSlider: string
         }
     }
-    createdAt: string
-    updatedAt: string
-    id: string
 }
 export interface StoreProps {
     inventory: {
@@ -116,11 +122,16 @@ export interface StoreProps {
         hasError: boolean
     },
     ui: {
-        currUI: uiProps
-        sliders: Array<SliderProps>
-        currSlider: SliderProps
+        currConfig: uiProps
+        sliders: Array<string>,
+        currSlider: SliderProps,
+        templates: Array<string>,
+        currTemplate: TemplateProps,
         uiIsLoading: boolean
         uiHasError: boolean
+        createdAt?: string
+        updatedAt?: string
+        id?: string
     }
 }
 

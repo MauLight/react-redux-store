@@ -18,7 +18,7 @@ const CloudinaryAPIKEY = import.meta.env.VITE_CLOUDINARY_APIKEY
 export default function AuthBuilderPanel(): ReactNode {
 
     const dispatch: AppDispatch = useDispatch()
-    const { currUI, uiHasError, uiIsLoading } = useSelector((state: StoreProps) => state.ui)
+    const { id, currConfig, uiHasError, uiIsLoading } = useSelector((state: StoreProps) => state.ui)
 
     //* Switch state
     const [clickedAllowGoogle, setClickedAllowGoogle] = useState<boolean>(false)
@@ -39,8 +39,8 @@ export default function AuthBuilderPanel(): ReactNode {
         }
 
         await dispatch(updateUIConfigurationAsync({
-            id: currUI.id, newConfiguration: {
-                ...currUI,
+            id: id as string, newConfiguration: {
+                ...currConfig,
                 auth: newAuthConfiguration
 
             }
@@ -62,8 +62,8 @@ export default function AuthBuilderPanel(): ReactNode {
         }
 
         await dispatch(updateUIConfigurationAsync({
-            id: currUI.id, newConfiguration: {
-                ...currUI,
+            id: id as string, newConfiguration: {
+                ...currConfig,
                 auth: newAuthConfiguration
 
             }
@@ -128,10 +128,9 @@ export default function AuthBuilderPanel(): ReactNode {
                                         }
 
                                         await dispatch(updateUIConfigurationAsync({
-                                            id: currUI.id, newConfiguration: {
-                                                ...currUI,
+                                            id: id as string, newConfiguration: {
+                                                ...currConfig,
                                                 auth: newAuthConfiguration
-
                                             }
                                         }))
 
@@ -150,10 +149,9 @@ export default function AuthBuilderPanel(): ReactNode {
                                         }
 
                                         await dispatch(updateUIConfigurationAsync({
-                                            id: currUI.id, newConfiguration: {
-                                                ...currUI,
+                                            id: id as string, newConfiguration: {
+                                                ...currConfig,
                                                 auth: newAuthConfiguration
-
                                             }
                                         }))
                                     }
@@ -189,10 +187,9 @@ export default function AuthBuilderPanel(): ReactNode {
                                 }
 
                                 await dispatch(updateUIConfigurationAsync({
-                                    id: currUI.id, newConfiguration: {
-                                        ...currUI,
+                                    id: id as string, newConfiguration: {
+                                        ...currConfig,
                                         auth: newAuthConfiguration
-
                                     }
                                 }))
                             } else {
@@ -210,10 +207,9 @@ export default function AuthBuilderPanel(): ReactNode {
                                 }
 
                                 await dispatch(updateUIConfigurationAsync({
-                                    id: currUI.id, newConfiguration: {
-                                        ...currUI,
+                                    id: id as string, newConfiguration: {
+                                        ...currConfig,
                                         auth: newAuthConfiguration
-
                                     }
                                 }))
                             }
@@ -279,10 +275,9 @@ export default function AuthBuilderPanel(): ReactNode {
                         }
 
                         await dispatch(updateUIConfigurationAsync({
-                            id: currUI.id, newConfiguration: {
-                                ...currUI,
+                            id: id as string, newConfiguration: {
+                                ...currConfig,
                                 auth: newAuthConfiguration
-
                             }
                         }))
 
@@ -301,10 +296,9 @@ export default function AuthBuilderPanel(): ReactNode {
                         }
 
                         await dispatch(updateUIConfigurationAsync({
-                            id: currUI.id, newConfiguration: {
-                                ...currUI,
+                            id: id as string, newConfiguration: {
+                                ...currConfig,
                                 auth: newAuthConfiguration
-
                             }
                         }))
 
@@ -365,10 +359,9 @@ export default function AuthBuilderPanel(): ReactNode {
                 }
 
                 await dispatch(updateUIConfigurationAsync({
-                    id: currUI.id, newConfiguration: {
-                        ...currUI,
+                    id: id as string, newConfiguration: {
+                        ...currConfig,
                         auth: newAuthConfiguration
-
                     }
                 }))
             } else {
@@ -383,10 +376,9 @@ export default function AuthBuilderPanel(): ReactNode {
                 }
 
                 await dispatch(updateUIConfigurationAsync({
-                    id: currUI.id, newConfiguration: {
-                        ...currUI,
+                    id: id as string, newConfiguration: {
+                        ...currConfig,
                         auth: newAuthConfiguration
-
                     }
                 }))
             }
@@ -409,10 +401,9 @@ export default function AuthBuilderPanel(): ReactNode {
         }
 
         await dispatch(updateUIConfigurationAsync({
-            id: currUI.id, newConfiguration: {
-                ...currUI,
+            id: id as string, newConfiguration: {
+                ...currConfig,
                 auth: newAuthConfiguration
-
             }
         }))
 
@@ -420,16 +411,16 @@ export default function AuthBuilderPanel(): ReactNode {
     }
 
     useEffect(() => {
-        if (currUI.auth) {
-            setClickedAllowGoogle(currUI.auth.allowGoogle)
-            setClickedCompressImage(currUI.auth.compressImage)
-            setAuthHeader(currUI.auth.header)
-            setUrlToCloudinaryLogo(currUI.auth.logoUrl)
-            setUrlToLogoPublicId(currUI.auth.logo_public_id)
-            setUrlToCloudinaryBg(currUI.auth.background)
-            setUrlToBgPublicId(currUI.auth.background_public_id)
+        if (currConfig.auth) {
+            setClickedAllowGoogle(currConfig.auth.allowGoogle)
+            setClickedCompressImage(currConfig.auth.compressImage)
+            setAuthHeader(currConfig.auth.header)
+            setUrlToCloudinaryLogo(currConfig.auth.logoUrl)
+            setUrlToLogoPublicId(currConfig.auth.logo_public_id)
+            setUrlToCloudinaryBg(currConfig.auth.background)
+            setUrlToBgPublicId(currConfig.auth.background_public_id)
         }
-    }, [currUI])
+    }, [currConfig])
 
     useEffect(() => {
         const setDebounce = setTimeout(() => {
@@ -455,14 +446,13 @@ export default function AuthBuilderPanel(): ReactNode {
             }
 
             await dispatch(updateUIConfigurationAsync({
-                id: currUI.id, newConfiguration: {
-                    ...currUI,
+                id: id as string, newConfiguration: {
+                    ...currConfig,
                     auth: newAuthConfiguration
-
                 }
             }))
         }
-        if (debouncedAuthHeader.length > 0 && debouncedAuthHeader !== currUI.auth.header) {
+        if (debouncedAuthHeader.length > 0 && debouncedAuthHeader !== currConfig.auth.header) {
             handleUpdateAuthConfiguration()
         }
 

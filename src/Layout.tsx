@@ -34,7 +34,7 @@ const Confirmation = lazy(async () => await import('@/routes/Confirmation'))
 
 function Layout() {
     const dispatch: AppDispatch = useDispatch()
-    const currUI = useSelector((state: StoreProps) => state.ui.currUI)
+    const currUI = useSelector((state: StoreProps) => state.ui.currConfig)
     const uiIsLoading = useSelector((state: StoreProps) => state.ui.uiIsLoading)
     const uiHasError = useSelector((state: StoreProps) => state.ui.uiHasError)
 

@@ -13,6 +13,8 @@ function Builder(): ReactNode {
         five: false,
     })
 
+    console.log(navState)
+
     return (
         <div className='h-screen w-full flex flex-col justify-center gap-y-5 items-start pl-[400px]'>
             {

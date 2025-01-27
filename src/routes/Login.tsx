@@ -11,7 +11,7 @@ function Login({ isBuilder }: { isBuilder?: boolean }): ReactNode {
     // const navigate = useNavigate()
     // const user = useSelector((state: StoreProps) => state.userAuth.user)
 
-    const currUI = useSelector((state: StoreProps) => state.ui.currUI)
+    const currUI = useSelector((state: StoreProps) => state.ui.currConfig)
 
     return (
 
