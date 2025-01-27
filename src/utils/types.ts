@@ -22,6 +22,7 @@ export interface ProductProps {
 export interface wishListProduct { id: string, productId: string }
 export interface SliderProps { name: string, id: string, speed: number, animation: string, imageList: Array<{ image: string, public_id: string }> }
 export interface TemplateProps {
+    id: string
     title: string
     preview: string
     card: {
@@ -125,8 +126,9 @@ export interface StoreProps {
         currConfig: uiProps
         sliders: Array<string>,
         currSlider: SliderProps,
-        templates: Array<string>,
-        currTemplate: TemplateProps,
+        templates: Array<TemplateProps>,
+        currentTemplate: TemplateProps,
+        currentTemplateId: string
         uiIsLoading: boolean
         uiHasError: boolean
         createdAt?: string

@@ -54,7 +54,6 @@ export const getUIConfigurationAsync = createAsyncThunk(
                 //     }
                 // }
             )
-            console.log(data)
             return data
         } catch (error) {
             toast.error((error as AxiosError).message)
@@ -83,7 +82,26 @@ export const postNewUIConfigurationAsync = createAsyncThunk(
 )
 
 export const updateUIConfigurationAsync = createAsyncThunk(
-    'ui/updateUIConfiguration', async ({ id, newConfiguration }: { id: string, newConfiguration: Record<string, any> }, { rejectWithValue }) => {
+    'ui/updateUIConfiguration', async ({ uiId, templateId }: { uiId: string, templateId: string }, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.put(`${url}/administrator/ui/template/${uiId}`, { templateId },
+                // {
+                //     headers: {
+                //         'Authorization': `Bearer ${token}`,
+                //         'Content-Type': 'application/json'
+                //     }
+                // }
+            )
+            return data
+        } catch (error) {
+            toast.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
+export const updateCurrentTemplateAsync = createAsyncThunk(
+    'ui/updateCurrentTemplate', async ({ id, newConfiguration }: { id: string, newConfiguration: Record<string, any> }, { rejectWithValue }) => {
         try {
             const { data } = await axios.put(`${url}/administrator/ui/${id}`, newConfiguration,
                 // {
@@ -243,8 +261,9 @@ export const uiSlice = createSlice({
         },
         sliders: [] as Array<string>,
         currSlider: {} as SliderProps,
-        templates: [] as Array<string>,
-        currTemplate: {} as TemplateProps,
+        templates: [] as Array<TemplateProps>,
+        currentTemplateId: '',
+        currentTemplate: {} as TemplateProps,
         uiIsLoading: false,
         uiHasError: false,
         id: ''
@@ -268,8 +287,10 @@ export const uiSlice = createSlice({
                 getUIConfigurationAsync.fulfilled, (state, action) => {
                     state.uiIsLoading = false
                     state.uiHasError = false
+                    console.log(action.payload.ui, 'THE UI')
                     state.currConfig = action.payload.ui.currConfig
-                    state.id = action.payload.id
+                    state.id = action.payload.ui.id
+                    state.currentTemplateId = action.payload.ui.currentTemplate
                 }
             )
             .addCase(
@@ -309,6 +330,26 @@ export const uiSlice = createSlice({
                     state.uiHasError = false
                     state.currConfig = action.payload.updatedUI
                     toast.success('UI updated succesfully.')
+                }
+            )
+            .addCase(
+                updateCurrentTemplateAsync.pending, (state, _action) => {
+                    state.uiIsLoading = true
+                    state.uiHasError = false
+                }
+            )
+            .addCase(
+                updateCurrentTemplateAsync.rejected, (state, _action) => {
+                    state.uiIsLoading = false
+                    state.uiHasError = true
+                }
+            )
+            .addCase(
+                updateCurrentTemplateAsync.fulfilled, (state, action) => {
+                    state.uiIsLoading = false
+                    state.uiHasError = false
+                    state.currentTemplateId = action.payload.updatedUI.currentTemplate
+                    toast.success('UI template updated succesfully.')
                 }
             )
             .addCase(
@@ -427,7 +468,7 @@ export const uiSlice = createSlice({
                 getTemplateByIdAsync.fulfilled, (state, action) => {
                     state.uiIsLoading = false
                     state.uiHasError = false
-                    state.currTemplate = action.payload.template
+                    state.currentTemplate = action.payload.template
                 }
             )
     }

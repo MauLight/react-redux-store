@@ -1,29 +1,29 @@
 import { Switch } from '@/components/common/Switch'
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar'
-import { updateUIConfigurationAsync } from '@/features/ui/uiSlice'
+import { getAllTemplatesAsync, updateUIConfigurationAsync } from '@/features/ui/uiSlice'
 import { AppDispatch } from '@/store/store'
-import { StoreProps } from '@/utils/types'
+import { StoreProps, TemplateProps } from '@/utils/types'
 import { useEffect, useState, type ReactNode } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-const templates = [
-    {
-        id: '66dff979-33f5-4e16-ba66-811119d22698',
-        title: 'Classic'
-    },
-    {
-        id: 'fe9dacfa-44f6-4266-92b2-67ef3c8e8384',
-        title: 'Modern'
-    },
-    {
-        id: 'e39b8a75-c66d-488c-aed5-b12303153a8e',
-        title: 'Technical'
-    },
-]
+// const templates = [
+//     {
+//         id: '66dff979-33f5-4e16-ba66-811119d22698',
+//         title: 'Classic'
+//     },
+//     {
+//         id: 'fe9dacfa-44f6-4266-92b2-67ef3c8e8384',
+//         title: 'Modern'
+//     },
+//     {
+//         id: 'e39b8a75-c66d-488c-aed5-b12303153a8e',
+//         title: 'Technical'
+//     },
+// ]
 
 export default function Settings(): ReactNode {
     const dispatch: AppDispatch = useDispatch()
-    const currUI = useSelector((state: StoreProps) => state.ui.currUI)
+    const { id, currConfig, templates } = useSelector((state: StoreProps) => state.ui)
 
     const [clickedCompressImage, setClickedCompressImage] = useState<boolean>(false)
     const [clickedAllowInvitees, setClickedAllowInvitees] = useState<boolean>(false)
@@ -43,24 +43,31 @@ export default function Settings(): ReactNode {
     }
 
     const handleChooseTemplate = async (templateId: string): Promise<void> => {
-        console.log(templateId)
+        try {
+            const { payload } = await dispatch(updateUIConfigurationAsync({
+                uiId: id as string,
+                templateId
+            }))
 
-        // await dispatch(updateUIConfigurationAsync({
-        //     id: currUI.id, newConfiguration: {
-        //         ...currUI,
-        //         global: {
-        //             ...currUI.global,
-        //             ui: {
-        //                 ...currUI.global.ui,
-        //                 currentTemplate: templateId
-        //             }
-        //         }
-
-        //     }
-        // }))
+            console.log(payload)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     useEffect(() => {
+        console.log(id)
+        async function getAllTemplates() {
+            try {
+                await dispatch(getAllTemplatesAsync())
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        if (!templates.length) {
+            getAllTemplates()
+        }
 
     }, [])
 
@@ -75,10 +82,10 @@ export default function Settings(): ReactNode {
                             </h1>
                             <div className="grid grid-cols-3 gap-5">
                                 {
-                                    templates.map((temp) => (
+                                    templates.map((temp: TemplateProps) => (
                                         <button onClick={() => { handleChooseTemplate(temp.id) }} className='flex flex-col justify-center items-center gap-y-1' key={temp.id}>
                                             <div className='w-full h-[280px] border hover:border-indigo-500'></div>
-                                            <p>{temp.title}</p>
+                                            <p className='capitalize'>{temp.title}</p>
                                         </button>
                                     ))
                                 }

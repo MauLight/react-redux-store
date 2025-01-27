@@ -7,7 +7,7 @@ import ErrorBoundary from './components/error/ErrorBoundary'
 import Fallback from './components/common/Fallback'
 import ScrollToTop from './ScrollToTop'
 import AnnouncementBar from './components/common/AnnouncementBar'
-import { getUIConfigurationAsync } from './features/ui/uiSlice'
+import { getTemplateByIdAsync, getUIConfigurationAsync } from './features/ui/uiSlice'
 import { AppDispatch } from './store/store'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
@@ -34,7 +34,7 @@ const Confirmation = lazy(async () => await import('@/routes/Confirmation'))
 
 function Layout() {
     const dispatch: AppDispatch = useDispatch()
-    const currUI = useSelector((state: StoreProps) => state.ui.currConfig)
+    const { currConfig } = useSelector((state: StoreProps) => state.ui)
     const uiIsLoading = useSelector((state: StoreProps) => state.ui.uiIsLoading)
     const uiHasError = useSelector((state: StoreProps) => state.ui.uiHasError)
 
@@ -59,7 +59,10 @@ function Layout() {
         async function getCurrentUIOrCreateNewUIConfiguration() {
             {
                 try {
-                    await dispatch(getUIConfigurationAsync())
+                    const { payload } = await dispatch(getUIConfigurationAsync())
+                    if (payload.ui && payload.ui.currentTemplate) {
+                        await dispatch(getTemplateByIdAsync(payload.ui.currentTemplate))
+                    }
                 } catch (error) {
                     console.log(error)
                 }
@@ -125,7 +128,7 @@ function Layout() {
                                 )
                             }
                             {
-                                !uiHasError && !uiIsLoading && currUI && (
+                                !uiHasError && !uiIsLoading && currConfig && (
                                     <Routes>
                                         <Route path='/' element={<Home />} />
                                         <Route path='/sign' element={<Sign />} />
