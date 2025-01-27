@@ -6,24 +6,9 @@ import { StoreProps, TemplateProps } from '@/utils/types'
 import { useEffect, useState, type ReactNode } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-// const templates = [
-//     {
-//         id: '66dff979-33f5-4e16-ba66-811119d22698',
-//         title: 'Classic'
-//     },
-//     {
-//         id: 'fe9dacfa-44f6-4266-92b2-67ef3c8e8384',
-//         title: 'Modern'
-//     },
-//     {
-//         id: 'e39b8a75-c66d-488c-aed5-b12303153a8e',
-//         title: 'Technical'
-//     },
-// ]
-
 export default function Settings(): ReactNode {
     const dispatch: AppDispatch = useDispatch()
-    const { id, currConfig, templates } = useSelector((state: StoreProps) => state.ui)
+    const { id, templates } = useSelector((state: StoreProps) => state.ui)
 
     const [clickedCompressImage, setClickedCompressImage] = useState<boolean>(false)
     const [clickedAllowInvitees, setClickedAllowInvitees] = useState<boolean>(false)
@@ -84,7 +69,9 @@ export default function Settings(): ReactNode {
                                 {
                                     templates.map((temp: TemplateProps) => (
                                         <button onClick={() => { handleChooseTemplate(temp.id) }} className='flex flex-col justify-center items-center gap-y-1' key={temp.id}>
-                                            <div className='w-full h-[280px] border hover:border-indigo-500'></div>
+                                            <div className='w-full h-[380px] border hover:border-indigo-500'>
+                                                <img className='h-full object-cover' src={temp.preview} alt="" />
+                                            </div>
                                             <p className='capitalize'>{temp.title}</p>
                                         </button>
                                     ))

@@ -55,10 +55,6 @@ function Home() {
         }
     }, [])
 
-    useLayoutEffect(() => {
-        console.log(currentTemplate)
-    }, [currentTemplate])
-
     return (
         <>
             {

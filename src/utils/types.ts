@@ -25,6 +25,10 @@ export interface TemplateProps {
     id: string
     title: string
     preview: string
+    hero: {
+        layout: string
+        image: string
+    }
     card: {
         card: string
         layout: string

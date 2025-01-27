@@ -9,9 +9,13 @@ const url = import.meta.env.VITE_BACKEND_URL
 
 export const classicTemplate = {
     title: 'classic',
-    preview: '',
+    preview: 'https://res.cloudinary.com/maulight/image/upload/v1737986747/classic.png',
+    hero: {
+        layout: 'relative h-[900px] w-full bg-gray-100 p-10 overflow-hidden',
+        image: 'h-full grid grid-cols-3 overflow-hidden rounded-[15px]'
+    },
     card: {
-        layout: 'grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3 gap-10 px-10 py-20 bg-gray-200',
+        layout: 'grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3 gap-10 px-10 py-20 bg-gray-100',
         card: 'h-[600px] col-span-1 overflow-hidden rounded-[15px] flex flex-col',
         image: 'h-[480px] z-10',
         textLayout: 'w-full h-[120px] py-10 flex justify-between px-10 z-20 transition-all duration-300 text-[1rem] min-[400px]:text-[1.5rem] bg-[#ffffff] antialiazed text-[#10100e] leading-tight',
@@ -21,7 +25,11 @@ export const classicTemplate = {
 
 export const techTemplate = {
     title: 'tech',
-    preview: '',
+    preview: 'https://res.cloudinary.com/maulight/image/upload/v1737986746/tech.png',
+    hero: {
+        layout: 'relative h-[900px] w-full bg-[#ffffff] p-12 overflow-hidden',
+        image: 'h-full grid grid-cols-3 overflow-hidden'
+    },
     card: {
         layout: 'grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3 gap-12 px-12 py-20 bg-[#ffffff]',
         card: 'h-[500px] col-span-1 overflow-hidden flex flex-col hover:shadow-xl',
@@ -33,7 +41,11 @@ export const techTemplate = {
 
 export const modernTemplate = {
     title: 'modern',
-    preview: '',
+    preview: 'https://res.cloudinary.com/maulight/image/upload/v1737986959/modern.png',
+    hero: {
+        layout: 'relative h-[900px] w-full overflow-hidden',
+        image: 'h-full grid grid-cols-3 overflow-hidden'
+    },
     card: {
         layout: 'grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3',
         card: 'h-[700px] col-span-1 overflow-hidden',
