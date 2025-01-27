@@ -7,8 +7,9 @@ import { AppDispatch } from '@/store/store'
 import { ProductProps, StoreProps } from '@/utils/types'
 
 export const ProductCard = ({ product }: { product: ProductProps }): ReactElement => {
-  const user = useSelector((state: StoreProps) => state.userAuth.user)
   const dispatch: AppDispatch = useDispatch()
+  const user = useSelector((state: StoreProps) => state.userAuth.user)
+  const { currentTemplate } = useSelector((state: StoreProps) => state.ui)
 
   const { pathname } = useLocation()
   const isCollection = !pathname.includes('product')
@@ -35,15 +36,15 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
   }
 
   return (
-    <section className={`group relative ${pathname === '/collection' ? 'h-[460px]' : ''} h-[700px] col-span-1 overflow-hidden`}>
+    <section className={`group relative ${pathname === '/collection' ? 'h-[460px]' : currentTemplate.card ? currentTemplate.card.card : 'h-[700px] col-span-1 overflow-hidden'}`}>
 
-      <div className='h-full'>
+      <div className={currentTemplate.card ? currentTemplate.card.image : 'h-full'}>
         <img key={product.id} src={product.image} alt="product" className="w-full sm:h-full object-cover" />
       </div>
 
       {
         isCollection && (
-          <div className="w-full absolute bottom-5 flex justify-between px-5 z-10 transition-all duration-300 text-[1rem] min-[400px]:text-[22px] uppercase antialiazed text-[#ffffff] leading-tight">
+          <div className={currentTemplate.card ? currentTemplate.card.textLayout : "w-full absolute bottom-5 flex justify-between px-5 z-10 transition-all duration-300 text-[1rem] min-[400px]:text-[22px] uppercase antialiazed text-[#ffffff] leading-tight"}>
             <Link to={`/product/${product.id}`} className="flex flex-col">
               <h1 aria-label={product.title} className=''>{product.title}</h1>
               <div className="flex gap-x-2">
@@ -74,7 +75,11 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
           </div>
         )
       }
-      <div className='w-full h-full absolute top-0 left-0 bg-gradient-to-t from-[#10100e] to-transparent opacity-30'></div>
+      {
+        currentTemplate.card && currentTemplate.card.gradient && (
+          <div className='w-full h-full absolute top-0 left-0 bg-gradient-to-t from-[#10100e] to-transparent opacity-30'></div>
+        )
+      }
       <Link to={`/product/${product.id}`} className="absolute top-0 left-0 w-full sm:h-full bg-[#10100e] opacity-0 group-hover:opacity-30 z-10 transition-all duration-200"></Link>
     </section>
   )

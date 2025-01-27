@@ -32,6 +32,7 @@ const paginatedProductsSelector = selector({
 
 function Home() {
     const dispatch = useDispatch<AppDispatch>()
+    const { currentTemplate } = useSelector((state: StoreProps) => state.ui)
     const isLoading = useSelector((state: StoreProps) => state.homeCollection.collectionIsLoading)
     const hasError = useSelector((state: StoreProps) => state.homeCollection.collectionHasError)
 
@@ -54,6 +55,10 @@ function Home() {
         }
     }, [])
 
+    useLayoutEffect(() => {
+        console.log(currentTemplate)
+    }, [currentTemplate])
+
     return (
         <>
             {
@@ -72,7 +77,7 @@ function Home() {
                 )
             }
             {
-                !isLoading && product !== undefined && (
+                !isLoading && product !== undefined && currentTemplate && (
                     <section className='relative w-full flex flex-col justify-center items-center pb-20'>
                         <div className="w-full flex flex-col">
                             <Banner>
@@ -86,12 +91,9 @@ function Home() {
                             </Banner>
                             <Carousel />
                             <Banner2 />
-                            <div className="grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3">
+                            <div className={currentTemplate.card.layout || 'grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3'}>
                                 {
                                     collection.length > 0 && collection.map(product => (
-                                        // <div key={product.id} className="h-[700px]">
-                                        //     <ProductCard product={product} />
-                                        // </div>
                                         <div key={product.id}>
                                             <ProductCard product={product} />
                                         </div>
