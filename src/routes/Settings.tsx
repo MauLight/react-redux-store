@@ -147,7 +147,7 @@ function Settings(): ReactNode {
 
     return (
 
-        <div className='w-full h-screen flex justify-start pl-[425px] items-center'>
+        <div className='w-full h-screen flex justify-start pl-[425px] items-start pt-[130px]'>
             <div className="w-[1100px] flex flex-col gap-y-10 rounded-[10px] bg-[#ffffff] p-10">
                 {
                     navState.one && (
