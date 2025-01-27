@@ -9,7 +9,7 @@ import { toast } from 'react-toastify'
 import axios from 'axios'
 import ErrorComponent from '@/components/common/ErrorComponent'
 import Fallback from '@/components/common/Fallback'
-import { getAllSlidersAsync, getSliderByIdAsync, postNewSliderAsync, updateSliderConfigurationAsync, updateUIConfigurationAsync } from '@/features/ui/uiSlice'
+import { getAllSlidersAsync, getSliderByIdAsync, postNewSliderAsync, updateCurrentSliderAsync, updateSliderConfigurationAsync } from '@/features/ui/uiSlice'
 import { SliderProps, StoreProps } from '@/utils/types'
 import { useSelector, useDispatch } from 'react-redux'
 import { AppDispatch } from '@/store/store'
@@ -67,10 +67,10 @@ function BuilderCard({ card, onDrop, handleReset }: { card: { id: number, image:
 
 function SliderSectionPanel(): ReactNode {
     const dispatch: AppDispatch = useDispatch()
-    const { sliders, currUI, currSlider, uiHasError, uiIsLoading } = useSelector((state: StoreProps) => state.ui)
+    const { id, sliders, currSlider, currSliderId, uiHasError, uiIsLoading } = useSelector((state: StoreProps) => state.ui)
     const [selectedSliderName, setSelectedSliderName] = useState<string>('')
 
-    const [selectedSpeed, setSelectedSpeed] = useState<number>(0)
+    const [selectedSpeed, setSelectedSpeed] = useState<number | string>(0)
     const [selectedAnimation, setSelectedAnimation] = useState<string>('')
 
     const [openCreateNewSlider, setOpenCreateNewSlider] = useState<boolean>(false)
@@ -91,6 +91,16 @@ function SliderSectionPanel(): ReactNode {
     const [openModal, setOpenModal] = useState<boolean>(false)
 
     const fileInputRef = useRef<HTMLInputElement | null>(null)
+
+    async function getSliders() {
+        try {
+            const { payload } = await dispatch(getAllSlidersAsync())
+            const sliderNames = payload.sliders.map((slider: SliderProps) => slider.name)
+            setSliderNameList(sliderNames)
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     function handleOpenPreview() {
         setOpenModal(!openModal)
@@ -240,10 +250,14 @@ function SliderSectionPanel(): ReactNode {
     }
 
     async function handleCreateNewSlider() {
+        console.log('1. starting, ', sliderName)
         try {
-            await dispatch(postNewSliderAsync({ sliderName }))
-            setSliderName('')
-            setOpenCreateNewSlider(false)
+            const { payload } = await dispatch(postNewSliderAsync({ sliderName }))
+            if (payload.newSlider) {
+                getSliders()
+                setSliderName('')
+                setOpenCreateNewSlider(false)
+            }
         } catch (error) {
             console.log(error)
         }
@@ -256,19 +270,8 @@ function SliderSectionPanel(): ReactNode {
 
     async function handleUpdateSelectedSlider() {
 
-        await dispatch(updateUIConfigurationAsync({
-            id: currUI.id, newConfiguration: {
-
-                ...currUI,
-                home: {
-                    ...currUI.home,
-                    slider: {
-                        ...currUI.home.slider,
-                        currSlider: selectedSlider?.id
-                    }
-                }
-
-            }
+        await dispatch(updateCurrentSliderAsync({
+            uiId: id as string, sliderId: selectedSlider?.id as string
         }))
     }
 
@@ -282,37 +285,29 @@ function SliderSectionPanel(): ReactNode {
 
     useEffect(() => {
         async function getCurrentSlider() {
-            const { payload } = await dispatch(getSliderByIdAsync(currUI.home.slider.currSlider))
-            setSelectedSlider(payload.slider)
-            setSelectedSliderName(payload.slider.name)
-            setSelectedSpeed(payload.slider.speed)
-            setSelectedAnimation(payload.slider.animation)
-            if (payload.slider.imageList.length > 0) {
-                const images = payload.slider.imageList.map((item: { image: string, public_id: string }) => item.image)
-                const ids = payload.slider.imageList.map((item: { image: string, public_id: string }) => item.public_id)
+            const { payload } = await dispatch(getSliderByIdAsync(currSliderId))
+            if (payload.slider) {
+                setSelectedSlider(payload.slider)
+                setSelectedSliderName(payload.slider.name)
+                setSelectedSpeed(payload.slider.speed)
+                setSelectedAnimation(payload.slider.animation)
+                if (payload.slider.imageList.length > 0) {
+                    const images = payload.slider.imageList.map((item: { image: string, public_id: string }) => item.image)
+                    const ids = payload.slider.imageList.map((item: { image: string, public_id: string }) => item.public_id)
 
-                setImageList(images)
-                setCloudinaryPublicId(ids)
+                    setImageList(images)
+                    setCloudinaryPublicId(ids)
+                }
             }
         }
 
-        if (currUI && currUI.home.slider.currSlider) {
+        if (currSliderId) {
             getCurrentSlider()
         }
 
-    }, [currUI])
+    }, [currSliderId])
 
     useEffect(() => {
-        async function getSliders() {
-            try {
-                const { payload } = await dispatch(getAllSlidersAsync())
-                const sliderNames = payload.sliders.map((slider: SliderProps) => slider.name)
-                setSliderNameList(sliderNames)
-            } catch (error) {
-                console.log(error)
-            }
-        }
-
         if (!sliders.length) {
             getSliders()
         } else {
@@ -371,7 +366,7 @@ function SliderSectionPanel(): ReactNode {
 
     //* Update speed property in db after selecting a new value in UI.
     useEffect(() => {
-        if (selectedSlider && selectedSpeed !== selectedSlider.speed) {
+        if (selectedSlider && selectedSpeed !== selectedSlider.speed && selectedSpeed !== 'Recommended') {
             const newConfiguration = {
                 name: selectedSliderName,
                 speed: selectedSpeed,
@@ -385,7 +380,7 @@ function SliderSectionPanel(): ReactNode {
 
     //* Update animation property in db after selecting a new value in UI.
     useEffect(() => {
-        if (selectedSlider && selectedAnimation !== selectedSlider.animation) {
+        if (selectedSlider && selectedAnimation !== selectedSlider.animation && selectedAnimation !== 'Recommended') {
             const newConfiguration = {
                 name: selectedSliderName,
                 speed: selectedSpeed,

@@ -93,8 +93,27 @@ export const postNewUIConfigurationAsync = createAsyncThunk(
     }
 )
 
+export const updateUIConfigurationAsync = createAsyncThunk(
+    'ui/updateUIConfiguration', async ({ id, newConfiguration }: { id: string, newConfiguration: Record<string, any> }, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.put(`${url}/administrator/ui/${id}`, newConfiguration,
+                // {
+                //     headers: {
+                //         'Authorization': `Bearer ${token}`,
+                //         'Content-Type': 'application/json'
+                //     }
+                // }
+            )
+            return data
+        } catch (error) {
+            toast.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
 export const updateCurrentTemplateAsync = createAsyncThunk(
-    'ui/updateUIConfiguration', async ({ uiId, templateId }: { uiId: string, templateId: string }, { rejectWithValue }) => {
+    'ui/updateCurrentTemplate', async ({ uiId, templateId }: { uiId: string, templateId: string }, { rejectWithValue }) => {
         try {
             const { data } = await axios.put(`${url}/administrator/ui/template/${uiId}`, { templateId },
                 // {
@@ -112,10 +131,10 @@ export const updateCurrentTemplateAsync = createAsyncThunk(
     }
 )
 
-export const updateUIConfigurationAsync = createAsyncThunk(
-    'ui/updateCurrentTemplate', async ({ id, newConfiguration }: { id: string, newConfiguration: Record<string, any> }, { rejectWithValue }) => {
+export const updateCurrentSliderAsync = createAsyncThunk(
+    'ui/updateCurrentSlider', async ({ uiId, sliderId }: { uiId: string, sliderId: string }, { rejectWithValue }) => {
         try {
-            const { data } = await axios.put(`${url}/administrator/ui/${id}`, newConfiguration,
+            const { data } = await axios.put(`${url}/administrator/ui/slider/${uiId}`, { sliderId },
                 // {
                 //     headers: {
                 //         'Authorization': `Bearer ${token}`,
@@ -273,6 +292,7 @@ export const uiSlice = createSlice({
             }
         },
         sliders: [] as Array<string>,
+        currSliderId: '',
         currSlider: {} as SliderProps,
         templates: [] as Array<TemplateProps>,
         currentTemplateId: '',
@@ -300,8 +320,9 @@ export const uiSlice = createSlice({
                 getUIConfigurationAsync.fulfilled, (state, action) => {
                     state.uiIsLoading = false
                     state.uiHasError = false
-                    state.currConfig = action.payload.ui.currConfig
                     state.id = action.payload.ui.id
+                    state.currConfig = action.payload.ui.currConfig
+                    state.currSliderId = action.payload.ui.currSlider
                     state.currentTemplateId = action.payload.ui.currentTemplate
                 }
             )
@@ -363,6 +384,27 @@ export const uiSlice = createSlice({
                     state.uiHasError = false
                     state.currentTemplateId = action.payload.updatedUI.currentTemplate
                     toast.success('UI template updated succesfully.')
+                }
+            )
+            .addCase(
+                updateCurrentSliderAsync.pending, (state, _action) => {
+                    state.uiIsLoading = true
+                    state.uiHasError = false
+                }
+            )
+            .addCase(
+                updateCurrentSliderAsync.rejected, (state, _action) => {
+                    state.uiIsLoading = false
+                    state.uiHasError = true
+                    toast.error('There was an error updating UI configuration.')
+                }
+            )
+            .addCase(
+                updateCurrentSliderAsync.fulfilled, (state, action) => {
+                    state.uiIsLoading = false
+                    state.uiHasError = false
+                    state.currSliderId = action.payload.updatedUI.currSlider
+                    toast.success('Slider updated succesfully.')
                 }
             )
             .addCase(

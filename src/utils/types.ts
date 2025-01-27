@@ -129,10 +129,11 @@ export interface StoreProps {
     },
     ui: {
         currConfig: uiProps
-        sliders: Array<string>,
-        currSlider: SliderProps,
-        templates: Array<TemplateProps>,
-        currentTemplate: TemplateProps,
+        sliders: Array<SliderProps>
+        currSlider: SliderProps
+        currSliderId: string
+        templates: Array<TemplateProps>
+        currentTemplate: TemplateProps
         currentTemplateId: string
         uiIsLoading: boolean
         uiHasError: boolean
