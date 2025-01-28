@@ -225,6 +225,25 @@ export const updateSliderConfigurationAsync = createAsyncThunk(
     }
 )
 
+export const deleteSliderAsync = createAsyncThunk(
+    'ui/deleteSlider', async ({ id }: { id: string }, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.put(`${url}/administrator/sliders/${id}`,
+                // {
+                //     headers: {
+                //         'Authorization': `Bearer ${token}`,
+                //         'Content-Type': 'application/json'
+                //     }
+                // }
+            )
+            return data
+        } catch (error) {
+            toast.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
 export const getAllTemplatesAsync = createAsyncThunk(
     'ui/getAllTemplates', async (_, { rejectWithValue }) => {
         try {
@@ -293,7 +312,7 @@ export const uiSlice = createSlice({
         },
         sliders: [] as Array<string>,
         currSliderId: '',
-        currSlider: {} as SliderProps,
+        currSlider: {} as SliderProps | {},
         templates: [] as Array<TemplateProps>,
         currentTemplateId: '',
         currentTemplate: {} as TemplateProps,
@@ -486,6 +505,27 @@ export const uiSlice = createSlice({
                     state.uiHasError = false
                     state.currSlider = action.payload.updatedSlider
                     toast.success('Slider updated succesfully')
+                }
+            )
+            .addCase(
+                deleteSliderAsync.pending, (state, _action) => {
+                    state.uiIsLoading = true
+                    state.uiHasError = false
+                }
+            )
+            .addCase(
+                deleteSliderAsync.rejected, (state, _action) => {
+                    state.uiIsLoading = false
+                    state.uiHasError = true
+                }
+            )
+            .addCase(
+                deleteSliderAsync.fulfilled, (state, action) => {
+                    state.uiIsLoading = false
+                    state.uiHasError = false
+                    state.currSlider = {}
+                    state.sliders = state.sliders.filter((slider) => slider !== action.payload.id)
+                    toast.success('Slider deleted succesfully')
                 }
             )
             .addCase(

@@ -9,7 +9,7 @@ import { toast } from 'react-toastify'
 import axios from 'axios'
 import ErrorComponent from '@/components/common/ErrorComponent'
 import Fallback from '@/components/common/Fallback'
-import { getAllSlidersAsync, getSliderByIdAsync, postNewSliderAsync, updateCurrentSliderAsync, updateSliderConfigurationAsync } from '@/features/ui/uiSlice'
+import { deleteSliderAsync, getAllSlidersAsync, getSliderByIdAsync, postNewSliderAsync, updateCurrentSliderAsync, updateSliderConfigurationAsync } from '@/features/ui/uiSlice'
 import { SliderProps, StoreProps } from '@/utils/types'
 import { useSelector, useDispatch } from 'react-redux'
 import { AppDispatch } from '@/store/store'
@@ -67,7 +67,7 @@ function BuilderCard({ card, onDrop, handleReset }: { card: { id: number, image:
 
 function SliderSectionPanel(): ReactNode {
     const dispatch: AppDispatch = useDispatch()
-    const { id, sliders, currSlider, currSliderId, uiHasError, uiIsLoading } = useSelector((state: StoreProps) => state.ui)
+    const { id, sliders, currSlider, currSliderId, uiHasError } = useSelector((state: StoreProps) => state.ui)
     const [selectedSliderName, setSelectedSliderName] = useState<string>('')
 
     const [selectedSpeed, setSelectedSpeed] = useState<number | string>(0)
@@ -283,6 +283,13 @@ function SliderSectionPanel(): ReactNode {
         }
     }
 
+    async function handleDeleteSlider() {
+
+        await dispatch(deleteSliderAsync({
+            id: id as string
+        }))
+    }
+
     useEffect(() => {
         async function getCurrentSlider() {
             const { payload } = await dispatch(getSliderByIdAsync(currSliderId))
@@ -318,7 +325,9 @@ function SliderSectionPanel(): ReactNode {
     }, [sliders])
 
     useEffect(() => {
+        console.log(sliders)
         const currSlider = sliders.find(slider => slider.name === selectedSliderName)
+        console.log(currSlider)
         if (currSlider) {
             setSelectedSlider(currSlider)
         }
@@ -400,14 +409,7 @@ function SliderSectionPanel(): ReactNode {
                 )
             }
             {
-                !uiHasError && uiIsLoading && (
-                    <div className="w-full h-full flex justify-center items-center">
-                        <Fallback />
-                    </div>
-                )
-            }
-            {
-                !uiHasError && !uiIsLoading && selectedSlider && (
+                !uiHasError && selectedSlider && (
                     <section className='w-full flex flex-col gap-y-5'>
                         <h2 className='text-[1rem] text-sym_gray-700'>Slider Section:</h2>
                         <div className="flex flex-col gap-y-10">
@@ -527,6 +529,12 @@ function SliderSectionPanel(): ReactNode {
                                     </div>
                                 )
                             }
+
+                            <button onClick={handleDeleteSlider} className='w-[180px] h-10 bg-[#10100e] hover:bg-red-500 active:bg-[#10100e] transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
+                                <i className="fa-solid fa-trash"></i>
+                                Delete Slider
+                            </button>
+
                             <Modal width='w-[1100px]' height='h-[700px]' openModal={openModal} handleOpenModal={handleOpenPreview}>
                                 <Carousel isBuilder />
                             </Modal>
