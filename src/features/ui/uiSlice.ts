@@ -228,7 +228,7 @@ export const updateSliderConfigurationAsync = createAsyncThunk(
 export const deleteSliderAsync = createAsyncThunk(
     'ui/deleteSlider', async ({ id }: { id: string }, { rejectWithValue }) => {
         try {
-            const { data } = await axios.put(`${url}/administrator/sliders/${id}`,
+            const { data } = await axios.delete(`${url}/administrator/sliders/${id}`,
                 // {
                 //     headers: {
                 //         'Authorization': `Bearer ${token}`,

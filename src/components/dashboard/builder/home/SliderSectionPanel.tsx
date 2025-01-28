@@ -69,6 +69,7 @@ function SliderSectionPanel(): ReactNode {
     const dispatch: AppDispatch = useDispatch()
     const { id, sliders, currSlider, currSliderId, uiHasError } = useSelector((state: StoreProps) => state.ui)
     const [selectedSliderName, setSelectedSliderName] = useState<string>('')
+    const [isDefault, setIsDefault] = useState<boolean>(false)
 
     const [selectedSpeed, setSelectedSpeed] = useState<number | string>(0)
     const [selectedAnimation, setSelectedAnimation] = useState<string>('')
@@ -286,7 +287,7 @@ function SliderSectionPanel(): ReactNode {
     async function handleDeleteSlider() {
 
         await dispatch(deleteSliderAsync({
-            id: id as string
+            id: currSliderId as string
         }))
     }
 
@@ -315,6 +316,11 @@ function SliderSectionPanel(): ReactNode {
     }, [currSliderId])
 
     useEffect(() => {
+        if (currSlider.name === 'Default Slider') setIsDefault(true)
+        else setIsDefault(false)
+    }, [currSlider])
+
+    useEffect(() => {
         if (!sliders.length) {
             getSliders()
         } else {
@@ -325,9 +331,7 @@ function SliderSectionPanel(): ReactNode {
     }, [sliders])
 
     useEffect(() => {
-        console.log(sliders)
         const currSlider = sliders.find(slider => slider.name === selectedSliderName)
-        console.log(currSlider)
         if (currSlider) {
             setSelectedSlider(currSlider)
         }
@@ -520,7 +524,7 @@ function SliderSectionPanel(): ReactNode {
                             </div>
 
                             {
-                                currSlider.imageList.length > 0 && (
+                                currSlider.imageList && currSlider.imageList.length > 0 && (
                                     <div className="w-full flex justify-start gap-x-2">
                                         <button onClick={handleOpenPreview} className='w-[120px] h-10 bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e] transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
                                             <i className="fa-regular fa-eye"></i>
@@ -530,10 +534,14 @@ function SliderSectionPanel(): ReactNode {
                                 )
                             }
 
-                            <button onClick={handleDeleteSlider} className='w-[180px] h-10 bg-[#10100e] hover:bg-red-500 active:bg-[#10100e] transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
-                                <i className="fa-solid fa-trash"></i>
-                                Delete Slider
-                            </button>
+                            {
+                                !isDefault && (
+                                    <button onClick={handleDeleteSlider} className='w-[180px] h-10 bg-[#10100e] hover:bg-red-500 active:bg-[#10100e] transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
+                                        <i className="fa-solid fa-trash"></i>
+                                        Delete Slider
+                                    </button>
+                                )
+                            }
 
                             <Modal width='w-[1100px]' height='h-[700px]' openModal={openModal} handleOpenModal={handleOpenPreview}>
                                 <Carousel isBuilder />
