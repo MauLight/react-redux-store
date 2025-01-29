@@ -284,30 +284,39 @@ function SliderSectionPanel(): ReactNode {
         }
     }
 
-    async function handleDeleteSlider() {
+    async function getCurrentSlider(id?: string) {
+        const { payload } = await dispatch(getSliderByIdAsync(id ? id : currSliderId))
+        if (payload.slider) {
+            setSelectedSlider(payload.slider)
+            setSelectedSliderName(payload.slider.name)
+            setSelectedSpeed(payload.slider.speed)
+            setSelectedAnimation(payload.slider.animation)
+            if (payload.slider.imageList.length > 0) {
+                const images = payload.slider.imageList.map((item: { image: string, public_id: string }) => item.image)
+                const ids = payload.slider.imageList.map((item: { image: string, public_id: string }) => item.public_id)
 
-        await dispatch(deleteSliderAsync({
+                setImageList(images)
+                setCloudinaryPublicId(ids)
+            }
+        }
+    }
+
+    async function handleDeleteSlider() {
+        if (currSlider.name === 'Default Slider') {
+            toast.error('This slider can not be deleted.')
+            return
+        }
+        const { payload } = await dispatch(deleteSliderAsync({
             id: currSliderId as string
         }))
+        if (payload.slider) {
+            setSelectedSlider(payload.slider)
+            setSelectedSliderName(payload.slider.name)
+            setSliderNameList(payload.sliderNames)
+        }
     }
 
     useEffect(() => {
-        async function getCurrentSlider() {
-            const { payload } = await dispatch(getSliderByIdAsync(currSliderId))
-            if (payload.slider) {
-                setSelectedSlider(payload.slider)
-                setSelectedSliderName(payload.slider.name)
-                setSelectedSpeed(payload.slider.speed)
-                setSelectedAnimation(payload.slider.animation)
-                if (payload.slider.imageList.length > 0) {
-                    const images = payload.slider.imageList.map((item: { image: string, public_id: string }) => item.image)
-                    const ids = payload.slider.imageList.map((item: { image: string, public_id: string }) => item.public_id)
-
-                    setImageList(images)
-                    setCloudinaryPublicId(ids)
-                }
-            }
-        }
 
         if (currSliderId) {
             getCurrentSlider()

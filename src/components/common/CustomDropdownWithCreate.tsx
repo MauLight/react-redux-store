@@ -30,13 +30,22 @@ function CustomDropdownWithCreate({
     const [choice, setChoice] = useState<string>(defaultValue || '')
 
     useEffect(() => {
+        const choiceInList = list.find(elem => elem === choice)
+        if (!choiceInList) {
+            setChoice(value)
+        }
+
+    }, [value])
+
+    useEffect(() => {
         if (value && choice === defaultValue) {
             setChoice(value)
         }
     }, [value])
 
     useEffect(() => {
-        if (choice !== '' && choice !== value) {
+        const choiceInList = list.find(elem => elem === choice)
+        if (choice !== '' && choice !== value && choiceInList) {
             setValue(choice)
         }
     }, [choice])

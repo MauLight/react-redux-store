@@ -523,8 +523,9 @@ export const uiSlice = createSlice({
                 deleteSliderAsync.fulfilled, (state, action) => {
                     state.uiIsLoading = false
                     state.uiHasError = false
-                    state.currSlider = {}
-                    state.sliders = state.sliders.filter((slider) => slider !== action.payload.id)
+                    state.currSliderId = action.payload.slider.id
+                    state.currSlider = action.payload.slider
+                    state.sliders = state.sliders.filter((slider) => slider !== action.payload.slider.id)
                     toast.success('Slider deleted succesfully')
                 }
             )
