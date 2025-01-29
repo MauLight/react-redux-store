@@ -64,8 +64,6 @@ function Carousel({ isBuilder }: { isBuilder?: boolean }): ReactNode {
         async function getCurrentSlider() {
             const { payload } = await dispatch(getSliderByIdAsync(currSliderId))
             if (payload.slider.imageList.length > 0) {
-                console.log(payload.slider)
-                console.log(payload.slider.imageList)
 
                 setCarouselSettings({
                     dots: true,

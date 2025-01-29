@@ -4,8 +4,9 @@ import axios, { AxiosError } from "axios"
 import { toast } from "react-toastify"
 
 const url = import.meta.env.VITE_BACKEND_URL
-//const user = localStorage.getItem('marketplace-user') ? JSON.parse(localStorage.getItem('marketplace-user') as string) : {}
-//const token = user.token
+const admin = localStorage.getItem('marketplace-admin') ? JSON.parse(localStorage.getItem('marketplace-admin') as string) : {}
+
+console.log(admin.token)
 
 export const classicTemplate = {
     title: 'classic',
@@ -58,13 +59,7 @@ export const modernTemplate = {
 export const getUIConfigurationAsync = createAsyncThunk(
     'ui/getUIConfiguration', async (_, { rejectWithValue }) => {
         try {
-            const { data } = await axios.get(`${url}/administrator/ui`,
-                // {
-                //     headers: {
-                //         'Authorization': `Bearer ${token}`,
-                //         'Content-Type': 'application/json'
-                //     }
-                // }
+            const { data } = await axios.get(`${url}/administrator/ui`
             )
             return data
         } catch (error) {
@@ -78,12 +73,12 @@ export const postNewUIConfigurationAsync = createAsyncThunk(
     'ui/postNewUIConfiguration', async (_, { rejectWithValue }) => {
         try {
             const { data } = await axios.post(`${url}/administrator/ui`,
-                // {
-                //     headers: {
-                //         'Authorization': `Bearer ${token}`,
-                //         'Content-Type': 'application/json'
-                //     }
-                // }
+                {
+                    headers: {
+                        'Authorization': `Bearer ${admin.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
             )
             return data
         } catch (error) {
@@ -97,12 +92,12 @@ export const updateUIConfigurationAsync = createAsyncThunk(
     'ui/updateUIConfiguration', async ({ id, newConfiguration }: { id: string, newConfiguration: Record<string, any> }, { rejectWithValue }) => {
         try {
             const { data } = await axios.put(`${url}/administrator/ui/${id}`, newConfiguration,
-                // {
-                //     headers: {
-                //         'Authorization': `Bearer ${token}`,
-                //         'Content-Type': 'application/json'
-                //     }
-                // }
+                {
+                    headers: {
+                        'Authorization': `Bearer ${admin.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
             )
             return data
         } catch (error) {
@@ -116,12 +111,12 @@ export const updateCurrentTemplateAsync = createAsyncThunk(
     'ui/updateCurrentTemplate', async ({ uiId, templateId }: { uiId: string, templateId: string }, { rejectWithValue }) => {
         try {
             const { data } = await axios.put(`${url}/administrator/ui/template/${uiId}`, { templateId },
-                // {
-                //     headers: {
-                //         'Authorization': `Bearer ${token}`,
-                //         'Content-Type': 'application/json'
-                //     }
-                // }
+                {
+                    headers: {
+                        'Authorization': `Bearer ${admin.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
             )
             return data
         } catch (error) {
@@ -135,12 +130,12 @@ export const updateCurrentSliderAsync = createAsyncThunk(
     'ui/updateCurrentSlider', async ({ uiId, sliderId }: { uiId: string, sliderId: string }, { rejectWithValue }) => {
         try {
             const { data } = await axios.put(`${url}/administrator/ui/slider/${uiId}`, { sliderId },
-                // {
-                //     headers: {
-                //         'Authorization': `Bearer ${token}`,
-                //         'Content-Type': 'application/json'
-                //     }
-                // }
+                {
+                    headers: {
+                        'Authorization': `Bearer ${admin.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
             )
             return data
         } catch (error) {
@@ -153,13 +148,7 @@ export const updateCurrentSliderAsync = createAsyncThunk(
 export const getAllSlidersAsync = createAsyncThunk(
     'ui/getAllSliders', async (_, { rejectWithValue }) => {
         try {
-            const { data } = await axios.get(`${url}/administrator/sliders`,
-                // {
-                //     headers: {
-                //         'Authorization': `Bearer ${token}`,
-                //         'Content-Type': 'application/json'
-                //     }
-                // }
+            const { data } = await axios.get(`${url}/administrator/sliders`
             )
             return data
         } catch (error) {
@@ -172,13 +161,7 @@ export const getAllSlidersAsync = createAsyncThunk(
 export const getSliderByIdAsync = createAsyncThunk(
     'ui/getSliderById', async (id: string, { rejectWithValue }) => {
         try {
-            const { data } = await axios.get(`${url}/administrator/sliders/${id}`,
-                // {
-                //     headers: {
-                //         'Authorization': `Bearer ${token}`,
-                //         'Content-Type': 'application/json'
-                //     }
-                // }
+            const { data } = await axios.get(`${url}/administrator/sliders/${id}`
             )
             return data
         } catch (error) {
@@ -192,12 +175,12 @@ export const postNewSliderAsync = createAsyncThunk(
     'ui/postNewSlider', async ({ sliderName }: { sliderName: string }, { rejectWithValue }) => {
         try {
             const { data } = await axios.post(`${url}/administrator/sliders/client`, { name: sliderName },
-                // {
-                //     headers: {
-                //         'Authorization': `Bearer ${token}`,
-                //         'Content-Type': 'application/json'
-                //     }
-                // }
+                {
+                    headers: {
+                        'Authorization': `Bearer ${admin.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
             )
             return data
         } catch (error) {
@@ -210,12 +193,12 @@ export const updateSliderConfigurationAsync = createAsyncThunk(
     'ui/updateSliderConfiguration', async ({ id, newConfiguration }: { id: string, newConfiguration: { name: string, imageList: Array<string>, speed: number, animation: string } }, { rejectWithValue }) => {
         try {
             const { data } = await axios.put(`${url}/administrator/sliders/${id}`, { newConfiguration },
-                // {
-                //     headers: {
-                //         'Authorization': `Bearer ${token}`,
-                //         'Content-Type': 'application/json'
-                //     }
-                // }
+                {
+                    headers: {
+                        'Authorization': `Bearer ${admin.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
             )
             return data
         } catch (error) {
@@ -229,12 +212,12 @@ export const deleteSliderAsync = createAsyncThunk(
     'ui/deleteSlider', async ({ id }: { id: string }, { rejectWithValue }) => {
         try {
             const { data } = await axios.delete(`${url}/administrator/sliders/${id}`,
-                // {
-                //     headers: {
-                //         'Authorization': `Bearer ${token}`,
-                //         'Content-Type': 'application/json'
-                //     }
-                // }
+                {
+                    headers: {
+                        'Authorization': `Bearer ${admin.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
             )
             return data
         } catch (error) {
@@ -247,13 +230,7 @@ export const deleteSliderAsync = createAsyncThunk(
 export const getAllTemplatesAsync = createAsyncThunk(
     'ui/getAllTemplates', async (_, { rejectWithValue }) => {
         try {
-            const { data } = await axios.get(`${url}/administrator/templates`,
-                // {
-                //     headers: {
-                //         'Authorization': `Bearer ${token}`,
-                //         'Content-Type': 'application/json'
-                //     }
-                // }
+            const { data } = await axios.get(`${url}/administrator/templates`
             )
             return data
         } catch (error) {
@@ -266,13 +243,7 @@ export const getAllTemplatesAsync = createAsyncThunk(
 export const getTemplateByIdAsync = createAsyncThunk(
     'ui/getTemplateById', async (id: string, { rejectWithValue }) => {
         try {
-            const { data } = await axios.get(`${url}/administrator/templates/${id}`,
-                // {
-                //     headers: {
-                //         'Authorization': `Bearer ${token}`,
-                //         'Content-Type': 'application/json'
-                //     }
-                // }
+            const { data } = await axios.get(`${url}/administrator/templates/${id}`
             )
             return data
         } catch (error) {

@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useLayoutEffect, useState } from 'react'
-import { Routes, Route, useLocation, useMatch } from 'react-router-dom'
+import { Routes, Route, useLocation, useMatch, useNavigate } from 'react-router-dom'
 
 import TopBar from './components/common/TopBar'
 import DashboardHeader from './components/dashboard/DashboardHeader'
@@ -34,6 +34,7 @@ const Confirmation = lazy(async () => await import('@/routes/Confirmation'))
 
 function Layout() {
     const dispatch: AppDispatch = useDispatch()
+    const navigate = useNavigate()
     const { currConfig, uiHasError } = useSelector((state: StoreProps) => state.ui)
 
     const { pathname } = useLocation()
@@ -68,6 +69,16 @@ function Layout() {
             }
         }
         getCurrentUIOrCreateNewUIConfiguration()
+    }, [])
+
+    useEffect(() => {
+        if (isAdmin) {
+            const admin = localStorage.getItem('marketplace-admin')
+            console.log(admin, 'The admin')
+            if (!admin) {
+                navigate('/admin/login')
+            }
+        }
     }, [])
 
     useEffect(() => {

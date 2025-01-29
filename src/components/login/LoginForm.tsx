@@ -79,28 +79,30 @@ function LoginForm({ isBuilder }: { isBuilder: boolean | undefined }): ReactNode
         try {
             const { payload } = await dispatch(postLoginClientAsync(user))
             if (payload.token) {
-                const decoded: DecodedProps = jwtDecode(payload.token)
-                const currentTime = Date.now() / 1000
+                try {
+                    const decoded: DecodedProps = jwtDecode(payload.token)
+                    const currentTime = Date.now() / 1000
 
-                if (decoded.role !== 'admin') {
-                    navigate('/')
-                    return
+                    if (decoded.role !== 'admin') {
+                        toast.error('Wrong credentials.')
+                        return
+                    }
+
+                    if (decoded.exp < currentTime) {
+                        toast.error('Token expired, please try again.')
+                        return
+                    }
+
+                    reset()
+                    navigate('/admin/builder')
+
+                } catch (error) {
+                    console.error('Invalid token:', error)
                 }
-
-                if (decoded.exp < currentTime) {
-                    toast.error('Token expired, please try again.')
-                    return
-                }
-
-                reset()
-                navigate('/admin/builder')
             }
         } catch (error) {
             console.log(error)
         }
-
-        // reset()
-        // navigate('/admin/dashboard')
     }
 
     return (
