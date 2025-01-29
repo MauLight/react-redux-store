@@ -1,6 +1,7 @@
-import { LoginProps, NewUserProps, UserToBeUpdatedProps } from "@/utils/types"
+import { DecodedProps, LoginProps, NewUserProps, UserToBeUpdatedProps } from "@/utils/types"
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import axios, { AxiosError } from "axios"
+import { jwtDecode } from "jwt-decode"
 import { toast } from "react-toastify"
 
 const url = import.meta.env.VITE_BACKEND_URL
@@ -126,9 +127,15 @@ export const userAuthSlice = createSlice({
                 state.isLoading = true
             })
             .addCase(postLoginClientAsync.fulfilled, (state, action) => {
-                state.client = action.payload
                 state.hasError = false
                 state.isLoading = false
+
+                const decoded: DecodedProps = jwtDecode(action.payload.token)
+                const currentTime = Date.now() / 1000
+
+                if (decoded.role === 'admin' && decoded.exp > currentTime) {
+                    state.client = action.payload
+                }
             })
             .addCase(postLoginClientAsync.rejected, (state, _action) => {
                 state.hasError = true

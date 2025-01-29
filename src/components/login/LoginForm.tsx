@@ -6,13 +6,13 @@ import { AppDispatch } from '@/store/store'
 import { useForm } from 'react-hook-form'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import * as yup from 'yup'
+import { jwtDecode } from 'jwt-decode'
 
-
-import { LoginProps, StoreProps } from '@/utils/types'
+import { DecodedProps, LoginProps, StoreProps } from '@/utils/types'
 import { toast } from 'react-toastify'
 import Fallback from '../common/Fallback'
 import GoogleButton from './GoogleButton'
-import { postLoginAsync } from '@/features/userAuth/userAuthSlice'
+import { postLoginAsync, postLoginClientAsync } from '@/features/userAuth/userAuthSlice'
 
 const schema = yup
     .object({
@@ -76,16 +76,31 @@ function LoginForm({ isBuilder }: { isBuilder: boolean | undefined }): ReactNode
             password
         }
 
-        console.log(user)
+        try {
+            const { payload } = await dispatch(postLoginClientAsync(user))
+            if (payload.token) {
+                const decoded: DecodedProps = jwtDecode(payload.token)
+                const currentTime = Date.now() / 1000
 
-        // const response = await dispatch(postLoginAsync(user))
-        // if (response.payload.error) {
-        //     toast.error(response.payload.error)
-        //     setError(response.payload.error)
-        //     return
-        // }
-        reset()
-        navigate('/admin/dashboard')
+                if (decoded.role !== 'admin') {
+                    navigate('/')
+                    return
+                }
+
+                if (decoded.exp < currentTime) {
+                    toast.error('Token expired, please try again.')
+                    return
+                }
+
+                reset()
+                navigate('/admin/builder')
+            }
+        } catch (error) {
+            console.log(error)
+        }
+
+        // reset()
+        // navigate('/admin/dashboard')
     }
 
     return (

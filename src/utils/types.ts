@@ -258,3 +258,11 @@ export interface BillingAddressProps {
     house_number?: string
     zipcode: string
 }
+
+export interface DecodedProps {
+    email: string
+    exp: number
+    iat: number
+    id: string
+    role: 'admin'
+}
