@@ -33,7 +33,7 @@ function NextArrow({ next }: { next: () => void }) {
 
 function Carousel({ isBuilder }: { isBuilder?: boolean }): ReactNode {
     const dispatch: AppDispatch = useDispatch()
-    const { currUI, currSlider, uiHasError, uiIsLoading } = useSelector((state: StoreProps) => state.ui)
+    const { currSlider, currSliderId, uiHasError, uiIsLoading } = useSelector((state: StoreProps) => state.ui)
     const [carouselSettings, setCarouselSettings] = useState<Record<string, any>>({
         dots: true,
         infinite: true,
@@ -62,7 +62,7 @@ function Carousel({ isBuilder }: { isBuilder?: boolean }): ReactNode {
 
     useEffect(() => {
         async function getCurrentSlider() {
-            const { payload } = await dispatch(getSliderByIdAsync(currUI.home.slider.currSlider))
+            const { payload } = await dispatch(getSliderByIdAsync(currSliderId))
             if (payload.slider.imageList.length > 0) {
                 console.log(payload.slider)
                 console.log(payload.slider.imageList)
@@ -83,11 +83,11 @@ function Carousel({ isBuilder }: { isBuilder?: boolean }): ReactNode {
             }
         }
 
-        if (currUI && currUI.home.slider.currSlider) {
+        if (currSliderId) {
             getCurrentSlider()
         }
 
-    }, [currUI])
+    }, [currSliderId])
 
     return (
         <>
