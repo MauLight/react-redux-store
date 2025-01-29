@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { StoreProps } from './utils/types'
 import ErrorComponent from './components/common/ErrorComponent'
+import { handleDecodeToken } from './utils/functions'
 
 const Sign = lazy(async () => await import('./routes/Sign'))
 const Login = lazy(async () => await import('./routes/Login'))
@@ -73,9 +74,13 @@ function Layout() {
 
     useEffect(() => {
         if (isAdmin) {
-            const admin = localStorage.getItem('marketplace-admin')
-            console.log(admin, 'The admin')
-            if (!admin) {
+            const admin = localStorage.getItem('marketplace-admin') ? JSON.parse(localStorage.getItem('marketplace-admin') as string) : {}
+            if (!admin.token) {
+                navigate('/admin/login')
+            }
+
+            const isValid = handleDecodeToken(admin.token)
+            if (!isValid) {
                 navigate('/admin/login')
             }
         }

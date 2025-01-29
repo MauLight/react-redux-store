@@ -6,13 +6,13 @@ import { AppDispatch } from '@/store/store'
 import { useForm } from 'react-hook-form'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import * as yup from 'yup'
-import { jwtDecode } from 'jwt-decode'
 
-import { DecodedProps, LoginProps, StoreProps } from '@/utils/types'
+import { LoginProps, StoreProps } from '@/utils/types'
 import { toast } from 'react-toastify'
 import Fallback from '../common/Fallback'
 import GoogleButton from './GoogleButton'
 import { postLoginAsync, postLoginClientAsync } from '@/features/userAuth/userAuthSlice'
+import { handleDecodeToken } from '@/utils/functions'
 
 const schema = yup
     .object({
@@ -80,21 +80,11 @@ function LoginForm({ isBuilder }: { isBuilder: boolean | undefined }): ReactNode
             const { payload } = await dispatch(postLoginClientAsync(user))
             if (payload.token) {
                 try {
-                    const decoded: DecodedProps = jwtDecode(payload.token)
-                    const currentTime = Date.now() / 1000
-
-                    if (decoded.role !== 'admin') {
-                        toast.error('Wrong credentials.')
-                        return
+                    const isValid = handleDecodeToken(payload.token)
+                    if (isValid) {
+                        reset()
+                        navigate('/admin/builder')
                     }
-
-                    if (decoded.exp < currentTime) {
-                        toast.error('Token expired, please try again.')
-                        return
-                    }
-
-                    reset()
-                    navigate('/admin/builder')
 
                 } catch (error) {
                     console.error('Invalid token:', error)

@@ -2,7 +2,8 @@ import { Dispatch, SetStateAction } from "react"
 import { toast } from "react-toastify"
 import CryptoJS from 'crypto-js'
 import axios from "axios"
-import { RegionProps } from "./types"
+import { DecodedProps, RegionProps } from "./types"
+import { jwtDecode } from "jwt-decode"
 
 const cloudinaryApiSecret = import.meta.env.VITE_CLOUDINARY_APISECRET
 const CloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME
@@ -79,4 +80,22 @@ export const postToCloudinary = async (formData: FormData, setError?: Dispatch<S
     }
     return error
   }
+}
+
+export function handleDecodeToken(token: string) {
+
+  const decoded: DecodedProps = jwtDecode(token)
+  const currentTime = Date.now() / 1000
+
+  if (decoded.role !== 'admin') {
+    toast.error('Wrong credentials.')
+    return false
+  }
+
+  if (decoded.exp < currentTime) {
+    toast.error('Token expired, please try again.')
+    return false
+  }
+
+  return true
 }

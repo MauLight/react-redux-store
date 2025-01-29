@@ -6,8 +6,6 @@ import { toast } from "react-toastify"
 const url = import.meta.env.VITE_BACKEND_URL
 const admin = localStorage.getItem('marketplace-admin') ? JSON.parse(localStorage.getItem('marketplace-admin') as string) : {}
 
-console.log(admin.token)
-
 export const classicTemplate = {
     title: 'classic',
     preview: 'https://res.cloudinary.com/maulight/image/upload/v1737986747/classic.png',
