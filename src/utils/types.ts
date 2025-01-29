@@ -93,6 +93,7 @@ export interface StoreProps {
     }
     userAuth: {
         user: Record<string, any>
+        client: Record<string, any>
         userData: UserProps
         isLoading: boolean
         hasError: boolean

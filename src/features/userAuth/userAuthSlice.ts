@@ -31,6 +31,18 @@ export const postLoginAsync = createAsyncThunk(
     }
 )
 
+export const postLoginClientAsync = createAsyncThunk(
+    'userAuth/postLoginClient', async (user: LoginProps, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.post(`${url}/auth/admin`, user)
+            localStorage.setItem('marketplace-admin', JSON.stringify(data))
+            return data
+        } catch (error) {
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
 export const getUserByIdAsync = createAsyncThunk(
     'userAuth/getUserById', async (id: string, { rejectWithValue }) => {
         const user = localStorage.getItem('marketplace-user') ? JSON.parse(localStorage.getItem('marketplace-user') as string) : {}
@@ -73,6 +85,7 @@ export const userAuthSlice = createSlice({
     name: 'userAuth',
     initialState: {
         user,
+        client: {},
         userData: {},
         isLoading: false,
         hasError: false,
@@ -105,6 +118,19 @@ export const userAuthSlice = createSlice({
                 state.isLoading = false
             })
             .addCase(postLoginAsync.rejected, (state, _action) => {
+                state.hasError = true
+                state.isLoading = false
+            })
+            .addCase(postLoginClientAsync.pending, (state, _action) => {
+                state.hasError = false
+                state.isLoading = true
+            })
+            .addCase(postLoginClientAsync.fulfilled, (state, action) => {
+                state.client = action.payload
+                state.hasError = false
+                state.isLoading = false
+            })
+            .addCase(postLoginClientAsync.rejected, (state, _action) => {
                 state.hasError = true
                 state.isLoading = false
             })

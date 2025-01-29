@@ -38,6 +38,7 @@ function Layout() {
 
     const { pathname } = useLocation()
     const hideTopbar = pathname.includes('sign') || pathname.includes('login') || pathname.includes('admin') || pathname.includes('confirmation')
+    const hideAdminTopbar = pathname.includes('sign') || pathname.includes('login') || pathname.includes('confirmation')
     const isAdmin = pathname.includes('admin')
 
     const [announcementBar, _setAnnouncementBar] = useState<boolean>(true)
@@ -103,7 +104,7 @@ function Layout() {
                 !hideTopbar && <TopBar announcementBar={announcementBar} />
             }
             {
-                isAdmin && (
+                isAdmin && !hideAdminTopbar && (
                     <DashboardHeader />
                 )
             }
