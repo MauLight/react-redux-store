@@ -264,5 +264,6 @@ export interface DecodedProps {
     exp: number
     iat: number
     id: string
-    role: 'admin'
+    role: 'admin',
+    wizard: boolean
 }

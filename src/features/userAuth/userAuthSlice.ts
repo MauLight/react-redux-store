@@ -82,6 +82,44 @@ export const updateUserByIdAsync = createAsyncThunk(
     }
 )
 
+export const getWizardByUserIdAsync = createAsyncThunk(
+    'userAuth/getWizardByUserId', async (clientId: string, { rejectWithValue }) => {
+        const admin = localStorage.getItem('marketplace-admin') ? JSON.parse(localStorage.getItem('marketplace-admin') as string) : {}
+        const token = admin.token
+
+        try {
+            const { data } = await axios.get(`${url}/auth/user/${clientId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            return data
+        } catch (error) {
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
+export const updateWizardByUserIdAsync = createAsyncThunk(
+    'userAuth/updateWizardByUserId', async (clientId: string, { rejectWithValue }) => {
+        const admin = localStorage.getItem('marketplace-admin') ? JSON.parse(localStorage.getItem('marketplace-admin') as string) : {}
+        const token = admin.token
+
+        try {
+            const { data } = await axios.put(`${url}/auth/user/${clientId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            return data
+        } catch (error) {
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
 export const userAuthSlice = createSlice({
     name: 'userAuth',
     initialState: {
@@ -129,7 +167,6 @@ export const userAuthSlice = createSlice({
             .addCase(postLoginClientAsync.fulfilled, (state, action) => {
                 state.hasError = false
                 state.isLoading = false
-
                 const decoded: DecodedProps = jwtDecode(action.payload.token)
                 const currentTime = Date.now() / 1000
 
@@ -165,6 +202,31 @@ export const userAuthSlice = createSlice({
                 state.isLoading = false
             })
             .addCase(updateUserByIdAsync.rejected, (state, _action) => {
+                state.hasError = true
+                state.isLoading = false
+            })
+            .addCase(getWizardByUserIdAsync.pending, (state, _action) => {
+                state.hasError = false
+                state.isLoading = true
+            })
+            .addCase(getWizardByUserIdAsync.fulfilled, (state, _action) => {
+                state.hasError = false
+                state.isLoading = false
+            })
+            .addCase(getWizardByUserIdAsync.rejected, (state, _action) => {
+                state.hasError = true
+                state.isLoading = false
+            })
+            .addCase(updateWizardByUserIdAsync.pending, (state, _action) => {
+                state.hasError = false
+                state.isLoading = true
+            })
+            .addCase(updateWizardByUserIdAsync.fulfilled, (state, action) => {
+                state.client = action.payload.updatedClient
+                state.hasError = false
+                state.isLoading = false
+            })
+            .addCase(updateWizardByUserIdAsync.rejected, (state, _action) => {
                 state.hasError = true
                 state.isLoading = false
             })

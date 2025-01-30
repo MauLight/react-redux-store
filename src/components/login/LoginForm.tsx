@@ -83,7 +83,7 @@ function LoginForm({ isBuilder }: { isBuilder: boolean | undefined }): ReactNode
                     const isValid = handleDecodeToken(payload.token)
                     if (isValid) {
                         reset()
-                        navigate('/admin/builder')
+                        navigate('/admin')
                     }
 
                 } catch (error) {

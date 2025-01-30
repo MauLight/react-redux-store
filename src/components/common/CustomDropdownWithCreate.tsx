@@ -53,7 +53,7 @@ function CustomDropdownWithCreate({
 
     return (
         <div id={id} onClick={() => { setIsOpen(!isOpen) }} className='relative w-full h-9 flex justify-between items-center bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 cursor-pointer'>
-            <p className={`capitalize ${choice === '' ? 'text-sym_gray-300' : 'text-[#10100e]'}`}>{choice === '' ? 'State' : choice}</p>
+            <p className={`capitalize ${choice === '' ? 'text-sym_gray-300' : 'text-[#10100e]'}`}>{choice === '' ? 'Choose one...' : choice}</p>
             {
                 isOpen ? (
                     <i className="fa-solid fa-sm fa-arrow-up"></i>

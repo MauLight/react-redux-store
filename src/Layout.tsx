@@ -23,7 +23,7 @@ const Collection = lazy(async () => await import('./routes/Collection'))
 const IndividualProduct = lazy(async () => await import('./routes/IndividualProduct'))
 const AdminLogin = lazy(async () => await import('./routes/AdminLogin'))
 
-const Dashboard = lazy(async () => await import('./routes/Dashboard'))
+const Wizard = lazy(async () => await import('./routes/Wizard'))
 const Products = lazy(async () => await import('./routes/Products'))
 const Collections = lazy(async () => await import('./routes/Collections'))
 const Builder = lazy(async () => await import('./routes/Builder'))
@@ -77,12 +77,13 @@ function Layout() {
             const admin = localStorage.getItem('marketplace-admin') ? JSON.parse(localStorage.getItem('marketplace-admin') as string) : {}
             if (!admin.token) {
                 navigate('/admin/login')
+            } else {
+                const isValid = handleDecodeToken(admin.token)
+                if (!isValid) {
+                    navigate('/admin/login')
+                }
             }
 
-            const isValid = handleDecodeToken(admin.token)
-            if (!isValid) {
-                navigate('/admin/login')
-            }
         }
     }, [])
 
@@ -145,7 +146,7 @@ function Layout() {
                                         <Route path='/collection' element={<Collection title='Surreal Collection' />} />
                                         <Route path='/product/:id' element={<IndividualProduct id={productId ? productId : undefined} />} />
                                         <Route path='/admin/login' element={<AdminLogin />} />
-                                        <Route path='/admin' element={<Dashboard />} />
+                                        <Route path='/admin' element={<Wizard />} />
                                         <Route path='/admin/settings' element={<Settings />} />
                                         <Route path='/admin/products' element={<Products />} />
                                         <Route path='/admin/collections' element={<Collections />} />
