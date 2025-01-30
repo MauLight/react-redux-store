@@ -33,7 +33,7 @@ export const handcraftedProducts = [
     { id: "a7ce9cdb-5947-43e3-9d12-0e83042de864", category: "Handmade Jewelry & Accessories", examples: "custom rings, bracelets, earrings" },
     { id: "2adb29c4-9bfd-4af6-927e-6c627104c5f4", category: "Custom Apparel & Print-on-Demand", examples: "t-shirts, hoodies, mugs" },
     { id: "61c15a4f-f8ba-41e2-ad03-9553f468c2a5", category: "Artwork & Crafts", examples: "paintings, pottery, sculptures" },
-    { id: "2214c864-0b5c-4ac9-8011-5043117cef97", category: "Personalized Gifts & Memorabilia", examples: "photo frames, engraved items, custom prints" }
+    { id: "2214c864-0b5c-4ac9-8011-5043117cef97", category: "Personalized Gifts", examples: "photo frames, engraved items, custom prints" }
 ]
 
 export const subscriptionProducts = [

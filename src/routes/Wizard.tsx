@@ -99,10 +99,21 @@ export default function Wizard(): ReactNode {
     }, [welcomeText])
 
     useEffect(() => {
-        if (product !== '') {
+        if (product !== '' || typesOfService !== '' || typesOfSubscription !== '') {
             setStepTwoIsReady(true)
         }
     }, [product])
+
+    useEffect(() => {
+        setTypesOfProducts('')
+        setTypesOfService('')
+        setTypesOfSubscription('')
+        setProduct('')
+    }, [productOrService])
+
+    useEffect(() => {
+        setProduct('')
+    }, [typesOfProducts])
 
     return (
         <main className='h-screen w-full flex flex-col justify-center gap-y-5 items-center'>
