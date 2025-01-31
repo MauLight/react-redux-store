@@ -57,7 +57,7 @@ function Layout() {
     }
 
     useLayoutEffect(() => {
-        async function getCurrentUIOrCreateNewUIConfiguration() {
+        async function getCurrentUI() {
             {
                 try {
                     const { payload } = await dispatch(getUIConfigurationAsync())
@@ -69,7 +69,7 @@ function Layout() {
                 }
             }
         }
-        getCurrentUIOrCreateNewUIConfiguration()
+        getCurrentUI()
     }, [])
 
     useEffect(() => {

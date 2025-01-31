@@ -63,9 +63,9 @@ function Home() {
                 )
             }
             {
-                hasError && (
+                hasError || Object.keys(currentTemplate).length === 0 && (
                     <div className="relative w-screen h-screen flex justify-end items-center pr-20">
-                        <div className="w-[15rem] flex z-20">
+                        <div className=" flex z-20 p-10 bg-[#10100e]">
                             <h1 className="text-[#ffffff] text-[3rem] text-right text-balance uppercase leading-tight">We'll be back shortly</h1>
                         </div>
                         <video className="absolute top-0 left-0 w-full h-full object-cover" src={video} loop autoPlay muted />
@@ -73,7 +73,7 @@ function Home() {
                 )
             }
             {
-                !isLoading && product !== undefined && currentTemplate && (
+                !isLoading && product !== undefined && Object.keys(currentTemplate).length > 0 && (
                     <section className='relative w-full flex flex-col justify-center items-center pb-20'>
                         <div className="w-full flex flex-col">
                             <Banner>

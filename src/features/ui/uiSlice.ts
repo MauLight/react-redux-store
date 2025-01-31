@@ -68,9 +68,10 @@ export const getUIConfigurationAsync = createAsyncThunk(
 )
 
 export const postNewUIConfigurationAsync = createAsyncThunk(
-    'ui/postNewUIConfiguration', async (_, { rejectWithValue }) => {
+    'ui/postNewUIConfiguration', async ({ business, productType, templateTitle }: { business: string, productType: string, templateTitle: string }, { rejectWithValue }) => {
+        const admin = localStorage.getItem('marketplace-admin') ? JSON.parse(localStorage.getItem('marketplace-admin') as string) : {}
         try {
-            const { data } = await axios.post(`${url}/administrator/ui`,
+            const { data } = await axios.post(`${url}/administrator/ui`, { business, productType, templateTitle },
                 {
                     headers: {
                         'Authorization': `Bearer ${admin.token}`,
@@ -330,7 +331,10 @@ export const uiSlice = createSlice({
                 postNewUIConfigurationAsync.fulfilled, (state, action) => {
                     state.uiIsLoading = false
                     state.uiHasError = false
-                    state.currConfig = action.payload.ui
+                    state.id = action.payload.ui.id
+                    state.currConfig = action.payload.ui.currConfig
+                    state.currSliderId = action.payload.ui.currSlider
+                    state.currentTemplateId = action.payload.ui.currentTemplate
                 }
             )
             .addCase(

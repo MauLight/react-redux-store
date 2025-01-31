@@ -88,7 +88,7 @@ export const getWizardByUserIdAsync = createAsyncThunk(
         const token = admin.token
 
         try {
-            const { data } = await axios.get(`${url}/auth/user/${clientId}`, {
+            const { data } = await axios.get(`${url}/auth/admin/${clientId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -106,8 +106,10 @@ export const updateWizardByUserIdAsync = createAsyncThunk(
         const admin = localStorage.getItem('marketplace-admin') ? JSON.parse(localStorage.getItem('marketplace-admin') as string) : {}
         const token = admin.token
 
+        console.log(token, 'This is the token')
+
         try {
-            const { data } = await axios.put(`${url}/auth/user/${clientId}`, {
+            const { data } = await axios.put(`${url}/auth/admin/wizard/${clientId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
