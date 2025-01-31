@@ -271,6 +271,11 @@ export const uiSlice = createSlice({
                 background_public_id: ''
             },
             home: {
+                topbar: {
+                    transparent: true,
+                    bgColor: '',
+                    logo: ''
+                },
                 hero: {
                     header: '',
                     subHeader: '',

@@ -19,6 +19,7 @@ export default function TopbarSectionPanel({ setTopBackground }: { setTopBackgro
     function handleOpenAllowTransparency() {
         if (!clickedAllowTransparency) {
             //dispatch backend action
+            setTopBackground('#10100e')
             setClickedAllowTransparency(true)
             return
         }
@@ -150,7 +151,7 @@ export default function TopbarSectionPanel({ setTopBackground }: { setTopBackgro
 
                 <div className="flex flex-col gap-y-2">
                     <div className="flex items-center justify-between gap-x-2">
-                        <p>Make the Top Navbar transparent</p>
+                        <p>Make the top navbar transparent</p>
                         <Switch clicked={clickedAllowTransparency} handleClick={handleOpenAllowTransparency} />
                     </div>
                 </div>

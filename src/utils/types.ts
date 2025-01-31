@@ -56,6 +56,11 @@ export interface uiProps {
         background_public_id: string
     },
     home: {
+        topbar: {
+            transparent: boolean
+            bgColor: string
+            logo: string
+        }
         hero: {
             header: string
             subHeader: string
