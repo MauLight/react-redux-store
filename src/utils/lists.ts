@@ -41,3 +41,27 @@ export const subscriptionProducts = [
     { id: "a8f79eaa-a0a8-44c5-81c5-e5bbd812483e", category: "SaaS Subscriptions", examples: "productivity tools, business software" },
     { id: "612360f8-10dd-46c9-869e-1659ab2dfad6", category: "Membership Programs", examples: "exclusive content, private communities" }
 ]
+
+export const fullSpectrumColors = [
+    // Full color spectrum
+    "bg-[#FF0000]", // Red
+    "bg-[#FF7F00]", // Orange
+    "bg-[#FFFF00]", // Yellow
+    "bg-[#7FFF00]", // Yellow-Green
+    "bg-[#00FF00]", // Green
+    "bg-[#00FF7F]", // Green-Cyan
+    "bg-[#00FFFF]", // Cyan
+    "bg-[#007FFF]", // Cyan-Blue
+    "bg-[#0000FF]", // Blue
+    "bg-[#7F00FF]", // Blue-Magenta
+    "bg-[#FF00FF]", // Magenta
+    "bg-[#FF007F]", // Magenta-Red
+
+    // Grayscale gradient
+    "bg-[#000000]", // Black
+    "bg-[#333333]", // Dark Gray
+    "bg-[#666666]", // Medium Dark Gray
+    "bg-[#999999]", // Medium Gray
+    "bg-[#CCCCCC]", // Light Gray
+    "bg-[#FFFFFF]"  // White
+];

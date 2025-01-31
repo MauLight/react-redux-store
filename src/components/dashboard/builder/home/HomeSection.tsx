@@ -7,6 +7,7 @@ import HeroSectionPanel from './HeroSectionPanel'
 import CollectionSectionPanel from './CollectionSectionPanel'
 import SliderSectionPanel from './SliderSectionPanel'
 import ProductsSectionPanel from './ProductsSectionPanel'
+import TopbarSectionPanel from './TopbarSectionPanel'
 
 interface TaskProps {
     id: number
@@ -137,7 +138,7 @@ function BuilderCard({ card, onDrop, setCurrPanel }: { card: { id: number, title
     )
 }
 
-function DragAndDropList({ setCurrPanel }: { setCurrPanel: Dispatch<SetStateAction<number>> }) {
+function DragAndDropList({ setCurrPanel, topBackground }: { setCurrPanel: Dispatch<SetStateAction<number>>, topBackground: string }) {
 
     const [tasks, setTasks] = useState<TaskProps[]>(initialElements)
 
@@ -156,9 +157,9 @@ function DragAndDropList({ setCurrPanel }: { setCurrPanel: Dispatch<SetStateActi
 
     return (
         <ul className='w-full col-span-4 flex flex-col gap-y-1 border p-3 rounded-[5px] shadow-xl shadow-sym-gray-50'>
-            <div className='h-[30px] w-full flex justify-end items-center bg-[#10100e]'>
-                <Hamburger size={10} color='#ffffff' />
-            </div>
+            <button onClick={() => { setCurrPanel(0) }} className={`h-[30px] w-full flex justify-end items-center ${topBackground.toLowerCase() === '#ffffff' ? 'border border-gray-400' : ''} ${topBackground.length > 0 ? `bg-[${topBackground}]` : 'bg-[#10100e]'}`}>
+                <Hamburger size={10} color={topBackground.toLowerCase() === '#ffffff' ? '#10100e' : '#ffffff'} />
+            </button>
             {tasks.map((task, i) => (
                 <BuilderCard key={task.id + '-' + i} card={task} onDrop={handleDropElement} setCurrPanel={setCurrPanel} />
             ))}
@@ -167,7 +168,7 @@ function DragAndDropList({ setCurrPanel }: { setCurrPanel: Dispatch<SetStateActi
     )
 }
 
-function DragAndDropPanel({ currPanel }: { currPanel: number }) {
+function DragAndDropPanel({ currPanel, setTopBackground }: { currPanel: number, setTopBackground: Dispatch<SetStateAction<string>> }) {
     return (
         <section className='col-span-3 flex flex-col items-start justify-between gap-y-5'>
             <div className='flex flex-col gap-y-10'>
@@ -177,6 +178,11 @@ function DragAndDropPanel({ currPanel }: { currPanel: number }) {
                         In this section you can rearrange the block components of your application. Drag and drop the components in the desired order, click to enter a specific section.
                     </p>
                 </div>
+                {
+                    currPanel === 0 && (
+                        <TopbarSectionPanel setTopBackground={setTopBackground} />
+                    )
+                }
                 {
                     currPanel === 1 && (
                         <HeroSectionPanel />
@@ -204,11 +210,12 @@ function DragAndDropPanel({ currPanel }: { currPanel: number }) {
 
 function HomeSection(): ReactNode {
     const [currPanel, setCurrPanel] = useState<number>(1)
+    const [topBackgroundColor, setTopBackgroundColor] = useState<string>('')
 
     return (
         <main className='grid grid-cols-7 gap-x-5 w-[1100px] gap-y-1 py-5 px-10 bg-[#ffffff] rounded-[5px]'>
-            <DragAndDropPanel currPanel={currPanel} />
-            <DragAndDropList setCurrPanel={setCurrPanel} />
+            <DragAndDropPanel setTopBackground={setTopBackgroundColor} currPanel={currPanel} />
+            <DragAndDropList topBackground={topBackgroundColor} setCurrPanel={setCurrPanel} />
         </main>
     )
 }
