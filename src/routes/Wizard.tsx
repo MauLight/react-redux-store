@@ -13,6 +13,8 @@ import { updateWizardByUserIdAsync } from '@/features/userAuth/userAuthSlice'
 import { RotatingLines } from 'react-loader-spinner'
 import { toast } from 'react-toastify'
 
+import video from '@/assets/video/Wizard.webm'
+
 const productOrServiceList = ['Products', 'Services', 'Subscriptions']
 const typesOfProductsList = ['Physical Products', 'Digital Products', 'Handcrafted Products']
 
@@ -232,8 +234,8 @@ export default function Wizard(): ReactNode {
     }, [typesOfProducts])
 
     return (
-        <main className='h-screen w-full flex flex-col justify-center gap-y-5 items-center'>
-            <main className={`flex flex-col ${step === 1 ? 'h-[290px]' : ''} w-[1100px] gap-y-1 p-10 bg-[#ffffff] rounded-[5px] transition-all duration-200`}>
+        <main className='relative h-screen w-full flex flex-col justify-center gap-y-5 items-center pb-20'>
+            <section className={`flex flex-col ${step === 1 ? 'h-[290px]' : ''} w-[1100px] z-20 gap-y-1 p-10 bg-[#ffffff] rounded-[5px] transition-all duration-200`}>
                 {
                     step === 1 && (
                         <div className='flex flex-col gap-y-20'>
@@ -575,7 +577,8 @@ export default function Wizard(): ReactNode {
                         </div>
                     )
                 }
-            </main>
+            </section>
+            <video className='absolute top-0 left-0 w-full h-full object-cover' src={video} muted loop autoPlay></video>
         </main>
     )
 }

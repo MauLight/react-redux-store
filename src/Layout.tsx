@@ -39,8 +39,11 @@ function Layout() {
     const { currConfig, uiHasError } = useSelector((state: StoreProps) => state.ui)
 
     const { pathname } = useLocation()
+
+    console.log(pathname.length)
+
     const hideTopbar = pathname.includes('sign') || pathname.includes('login') || pathname.includes('admin') || pathname.includes('confirmation')
-    const hideAdminTopbar = pathname.includes('sign') || pathname.includes('login') || pathname.includes('confirmation')
+    const hideAdminTopbar = pathname.includes('sign') || pathname.includes('login') || pathname.includes('confirmation') || (pathname.includes('admin') && pathname.length <= 6)
     const isAdmin = pathname.includes('admin')
 
     const [announcementBar, _setAnnouncementBar] = useState<boolean>(true)

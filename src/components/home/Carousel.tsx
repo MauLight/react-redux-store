@@ -102,7 +102,7 @@ function Carousel({ isBuilder }: { isBuilder?: boolean }): ReactNode {
                 )
             }
             {
-                !uiHasError && !uiIsLoading && currSlider && currSlider.imageList && (
+                !uiHasError && !uiIsLoading && currSlider && currSlider.imageList && currSlider.imageList.length > 0 && (
                     <div className='relative slide-container flex justify-center h-full'>
                         <PrevArrow prev={prevSlide} />
                         <NextArrow next={nextSlide} />
