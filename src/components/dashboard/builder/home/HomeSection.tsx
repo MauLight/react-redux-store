@@ -168,7 +168,7 @@ function DragAndDropList({ setCurrPanel, topBackground }: { setCurrPanel: Dispat
     )
 }
 
-function DragAndDropPanel({ currPanel, setTopBackground }: { currPanel: number, setTopBackground: Dispatch<SetStateAction<string>> }) {
+function DragAndDropPanel({ currPanel, topBackground, setTopBackground }: { currPanel: number, topBackground: string, setTopBackground: Dispatch<SetStateAction<string>> }) {
     return (
         <section className='col-span-3 flex flex-col items-start justify-between gap-y-5'>
             <div className='flex flex-col gap-y-10'>
@@ -180,7 +180,10 @@ function DragAndDropPanel({ currPanel, setTopBackground }: { currPanel: number, 
                 </div>
                 {
                     currPanel === 0 && (
-                        <TopbarSectionPanel setTopBackground={setTopBackground} />
+                        <TopbarSectionPanel
+                            topBackground={topBackground}
+                            setTopBackground={setTopBackground}
+                        />
                     )
                 }
                 {
@@ -214,8 +217,15 @@ function HomeSection(): ReactNode {
 
     return (
         <main className='grid grid-cols-7 gap-x-5 w-[1100px] gap-y-1 py-5 px-10 bg-[#ffffff] rounded-[5px]'>
-            <DragAndDropPanel setTopBackground={setTopBackgroundColor} currPanel={currPanel} />
-            <DragAndDropList topBackground={topBackgroundColor} setCurrPanel={setCurrPanel} />
+            <DragAndDropPanel
+                currPanel={currPanel}
+                topBackground={topBackgroundColor}
+                setTopBackground={setTopBackgroundColor}
+            />
+            <DragAndDropList
+                setCurrPanel={setCurrPanel}
+                topBackground={topBackgroundColor}
+            />
         </main>
     )
 }
