@@ -44,7 +44,12 @@ export interface uiProps {
     global: {
         allowAI: boolean,
         compress: boolean,
-        invitees: boolean
+        invitees: boolean,
+        business: string,
+        productType: string
+    },
+    ui: {
+        sorting: Array<string>
     }
     auth: {
         allowGoogle: boolean

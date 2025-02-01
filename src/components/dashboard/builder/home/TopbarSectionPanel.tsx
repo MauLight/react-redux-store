@@ -269,7 +269,7 @@ export default function TopbarSectionPanel({ topBackground, setTopBackground }: 
                                         <div className="flex flex-wrap">
                                             {
                                                 fullSpectrumColors.map((color, i) => (
-                                                    <button onClick={() => { handleChangeBgColor(color) }} key={i + '-' + color} className={`w-10 h-10 border ${color.replaceAll('"', '')}`} />
+                                                    <button onClick={() => { handleChangeBgColor(color) }} key={i + '-' + color} className={`w-7 h-7 border ${color.replaceAll('"', '')}`} />
                                                 ))
                                             }
                                         </div>

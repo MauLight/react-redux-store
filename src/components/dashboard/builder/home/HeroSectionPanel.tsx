@@ -278,14 +278,7 @@ function HeroSectionPanel(): ReactNode {
                 )
             }
             {
-                !uiHasError && uiIsLoading && (
-                    <div className="w-full h-full flex justify-center items-center">
-                        <Fallback />
-                    </div>
-                )
-            }
-            {
-                !uiHasError && !uiIsLoading && (
+                !uiHasError && (
                     <section className='w-full flex flex-col gap-y-5'>
                         <h2 className='text-[1rem] text-sym_gray-700'>Hero Section:</h2>
                         <div className="flex flex-col gap-y-10">

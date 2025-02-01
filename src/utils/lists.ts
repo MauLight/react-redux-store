@@ -43,25 +43,41 @@ export const subscriptionProducts = [
 ]
 
 export const fullSpectrumColors = [
-    // Full color spectrum
+    // Full Color Spectrum (Brighter Tones)
     "bg-[#FF0000]", // Red
+    "bg-[#FF4000]", // Reddish-Orange
     "bg-[#FF7F00]", // Orange
+    "bg-[#FFBF00]", // Yellow-Orange
     "bg-[#FFFF00]", // Yellow
-    "bg-[#7FFF00]", // Yellow-Green
+    "bg-[#BFFF00]", // Yellow-Green
+    "bg-[#7FFF00]", // Green
+    "bg-[#40FF00]", // Greenish-Cyan
     "bg-[#00FF00]", // Green
-    "bg-[#00FF7F]", // Green-Cyan
+    "bg-[#00FF40]", // Green-Cyan
+    "bg-[#00FF7F]", // Cyan-Green
+    "bg-[#00FFBF]", // Cyan
     "bg-[#00FFFF]", // Cyan
-    "bg-[#007FFF]", // Cyan-Blue
-    "bg-[#0000FF]", // Blue
-    "bg-[#7F00FF]", // Blue-Magenta
-    "bg-[#FF00FF]", // Magenta
-    "bg-[#FF007F]", // Magenta-Red
+    "bg-[#00BFFF]", // Cyan-Blue
+    "bg-[#007FFF]", // Blue
+    "bg-[#0040FF]", // Deep Blue
+    "bg-[#0000FF]", // Pure Blue
+    "bg-[#4000FF]", // Blue-Magenta
+    "bg-[#7F00FF]", // Magenta-Blue
+    "bg-[#BF00FF]", // Magenta
+    "bg-[#FF00FF]", // Pure Magenta
+    "bg-[#FF00BF]", // Magenta-Red
+    "bg-[#FF007F]", // Reddish-Magenta
+    "bg-[#FF0040]", // Deep Red  
 
-    // Grayscale gradient
+    // Grayscale Gradient
     "bg-[#000000]", // Black
-    "bg-[#333333]", // Dark Gray
-    "bg-[#666666]", // Medium Dark Gray
-    "bg-[#999999]", // Medium Gray
-    "bg-[#CCCCCC]", // Light Gray
+    "bg-[#202020]", // Extra Dark Gray
+    "bg-[#404040]", // Dark Gray
+    "bg-[#606060]", // Medium Dark Gray
+    "bg-[#808080]", // Medium Gray
+    "bg-[#A0A0A0]", // Medium Light Gray
+    "bg-[#C0C0C0]", // Light Gray
+    "bg-[#E0E0E0]", // Very Light Gray
     "bg-[#FFFFFF]"  // White
 ];
+

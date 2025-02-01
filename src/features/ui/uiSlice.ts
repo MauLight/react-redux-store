@@ -259,7 +259,12 @@ export const uiSlice = createSlice({
             global: {
                 allowAI: false,
                 compress: true,
-                invitees: false
+                invitees: false,
+                business: '',
+                productType: ''
+            },
+            ui: {
+                sorting: []
             },
             auth: {
                 allowGoogle: false,

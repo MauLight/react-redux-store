@@ -8,6 +8,11 @@ import CollectionSectionPanel from './CollectionSectionPanel'
 import SliderSectionPanel from './SliderSectionPanel'
 import ProductsSectionPanel from './ProductsSectionPanel'
 import TopbarSectionPanel from './TopbarSectionPanel'
+import { AppDispatch } from '@/store/store'
+import { useDispatch, useSelector } from 'react-redux'
+import { updateUIConfigurationAsync } from '@/features/ui/uiSlice'
+import { StoreProps } from '@/utils/types'
+import { toast } from 'react-toastify'
 
 interface TaskProps {
     id: number
@@ -140,9 +145,12 @@ function BuilderCard({ card, onDrop, setCurrPanel }: { card: { id: number, title
 
 function DragAndDropList({ setCurrPanel, topBackground }: { setCurrPanel: Dispatch<SetStateAction<number>>, topBackground: string }) {
 
+    const dispatch: AppDispatch = useDispatch()
+    const { id, currConfig } = useSelector((state: StoreProps) => state.ui)
     const [tasks, setTasks] = useState<TaskProps[]>(initialElements)
+    const [sortingWasSaved, setSortingWasSaved] = useState<boolean>(false)
 
-    function handleDropElement(source: number, target: number) {
+    async function handleDropElement(source: number, target: number) {
         const sourceIndex = tasks.findIndex(task => task.id === source)
         const targetIndex = tasks.findIndex(task => task.id === target)
 
@@ -153,10 +161,36 @@ function DragAndDropList({ setCurrPanel, topBackground }: { setCurrPanel: Dispat
         updatedTasks[sourceIndex] = updatedTasks[targetIndex]
         updatedTasks[targetIndex] = temp
         setTasks(updatedTasks)
+
+        try {
+            const sorting = updatedTasks.map((task) => task.id)
+
+            const { payload } = await dispatch(updateUIConfigurationAsync({
+                id: id as string, newConfiguration: {
+                    ...currConfig,
+                    ui: {
+                        ...currConfig.ui,
+                        sorting
+                    }
+                }
+            }))
+
+            if (payload.updatedUI) {
+                setSortingWasSaved(true)
+                setTimeout(() => {
+                    setSortingWasSaved(false)
+                }, 2000)
+
+            }
+
+        } catch (error) {
+            toast.error('UI updated failed')
+            console.log(error)
+        }
     }
 
     return (
-        <ul className='w-full col-span-4 flex flex-col gap-y-1 border p-3 rounded-[5px] shadow-xl shadow-sym-gray-50'>
+        <ul className={`w-full col-span-4 flex flex-col gap-y-1 border p-3 rounded-[5px] shadow-xl ${sortingWasSaved ? 'border-indigo-500 animate-pulse shadow-indigo-400' : 'shadow-sym-gray-50'}`}>
             <button onClick={() => { setCurrPanel(0) }} className={`h-[30px] w-full flex justify-end items-center ${topBackground.toLowerCase() === '#ffffff' ? 'border border-gray-400' : ''} ${topBackground.length > 0 ? `bg-[${topBackground}]` : 'bg-[#10100e]'}`}>
                 <Hamburger size={10} color={topBackground.toLowerCase() === '#ffffff' ? '#10100e' : '#ffffff'} />
             </button>
