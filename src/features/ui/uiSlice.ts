@@ -13,6 +13,12 @@ export const classicTemplate = {
         layout: 'relative h-[900px] w-full bg-gray-100 p-10 overflow-hidden',
         image: 'h-full grid grid-cols-3 overflow-hidden rounded-[15px]'
     },
+    product: {
+        layout: 'flex gap-x-5 bg-[#ffffff] p-10 rounded-[10px] border',
+        title: 'text-[1.5rem] min-[500px]:text-[2.5rem] font-light text-sym_gray-600 text-balance',
+        button: 'h-10 px-2 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e] rounded-[5px]',
+        video: false
+    },
     card: {
         layout: 'grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3 gap-10 px-10 py-20 bg-gray-100',
         card: 'h-[600px] col-span-1 overflow-hidden rounded-[15px] flex flex-col',
@@ -29,6 +35,12 @@ export const techTemplate = {
         layout: 'relative h-[900px] w-full bg-[#ffffff] p-12 overflow-hidden',
         image: 'h-full grid grid-cols-3 overflow-hidden'
     },
+    product: {
+        layout: 'flex gap-x-5 bg-[#ffffff] p-10',
+        title: 'text-[1.5rem] min-[500px]:text-[2.5rem] font-light text-sym_gray-600 text-balance',
+        button: 'h-10 px-2 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e]',
+        video: false
+    },
     card: {
         layout: 'grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3 gap-12 px-12 py-20 bg-[#ffffff]',
         card: 'h-[500px] col-span-1 overflow-hidden flex flex-col hover:shadow-xl',
@@ -44,6 +56,12 @@ export const modernTemplate = {
     hero: {
         layout: 'relative h-[900px] w-full overflow-hidden',
         image: 'h-full grid grid-cols-3 overflow-hidden'
+    },
+    product: {
+        layout: 'flex gap-x-5 bg-[#ffffff] p-10',
+        title: 'text-[1.5rem] min-[500px]:text-[2.5rem] font-light text-sym_gray-600 text-balance uppercase',
+        button: 'h-10 px-2 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e]',
+        video: true
     },
     card: {
         layout: 'grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3',

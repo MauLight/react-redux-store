@@ -17,7 +17,7 @@ const CloudinaryAPIKEY = import.meta.env.VITE_CLOUDINARY_APIKEY
 
 function HeroSectionPanel(): ReactNode {
     const dispatch: AppDispatch = useDispatch()
-    const { id, currConfig, uiHasError, uiIsLoading } = useSelector((state: StoreProps) => state.ui)
+    const { id, currConfig, uiHasError } = useSelector((state: StoreProps) => state.ui)
     const hero = useSelector((state: StoreProps) => state.ui.currConfig.home.hero)
 
     const [header, setHeader] = useState<string>('')

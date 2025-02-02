@@ -11,9 +11,10 @@ import ErrorComponent from '@/components/common/ErrorComponent'
 
 function IndividualProduct({ id }: { id: string | undefined }): ReactNode {
     const dispatch: AppDispatch = useDispatch()
+    const { currentTemplate, uiIsLoading, uiHasError } = useSelector((state: StoreProps) => state.ui)
+
     const product = useSelector((state: StoreProps) => state.inventory.individualProduct)
-    const isLoading = useSelector((state: StoreProps) => state.inventory.productsAreLoading)
-    const hasError = useSelector((state: StoreProps) => state.inventory.productsHasError)
+    const { productsAreLoading, productsHasError } = useSelector((state: StoreProps) => state.inventory)
 
     useEffect(() => {
         if (id) {
@@ -22,30 +23,52 @@ function IndividualProduct({ id }: { id: string | undefined }): ReactNode {
     }, [id])
 
     return (
-        <div className='relative w-screen h-screen flex justify-center items-center sm:max-lg:pt-[350px]'>
-            <div className="w-[1440px] z-20">
-                <div className=" bg-[#ffffff] p-10">
-                    {
-                        hasError && (
-                            <ErrorComponent />
-                        )
-                    }
-                    {
-                        !hasError && isLoading && (
-                            <div className='h-[33rem] w-full flex justify-center items-center'>
-                                <Fallback color='#3f51b5' />
+        <>
+            {
+                uiHasError && (
+                    <ErrorComponent />
+                )
+            }
+            {
+                !uiHasError && uiIsLoading && (
+                    <div className="w-full h-screen flex justify-center items-center">
+                        <Fallback />
+                    </div>
+                )
+            }
+            {
+                !uiHasError && !uiIsLoading && Object.keys(currentTemplate).length > 0 && (
+                    <div className='relative w-screen h-screen flex justify-center items-center sm:max-lg:pt-[350px] bg-gradient-to-b from-gray-400 to-gray-100'>
+                        <div className="w-[1440px] z-20">
+                            <div>
+                                {
+                                    productsHasError && (
+                                        <ErrorComponent />
+                                    )
+                                }
+                                {
+                                    !productsHasError && productsAreLoading && (
+                                        <div className='h-[33rem] w-full flex justify-center items-center'>
+                                            <Fallback color='#3f51b5' />
+                                        </div>
+                                    )
+                                }
+                                {
+                                    !productsHasError && !productsAreLoading && product !== undefined && (
+                                        <ProductDescription key={product.id} product={product} />
+                                    )
+                                }
                             </div>
-                        )
-                    }
-                    {
-                        !hasError && !isLoading && product !== undefined && (
-                            <ProductDescription key={product.id} product={product} />
-                        )
-                    }
-                </div>
-            </div>
-            <video className='absolute w-full h-full object-cover' src={video} autoPlay loop muted />
-        </div>
+                        </div>
+                        {
+                            currentTemplate.product.video && (
+                                <video className='absolute w-full h-full object-cover' src={video} autoPlay loop muted />
+                            )
+                        }
+                    </div>
+                )
+            }
+        </>
     )
 }
 

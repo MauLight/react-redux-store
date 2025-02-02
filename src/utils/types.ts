@@ -29,6 +29,12 @@ export interface TemplateProps {
         layout: string
         image: string
     }
+    product: {
+        layout: string
+        title: string
+        button: string
+        video: boolean
+    }
     card: {
         card: string
         layout: string
