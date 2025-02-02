@@ -15,7 +15,7 @@ export default function ProductDescription({ product }: { product: ProductProps 
     const [isAdmin, setIsAdmin] = useState<boolean>(false)
 
     const dispatch: AppDispatch = useDispatch()
-    const { currentTemplate, uiIsLoading, uiHasError } = useSelector((state: StoreProps) => state.ui)
+    const { currentTemplate } = useSelector((state: StoreProps) => state.ui)
 
     const [loading, setLoading] = useState<boolean>(true)
     const [_stars, setStars] = useState<ReactNode[]>([])

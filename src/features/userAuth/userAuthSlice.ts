@@ -36,6 +36,7 @@ export const postLoginClientAsync = createAsyncThunk(
     'userAuth/postLoginClient', async (user: LoginProps, { rejectWithValue }) => {
         try {
             const { data } = await axios.post(`${url}/auth/admin`, user)
+            console.log(data, 'Login data')
             localStorage.setItem('marketplace-admin', JSON.stringify(data))
             return data
         } catch (error) {
@@ -106,10 +107,8 @@ export const updateWizardByUserIdAsync = createAsyncThunk(
         const admin = localStorage.getItem('marketplace-admin') ? JSON.parse(localStorage.getItem('marketplace-admin') as string) : {}
         const token = admin.token
 
-        console.log(token, 'This is the token')
-
         try {
-            const { data } = await axios.put(`${url}/auth/admin/wizard/${clientId}`, {
+            const { data } = await axios.put(`${url}/auth/admin/wizard/${clientId}`, {}, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'

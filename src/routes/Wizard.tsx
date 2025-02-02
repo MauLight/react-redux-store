@@ -111,7 +111,8 @@ export default function Wizard(): ReactNode {
                             setStep(5)
                         }, 3000)
                         const { payload } = await dispatch(updateWizardByUserIdAsync(clientId))
-                        if (payload.updatedClient) {
+                        if (payload.newToken) {
+                            localStorage.setItem('marketplace-admin', JSON.stringify({ token: payload.newToken }))
                             setTimeout(() => {
                                 navigate('/admin/builder')
                             }, 4000)
@@ -132,7 +133,8 @@ export default function Wizard(): ReactNode {
                             setStep(5)
                         }, 3000)
                         const { payload } = await dispatch(updateWizardByUserIdAsync(clientId))
-                        if (payload.updatedClient) {
+                        if (payload.newToken) {
+                            localStorage.setItem('marketplace-admin', JSON.stringify({ token: payload.newToken }))
                             setTimeout(() => {
                                 navigate('/admin/builder')
                             }, 4000)
@@ -152,9 +154,9 @@ export default function Wizard(): ReactNode {
                             setStep(5)
                         }, 3000)
                         const { payload } = await dispatch(updateWizardByUserIdAsync(clientId))
-                        if (payload.updatedClient) {
+                        if (payload.newToken) {
+                            localStorage.setItem('marketplace-admin', JSON.stringify({ token: payload.newToken }))
                             setTimeout(() => {
-                                toast.success('UI configuration updated succesfully!')
                                 navigate('/admin/builder')
                             }, 4000)
                         }
