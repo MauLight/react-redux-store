@@ -15,7 +15,7 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
   const { pathname } = useLocation()
   const cartItemsLength = Object.keys(cart).length
 
-  const topBarText = pathname.includes('checkout') && !readyToPay ? 'text-sym-800 bg-[#ffffff]' : 'text-[#ffffff] hover:text-indigo-500 transition-color duration-200'
+  const topBarText = pathname.includes('checkout') && !readyToPay ? 'text-sym-800 bg-[#ffffff]' : 'text-[#10100e] text-[1.1rem] hover:text-indigo-500 transition-color duration-200'
   const topBarHamburgerColor = pathname.includes('checkout') ? '#10100e' : '#ffffff'
 
   const [hamburgerIsOpen, setHamburgerIsOpen] = useState<boolean>(false)
@@ -26,8 +26,8 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
   }
 
   return (
-    <main className={`fixed ${announcementBar ? 'top-10' : 'top-2'} w-full flex justify-center z-50`}>
-      <section className={`h-[50px] w-full min-[1440px]:w-web px-3 rounded-[10px] ${yPosition > 50 ? 'bg-[#10100e] bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70' : 'bg-transparent'} transition-all duration-200`}>
+    <main className={`${announcementBar ? 'top-8' : 'top-2'} fixed w-full bg-[#ffffff] border-b flex justify-center z-50`}>
+      <section className={`h-[70px] w-full min-[1440px]:w-web px-3 rounded-[10px] ${yPosition > 50 ? '' : ''} transition-all duration-200`}>
         <nav className="flex h-full w-full justify-between items-center">
           <Link to={'/'} className="block">
             <h1 className={`leading-none text-[18px] ${topBarText} antialiased cursor-pointer`}>eMOTIONs</h1>

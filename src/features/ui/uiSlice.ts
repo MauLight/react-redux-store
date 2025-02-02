@@ -9,6 +9,13 @@ const admin = localStorage.getItem('marketplace-admin') ? JSON.parse(localStorag
 export const classicTemplate = {
     title: 'classic',
     preview: 'https://res.cloudinary.com/maulight/image/upload/v1737986747/classic.png',
+    topbar: {
+        container: 'fixed w-full bg-[#10100e] flex justify-center z-50',
+        scrollA: 'h-[50px] w-full min-[1440px]:w-web px-3',
+        scrollB: '',
+        text: 'text-[#ffffff] hover:text-indigo-500 transition-color duration-200',
+        search: 'w-[250px] relative h-10'
+    },
     hero: {
         layout: 'relative h-[900px] w-full bg-gray-100 p-10 overflow-hidden',
         image: 'h-full grid grid-cols-3 overflow-hidden rounded-[15px]'
@@ -31,6 +38,13 @@ export const classicTemplate = {
 export const techTemplate = {
     title: 'tech',
     preview: 'https://res.cloudinary.com/maulight/image/upload/v1737986746/tech.png',
+    topbar: {
+        container: 'fixed w-full bg-[#ffffff] border-b flex justify-center z-50',
+        scrollA: 'h-[70px] w-full min-[1440px]:w-web px-3 rounded-[10px]',
+        scrollB: '',
+        text: 'text-[#10100e] text-[1.1rem] hover:text-indigo-500 transition-color duration-200',
+        search: 'w-[250px] relative h-10 border border-gray-300'
+    },
     hero: {
         layout: 'relative h-[900px] w-full bg-[#ffffff] p-12 overflow-hidden',
         image: 'h-full grid grid-cols-3 overflow-hidden'
@@ -53,6 +67,13 @@ export const techTemplate = {
 export const modernTemplate = {
     title: 'modern',
     preview: 'https://res.cloudinary.com/maulight/image/upload/v1737986959/modern.png',
+    topbar: {
+        container: 'fixed w-full flex justify-center z-50',
+        scrollA: 'h-[50px] w-full min-[1440px]:w-web px-3 rounded-[10px]',
+        scrollB: 'bg-[#10100e] bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70',
+        text: 'text-[#ffffff] hover:text-indigo-500 transition-color duration-200',
+        search: 'w-[250px] relative h-10'
+    },
     hero: {
         layout: 'relative h-[900px] w-full overflow-hidden',
         image: 'h-full grid grid-cols-3 overflow-hidden'
@@ -75,10 +96,12 @@ export const modernTemplate = {
 export const getUIConfigurationAsync = createAsyncThunk(
     'ui/getUIConfiguration', async (_, { rejectWithValue }) => {
         try {
-            const { data } = await axios.get(`${url}/administrator/ui`
-            )
+            console.log('1. Two')
+            const { data } = await axios.get(`${url}/administrator/ui`)
+
             return data
         } catch (error) {
+            console.log('2. Three')
             toast.error((error as AxiosError).message)
             return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
         }
@@ -337,10 +360,12 @@ export const uiSlice = createSlice({
                 getUIConfigurationAsync.fulfilled, (state, action) => {
                     state.uiIsLoading = false
                     state.uiHasError = false
-                    state.id = action.payload.ui.id
-                    state.currConfig = action.payload.ui.currConfig
-                    state.currSliderId = action.payload.ui.currSlider
-                    state.currentTemplateId = action.payload.ui.currentTemplate
+                    if (action.payload.ui) {
+                        state.id = action.payload.ui.id
+                        state.currConfig = action.payload.ui.currConfig
+                        state.currSliderId = action.payload.ui.currSlider
+                        state.currentTemplateId = action.payload.ui.currentTemplate
+                    }
                 }
             )
             .addCase(

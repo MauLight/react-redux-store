@@ -51,6 +51,7 @@ function Home() {
 
     useLayoutEffect(() => {
         if (products.length === 0) {
+            console.log('hey')
             getProducts()
         }
     }, [])
