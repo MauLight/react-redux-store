@@ -33,7 +33,7 @@ export default function DashboardButton({ action, actionType, label, type }: Das
                         transition={{ duration: 0.05 }}
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => { }}
+                        onClick={action}
                         className='w-[120px] h-10 bg-green-600 hover:bg-green-500 active:bg-green-600 transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
                         <i className="fa-solid fa-floppy-disk"></i>
                         {label}

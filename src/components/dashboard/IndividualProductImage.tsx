@@ -1,6 +1,7 @@
 import type { ReactNode, RefObject } from 'react'
 import Fallback from '../common/Fallback'
 import ErrorComponent from '../common/ErrorComponent'
+import DashboardUploadButton from './DashboardUploadButton'
 
 interface IndividualProductImageProps {
     cloudinaryFileUpload: string | null
@@ -53,10 +54,7 @@ export default function IndividualProductImage({
                                 :
                                 (
                                     <div className='h-[405px] border border-dashed border-sym_gray-300 rounded-[5px] p-2'>
-                                        <button type='button' className='w-full h-full flex flex-col justify-center items-center gap-y-3 hover:text-indigo-500 active:text-[#10100e] transition-color duration-200' onClick={handleFileButtonClick}>
-                                            <i className="fa-solid fa-cloud-arrow-up fa-xl"></i>
-                                            Upload Image
-                                        </button>
+                                        <DashboardUploadButton action={handleFileButtonClick} />
                                         <input type='file' ref={fileInputRef} onChange={handleFileUpload} className='hidden' />
                                     </div>
                                 )

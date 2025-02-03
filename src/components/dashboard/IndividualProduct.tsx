@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 import Compressor from 'compressorjs'
+import { motion } from 'motion/react'
 
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
@@ -35,7 +36,7 @@ export const productSchema = yup.object().shape({
     length: yup.number(),
     price: yup.number().required('Price is required'),
     discount: yup.number(),
-    quantity: yup.number().required(),
+    quantity: yup.number().required('Quantity is required'),
 })
 
 function IndividualProduct(): ReactNode {
@@ -62,7 +63,10 @@ function IndividualProduct(): ReactNode {
             weight: 0,
             height: 0,
             width: 0,
-            length: 0
+            length: 0,
+            price: 0,
+            discount: 0,
+            quantity: 0
         },
         resolver: yupResolver(productSchema)
     })
@@ -284,12 +288,16 @@ function IndividualProduct(): ReactNode {
                     </IndividualProductImage>
                 </div>
                 <div className="flex gap-x-2 justify-end">
-                    <button onClick={handleResetForm} type='button' className='w-[150px] h-10 bg-[#ffffff] border border-gray-400 hover:bg-red-500 text-[#10100e] hover:text-[#ffffff] active:bg-[#ffffff] active:text-[#10100e] transition-color duration-200 mt-2 rounded-[10px]'>Reset</button>
-                    <button onClick={handleSubmit(onSubmit)} className='w-[150px] h-10 bg-[#10100e] text-[#ffffff] hover:bg-green-600 active:bg-[#10100e] transition-color duration-200 mt-2 rounded-[10px]'>Submit</button>
 
-
-                    {/* <DashboardButton label='Reset' action={handleResetForm} actionType='cancel' />
-                    <DashboardButton label='Submit' action={handleSubmit(onSubmit)} actionType='confirm' /> */}
+                    <DashboardButton type='button' label='Reset' action={handleResetForm} actionType='cancel' />
+                    <motion.button
+                        transition={{ duration: 0.05 }}
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={handleSubmit(onSubmit)} className='w-[120px] h-10 bg-green-600 hover:bg-green-500 active:bg-green-600 transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
+                        <i className="fa-solid fa-floppy-disk"></i>
+                        Submit
+                    </motion.button>
 
                 </div>
             </form>
