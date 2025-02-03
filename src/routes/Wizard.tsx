@@ -11,7 +11,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getTemplateByIdAsync, getAllTemplatesAsync, postNewUIConfigurationAsync } from '@/features/ui/uiSlice'
 import { updateWizardByUserIdAsync } from '@/features/userAuth/userAuthSlice'
 import { RotatingLines } from 'react-loader-spinner'
-import { toast } from 'react-toastify'
 
 import video from '@/assets/video/Wizard.webm'
 

@@ -12,6 +12,7 @@ import Fallback from '@/components/common/Fallback'
 import { Switch } from '@/components/common/Switch'
 import { StoreProps } from '@/utils/types'
 import { Modal } from '@/components/common/Modal'
+import DashboardButton from '../../DashboardButton'
 
 const CloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME
 const CloudinaryAPIKEY = import.meta.env.VITE_CLOUDINARY_APIKEY
@@ -524,14 +525,20 @@ export default function AuthBuilderPanel(): ReactNode {
                             <>
                                 <p className='text-balance'>Allowing login with Google involves sharing your marketplace users data with Google, are you sure you want to continue?</p>
                                 <div className="w-full flex justify-end gap-x-2 mt-10">
-                                    <button onClick={handleOpenAllowGoogle} className='w-[120px] h-10 bg-[#10100e] hover:bg-red-500 active:bg-[#10100e] transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
-                                        <i className="fa-solid fa-ban"></i>
-                                        Cancel
-                                    </button>
-                                    <button onClick={handleClickAllowGoogle} className='w-[120px] h-10 bg-green-600 hover:bg-green-500 active:bg-green-600 transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
-                                        <i className="fa-solid fa-floppy-disk"></i>
-                                        Confirm
-                                    </button>
+                                    <DashboardButton
+                                        type='button'
+                                        label='Cancel'
+                                        actionType='cancel'
+                                        action={handleOpenAllowGoogle}
+                                    />
+
+
+                                    <DashboardButton
+                                        type='button'
+                                        label='Confirm'
+                                        actionType='confirm'
+                                        action={handleClickAllowGoogle}
+                                    />
 
                                 </div>
                             </>
