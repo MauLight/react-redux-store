@@ -14,6 +14,8 @@ import AddProductsToCollection from '@/components/dashboard/collections/AddProdu
 import Fallback from '@/components/common/Fallback'
 import ErrorComponent from '@/components/common/ErrorComponent'
 import AddNewCollection from '@/components/dashboard/collections/AddNewCollection'
+import DashboardButton from '@/components/dashboard/DashboardButton'
+import { motion } from 'framer-motion'
 
 function Collections(): ReactNode {
     const dispatch: AppDispatch = useDispatch()
@@ -134,10 +136,15 @@ function Collections(): ReactNode {
                                     inputValue !== 'Choose a collection' && (
                                         <div className="flex flex-col gap-y-5 justify-end">
 
-                                            <button onClick={handleOpenModal} className='z-10 px-3 h-10 bg-green-600 hover:bg-green-500 active:bg-green-600 transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
+                                            <motion.button
+                                                transition={{ duration: 0.05 }}
+                                                whileHover={{ scale: 1.03 }}
+                                                whileTap={{ scale: 0.95 }}
+                                                onClick={handleOpenModal}
+                                                className='z-10 px-3 h-10 bg-green-600 hover:bg-green-500 active:bg-green-600 transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
                                                 <i className="fa-solid fa-plus"></i>
                                                 Add products
-                                            </button>
+                                            </motion.button>
                                         </div>
                                     )
                                 }
