@@ -1,11 +1,13 @@
-import { Modal } from '@/components/common/Modal'
-import { Switch } from '@/components/common/Switch'
-import DashboardSidebarReducer from '@/components/dashboard/DashboardSidebarReducer'
-import { getAllTemplatesAsync, getTemplateByIdAsync, updateCurrentTemplateAsync, updateUIConfigurationAsync } from '@/features/ui/uiSlice'
-import { AppDispatch } from '@/store/store'
-import { StoreProps, TemplateProps } from '@/utils/types'
 import { memo, useEffect, useReducer, useState, type ReactNode } from 'react'
+import DashboardSidebarReducer from '@/components/dashboard/DashboardSidebarReducer'
 import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch } from '@/store/store'
+import { getAllTemplatesAsync, getTemplateByIdAsync, updateCurrentTemplateAsync, updateUIConfigurationAsync } from '@/features/ui/uiSlice'
+
+import { StoreProps, TemplateProps } from '@/utils/types'
+import { Switch } from '@/components/common/Switch'
+import { Modal } from '@/components/common/Modal'
+import { motion } from 'motion/react'
 
 interface NavState {
     one: boolean
@@ -158,13 +160,17 @@ function Settings(): ReactNode {
                             <div className="grid grid-cols-3 gap-5">
                                 {
                                     templates.map((temp: TemplateProps) => (
-                                        <button onClick={() => { handleChooseTemplate(temp.id) }} className='group flex flex-col justify-center items-center gap-y-1 rounded-[10px] overflow-hidden' key={temp.id}>
+                                        <motion.button
+                                            transition={{ duration: 0.05 }}
+                                            whileHover={{ scale: 1.01 }}
+                                            whileTap={{ scale: 0.99 }}
+                                            onClick={() => { handleChooseTemplate(temp.id) }} className='group flex flex-col justify-center items-center gap-y-1 rounded-[10px] overflow-hidden' key={temp.id}>
                                             <div className={`relative w-full h-[380px] rounded-[10px] overflow-hidden ${currentTemplate.id === temp.id ? 'border-2 border-indigo-500' : 'grayscale'}`}>
                                                 <img className='h-full object-cover' src={temp.preview} alt="" />
                                                 <div className='absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-30 bg-indigo-600 rounded-[10px] transition-all duration-200'></div>
                                             </div>
                                             <p className={`capitalize group-hover:underline ${currentTemplate.id === temp.id ? 'text-indigo-500 underline' : ''}`}>{temp.title}</p>
-                                        </button>
+                                        </motion.button>
                                     ))
                                 }
                             </div>

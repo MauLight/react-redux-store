@@ -14,7 +14,6 @@ import AddProductsToCollection from '@/components/dashboard/collections/AddProdu
 import Fallback from '@/components/common/Fallback'
 import ErrorComponent from '@/components/common/ErrorComponent'
 import AddNewCollection from '@/components/dashboard/collections/AddNewCollection'
-import DashboardButton from '@/components/dashboard/DashboardButton'
 import { motion } from 'framer-motion'
 
 function Collections(): ReactNode {
