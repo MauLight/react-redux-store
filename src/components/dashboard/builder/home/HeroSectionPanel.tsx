@@ -11,6 +11,7 @@ import Fallback from '@/components/common/Fallback'
 import { toast } from 'react-toastify'
 
 import { StoreProps } from '@/utils/types'
+import DashboardUploadButton from '../../DashboardUploadButton'
 
 const CloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME
 const CloudinaryAPIKEY = import.meta.env.VITE_CLOUDINARY_APIKEY
@@ -362,10 +363,9 @@ function HeroSectionPanel(): ReactNode {
                                         !cloudinaryError && !cloudinaryLoading && !cloudinaryBackground && (
                                             <div className="group flex flex-col gap-y-2">
                                                 <label className='text-[0.8rem]' htmlFor="background upload">{'Image (16:9 / 1920x1080 px for best results)'}</label>
-                                                <button onClick={handleFileButtonClick} name='background upload' className='h-[120px] flex flex-col justify-center items-center gap-y-2 border border-sym_gray-600 border-dashed rounded-[5px] group-hover:border-indigo-500 group-hover:text-indigo-500 transition-color duration-200'>
-                                                    <i className="fa-solid fa-cloud-arrow-up fa-xl"></i>
-                                                    Upload image
-                                                </button>
+                                                <div className='h-[120px] flex flex-col justify-center items-center gap-y-2 border border-sym_gray-600 border-dashed rounded-[5px] group-hover:border-indigo-500 group-hover:text-indigo-500 transition-color duration-200'>
+                                                    <DashboardUploadButton action={handleFileButtonClick} />
+                                                </div>
                                                 <input type='file' ref={fileInputRef} onChange={handleFileUpload} className='hidden' />
                                             </div>
                                         )

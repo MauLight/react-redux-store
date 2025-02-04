@@ -16,6 +16,7 @@ import { AppDispatch } from '@/store/store'
 import CustomDropdownWithCreate from '@/components/common/CustomDropdownWithCreate'
 import { Modal } from '@/components/common/Modal'
 import Carousel from '@/components/home/Carousel'
+import DashboardUploadButton from '../../DashboardUploadButton'
 
 const CloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME
 const CloudinaryAPIKEY = import.meta.env.VITE_CLOUDINARY_APIKEY
@@ -515,10 +516,9 @@ function SliderSectionPanel(): ReactNode {
                                         !cloudinaryError && !cloudinaryLoading && (
                                             <>
                                                 <div>
-                                                    <button onClick={handleFileButtonClick} className='h-[120px] w-[120px] flex flex-col justify-center items-center gap-y-2 border border-sym_gray-400 hover:border-indigo-500 hover:text-indigo-500 transition-color duration-200 border-dashed rounded-[5px] text-[0.9rem]'>
-                                                        <i className="fa-solid fa-cloud-arrow-up fa-xl"></i>
-                                                        Upload image
-                                                    </button>
+                                                    <div className='h-[120px] w-[120px] flex flex-col justify-center items-center gap-y-2 border border-sym_gray-400 hover:border-indigo-500 hover:text-indigo-500 transition-color duration-200 border-dashed rounded-[5px] text-[0.9rem]'>
+                                                        <DashboardUploadButton action={handleFileButtonClick} />
+                                                    </div>
                                                     <input multiple accept="image/*" type='file' ref={fileInputRef} onChange={handleFileUpload} className='hidden' />
                                                 </div>
                                                 {

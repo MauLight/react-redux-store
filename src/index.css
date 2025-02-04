@@ -2,9 +2,19 @@
 @import url("https://use.typekit.net/ysc1hsj.css");
 @import url("https://use.typekit.net/ysc1hsj.css");
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-sym_gray-50: #e4e4e4;
+  --color-sym_gray-100: #cacac9;
+  --color-sym_gray-200: #afafaf;
+  --color-sym_gray-300: #959594;
+  --color-sym_gray-400: #7a7a79;
+  --color-sym_gray-500: #60605e;
+  --color-sym_gray-600: #454544;
+  --color-sym_gray-700: #2b2b29;
+  --color-sym_gray-800: #10100e;
+}
 
 @font-face {
   font-family: CodeNext-SemiBold;

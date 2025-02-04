@@ -39,7 +39,7 @@ function ProductsSectionPanel(): ReactNode {
                 </div>
 
                 <div className="flex flex-col gap-y-2">
-                    <Link to={'/admin/collections'} className='text-[0.9rem] underline text-indigo-500'>Edit products</Link>
+                    <Link to={'/admin/products'} className='text-[0.9rem] underline text-indigo-500'>Edit products</Link>
 
                 </div>
 
