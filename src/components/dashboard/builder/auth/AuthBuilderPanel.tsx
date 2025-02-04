@@ -13,6 +13,7 @@ import { Switch } from '@/components/common/Switch'
 import { StoreProps } from '@/utils/types'
 import { Modal } from '@/components/common/Modal'
 import DashboardButton from '../../DashboardButton'
+import DashboardUploadButton from '../../DashboardUploadButton'
 
 const CloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME
 const CloudinaryAPIKEY = import.meta.env.VITE_CLOUDINARY_APIKEY
@@ -562,7 +563,6 @@ interface UploadComponentProps {
 }
 
 function UploadComponent({
-    title,
     handleFileUpload,
     index,
     error,
@@ -609,10 +609,7 @@ function UploadComponent({
                                 :
                                 (
                                     <>
-                                        <button type='button' className='w-full h-full flex flex-col justify-center items-center gap-y-3 group-hover:text-indigo-500 active:text-[#10100e] transition-color duration-200' onClick={handleFileButtonClick}>
-                                            <i className="fa-solid fa-cloud-arrow-up fa-xl"></i>
-                                            {title}
-                                        </button>
+                                        <DashboardUploadButton action={handleFileButtonClick} />
                                         <input type='file' ref={fileInputRef} onChange={(e) => { handleFileUpload(e, index) }} className='hidden' />
                                     </>
                                 )

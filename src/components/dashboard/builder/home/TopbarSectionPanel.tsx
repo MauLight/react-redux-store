@@ -13,6 +13,7 @@ import { StoreProps } from '@/utils/types'
 import { useSelector } from 'react-redux'
 import { AppDispatch } from '@/store/store'
 import { useDispatch } from 'react-redux'
+import DashboardUploadButton from '../../DashboardUploadButton'
 
 const CloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME
 const CloudinaryAPIKEY = import.meta.env.VITE_CLOUDINARY_APIKEY
@@ -307,12 +308,11 @@ export default function TopbarSectionPanel({ topBackground, setTopBackground }: 
                                         }
                                         {
                                             !cloudinaryError && !cloudinaryLoading && !cloudinaryLogo && (
-                                                <div className="group flex flex-col gap-y-2">
+                                                <div className="flex flex-col gap-y-2">
                                                     <label className='text-[0.8rem]' htmlFor="background upload">{'Logo (300x60 px for best results)'}</label>
-                                                    <button onClick={handleFileButtonClick} name='background upload' className='h-[120px] w-[200px] flex flex-col justify-center items-center gap-y-2 border border-sym_gray-600 border-dashed rounded-[5px] group-hover:border-indigo-500 group-hover:text-indigo-500 transition-color duration-200'>
-                                                        <i className="fa-solid fa-cloud-arrow-up fa-xl"></i>
-                                                        Upload image
-                                                    </button>
+                                                    <div className='h-[120px] w-[200px] flex flex-col justify-center items-center gap-y-2 border border-sym_gray-600 border-dashed rounded-[5px] hover:border-indigo-500 hover:text-indigo-500 transition-color duration-200'>
+                                                        <DashboardUploadButton action={handleFileButtonClick} />
+                                                    </div>
                                                     <input type='file' ref={fileInputRef} onChange={handleFileUpload} className='hidden' />
                                                 </div>
                                             )
