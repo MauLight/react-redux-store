@@ -109,7 +109,7 @@ function Multistep() {
             <section className="flex justify-between rounded p-8">
                 {
                     Array.from({ length: 4 }).map((_, i) => (
-                        <Step step={i} currentStep={step} />
+                        <Step key={i} step={i} currentStep={step} />
                     ))
                 }
             </section>
