@@ -1,6 +1,6 @@
 import useScroll from '@/hooks/useSroll'
 import { StoreProps } from '@/utils/types'
-import { XMarkIcon } from '@heroicons/react/20/solid'
+
 import Hamburger from 'hamburger-react'
 import { useState, type ReactElement } from 'react'
 import { useSelector } from 'react-redux'
@@ -57,7 +57,7 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
 
       <section className={`absolute -top-2 ${hamburgerIsOpen ? 'right-0' : '-right-[300px]'} h-screen w-[300px] flex flex-col justify-between bg-[#ffffff] z-20 transition-all duration-200 shadow-md`}>
         <div className='flex flex-col gap-y-5'>
-          <XMarkIcon onClick={() => { setHamburgerIsOpen(false) }} className='w-6 ml-auto mr-5 mt-5 text-[#2E3D49] font-accent hover:rotate-90 hover:text-[#EA0C1D] transition-all duration-200' />
+          {/* <XMarkIcon onClick={() => { setHamburgerIsOpen(false) }} className='w-6 ml-auto mr-5 mt-5 text-[#2E3D49] font-accent hover:rotate-90 hover:text-[#EA0C1D] transition-all duration-200' /> */}
           <div className="flex flex-col px-5 gap-y-2">
             <Link onClick={() => { setHamburgerIsOpen(false) }} to={user.email ? '/profile' : '/sign'} className='text-[#10100e] hover:text-indigo-500 text-[1.5rem] transition-color duration-200 flex items-center gap-x-2'>
               <i className='fa-solid fa-user'></i>
