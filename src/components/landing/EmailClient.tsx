@@ -39,7 +39,7 @@ function EmailClient(): ReactNode {
     }
     return (
         <div className="flex w-full">
-            <div className="mx-auto h-[600px] flex w-full max-w-3xl flex-1 overflow-hidden rounded-2xl bg-white ">
+            <div className="mx-auto h-[600px] flex w-full max-w-3xl flex-1 overflow-hidden rounded-[12px] bg-white ">
                 <div className="flex w-[45%] flex-col bg-slate-50 py-2">
 
                     {/* Header */}

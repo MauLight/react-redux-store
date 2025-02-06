@@ -8,6 +8,7 @@ import { randRange } from '@/utils/functions'
 import { ReactTyped } from "react-typed"
 import Multistep from '@/components/landing/Multistep'
 import EmailClient from '@/components/landing/EmailClient'
+import DemoHeader from '@/components/landing/DemoHeader'
 
 const childVariants = {
     visible: {
@@ -161,6 +162,7 @@ export default function Landing(): ReactNode {
             <div className="w-full min-h-screen border border-white flex flex-col justify-center items-center gap-y-10 py-10">
                 <Multistep />
                 <EmailClient />
+                <DemoHeader />
             </div>
         </div>
     )
