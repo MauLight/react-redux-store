@@ -18,7 +18,6 @@ import { handleDecodeToken } from './utils/functions'
 const Sign = lazy(async () => await import('./routes/Sign'))
 const Login = lazy(async () => await import('./routes/Login'))
 
-const Landing = lazy(async () => await import('./routes/Landing'))
 const Home = lazy(async () => await import('./routes/Home'))
 const Profile = lazy(async () => await import('./routes/Profile'))
 const Collection = lazy(async () => await import('./routes/Collection'))
@@ -145,7 +144,6 @@ function Layout() {
                                 !uiHasError && currConfig && (
                                     <Routes>
                                         <Route path='/' element={<Home />} />
-                                        <Route path='/landing' element={<Landing />} />
                                         <Route path='/sign' element={<Sign />} />
                                         <Route path='/login' element={<Login />} />
                                         <Route path='/profile' element={<Profile />} />
