@@ -38,7 +38,7 @@ export default function Searchbar(): ReactNode {
     }
 
     return (
-        <div className='group w-[250px] relative h-10 border border-gray-300'>
+        <div className='w-[250px] relative h-10 z-20'>
             {
                 searchIsLoading && (
                     <div className='absolute top-0 left-3 h-10'>
