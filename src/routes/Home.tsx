@@ -18,6 +18,7 @@ import { selector, useRecoilValue } from "recoil"
 import { currentPageState, productsListState } from "@/utils/recoil"
 import { infiniteScrollFetch } from "@/hooks/useFetchProductList"
 import Carousel from "@/components/home/Carousel"
+import { Link } from "react-router-dom"
 
 const pageSize = 7
 
@@ -51,7 +52,6 @@ function Home() {
 
     useLayoutEffect(() => {
         if (products.length === 0) {
-            console.log('hey')
             getProducts()
         }
     }, [])
@@ -64,11 +64,13 @@ function Home() {
                 )
             }
             {
-                hasError || Object.keys(currentTemplate).length === 0 && (
-                    <div className="relative w-screen h-screen flex justify-end items-center pr-20">
-                        <div className=" flex z-20 p-10 bg-[#10100e]">
-                            <h1 className="text-[#ffffff] text-[3rem] text-right text-balance uppercase leading-tight">We'll be back shortly</h1>
-                        </div>
+                (hasError || Object.keys(currentTemplate).length === 0) || !collection.length && (
+                    <div className="relative w-screen h-screen flex justify-end items-center pr-32">
+                        <Link to={'/admin'} className="relative w-[400px] flex flex-col gap-y-5 z-20 p-10 glass">
+                            <h1 className="text-[#fff] text-[1.5rem] text-balance uppercase leading-tight z-10">Your Marketplace is one step away.</h1>
+                            <p className="text-slate-300 text-balance z-10">Head into the administrator's area and add products to your store, you can also customize this place to make it your own.</p>
+                            <div className="absolute w-full h-full top-0 left-0 bg-[#10100e] opacity-40 z-0"></div>
+                        </Link>
                         <video className="absolute top-0 left-0 w-full h-full object-cover" src={video} loop autoPlay muted />
                     </div>
                 )
@@ -95,6 +97,9 @@ function Home() {
                                             <ProductCard product={product} />
                                         </div>
                                     ))
+                                }
+                                {
+
                                 }
                             </div>
                             <div className="w-full min-h-20 bg-[#10100e]"></div>
