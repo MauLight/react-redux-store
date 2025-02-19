@@ -7,7 +7,7 @@ function CustomDropdown({ value, setValue, list, defaultValue, loading, error, i
     const [choice, setChoice] = useState<string>(defaultValue || '')
 
     useEffect(() => {
-        if (choice !== '') {
+        if (choice !== '' && value === '') {
             setValue(value, choice)
         }
     }, [choice])

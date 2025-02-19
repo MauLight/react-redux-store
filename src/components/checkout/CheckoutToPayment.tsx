@@ -45,7 +45,7 @@ export default function CheckoutToPayment({ totalWithVat }: { totalWithVat: numb
     })
 
     return (
-        <main className='w-full h-full text-[#ffffff] pb-20'>
+        <main className='w-full h-full text-[#fff] pb-20 pt-10'>
             <section className="h-full grid grid-cols-3 gap-x-10">
 
                 <div className='h-full col-span-2 border bg-[#ffffff]'>

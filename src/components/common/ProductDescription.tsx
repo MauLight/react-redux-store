@@ -79,7 +79,7 @@ export default function ProductDescription({ product }: { product: ProductProps 
             )}
             {
                 product !== undefined && !loading && (
-                    <section className={`${currentTemplate.product.layout ? currentTemplate.product.layout : 'flex gap-x-5 bg-[#ffffff] p-10'} ${!isAdmin ? 'min-h-[33rem]' : ''}`}>
+                    <section className={`${currentTemplate.product.layout ? currentTemplate.product.layout : 'flex gap-x-5 bg-[#ffffff] p-10'} ${!isAdmin ? 'h-[52rem]' : ''}`}>
                         <div>
                             <InnerImageZoom className='max-h-[650px]' height={2} hideHint={true} zoomPreload={true} zoomType='hover' src={product.image as string} zoomSrc={product.image} />
                             {

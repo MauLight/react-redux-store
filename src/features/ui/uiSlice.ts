@@ -96,12 +96,10 @@ export const modernTemplate = {
 export const getUIConfigurationAsync = createAsyncThunk(
     'ui/getUIConfiguration', async (_, { rejectWithValue }) => {
         try {
-            console.log('1. Two')
             const { data } = await axios.get(`${url}/administrator/ui`)
 
             return data
         } catch (error) {
-            console.log('2. Three')
             toast.error((error as AxiosError).message)
             return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
         }

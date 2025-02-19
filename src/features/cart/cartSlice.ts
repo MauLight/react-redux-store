@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { CartItemProps, TransactionProps } from '@/utils/types'
 import { toast } from 'react-toastify'
 
-const url = import.meta.env.VITE_TRANSBANK_BACKEND_URL
+const url = import.meta.env.VITE_BACKEND_URL
 const returnUrl = 'http://localhost:3000/confirmation'
 const user = localStorage.getItem('marketplace-user') ? JSON.parse(localStorage.getItem('marketplace-user') as string) : {}
 const token = user.token
@@ -12,6 +12,7 @@ const initialCart: CartItemProps[] = []
 
 export const createTransbankTransactionAsync = createAsyncThunk(
     'cart/createTransbankTransaction', async (paymentInformation: TransactionProps, { rejectWithValue }) => {
+        console.log(token, 'this is the token')
         try {
             const { data } = await axios.post(`${url}/transbank`, { ...paymentInformation, returnUrl }, {
                 headers: {

@@ -6,7 +6,6 @@ import { motion } from 'framer-motion'
 //* Components
 import { CheckSummary } from '@/components/checkout/CheckSummary'
 import { CheckoutCard } from '@/components/checkout/CheckoutCard'
-import { XMarkIcon } from '@heroicons/react/outline'
 
 //* Types
 import { ProductProps, StoreProps } from '@/utils/types'
@@ -39,7 +38,7 @@ const Checkout = (): ReactElement => {
 
     return (
         <div className={`min-[500px]:max-[1440px]:px-10 w-full flex justify-center ${readyToPay ? 'bg-[#10100e]' : 'gap-y-10 bg-[#fdfdfd]'}`}>
-            <div className={`w-web flex flex-col justify-center overflow-y-scroll transition-color duration-200 ${readyToPay ? 'bg-[#10100e] min-h-screen' : 'gap-y-10 bg-[#fdfdfd] h-screen'}`}>
+            <div className={`w-[1440px] flex flex-col justify-center overflow-y-scroll transition-color duration-200 ${readyToPay ? 'bg-[#10100e] min-h-screen' : 'gap-y-10 bg-[#fdfdfd] h-screen'}`}>
                 <div className="h-[100px]"></div>
                 <div className="flex flex-col gap-y-5">
                     {
@@ -53,7 +52,7 @@ const Checkout = (): ReactElement => {
                                     your cart
                                 </motion.h1>
                                 <Link to={'/'}>
-                                    <XMarkIcon className='w-6 text-[#2E3D49] font-accent hover:rotate-90 hover:text-[#EA0C1D] transition-all duration-200' />
+                                    <i className="fa-solid fa-xmark text-[#2E3D49] font-accent hover:rotate-90 hover:text-[#EA0C1D] transition-all duration-200"></i>
                                 </Link>
                             </div>
                         )

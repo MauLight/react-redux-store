@@ -39,7 +39,7 @@ function IndividualProduct({ id }: { id: string | undefined }): ReactNode {
             {
                 !uiHasError && !uiIsLoading && Object.keys(currentTemplate).length > 0 && (
                     <div className='relative w-screen h-screen flex justify-center items-center sm:max-lg:pt-[350px] bg-gray-100'>
-                        <div className="w-[1440px] z-20">
+                        <div className="w-[1440px] pt-[80px] z-20">
                             <div>
                                 {
                                     productsHasError && (

@@ -207,6 +207,7 @@ export interface LoginProps {
 
 export interface CartItemProps {
     id: string
+    description: string
     title: string
     image: string
     price: number

@@ -4,7 +4,7 @@ import { StoreProps } from "@/utils/types"
 import { useEffect } from "react"
 import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
-import { format, formatDistance } from 'date-fns'
+import { formatDistance } from 'date-fns'
 
 
 

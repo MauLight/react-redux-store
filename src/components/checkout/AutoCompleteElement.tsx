@@ -138,7 +138,9 @@ const PlaceAutocomplete = ({ onPlaceSelect, setStep }: PlaceAutocompleteProps) =
     }, [])
 
     useEffect(() => {
+        console.log('1. before checking user')
         if (user) {
+            console.log('2. checking user', user)
             setValue('country', user.country)
             setValue('state', user.state)
             setValue('city', user.city)
@@ -165,9 +167,11 @@ const PlaceAutocomplete = ({ onPlaceSelect, setStep }: PlaceAutocompleteProps) =
         async function getCountiesAsync() {
             if (getValues().state !== '') {
                 const selectedRegion = getValues().state
-                const regionCode = regions.find(region => region.regionName === selectedRegion).regionId
-                if (regionCode) {
-                    await dispatch(getCoverageFromCourierAsync({ regionCode, type: 0 }))
+                const region = regions.find(region => region.regionName === selectedRegion)
+                if (region) {
+                    await dispatch(getCoverageFromCourierAsync({ regionCode: region.regionId, type: 0 }))
+                } else {
+                    toast.error('There was an error on our side.')
                 }
             }
         }
@@ -206,8 +210,6 @@ const PlaceAutocomplete = ({ onPlaceSelect, setStep }: PlaceAutocompleteProps) =
                 }
 
                 setValue('country', newAddress.country)
-                setValue('state', newAddress.state)
-                setValue('city', newAddress.city)
                 setValue('street', newAddress.street)
                 setValue('street_number', newAddress.street_number)
                 setValue('zipcode', newAddress.zipcode)
@@ -263,7 +265,7 @@ const PlaceAutocomplete = ({ onPlaceSelect, setStep }: PlaceAutocompleteProps) =
                                     <div className="">
                                         <label className=" text-[0.8rem]" htmlFor="state">State</label>
                                         <CustomDropdown
-                                            value='state'
+                                            value={getValues().state !== '' ? getValues().state : 'state'}
                                             defaultValue={getValues().state}
                                             setValue={setValue}
                                             list={regionsList}
@@ -277,7 +279,7 @@ const PlaceAutocomplete = ({ onPlaceSelect, setStep }: PlaceAutocompleteProps) =
                                     <div className="col-span-1">
                                         <label className=" text-[0.8rem]" htmlFor="city">City</label>
                                         <CustomDropdown
-                                            value='city'
+                                            value={getValues().city !== '' ? getValues().city : 'city'}
                                             defaultValue={getValues().city}
                                             setValue={setValue}
                                             list={counties}
