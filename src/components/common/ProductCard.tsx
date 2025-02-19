@@ -80,7 +80,7 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
           <div className='w-full h-full absolute top-0 left-0 bg-gradient-to-t from-[#10100e] to-transparent opacity-30'></div>
         )
       }
-      <Link to={`/product/${product.id}`} className="absolute top-0 left-0 w-full sm:h-full bg-[#10100e] opacity-0 group-hover:opacity-30 z-10 transition-all duration-200"></Link>
+      <Link to={`/product/${product.id}`} className="absolute top-0 left-0 w-full sm:h-full bg-[#10100e] opacity-0 group-hover:opacity-30 z-0 transition-all duration-200" />
     </section>
   )
 }
