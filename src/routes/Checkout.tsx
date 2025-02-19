@@ -6,7 +6,7 @@ import { motion } from 'framer-motion'
 //* Components
 import { CheckSummary } from '@/components/checkout/CheckSummary'
 import { CheckoutCard } from '@/components/checkout/CheckoutCard'
-import { XMarkIcon } from '@heroicons/react/20/solid'
+import { XMarkIcon } from '@heroicons/react/outline'
 
 //* Types
 import { ProductProps, StoreProps } from '@/utils/types'

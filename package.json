@@ -43,6 +43,7 @@
     "canvas-sketch-util": "^1.10.0",
     "compressorjs": "^1.2.1",
     "crypto-js": "^4.2.0",
+    "date-fns": "^4.1.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "framer-motion": "^11.12.0",
     "hamburger-react": "^2.5.1",

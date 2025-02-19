@@ -36,7 +36,6 @@ export const postLoginClientAsync = createAsyncThunk(
     'userAuth/postLoginClient', async (user: LoginProps, { rejectWithValue }) => {
         try {
             const { data } = await axios.post(`${url}/auth/admin`, user)
-            console.log(data, 'Login data')
             localStorage.setItem('marketplace-admin', JSON.stringify(data))
             return data
         } catch (error) {

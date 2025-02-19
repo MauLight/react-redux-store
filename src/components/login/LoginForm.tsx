@@ -91,6 +91,7 @@ function LoginForm({ isBuilder }: { isBuilder: boolean | undefined }): ReactNode
                 }
             }
         } catch (error) {
+            toast.error('error')
             console.log(error)
         }
     }

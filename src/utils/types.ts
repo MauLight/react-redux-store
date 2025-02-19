@@ -157,6 +157,11 @@ export interface StoreProps {
         createdAt?: string
         updatedAt?: string
         id?: string
+    },
+    errors: {
+        errors: ErrorsProps[],
+        isLoading: boolean
+        hasError: boolean
     }
 }
 
@@ -282,4 +287,13 @@ export interface DecodedProps {
     id: string
     role: 'admin',
     wizard: boolean
+}
+
+export interface ErrorsProps {
+    clientId: string
+    actionType: string
+    createdAt: string
+    id: string
+    message: string
+    updatedAt: string
 }

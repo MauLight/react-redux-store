@@ -6,7 +6,7 @@ const url = import.meta.env.VITE_BACKEND_URL
 export const getAllErrorsAsync = createAsyncThunk(
     'errors/getAllErrors', async (_, { rejectWithValue }) => {
         try {
-            const { data } = await axios.post(`${url}/errors`)
+            const { data } = await axios.get(`${url}/errors`)
             return data
         } catch (error) {
             return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
@@ -32,11 +32,11 @@ export const errorsSlice = createSlice({
                 state.isLoading = false
                 state.hasError = true
             })
-            .addCase(getAllErrorsAsync.pending, (state, action) => {
+            .addCase(getAllErrorsAsync.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.hasError = false
                 if (action.payload) {
-                    state.errors = action.payload
+                    state.errors = action.payload.errors
                 }
             })
     }

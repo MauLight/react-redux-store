@@ -22,7 +22,7 @@ const errorReportingMiddleware: Middleware = store => next => (action: any) => {
         console.log(errorDetails, 'these are the details.')
 
         // Send error details to the error reporting service
-        axios.post(`${url}/errorReport`, errorDetails)
+        axios.post(`${url}/errors`, errorDetails)
             .then(response => {
                 console.log('Error reported successfully:', response.data)
             })

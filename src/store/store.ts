@@ -10,6 +10,7 @@ import collectionsReducer from '@/features/collections/collectionsSlice'
 import courierReducer from '@/features/courier/courierSlice'
 import errorReportingMiddleware from './middleware'
 import uiReducer from '@/features/ui/uiSlice'
+import errorsReducer from '@/features/errors/errorsSlice'
 
 const store = configureStore({
     reducer: {
@@ -20,7 +21,8 @@ const store = configureStore({
         wishList: wishListReducer,
         inventory: productsReducer,
         collections: collectionsReducer,
-        courier: courierReducer
+        courier: courierReducer,
+        errors: errorsReducer
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(errorReportingMiddleware),
 })

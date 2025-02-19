@@ -29,27 +29,30 @@ function DashboardNavbar(): ReactNode {
 
     const navigate = useNavigate()
 
-    const [{ one, two, three, four }, setNavState] = useState<Record<string, boolean>>({
+    const [{ one, two, three, four, five }, setNavState] = useState<Record<string, boolean>>({
         one: true,
         two: false,
         three: false,
-        four: false
+        four: false,
+        five: false
     })
 
     return (
         <>
             <nav className='fixed bottom-0 left-0 z-20 flex justify-between sm:hidden h-12 w-full bg-[#ffffff] border-t border-sym_gray-300'>
-                <NavbarButton navigate={() => { navigate('/admin/builder') }} wasPressed={one} handlePressButton={() => { setNavState({ one: true, two: false, three: false, four: false }) }} title='Builder' icon='fa-solid fa-wrench' />
-                <NavbarButton navigate={() => { navigate('/admin/products') }} wasPressed={two} handlePressButton={() => { setNavState({ one: false, two: true, three: false, four: false }) }} title='Products' icon='fa-solid fa-cube' />
-                <NavbarButton navigate={() => { navigate('/admin/collections') }} wasPressed={three} handlePressButton={() => { setNavState({ one: false, two: false, three: true, four: false }) }} title='Collections' icon='fa-solid fa-cubes' />
-                <NavbarButton navigate={() => { navigate('/admin/settings') }} wasPressed={four} handlePressButton={() => { setNavState({ one: false, two: false, three: false, four: true }) }} title='Settings' icon='fa-solid fa-gear' />
+                <NavbarButton navigate={() => { navigate('/admin/builder') }} wasPressed={one} handlePressButton={() => { setNavState({ one: true, two: false, three: false, four: false, five: false }) }} title='Builder' icon='fa-solid fa-wrench' />
+                <NavbarButton navigate={() => { navigate('/admin/products') }} wasPressed={two} handlePressButton={() => { setNavState({ one: false, two: true, three: false, four: false, five: false }) }} title='Products' icon='fa-solid fa-cube' />
+                <NavbarButton navigate={() => { navigate('/admin/collections') }} wasPressed={three} handlePressButton={() => { setNavState({ one: false, two: false, three: true, four: false, five: false }) }} title='Collections' icon='fa-solid fa-cubes' />
+                <NavbarButton navigate={() => { navigate('/admin/settings') }} wasPressed={four} handlePressButton={() => { setNavState({ one: false, two: false, three: false, four: true, five: false }) }} title='Settings' icon='fa-solid fa-gear' />
+                <NavbarButton navigate={() => { navigate('/admin/logs') }} wasPressed={five} handlePressButton={() => { setNavState({ one: false, two: false, three: false, four: true, five: true }) }} title='Logs' icon='fa-solid fa-gear' />
             </nav>
             <nav className='w-full hidden sm:flex justify-between items-center bg-[#ffffff]'>
                 <div className="flex gap-x-10">
-                    <NavbarButton navigate={() => { navigate('/admin/builder') }} wasPressed={one} handlePressButton={() => { setNavState({ one: true, two: false, three: false, four: false }) }} title='Builder' icon='fa-solid fa-wrench' />
-                    <NavbarButton navigate={() => { navigate('/admin/products') }} wasPressed={two} handlePressButton={() => { setNavState({ one: false, two: true, three: false, four: false }) }} title='Products' icon='fa-solid fa-cube' />
-                    <NavbarButton navigate={() => { navigate('/admin/collections') }} wasPressed={three} handlePressButton={() => { setNavState({ one: false, two: false, three: true, four: false }) }} title='Collections' icon='fa-solid fa-cubes' />
-                    <NavbarButton navigate={() => { navigate('/admin/settings') }} wasPressed={four} handlePressButton={() => { setNavState({ one: false, two: false, three: false, four: true }) }} title='Settings' icon='fa-solid fa-gear' />
+                    <NavbarButton navigate={() => { navigate('/admin/builder') }} wasPressed={one} handlePressButton={() => { setNavState({ one: true, two: false, three: false, four: false, five: false }) }} title='Builder' icon='fa-solid fa-wrench' />
+                    <NavbarButton navigate={() => { navigate('/admin/products') }} wasPressed={two} handlePressButton={() => { setNavState({ one: false, two: true, three: false, four: false, five: false }) }} title='Products' icon='fa-solid fa-cube' />
+                    <NavbarButton navigate={() => { navigate('/admin/collections') }} wasPressed={three} handlePressButton={() => { setNavState({ one: false, two: false, three: true, four: false, five: false }) }} title='Collections' icon='fa-solid fa-cubes' />
+                    <NavbarButton navigate={() => { navigate('/admin/settings') }} wasPressed={four} handlePressButton={() => { setNavState({ one: false, two: false, three: false, four: true, five: false }) }} title='Settings' icon='fa-solid fa-gear' />
+                    <NavbarButton navigate={() => { navigate('/admin/logs') }} wasPressed={five} handlePressButton={() => { setNavState({ one: false, two: false, three: false, four: false, five: true }) }} title='Logs' icon='fa-solid fa-database' />
                 </div>
                 <Link to={'/'} className='text-[0.9rem] hover:text-indigo-500 transition-color duration-200 flex gap-x-1 items-center'>
                     <i className="fa-solid fa-arrow-left-long"></i>
