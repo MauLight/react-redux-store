@@ -1,7 +1,7 @@
 import { Middleware } from 'redux'
 import axios from 'axios'
 
-const url = import.meta.env.VITE_ERROR_BACKEND_URL
+const url = import.meta.env.VITE_BACKEND_URL
 const clientId = import.meta.env.VITE_CLIENT_ID
 
 const errorReportingMiddleware: Middleware = store => next => (action: any) => {
