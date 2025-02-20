@@ -17,8 +17,8 @@ export const BannerContent = ({ children, heroConfig }: { children: ReactNode, h
                     <p className='text-[16px] neue text-[#ffffff] z-10 uppercase'>{heroConfig.subHeader}</p>
                 </div>
             </div>
-            <div className="grow border"></div>
-            <div className="w-full flex justify-end z-20">
+            <div className="h-[30%]"></div>
+            <div className="w-full flex justify-center z-20">
                 {
                     children
                 }

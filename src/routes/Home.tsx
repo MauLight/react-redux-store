@@ -78,7 +78,13 @@ function Home() {
                             <Banner>
                                 <div className="w-full max-w-[1440px] h-[950px] flex justify-center items-center bg-[#fdfdfd] overflow-hidden">
                                     <BannerContent heroConfig={heroConfig}>
-                                        <></>
+                                        <div className="flex gap-x-5">
+                                            {
+                                                Array.from({ length: 5 }).map((_, i) => (
+                                                    <div key={`id-${i}`} className="w-[140px] h-[140px] glass bg-[#fff] rounded-[6px]"></div>
+                                                ))
+                                            }
+                                        </div>
                                     </BannerContent>
                                     <div className="absolute w-full h-full bg-[#10100e] z-0"></div>
                                     {
@@ -105,7 +111,7 @@ function Home() {
 
                                 }
                             </div>
-                            <div className="w-full min-h-20 bg-[#10100e]"></div>
+
                         </div>
                     </section>
                 )

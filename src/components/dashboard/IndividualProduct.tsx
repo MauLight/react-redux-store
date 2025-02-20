@@ -179,6 +179,7 @@ function IndividualProduct(): ReactNode {
         try {
             await dispatch(postIndividualProductAsync({ ...data, tags, images: imageList }))
             setWasSubmitted(true)
+            setImageList([])
 
         } catch (error) {
             console.log(error)
@@ -225,7 +226,6 @@ function IndividualProduct(): ReactNode {
         }
 
     }, [wasSubmitted])
-
 
     return (
         <>
@@ -291,7 +291,7 @@ function IndividualProduct(): ReactNode {
             </form>
             {
                 confirmationDialogue && (
-                    <Modal openModal={confirmationDialogue} handleOpenModal={() => { setConfirmationDialogue(!confirmationDialogue) }}>
+                    <Modal width='w-[1200px]' openModal={confirmationDialogue} handleOpenModal={() => { setConfirmationDialogue(!confirmationDialogue) }}>
                         <ConfirmationModal
                             product={{ ...getValues() } as ProductProps}
                             imageList={imageList}
@@ -348,7 +348,7 @@ function BuilderCard({ card, onDrop, handleReset }: { card: { id: number, image:
                 <button onClick={() => { handleReset(image) }} className='absolute -right-2 -top-1 z-10 w-[20px] h-[20px] flex justify-center items-center rounded-full bg-[#10100e] hover:bg-red-500 transition-color duration-200'>
                     <i className="fa-solid fa-xmark text-[#ffffff]"></i>
                 </button>
-                <img className='h-full w-full object-cover' src={image} alt="placeholder" />
+                <img className='h-full w-full object-cover rounded-[5px]' src={image} alt="placeholder" />
             </section>
             <div className={`absolute hidden group-hover:flex  bg-indigo-500 opacity-20 transition-all duration-200 w-full h-full`}></div>
         </li>

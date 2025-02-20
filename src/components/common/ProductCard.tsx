@@ -6,7 +6,7 @@ import { addItem } from '@/features/cart/cartSlice'
 import { AppDispatch } from '@/store/store'
 import { ProductProps, StoreProps } from '@/utils/types'
 
-export const ProductCard = ({ product, imageList }: { product: ProductProps, imageList?: any }): ReactElement => {
+export const ProductCard = ({ product }: { product: ProductProps }): ReactElement => {
   const dispatch: AppDispatch = useDispatch()
   const user = useSelector((state: StoreProps) => state.userAuth.user)
   const { currentTemplate } = useSelector((state: StoreProps) => state.ui)
@@ -39,7 +39,7 @@ export const ProductCard = ({ product, imageList }: { product: ProductProps, ima
     <section className={`group relative ${pathname === '/collection' ? 'h-[460px]' : currentTemplate.card ? currentTemplate.card.card : 'h-[700px] col-span-1 overflow-hidden'}`}>
 
       <div className={currentTemplate.card ? currentTemplate.card.image : 'h-[550px]'}>
-        <img key={product.id} src={imageList ? imageList[0].image : product.images ? product.images[0].image : 0} alt="product" className="w-full h-full object-cover" />
+        <img key={product.id} src={product.images ? product.images[0].image : ''} alt="product" className="w-full h-full object-cover" />
       </div>
 
       {

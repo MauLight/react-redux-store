@@ -1,5 +1,4 @@
 import { Dispatch, ReactNode, SetStateAction, useEffect } from 'react'
-import { ProductCard } from '../common/ProductCard'
 import { ProductProps } from '@/utils/types'
 import Fallback from '../common/Fallback'
 import ErrorComponent from '../common/ErrorComponent'
@@ -56,9 +55,9 @@ export default function ConfirmationModal({
                     <>
                         <h1 className='text-[2rem] text-balance uppercase'> Is the information correct?</h1>
                         <div className="border-b border-sym_gray-600 mb-10 mt-5"></div>
-                        <section className='flex gap-x-5'>
-                            <div className='min-w-[23rem] h-[33rem]'>
-                                <ProductCard product={product} imageList={imageList} />
+                        <section className='flex gap-x-20'>
+                            <div className='min-w-[30rem] h-[33rem]'>
+                                <img key={product.id} src={imageList.length > 0 ? imageList[0].image : ''} alt="product" className="w-full h-full object-cover" />
                             </div>
                             <div className="w-full h-[33rem] flex flex-col justify-between">
                                 <div className="flex flex-col">
