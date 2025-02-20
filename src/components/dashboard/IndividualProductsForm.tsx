@@ -1,8 +1,11 @@
 import { Dispatch, SetStateAction, useEffect, useState, type ReactNode } from 'react'
 import { FieldErrors, UseFormRegister, UseFormSetValue } from 'react-hook-form'
-import { handleCopyToClipboard } from '@/utils/functions'
 import AddTagsComponent from './products/AddTagsComponent'
 import { generateWithGemini } from '@/gemini/gemini'
+import { ReactTyped } from 'react-typed'
+import { motion } from 'framer-motion'
+import { animatedGradientText } from '@/utils/styles'
+import { toast } from 'react-toastify'
 interface IndividualProductFormProps {
     register: UseFormRegister<{
         length?: number | undefined
@@ -67,10 +70,7 @@ interface IndividualProductFormProps {
         discount: number | undefined
         quantity: number
     }>
-    cloudinaryFileUpload: string | null
     priceWithDiscount: number
-    compress: number
-    setCompress: Dispatch<SetStateAction<number>>
     descriptionAdded: [string]
     valuesForDescription: [string, string | undefined]
     tags: Array<string>
@@ -84,17 +84,19 @@ function IndividualProductForm({
     setTags,
     register,
     setValue,
-    compress,
-    setCompress,
     wasSubmitted,
     descriptionAdded,
     priceWithDiscount,
     valuesForDescription,
-    cloudinaryFileUpload,
 }: IndividualProductFormProps): ReactNode {
 
+    const [isTypingDone, setIsTypingDone] = useState(false)
     const [generatedDescription, setGeneratedDescription] = useState<string>('')
     const [generatedTags, setGeneratedTags] = useState<Array<string>>([])
+
+    const handleTypingEnd = () => {
+        setIsTypingDone(true)
+    }
 
     function handleAddTag(tag: string) {
         const wasAdded = tags.find((addedTag) => addedTag === tag)
@@ -119,6 +121,8 @@ function IndividualProductForm({
             const generation = await generateWithGemini(prompt)
             setGeneratedDescription(generation)
             return generation
+        } else {
+            toast.error('Please add a Title and Brand before generating text.')
         }
 
         return null
@@ -159,7 +163,6 @@ function IndividualProductForm({
                             type="text"
                             className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.title !== undefined ? 'ring-1 ring-red-500' : ''}`}
                             placeholder='Title'
-                            onBlur={handleGenerateDescriptionWithGemini}
                         />
                     </div>
                     {errors.title && <small className="text-red-500">{errors.title.message}</small>}
@@ -172,23 +175,45 @@ function IndividualProductForm({
                             type="text"
                             className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.brand !== undefined ? 'ring-1 ring-red-500' : ''}`}
                             placeholder='Brand'
-                            onBlur={handleGenerateDescriptionWithGemini}
                         />
                     </div>
                     {errors.brand && <small className="text-red-500">{errors.brand.message}</small>}
                 </div>
             </div>
 
-            <div className="flex flex-col gap-y-2">
-                <div className="flex flex-col gap-y-1">
-                    <label className='text-[0.8rem]' htmlFor="description">Description</label>
-                    <input
+            <div className="relative flex flex-col gap-y-2">
+                <div className="relative flex flex-col gap-y-1">
+                    <div className="group relative flex gap-x-2 items-center">
+                        <label className='group relative text-[0.8rem] z-10' htmlFor="description">Description
+                        </label>
+                        <i onClick={handleGenerateDescriptionWithGemini} className={`fa-solid fa-brain group ${animatedGradientText} hover:bg-gray-100 cursor-pointer`} />
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            whileHover={{ opacity: 1 }}
+                            transition={{ duration: 0.5, type: 'spring' }}
+                            className='hidden absolute top-2 left-[88px] w-[130px] z-50 group-hover:flex transition-all duration-200 bg-white shadow-md border border-gray-100 rounded-[6px] p-2'>
+                            <p className={`text-[0.8rem] font-normal ${animatedGradientText}`}>Generate with A.I.</p>
+                        </motion.div>
+                    </div>
+                    <textarea
                         {...register('description')}
-                        type="text"
-                        className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.description !== undefined ? 'ring-1 ring-red-500' : ''}`}
-                        placeholder='Description'
+                        className={`z-10 w-full h-20 text-[0.9rem] ${isTypingDone ? '' : 'text-white'} bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${errors.description !== undefined ? 'ring-1 ring-red-500' : ''}`}
+                        placeholder='Write your description here...'
                         onBlur={handleGenerateTagsWithGemini}
                     />
+                    {
+                        !isTypingDone && generatedDescription !== '' && (
+                            <>
+                                <ReactTyped
+                                    className='z-10 absolute top-8 left-2 h-20 line-clamp-2 text-[0.9rem] w-[520px]'
+                                    typeSpeed={10}
+                                    showCursor={false}
+                                    onComplete={handleTypingEnd}
+                                    strings={[generatedDescription]}
+                                />
+                            </>
+                        )
+                    }
                 </div>
                 {errors.description && <small className="text-red-500">{errors.description.message}</small>}
             </div>
@@ -202,46 +227,6 @@ function IndividualProductForm({
                     handleDeleteTag={handleDeleteTag}
                     handleGenerateTagsWithGemini={handleGenerateTagsWithGemini}
                 />
-            </div>
-
-            <div className="flex gap-x-2">
-                <div className="w-full flex flex-col gap-y-2">
-                    <div className="relative flex flex-col gap-y-1">
-                        <label className='text-[0.8rem]' htmlFor="image">Image</label>
-                        <input
-                            disabled
-                            {...register('image')}
-                            type="text"
-                            className={`w-full h-10 text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none pl-2 pr-10 truncate placeholder-sym_gray-500 ${errors.image !== undefined ? 'ring-1 ring-red-500' : ''}`}
-                            placeholder='Image'
-                        />
-                        {
-                            cloudinaryFileUpload && <i onClick={() => { handleCopyToClipboard(cloudinaryFileUpload, 'URL copied to clipboard.') }} className="absolute top-8 right-2 hover:text-indigo-500 active:text-[#10100e] cursor-pointer transition-color duration-200 fa-solid fa-clipboard"></i>
-                        }
-                    </div>
-                    {errors.image && <small className="text-red-500">{errors.image.message}</small>}
-                </div>
-                <div className="flex flex-col gap-y-2 justify-center items-center">
-                    <div className="flex flex-col gap-y-1 justify-center items-center">
-                        <label className='text-[0.8rem]' htmlFor="compress">Compress</label>
-                        <div className="inline-flex items-center">
-                            <label className="flex items-center cursor-pointer relative">
-                                <input
-                                    name='compress'
-                                    value={compress}
-                                    onChange={() => { setCompress(compress === 1 ? 0 : 1) }}
-                                    type="checkbox"
-                                    defaultChecked
-                                    className="peer h-10 w-10 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-indigo-500 checked:border-indigo-500" id="check1" />
-                                <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" strokeWidth="1">
-                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path>
-                                    </svg>
-                                </span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
             </div>
             <div className="flex gap-x-2">
                 <div className="w-full flex flex-col gap-y-2">

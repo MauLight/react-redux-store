@@ -14,13 +14,18 @@ import { postIndividualProductAsync } from '@/features/products/productsSlice'
 
 import { Modal } from '../common/Modal'
 import IndividualProductForm from './IndividualProductsForm'
-import IndividualProductImage from './IndividualProductImage'
 import ConfirmationModal from './ConfirmationModal'
 
 import { generateSignature, postToCloudinary } from '@/utils/functions'
 import { useSelector } from 'react-redux'
 import { ProductProps, StoreProps } from '@/utils/types'
 import DashboardButton from './DashboardButton'
+import { draggable, dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
+import { CleanupFn } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types'
+import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine'
+import ErrorComponent from '../common/ErrorComponent'
+import Fallback from '../common/Fallback'
+import DashboardUploadButton from './DashboardUploadButton'
 
 const CloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME
 const CloudinaryAPIKEY = import.meta.env.VITE_CLOUDINARY_APIKEY
@@ -29,7 +34,6 @@ export const productSchema = yup.object().shape({
     title: yup.string().required('Title is required'),
     brand: yup.string(),
     description: yup.string().required('Description is required'),
-    image: yup.string().url('Image must be a valid URL'),
     weight: yup.number(),
     height: yup.number(),
     width: yup.number(),
@@ -38,6 +42,8 @@ export const productSchema = yup.object().shape({
     discount: yup.number(),
     quantity: yup.number().required('Quantity is required'),
 })
+
+interface ImageListProps { image: string, image_public_id: string }
 
 function IndividualProduct(): ReactNode {
 
@@ -49,7 +55,7 @@ function IndividualProduct(): ReactNode {
 
     const [confirmationDialogue, setConfirmationDialogue] = useState<boolean>(false)
     const [priceWithDiscount, setPriceWithDiscount] = useState<number>(0)
-    const [compress, setCompress] = useState<number>(1)
+    const [compress] = useState<number>(1)
 
     const [tags, setTags] = useState<string[]>([])
     const [wasSubmitted, setWasSubmitted] = useState<boolean>(false)
@@ -59,7 +65,6 @@ function IndividualProduct(): ReactNode {
         defaultValues: {
             title: '',
             description: '',
-            image: '',
             weight: 0,
             height: 0,
             width: 0,
@@ -80,12 +85,9 @@ function IndividualProduct(): ReactNode {
     }
 
     //* Cloudinary state
-    const [urlToCloudinary, setUrlToCloudinary] = useState<string>('')
+    const [imageList, setImageList] = useState<Array<ImageListProps>>([])
     const [cloudinaryLoading, setCloudinaryLoading] = useState<boolean>(false)
     const [cloudinaryError, setCloudinaryError] = useState<string | null>(null)
-    const [urlToCloudinaryError, setUrlToCloudinaryError] = useState<boolean>(false)
-    const [cloudinaryFileUpload, setCloudinaryFileUpload] = useState<string | null>(null)
-    const [cloudinaryPublicId, setCloudinaryPublicId] = useState<string | null>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
     const handleFileButtonClick = (): void => {
         if (fileInputRef.current) {
@@ -111,9 +113,9 @@ function IndividualProduct(): ReactNode {
                             formData.append('upload_preset', 'marketplace')
                             postToCloudinary(formData, setCloudinaryError)
                                 .then((response) => {
-                                    setCloudinaryFileUpload(response.secure_url)
-                                    setCloudinaryPublicId(response.public_id)
-                                    setValue('image', response.secure_url)
+
+
+                                    setImageList((prev) => [...prev, { image: response.secure_url, image_public_id: response.public_id }])
                                     setCloudinaryLoading(false)
                                 })
                         }
@@ -123,9 +125,8 @@ function IndividualProduct(): ReactNode {
                     formData.append('upload_preset', 'marketplace')
                     postToCloudinary(formData, setCloudinaryError)
                         .then((response) => {
-                            setCloudinaryFileUpload(response.secure_url)
-                            setCloudinaryPublicId(response.public_id)
-                            setValue('image', response.secure_url)
+
+                            setImageList((prev) => [...prev, { image: response.secure_url, image_public_id: response.public_id }])
                             setCloudinaryLoading(false)
                         })
                 }
@@ -139,56 +140,32 @@ function IndividualProduct(): ReactNode {
         }
     }
 
-    const handleFileUploadFromUrl = async (): Promise<void> => {
-
-        const isUrl = /^(https?:\/\/)?((([a-zA-Z0-9$_.+!*'(),;?&=-]|%[0-9a-fA-F]{2})+:)*([a-zA-Z0-9$_.+!*'(),;?&=-]|%[0-9a-fA-F]{2})+@)?(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)|([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(:[0-9]+)?(\/([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)*(\?([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)?(#([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)?$/.test(
-            urlToCloudinary as string
-        )
-
-        if (isUrl) {
-            try {
-                setCloudinaryLoading(true)
-                const file = urlToCloudinary
-                const formData = new FormData()
-
-                formData.append('file', file)
-                formData.append('upload_preset', 'marketplace')
-                const response = await postToCloudinary(formData, setCloudinaryError)
-                setCloudinaryFileUpload(response.secure_url)
-                setCloudinaryPublicId(response.public_id)
-                setValue('image', response.secure_url)
-
-                setUrlToCloudinaryError(false)
-                setCloudinaryLoading(false)
-            } catch (error) {
-                console.log(error)
-                toast.error(error as string)
-            }
-        } else {
-            setUrlToCloudinaryError(true)
-        }
-    }
-
     //* Erase last uploaded image if wants to upload another
-    const handleResetUploadImage = async () => {
-        const timestamp = Math.floor(Date.now() / 1000)
-        const signature = generateSignature({ public_id: cloudinaryPublicId, timestamp })
+    const handleResetUploadImage = async (image: string) => {
 
-        const formData = new FormData()
-        formData.append('public_id', cloudinaryPublicId as string)
-        formData.append('timestamp', timestamp.toString())
-        formData.append('api_key', CloudinaryAPIKEY)
-        formData.append('signature', signature)
+        const selectedImage = imageList.find(img => img.image === image)
 
-        try {
-            const response = await axios.post(`https://api.cloudinary.com/v1_1/${CloudinaryCloudName}/image/destroy`, formData)
-            console.log('Image was deleted succesfully: ', response.data)
-        } catch (error) {
-            console.error('There was an error deleting this image: ', error)
+        console.log(selectedImage)
+
+        if (selectedImage) {
+            const timestamp = Math.floor(Date.now() / 1000)
+            const signature = generateSignature({ public_id: selectedImage.image_public_id, timestamp })
+
+            const formData = new FormData()
+            formData.append('public_id', selectedImage.image_public_id as string)
+            formData.append('timestamp', timestamp.toString())
+            formData.append('api_key', CloudinaryAPIKEY)
+            formData.append('signature', signature)
+
+            try {
+                const response = await axios.post(`https://api.cloudinary.com/v1_1/${CloudinaryCloudName}/image/destroy`, formData)
+                console.log('Image was deleted succesfully: ', response.data)
+            } catch (error) {
+                console.error('There was an error deleting this image: ', error)
+            }
+            setImageList(prev => prev.filter(image => image.image_public_id !== selectedImage.image_public_id))
         }
 
-        setCloudinaryFileUpload(null)
-        setValue('image', '')
     }
 
     function handleResetForm() {
@@ -199,14 +176,8 @@ function IndividualProduct(): ReactNode {
     async function handlePostProduct() {
         const data = getValues()
 
-        const isUrl = /^(https?:\/\/)?((([a-zA-Z0-9$_.+!*'(),;?&=-]|%[0-9a-fA-F]{2})+:)*([a-zA-Z0-9$_.+!*'(),;?&=-]|%[0-9a-fA-F]{2})+@)?(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)|([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(:[0-9]+)?(\/([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)*(\?([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)?(#([a-zA-Z0-9$_.+!*'(),;:@&=-]|%[0-9a-fA-F]{2})*)?$/.test(data.image as string)
-
         try {
-            if (!isUrl) {
-                await dispatch(postIndividualProductAsync({ ...data, image: 'https://dummyimage.com/600x400/000/fff', tags }))
-            } else {
-                await dispatch(postIndividualProductAsync({ ...data, tags }))
-            }
+            await dispatch(postIndividualProductAsync({ ...data, tags, images: imageList }))
             setWasSubmitted(true)
 
         } catch (error) {
@@ -220,6 +191,20 @@ function IndividualProduct(): ReactNode {
         const price = getValues().price
         const discount = percentage ? (percentage / 100) * price : 0
         setPriceWithDiscount(price - discount)
+    }
+
+    function handleDropElement(source: string, target: string) {
+
+        const sourceIndex = imageList.findIndex(image => image.image === source)
+        const targetIndex = imageList.findIndex(image => image.image === target)
+
+        if (sourceIndex === -1 || targetIndex === -1) return
+
+        let updatedImageList: Array<ImageListProps> = [...imageList]
+        const temp = updatedImageList[sourceIndex]
+        updatedImageList[sourceIndex] = updatedImageList[targetIndex]
+        updatedImageList[targetIndex] = temp
+        setImageList(updatedImageList)
     }
 
     useEffect(() => {
@@ -236,9 +221,6 @@ function IndividualProduct(): ReactNode {
         if (!postProductError) {
             reset()
             setTags([])
-            setUrlToCloudinary('')
-            setCloudinaryFileUpload(null)
-            setUrlToCloudinaryError(false)
             setConfirmationDialogue(false)
         }
 
@@ -256,36 +238,42 @@ function IndividualProduct(): ReactNode {
                         setTags={setTags}
                         register={register}
                         setValue={setValue}
-                        compress={compress}
-                        setCompress={setCompress}
                         wasSubmitted={wasSubmitted}
                         descriptionAdded={descriptionAdded}
                         priceWithDiscount={priceWithDiscount}
-                        cloudinaryFileUpload={cloudinaryFileUpload}
                         valuesForDescription={valuesForDescription}
                     />
-                    <IndividualProductImage
-                        error={cloudinaryError}
-                        fileInputRef={fileInputRef}
-                        isLoading={cloudinaryLoading}
-                        handleFileUpload={handleFileUpload}
-                        cloudinaryFileUpload={cloudinaryFileUpload}
-                        handleFileButtonClick={handleFileButtonClick}
-                        handleResetUploadImage={handleResetUploadImage}
-                    >
+                    <ul className="min-w-[400px] flex flex-wrap gap-2 p-2 border border-gray-300 rounded-[5px] overflow-scroll">
                         {
-                            <div className='flex flex-col gap-y-1'>
-                                <label className='text-[0.8rem]' htmlFor="url">Upload Image from URL</label>
-                                <div className='relative'>
-                                    <input className={`w-full h-10 pr-10 truncate text-[0.9rem] bg-gray-50 rounded-[6px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500 ${urlToCloudinaryError ? 'ring-1 ring-red-500' : ''}`} value={urlToCloudinary} onChange={({ target }) => { setUrlToCloudinary(target.value) }} type="text" />
-                                    <button className='absolute top-1 right-1 w-[33px] h-[33px] rounded-[5px] bg-[#10100e] hover:bg-green-600 active:bg-[#10100e] transition-color duration-200' onClick={handleFileUploadFromUrl}>
-                                        <i className="text-[#ffffff] fa-solid fa-plus"></i>
-                                    </button>
-                                </div>
-                                {urlToCloudinaryError && <small className="text-red-500">Value is not a valid URL</small>}
-                            </div>
+                            cloudinaryError && (
+                                <ErrorComponent />
+                            )
                         }
-                    </IndividualProductImage>
+                        {
+                            !cloudinaryError && cloudinaryLoading && (
+                                <div className="w-full h-[120px] flex justify-center items-center">
+                                    <Fallback />
+                                </div>
+                            )
+                        }
+                        {
+                            !cloudinaryError && !cloudinaryLoading && (
+                                <>
+                                    <div>
+                                        <div className='h-[120px] w-[120px] flex flex-col justify-center items-center gap-y-2 border border-sym_gray-400 hover:border-indigo-500 hover:text-indigo-500 transition-color duration-200 border-dashed rounded-[5px] text-[0.9rem]'>
+                                            <DashboardUploadButton action={handleFileButtonClick} />
+                                        </div>
+                                        <input multiple accept="image/*" type='file' ref={fileInputRef} onChange={handleFileUpload} className='hidden' />
+                                    </div>
+                                    {
+                                        imageList.map((elem, i) => (
+                                            <BuilderCard key={`${elem.image_public_id}-${i}`} card={{ id: i, image: elem.image }} onDrop={handleDropElement} handleReset={handleResetUploadImage} />
+                                        ))
+                                    }
+                                </>
+                            )
+                        }
+                    </ul>
                 </div>
                 <div className="flex gap-x-2 justify-end">
 
@@ -320,3 +308,48 @@ function IndividualProduct(): ReactNode {
 }
 
 export default IndividualProduct
+
+function BuilderCard({ card, onDrop, handleReset }: { card: { id: number, image: string }, onDrop: (source: string, target: string) => void, handleReset: (image: string) => void }) {
+    const { id, image } = card
+    const [dragging, setDragging] = useState<boolean>(false)
+    const [_isDraggedOver, setIsDraggedOver] = useState<boolean>(false)
+    const cardRef = useRef(null)
+
+    useEffect(() => {
+        const element = cardRef.current
+        if (!element) return
+
+        const cleanup: CleanupFn = combine(
+            draggable({
+                element,
+                getInitialData() { return card },
+                onDragStart: () => setDragging(true),
+                onDrop: () => setDragging(false),
+            }),
+            dropTargetForElements({
+                element,
+                getData() { return card },
+                onDragEnter: () => setIsDraggedOver(true),
+                onDragLeave: () => setIsDraggedOver(false),
+                onDrop: ({ source, self }) => {
+                    onDrop(source.data.image as string, self.data.image as string)
+                    setIsDraggedOver(false)
+                }
+            })
+        )
+
+        return cleanup as unknown as () => void
+    }, [])
+
+    return (
+        <li ref={cardRef} className={`group relative w-[120px] h-[120px] flex justify-start items-center border border-sym_gray-400 rounded-[5px] cursor-grab active:cursor-grabbing ${dragging ? 'bg-indigo-500 opacity-50' : 'bg-[#ffffff]'}`} data-test-id={id} >
+            <section className='relative w-full h-full'>
+                <button onClick={() => { handleReset(image) }} className='absolute -right-2 -top-1 z-10 w-[20px] h-[20px] flex justify-center items-center rounded-full bg-[#10100e] hover:bg-red-500 transition-color duration-200'>
+                    <i className="fa-solid fa-xmark text-[#ffffff]"></i>
+                </button>
+                <img className='h-full w-full object-cover' src={image} alt="placeholder" />
+            </section>
+            <div className={`absolute hidden group-hover:flex  bg-indigo-500 opacity-20 transition-all duration-200 w-full h-full`}></div>
+        </li>
+    )
+}
