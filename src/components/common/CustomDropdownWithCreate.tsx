@@ -1,5 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react'
 import Fallback from './Fallback'
+import { motion } from 'framer-motion'
 
 export interface DropdownProps {
     create?: boolean
@@ -65,7 +66,11 @@ function CustomDropdownWithCreate({
             }
             {
                 isOpen && (
-                    <div className='absolute top-9 left-0 z-20 w-full max-h-[200px] overflow-y-scroll border-b rounded-b-[5px]'>
+                    <motion.div
+                        initial={{ opacity: 0, top: 0 }}
+                        animate={{ opacity: 1, top: 35 }}
+                        transition={{ duration: 0.2, type: 'spring', bounce: 0.1 }}
+                        className='absolute top-9 left-0 z-20 w-full max-h-[200px] overflow-y-scroll border-b border-gray-300 rounded-b-[5px] shadow-xl'>
                         <>
                             {
                                 error ? (
@@ -92,7 +97,7 @@ function CustomDropdownWithCreate({
                                                             }
                                                             {
                                                                 list.map((item: string, i: number) => (
-                                                                    <button key={`${item}-${i}`} onClick={() => { setChoice(item) }} className='w-full h-9 bg-[#ffffff] text-[#10100e] rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 hover:text-[#10100e] hover:bg-gray-50 active:text-[#ffffff] active:bg-[#10100e] transition-color duration-200'>
+                                                                    <button key={`${item}-${i}`} onClick={() => { setChoice(item) }} className={`w-full h-9 bg-[#ffffff] text-[#10100e] rounded-[3px] ${i === (list.length - 1) ? 'border-x border-gray-200' : 'border border-gray-200'} ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 hover:text-[#10100e] hover:bg-gray-50 active:text-[#ffffff] active:bg-[#10100e] transition-color duration-200`}>
                                                                         {
                                                                             item
                                                                         }
@@ -106,7 +111,7 @@ function CustomDropdownWithCreate({
                                     )
                             }
                         </>
-                    </div>
+                    </motion.div>
                 )
             }
         </div>
@@ -117,6 +122,6 @@ export default CustomDropdownWithCreate
 
 function CreateButton({ label, buttonFunction }: { label: string, buttonFunction: any }) {
     return (
-        <button onClick={buttonFunction} className='w-full h-9 bg-[#ffffff] hover:bg-gray-100 transition-color duration-200 text-indigo-500 rounded-[3px] border border-gray-300'>{label}</button>
+        <button onClick={buttonFunction} className='w-full h-9 bg-[#ffffff] hover:bg-gray-100 transition-color duration-200 text-indigo-500 rounded-[3px] border border-gray-200'>{label}</button>
     )
 }

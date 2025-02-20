@@ -61,6 +61,25 @@ export const postNewCollectionAsync = createAsyncThunk(
     }
 )
 
+export const publishCollectionByIdAsync = createAsyncThunk(
+    'products/publishCollectionById', async (id: string, { rejectWithValue }) => {
+        const user = localStorage.getItem('marketplace-user') ? JSON.parse(localStorage.getItem('marketplace-user') as string) : {}
+        const token = user.token
+        try {
+            const { data } = await axios.post(`${url}/products/col/collections/publish/${id}`, {}, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            return data
+        } catch (error) {
+            console.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
 export const updateCollectionByIdAsync = createAsyncThunk(
     'products/updateCollectionById', async ({ id, productId }: { id: string, productId: string }, { rejectWithValue }) => {
         const user = localStorage.getItem('marketplace-user') ? JSON.parse(localStorage.getItem('marketplace-user') as string) : {}
@@ -206,6 +225,30 @@ export const collectionsSlice = createSlice({
                     state.isLoading = false
                     state.hasErrors = false
                     state.collection = action.payload.collection
+                }
+            )
+            .addCase(
+                publishCollectionByIdAsync.pending, (state, _action) => {
+                    state.isLoading = true
+                    state.hasErrors = false
+                }
+            )
+            .addCase(
+                publishCollectionByIdAsync.rejected, (state, _action) => {
+                    state.isLoading = false
+                    state.hasErrors = true
+                }
+            )
+            .addCase(
+                publishCollectionByIdAsync.fulfilled, (state, action) => {
+                    state.isLoading = false
+                    state.hasErrors = false
+                    state.collection = action.payload.updatedCollection
+                    if (action.payload.updatedCollection.isLive) {
+                        toast.success('Collection published succesfully.')
+                    } else {
+                        toast.success('Collection unpublish succesfully.')
+                    }
                 }
             )
             .addCase(

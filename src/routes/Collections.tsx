@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch } from '@/store/store'
-import { getAllCollectionsTitlesAsync, getCollectionByTitleAsync, resetErrorState, updateCollectionByIdAsync, updateCollectionDeleteProductByIdAsync } from '@/features/collections/collectionsSlice'
+import { getAllCollectionsTitlesAsync, getCollectionByTitleAsync, publishCollectionByIdAsync, resetErrorState, updateCollectionByIdAsync, updateCollectionDeleteProductByIdAsync } from '@/features/collections/collectionsSlice'
 
 import CustomDropdownWithCreate from '@/components/common/CustomDropdownWithCreate'
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar'
@@ -11,21 +11,21 @@ import EmptyList from '@/components/common/EmptyList'
 import DashboardCard from '@/components/dashboard/DashboardCard'
 import { Modal } from '@/components/common/Modal'
 import AddProductsToCollection from '@/components/dashboard/collections/AddProductsToCollection'
-import Fallback from '@/components/common/Fallback'
 import ErrorComponent from '@/components/common/ErrorComponent'
 import AddNewCollection from '@/components/dashboard/collections/AddNewCollection'
 import { motion } from 'framer-motion'
+import { Switch } from '@/components/common/Switch'
 
 function Collections(): ReactNode {
     const dispatch: AppDispatch = useDispatch()
     const collectionTitles = useSelector((state: StoreProps) => state.collections.titles)
     const currCollection = useSelector((state: StoreProps) => state.collections.collection)
-    const collectionIsLoading = useSelector((state: StoreProps) => state.collections.isLoading)
     const collectionHasError = useSelector((state: StoreProps) => state.collections.hasErrors)
 
+    const [clicked, setClicked] = useState<boolean>(false)
     const [products, setProducts] = useState<any[]>([])
     const [titles, setTitles] = useState<string[]>([])
-    const [inputValue, setInputValue] = useState<string>('Choose a collection')
+    const [inputValue, setInputValue] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [openModal, setOpenModal] = useState<boolean>(false)
     const [openModalCreateCollection, setOpenModalCreateCollection] = useState<boolean>(false)
@@ -34,6 +34,11 @@ function Collections(): ReactNode {
         two: false,
         three: false
     })
+
+    async function handleClick() {
+        await dispatch(publishCollectionByIdAsync(currCollection.id))
+        setClicked(!clicked)
+    }
 
     function handleSetInputValue(value: string) {
         setInputValue(value)
@@ -102,37 +107,45 @@ function Collections(): ReactNode {
                     )
                 }
                 {
-                    !collectionHasError && collectionIsLoading && (
-                        <div className="w-full h-full min-h-[700px] flex justify-center items-center">
-                            <Fallback />
-                        </div>
-                    )
-                }
-                {
-                    !collectionHasError && !collectionIsLoading && (
+                    !collectionHasError && (
                         <>
                             <div className="flex justify-between">
                                 <div className="flex flex-col gap-y-5">
                                     <h1>1. Choose a collection:</h1>
-                                    {
-                                        titles.length > 0 && (
-                                            <div className='flex flex-col gap-y-1 w-[250px]'>
-                                                <label className='text-[0.8rem]' htmlFor="collections">Collections</label>
-                                                <CustomDropdownWithCreate
-                                                    create
-                                                    label='Add New Collection'
-                                                    buttonFunction={handleOpenModalCreateCollection}
-                                                    list={titles}
-                                                    value={inputValue}
-                                                    setValue={handleSetInputValue}
-                                                    defaultValue={inputValue}
-                                                />
-                                            </div>
-                                        )
-                                    }
+                                    <div className="flex gap-x-20 items-center">
+
+                                        {
+                                            titles.length > 0 && (
+                                                <div className='flex flex-col gap-y-1 w-[250px]'>
+                                                    <label className='text-[0.8rem]' htmlFor="collections">Collections</label>
+                                                    <CustomDropdownWithCreate
+                                                        create
+                                                        label='Add New Collection'
+                                                        buttonFunction={handleOpenModalCreateCollection}
+                                                        list={titles}
+                                                        value={inputValue}
+                                                        setValue={handleSetInputValue}
+                                                        defaultValue={inputValue}
+                                                    />
+                                                </div>
+                                            )
+                                        }
+                                        {
+                                            inputValue !== '' && (
+                                                <motion.div
+                                                    initial={{ opacity: 0 }}
+                                                    animate={{ opacity: 1 }}
+                                                    transition={{ duration: 0.2 }}
+                                                    className="flex gap-x-5 items-center pt-5">
+                                                    <p className='text-[1rem] text-gray-700'>Publish this Collection</p>
+                                                    <Switch clicked={clicked} handleClick={handleClick} />
+                                                </motion.div>
+                                            )
+                                        }
+                                    </div>
                                 </div>
                                 {
-                                    inputValue !== 'Choose a collection' && (
+                                    inputValue !== '' && (
                                         <div className="flex flex-col gap-y-5 justify-end">
 
                                             <motion.button
