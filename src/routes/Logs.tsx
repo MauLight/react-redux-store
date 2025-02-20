@@ -51,7 +51,7 @@ export default function Logs(): JSX.Element {
                                         <div key={error.id} className={`grid grid-cols-6 gap-x-10 bg-[#fff] py-5 ${i === errors.length - 1 ? '' : 'border-b'} px-10`}>
                                             <p className="truncate">{error.id}</p>
                                             <p className="truncate">{error.clientId}</p>
-                                            <p>{error.actionType}</p>
+                                            <p className="truncate">{error.actionType}</p>
                                             <p>{error.message}</p>
                                             <p>{`${formatDistance(error.createdAt, new Date())} ago`}</p>
                                             <p>{`${formatDistance(error.updatedAt, new Date())} ago`}</p>

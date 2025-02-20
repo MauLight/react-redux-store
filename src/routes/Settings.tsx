@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch } from '@/store/store'
 import { getAllTemplatesAsync, getTemplateByIdAsync, updateCurrentTemplateAsync, updateUIConfigurationAsync } from '@/features/ui/uiSlice'
 
-import { StoreProps, TemplateProps } from '@/utils/types'
+import { StoreProps } from '@/utils/types'
 import { Switch } from '@/components/common/Switch'
 import { Modal } from '@/components/common/Modal'
 import { motion } from 'motion/react'
@@ -41,8 +41,10 @@ export const navReducer = (state: NavState, action: NavAction): NavState => {
 
 function Settings(): ReactNode {
     const dispatch: AppDispatch = useDispatch()
-    const { id, currConfig, templates, currentTemplate } = useSelector((state: StoreProps) => state.ui)
+    const { id, currConfig, templates } = useSelector((state: StoreProps) => state.ui)
 
+    const [chosenTemplate, setChosenTemplate] = useState<string | null>(null)
+    const [status, setStatus] = useState<string>('')
     const [AIModal, setOpenAIModal] = useState<boolean>(false)
     const [clickedAllowAI, setClickedAllowAI] = useState<boolean>(false)
     const [clickedCompressImage, setClickedCompressImage] = useState<boolean>(false)
@@ -117,6 +119,8 @@ function Settings(): ReactNode {
                 templateId
             }))
             if (payload.updatedUI) {
+                setChosenTemplate(templateId)
+                setStatus('chosen')
                 await dispatch(getTemplateByIdAsync(payload.updatedUI.currentTemplate))
             }
         } catch (error) {
@@ -159,18 +163,48 @@ function Settings(): ReactNode {
                             </h1>
                             <div className="grid grid-cols-3 gap-5">
                                 {
-                                    templates.map((temp: TemplateProps) => (
-                                        <motion.button
-                                            transition={{ duration: 0.05 }}
-                                            whileHover={{ scale: 1.01 }}
-                                            whileTap={{ scale: 0.99 }}
-                                            onClick={() => { handleChooseTemplate(temp.id) }} className='group flex flex-col justify-center items-center gap-y-1 rounded-[10px] overflow-hidden' key={temp.id}>
-                                            <div className={`relative w-full h-[380px] rounded-[10px] overflow-hidden ${currentTemplate.id === temp.id ? 'border-2 border-indigo-500' : 'grayscale'}`}>
-                                                <img className='h-full object-cover' src={temp.preview} alt="" />
-                                                <div className='absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-30 bg-indigo-600 rounded-[10px] transition-all duration-200'></div>
-                                            </div>
-                                            <p className={`capitalize group-hover:underline ${currentTemplate.id === temp.id ? 'text-indigo-500 underline' : ''}`}>{temp.title}</p>
-                                        </motion.button>
+                                    templates.map((temp) => (
+                                        <motion.div
+
+                                            className='relative'
+                                            animate={status}
+                                            key={temp.id}
+                                        >
+                                            {
+                                                chosenTemplate === temp.id && (
+                                                    <motion.div
+                                                        initial={{ scale: 1 }}
+                                                        variants={{
+                                                            chosen: {
+                                                                scale: 1.05
+                                                            },
+                                                            hover: {
+                                                                scale: 1
+                                                            }
+                                                        }}
+                                                        transition={{
+                                                            duration: 0.2,
+
+                                                            type: 'tween',
+                                                            ease: 'circOut'
+                                                        }}
+                                                        className="absolute inset-0 bg-indigo-500 rounded-[10px]">
+                                                    </motion.div>
+                                                )
+                                            }
+
+                                            <motion.button
+                                                initial={{ scale: 1 }}
+                                                whileHover={{ scale: 1.02 }}
+                                                transition={{ duration: 0.5 }}
+                                                onClick={() => { handleChooseTemplate(temp.id) }}
+                                                className='group flex flex-col justify-center items-center gap-y-1 rounded-[10px] overflow-hidden'>
+                                                <div className={`relative w-full h-[380px] rounded-[10px] overflow-hidden `}>
+                                                    <img className={`h-full object-cover group-hover:scale-105 transition-all duration-200`} src={temp.preview} alt="layout" />
+                                                </div>
+                                                <p className={`capitalize z-10 ${chosenTemplate === temp.id ? 'text-[#fff]' : 'group-hover:text-indigo-500'}`}>{temp.title}</p>
+                                            </motion.button>
+                                        </motion.div>
                                     ))
                                 }
                             </div>

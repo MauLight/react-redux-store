@@ -28,6 +28,8 @@ export default function Wizard(): ReactNode {
             const { payload } = await dispatch(getTemplateByIdAsync(templateId))
             if (payload.template as TemplateProps) {
                 setTemplate(payload.template.title)
+                setChosenTemplate(templateId)
+                setStatus('chosen')
             }
 
         } catch (error) {
@@ -40,6 +42,8 @@ export default function Wizard(): ReactNode {
 
     const [clientId, setClientId] = useState<string>('')
     const [step, setStep] = useState<number>(1)
+    const [chosenTemplate, setChosenTemplate] = useState<string | null>(null)
+    const [status, setStatus] = useState<string>('')
     const [welcomeText, setWelcomeText] = useState<{ text: boolean, button: boolean }>({
         text: false,
         button: false
@@ -507,14 +511,49 @@ export default function Wizard(): ReactNode {
                                 </motion.p>
                                 <div className="grid grid-cols-3 gap-5 mt-10">
                                     {
-                                        templates.map((temp: TemplateProps) => (
-                                            <button onClick={() => { handleChooseTemplate(temp.id) }} className='group flex flex-col justify-center items-center gap-y-1 rounded-[10px] overflow-hidden' key={temp.id}>
-                                                <div className={`relative w-full h-[380px] rounded-[10px] overflow-hidden ${currentTemplate.id === temp.id ? 'border-2 border-indigo-500 shadow-md' : ''}`}>
-                                                    <img className={`h-full object-cover ${currentTemplate.id === temp.id ? '' : 'grayscale'} group-hover:grayscale`} src={temp.preview} alt="layout" />
-                                                    <div className='absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-30 bg-indigo-600 rounded-[10px] transition-all duration-200'></div>
-                                                </div>
-                                                <p className={`capitalize group-hover:underline ${currentTemplate.id === temp.id ? 'text-indigo-500 underline' : ''}`}>{temp.title}</p>
-                                            </button>
+                                        templates.map((temp) => (
+                                            <motion.div
+
+                                                className='relative'
+                                                animate={status}
+                                                key={temp.id}
+                                            >
+                                                {
+                                                    chosenTemplate === temp.id && (
+                                                        <motion.div
+                                                            initial={{ scale: 1 }}
+                                                            variants={{
+                                                                chosen: {
+                                                                    scale: 1.05
+                                                                },
+                                                                hover: {
+                                                                    scale: 1
+                                                                }
+                                                            }}
+                                                            transition={{
+                                                                duration: 0.2,
+
+                                                                type: 'tween',
+                                                                ease: 'circOut'
+                                                            }}
+                                                            className="absolute inset-0 bg-indigo-500 rounded-[10px]">
+                                                        </motion.div>
+                                                    )
+                                                }
+
+                                                <motion.button
+                                                    initial={{ scale: 1 }}
+                                                    whileHover={{ scale: 1.02 }}
+                                                    transition={{ duration: 0.5 }}
+                                                    onClick={() => { handleChooseTemplate(temp.id) }}
+                                                    className='group flex flex-col justify-center items-center gap-y-1 rounded-[10px] overflow-hidden'>
+                                                    <div className={`relative w-full h-[380px] rounded-[10px] overflow-hidden `}>
+                                                        <img className={`h-full object-cover group-hover:scale-105 transition-all duration-200`} src={temp.preview} alt="layout" />
+
+                                                    </div>
+                                                    <p className={`capitalize z-10 ${chosenTemplate === temp.id ? 'text-[#fff]' : 'group-hover:text-indigo-500'}`}>{temp.title}</p>
+                                                </motion.button>
+                                            </motion.div>
                                         ))
                                     }
                                 </div>
