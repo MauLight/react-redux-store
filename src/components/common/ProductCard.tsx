@@ -39,7 +39,7 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
     <section className={`group relative ${pathname === '/collection' ? 'h-[460px]' : currentTemplate.card ? currentTemplate.card.card : 'h-[700px] col-span-1 overflow-hidden'}`}>
 
       <div className={currentTemplate.card ? currentTemplate.card.image : 'h-[550px]'}>
-        <img key={product.id} src={product.images ? product.images[0].image : ''} alt="product" className="w-full h-full object-cover" />
+        <img key={product.id} src={product.images ? product.images[0].image : ''} alt="product" className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300 ease-out" />
       </div>
 
       {
@@ -77,10 +77,13 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
       }
       {
         currentTemplate.card && currentTemplate.card.gradient && (
-          <div className='w-full h-full absolute top-0 left-0 bg-gradient-to-t from-[#10100e] to-transparent opacity-30'></div>
+          <div className='w-full h-full absolute top-0 left-0 bg-gradient-to-t from-[#10100e] to-transparent opacity-30'>
+          </div>
         )
       }
-      <Link to={`/product/${product.id}`} className="absolute top-0 left-0 w-full sm:h-full bg-[#10100e] opacity-0 group-hover:opacity-30 z-0 transition-all duration-200" />
+      <Link to={`/product/${product.id}`} className="absolute top-0 left-0 w-full sm:h-full flex justify-center items-center bg-[#10100e] opacity-0 group-hover:opacity-50 z-0 transition-color duration-500 ease-out">
+        <p className="text-[#fff] text-[1.2rem] px-10">{product.description}</p>
+      </Link>
     </section>
   )
 }

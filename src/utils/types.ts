@@ -3,7 +3,7 @@ export interface ProductProps {
     description: string
     title: string
     brand?: string
-    images?: Array<{ image: string, image_public_id: string }>
+    images: Array<{ image: string, image_public_id: string }>
     price: number
     discount?: number
     rating?: {
