@@ -1,7 +1,6 @@
 import { useState, type ReactNode } from 'react'
-
-import CustomDropdown from '@/components/common/CustomDropdown'
 import { Link } from 'react-router-dom'
+import CustomDropdownWithCreate from '@/components/common/CustomDropdownWithCreate'
 
 export default function CollectionSectionPanel(): ReactNode {
     const [selectedCollection, setSelectedCollection] = useState<string>('')
@@ -15,7 +14,7 @@ export default function CollectionSectionPanel(): ReactNode {
                 <div className="flex flex-col gap-y-2">
                     <div className="flex flex-col gap-y-1">
                         <label className='text-[0.8rem]' htmlFor="description">Collection</label>
-                        <CustomDropdown
+                        <CustomDropdownWithCreate
                             defaultValue='Collection 1'
                             value={selectedCollection}
                             setValue={setSelectedCollection}
@@ -28,7 +27,7 @@ export default function CollectionSectionPanel(): ReactNode {
                 <div className="flex flex-col gap-y-2">
                     <div className="flex flex-col gap-y-1">
                         <label className='text-[0.8rem]' htmlFor="description">Default sorting:</label>
-                        <CustomDropdown
+                        <CustomDropdownWithCreate
                             defaultValue='Recommended'
                             value={selectedSorting}
                             setValue={setSelectedSorting}

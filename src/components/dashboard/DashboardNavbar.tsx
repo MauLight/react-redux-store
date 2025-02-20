@@ -1,5 +1,5 @@
-import { useState, type ReactNode } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useEffect, useLayoutEffect, useState, type ReactNode } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 interface NavbarButtonMobileProps {
     title: string
@@ -27,6 +27,7 @@ function NavbarButton({ title, icon, wasPressed, navigate, handlePressButton, fo
 
 function DashboardNavbar(): ReactNode {
 
+    const { pathname } = useLocation()
     const navigate = useNavigate()
 
     const [{ one, two, three, four, five }, setNavState] = useState<Record<string, boolean>>({
@@ -36,6 +37,27 @@ function DashboardNavbar(): ReactNode {
         four: false,
         five: false
     })
+
+    useLayoutEffect(() => {
+        console.log(pathname)
+        switch (pathname) {
+            case '/admin/builder':
+                setNavState({ one: true, two: false, three: false, four: false, five: false })
+                break
+            case '/admin/products':
+                setNavState({ one: false, two: true, three: false, four: false, five: false })
+                break
+            case '/admin/collections':
+                setNavState({ one: false, two: false, three: true, four: false, five: false })
+                break
+            case '/admin/settings':
+                setNavState({ one: false, two: false, three: false, four: true, five: false })
+                break
+            case '/admin/logs':
+                setNavState({ one: false, two: false, three: false, four: false, five: true })
+                break
+        }
+    }, [])
 
     return (
         <>

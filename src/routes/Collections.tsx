@@ -93,14 +93,14 @@ function Collections(): ReactNode {
     }, [collectionTitles])
 
     useEffect(() => {
-        if (inputValue !== 'Choose a collection' && products.length === 0) {
+        if (inputValue !== '' && products.length === 0) {
             getProductsFromCollection()
         }
     }, [inputValue])
 
     return (
         <div className='w-full h-screen flex justify-start pl-[265px] items-center'>
-            <div className="w-[1400px] min-h-[700px] flex flex-col gap-y-10 rounded-[10px] bg-[#ffffff] p-10">
+            <div className="w-[1400px] min-h-[715px] flex flex-col gap-y-10 rounded-[10px] bg-[#ffffff] p-10">
                 {
                     collectionHasError && (
                         <ErrorComponent />
@@ -162,8 +162,12 @@ function Collections(): ReactNode {
                                 }
                             </div>
                             {
-                                inputValue !== 'Choose a collection' && (
-                                    <div className="flex flex-col gap-y-5">
+                                inputValue !== '' && (
+                                    <motion.div
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="flex flex-col gap-y-5">
                                         <h1>2. Browse products in the collection:</h1>
                                         <div>
                                             <Tableheader />
@@ -189,7 +193,7 @@ function Collections(): ReactNode {
                                                     )
                                             }
                                         </div>
-                                    </div>
+                                    </motion.div>
                                 )
                             }
                         </>
