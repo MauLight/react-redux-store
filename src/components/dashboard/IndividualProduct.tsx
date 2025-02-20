@@ -294,6 +294,7 @@ function IndividualProduct(): ReactNode {
                     <Modal openModal={confirmationDialogue} handleOpenModal={() => { setConfirmationDialogue(!confirmationDialogue) }}>
                         <ConfirmationModal
                             product={{ ...getValues() } as ProductProps}
+                            imageList={imageList}
                             errorMessage={postProductErrorMessage}
                             handlePostProduct={handlePostProduct}
                             postProductError={postProductError}

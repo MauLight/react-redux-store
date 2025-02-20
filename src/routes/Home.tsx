@@ -6,13 +6,12 @@ import { useDispatch, useSelector } from "react-redux"
 import video from '@/assets/video/Error.webm'
 import { Banner } from "@/components/home/Banner"
 import { Banner2 } from "@/components/home/Banner2"
-import { PriceCard } from "@/components/common/PriceCard"
 import HomeSkeleton from "@/components/home/HomeSkeleton"
 import { ProductCard } from "@/components/common/ProductCard"
 import { BannerContent } from "@/components/home/BannerContent"
 
 //* Types
-import { ProductProps, StoreProps } from "@/utils/types"
+import { StoreProps } from "@/utils/types"
 import { getAllProductsAsync } from "@/features/products/productsSlice"
 import { selector, useRecoilValue } from "recoil"
 import { currentPageState, productsListState } from "@/utils/recoil"
@@ -33,17 +32,14 @@ const paginatedProductsSelector = selector({
 
 function Home() {
     const dispatch = useDispatch<AppDispatch>()
-    const { currentTemplate } = useSelector((state: StoreProps) => state.ui)
+    const { currentTemplate, currConfig } = useSelector((state: StoreProps) => state.ui)
     const isLoading = useSelector((state: StoreProps) => state.homeCollection.collectionIsLoading)
     const hasError = useSelector((state: StoreProps) => state.homeCollection.collectionHasError)
 
+    const heroConfig = currConfig.home.hero
     const products = useRecoilValue(paginatedProductsSelector)
 
     infiniteScrollFetch()
-
-    const product = products[0]
-
-    const collection: ProductProps[] = products.slice(1)
 
     async function getProducts() {
         const { payload } = await dispatch(getAllProductsAsync())
@@ -64,7 +60,7 @@ function Home() {
                 )
             }
             {
-                (hasError || Object.keys(currentTemplate).length === 0) || !collection.length && (
+                (hasError || Object.keys(currentTemplate).length === 0) || !products.length && (
                     <div className="relative w-screen h-screen flex justify-end items-center pr-32">
                         <Link to={'/admin'} className="relative w-[400px] flex flex-col gap-y-5 z-20 p-10 glass">
                             <h1 className="text-[#fff] text-[1.5rem] text-balance uppercase leading-tight z-10">Your Marketplace is one step away.</h1>
@@ -76,23 +72,30 @@ function Home() {
                 )
             }
             {
-                !isLoading && product !== undefined && Object.keys(currentTemplate).length > 0 && (
+                !isLoading && Object.keys(currentTemplate).length > 0 && (
                     <section className='relative w-full flex flex-col justify-center items-center pb-20'>
                         <div className="w-full flex flex-col">
                             <Banner>
                                 <div className="w-full max-w-[1440px] h-[950px] flex justify-center items-center bg-[#fdfdfd] overflow-hidden">
-                                    <BannerContent>
-                                        <PriceCard product={product} />
+                                    <BannerContent heroConfig={heroConfig}>
+                                        <></>
                                     </BannerContent>
-                                    <img src='https://res.cloudinary.com/maulight/image/upload/v1732922082/e-commerce/kx2betzo07jrpgq9i077.webp' alt="banner" className='absolute  w-full h-full object-none object-bottom z-10' />
-                                    <img src={product.image} alt="banner" className='absolute w-full h-full object-none object-bottom z-0' />
+                                    <div className="absolute w-full h-full bg-[#10100e] z-0"></div>
+                                    {
+                                        heroConfig.image !== '' && (
+                                            <div className="absolute w-full h-full">
+                                                <img src={heroConfig.image} alt="banner" className='absolute w-full h-full object-cover z-0' />
+                                                <div className="absolute w-full h-full bg-radial from-transparent from-20% to-[#10100e]"></div>
+                                            </div>
+                                        )
+                                    }
                                 </div>
                             </Banner>
                             <Carousel />
                             <Banner2 />
                             <div className={currentTemplate.card.layout || 'grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3'}>
                                 {
-                                    collection.length > 0 && collection.map(product => (
+                                    products.length > 0 && products.map(product => (
                                         <div key={product.id}>
                                             <ProductCard product={product} />
                                         </div>

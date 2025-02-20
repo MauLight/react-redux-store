@@ -6,6 +6,7 @@ import ErrorComponent from '../common/ErrorComponent'
 
 interface ConfirmationModalProps {
     product: ProductProps
+    imageList: any
     setConfirmationDialogue: Dispatch<SetStateAction<boolean>>
     handlePostProduct: () => void
     postProductError: boolean
@@ -15,6 +16,7 @@ interface ConfirmationModalProps {
 
 export default function ConfirmationModal({
     product,
+    imageList,
     setConfirmationDialogue,
     handlePostProduct,
     postProductError,
@@ -56,7 +58,7 @@ export default function ConfirmationModal({
                         <div className="border-b border-sym_gray-600 mb-10 mt-5"></div>
                         <section className='flex gap-x-5'>
                             <div className='min-w-[23rem] h-[33rem]'>
-                                <ProductCard product={product} />
+                                <ProductCard product={product} imageList={imageList} />
                             </div>
                             <div className="w-full h-[33rem] flex flex-col justify-between">
                                 <div className="flex flex-col">
@@ -84,7 +86,7 @@ export default function ConfirmationModal({
                                     )
                                 }
                                 {
-                                    !product.image && (
+                                    imageList.length === 0 && (
                                         <p className='text-red-500 text-[0.8rem]'>A placeholder was added as image because you did not add a valid image url.</p>
                                     )
                                 }

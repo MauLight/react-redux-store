@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState, type ReactNode } from 'react'
+import { useLayoutEffect, useState, type ReactNode } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 interface NavbarButtonMobileProps {
@@ -39,7 +39,6 @@ function DashboardNavbar(): ReactNode {
     })
 
     useLayoutEffect(() => {
-        console.log(pathname)
         switch (pathname) {
             case '/admin/builder':
                 setNavState({ one: true, two: false, three: false, four: false, five: false })
@@ -57,7 +56,7 @@ function DashboardNavbar(): ReactNode {
                 setNavState({ one: false, two: false, three: false, four: false, five: true })
                 break
         }
-    }, [])
+    }, [pathname])
 
     return (
         <>
