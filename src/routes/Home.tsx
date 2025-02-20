@@ -7,7 +7,6 @@ import { motion } from "framer-motion"
 //* Components
 import video from '@/assets/video/Error.webm'
 import { Banner } from "@/components/home/Banner"
-import { Banner2 } from "@/components/home/Banner2"
 import HomeSkeleton from "@/components/home/HomeSkeleton"
 import { ProductCard } from "@/components/common/ProductCard"
 import { BannerContent } from "@/components/home/BannerContent"
@@ -119,7 +118,7 @@ function Home() {
                                 </div>
                             </Banner>
                             <Carousel />
-                            <Banner2 />
+                            {/* <Banner2 /> */}
                             <div className={currentTemplate.card.layout || 'grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3'}>
                                 {
                                     products.length > 0 && products.map(product => (
