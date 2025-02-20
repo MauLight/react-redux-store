@@ -8,6 +8,8 @@ import { selector, useRecoilValue, useSetRecoilState } from 'recoil'
 import DashboardCard from '../DashboardCard'
 import { ProductProps, StoreProps } from '@/utils/types'
 import { useSelector } from 'react-redux'
+import ErrorComponent from '@/components/common/ErrorComponent'
+import { Link } from 'react-router-dom'
 
 const pageSize = 5
 
@@ -46,27 +48,39 @@ export default function AddProductsToCollection({ addProducts, removeProducts }:
 
     return (
         <div className='flex flex-col gap-y-10 px-5'>
-            <h1>Choose products to add to collection:</h1>
-            <div className="w-full flex flex-col overflow-y-scroll">
-                {
-                    products.length > 0 && products.map((product: ProductProps) => (
-                        <DashboardCard
-                            isCollection
-                            key={product.id}
-                            product={product}
-                            addProducts={addProducts}
-                            removeProducts={removeProducts}
-                        />
-                    ))
-                }
-            </div>
-            <div className="flex justify-center items-center gap-x-2">
-                {
-                    Array.from({ length: totalPages }).map((_, i) => (
-                        <button onClick={() => { loadMore(i + 1) }} key={i} className={`w-[30px] h-[30px] rounded-full border hover:bg-indigo-500 hover:text-[#ffffff] transition-color duration-200 ${currentPage === i + 1 ? 'bg-indigo-500 text-[#ffffff]' : 'bg-[#FFFFFF]'}`}>{i + 1}</button>
-                    ))
-                }
-            </div>
+            {
+                products.length > 0 ? (
+                    <>
+                        <h1>Choose products to add to collection:</h1>
+                        <div className="w-full flex flex-col overflow-y-scroll">
+                            {
+                                products.length > 0 && products.map((product: ProductProps) => (
+                                    <DashboardCard
+                                        isCollection
+                                        key={product.id}
+                                        product={product}
+                                        addProducts={addProducts}
+                                        removeProducts={removeProducts}
+                                    />
+                                ))
+                            }
+                        </div>
+                        <div className="flex justify-center items-center gap-x-2">
+                            {
+                                Array.from({ length: totalPages }).map((_, i) => (
+                                    <button onClick={() => { loadMore(i + 1) }} key={i} className={`w-[30px] h-[30px] rounded-full border hover:bg-indigo-500 hover:text-[#ffffff] transition-color duration-200 ${currentPage === i + 1 ? 'bg-indigo-500 text-[#ffffff]' : 'bg-[#FFFFFF]'}`}>{i + 1}</button>
+                                ))
+                            }
+                        </div>
+                    </>
+                )
+                    :
+                    (
+                        <ErrorComponent error={"Add products to your store and they'll appear here."}>
+                            <Link className='z-10 px-3 w-[150px] h-10 bg-[#10100e] hover:bg-indigo-500 active:bg-sym_gray-500 transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]' to={'/admin/products'}>Go there</Link>
+                        </ErrorComponent>
+                    )
+            }
         </div>
     )
 }
