@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios, { AxiosError } from "axios"
 import { toast } from "react-toastify"
 
-const url = import.meta.env.VITE_USERS_BACKEND_URL
+const url = import.meta.env.VITE_BACKEND_URL
 const user = localStorage.getItem('marketplace-user') ? JSON.parse(localStorage.getItem('marketplace-user') as string) : {}
 const token = user.token
 
@@ -27,7 +27,7 @@ export const postToWishlistAsync = createAsyncThunk(
             return
         } else {
             try {
-                const { data } = await axios.post(`${url}/wishlist`, wishlistItem, {
+                const { data } = await axios.post(`${url}/auth/wishlist`, wishlistItem, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
@@ -52,7 +52,7 @@ export const postListToWishlistAsync = createAsyncThunk(
         }
 
         try {
-            const { data } = await axios.post(`${url}/wishlist/list`, { id: user.id, newWishlist }, {
+            const { data } = await axios.post(`${url}/auth/wishlist/list`, { id: user.id, newWishlist }, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -69,7 +69,7 @@ export const postListToWishlistAsync = createAsyncThunk(
 export const deleteFromWishlistAsync = createAsyncThunk(
     'wishlist/deleteFromWishlist', async (wishlistItem: { userId: string, productId: string }, { rejectWithValue }) => {
         try {
-            const { data } = await axios.post(`${url}/wishlist/delete`, wishlistItem, {
+            const { data } = await axios.post(`${url}/auth/wishlist/delete`, wishlistItem, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
