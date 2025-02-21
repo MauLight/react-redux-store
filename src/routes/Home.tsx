@@ -61,27 +61,39 @@ function Home() {
                 )
             }
             {
-                (hasError || Object.keys(currentTemplate).length === 0) || !products.length && (
-                    <div className="relative w-screen h-screen flex justify-end items-center pr-32">
+                hasError || (Object.keys(currentTemplate).length === 0 && products.length === 0) && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 1, delay: 1 }}
+                        className="relative w-screen h-screen flex justify-end items-center pr-32">
                         <Link to={'/admin'} className="relative w-[400px] flex flex-col gap-y-5 z-20 p-10 glass">
                             <h1 className="text-[#fff] text-[1.5rem] text-balance uppercase leading-tight z-10">Your Marketplace is one step away.</h1>
                             <p className="text-slate-300 text-balance z-10">Head into the administrator's area and add products to your store, you can also customize this place to make it your own.</p>
                             <div className="absolute w-full h-full top-0 left-0 bg-[#10100e] opacity-40 z-0"></div>
                         </Link>
-                        <video className="absolute top-0 left-0 w-full h-full object-cover" src={video} loop autoPlay muted />
-                    </div>
+                        <motion.video
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 1.5 }}
+                            className="absolute top-0 left-0 w-full h-full object-cover" src={video} loop autoPlay muted />
+                    </motion.div>
                 )
             }
             {
                 !isLoading && Object.keys(currentTemplate).length > 0 && (
-                    <section className='relative w-full flex flex-col justify-center items-center pb-20'>
+                    <motion.section
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5 }}
+                        className='relative w-full flex flex-col justify-center items-center pb-20'>
                         <div className="w-full flex flex-col">
                             <Banner>
                                 <div className="w-full max-w-[1440px] h-[950px] flex justify-center items-center bg-[#fdfdfd] overflow-hidden">
                                     <BannerContent heroConfig={heroConfig}>
                                         <div className="flex gap-x-5">
                                             {
-                                                products.length > 4 && products.map((product, i) => (
+                                                products.length > 0 && products.slice(0, 5).map((product, i) => (
                                                     <motion.button
                                                         onClick={() => { navigate(`/product/${product.id}`) }}
                                                         initial={{ scale: 1 }}
@@ -133,7 +145,7 @@ function Home() {
                             </div>
 
                         </div>
-                    </section>
+                    </motion.section>
                 )
             }
         </>

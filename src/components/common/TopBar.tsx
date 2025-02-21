@@ -44,7 +44,7 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
   const { scrollYBoundedProgress } = useBoundedScroll(180)
 
   const height = useTransform(scrollYBoundedProgress, [0, 1], [120, 60])
-  const heightCollection = useTransform(scrollYBoundedProgress, [0, 1], [20, 0])
+  const heightCollection = useTransform(useBoundedScroll(100).scrollYBoundedProgress, [0, 1], [30, 0])
   const opacity = useTransform(scrollYBoundedProgress, [0, 1], [1, 0])
   const scale = useTransform(scrollYBoundedProgress, [0, 1], [1.1, 0.9])
 
@@ -65,9 +65,9 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
         style={{
           height
         }}
-        className={`relative h-[50px] w-full max-w-[1440px] rounded-[6px] px-5`}>
+        className={`relative h-[50px] w-full max-w-[1440px] rounded-[6px] p-5`}>
 
-        <div className="h-full w-full flex flex-col justify-center py-5 transition-all duration-400">
+        <div className="h-full w-full flex flex-col justify-center transition-all duration-400">
 
           <nav className={`flex h-full w-full justify-between items-center`}>
             <Link to={'/'} className="block">
@@ -103,7 +103,7 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
               className={`w-full flex justify-center gap-x-10 text-[#fff]`}>
               {
                 Array.from({ length: 3 }).map((_, i) => (
-                  <p key={`id-${i}`}>{`Collection ${i + 1}`}</p>
+                  <Link to={'*'} key={`id-${i}`}>{`Collection ${i + 1}`}</Link>
                 ))
               }
             </motion.div>

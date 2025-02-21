@@ -66,8 +66,6 @@ function Layout() {
                     const { payload } = await dispatch(getUIConfigurationAsync())
                     if (payload.ui && payload.ui.currentTemplate) {
                         await dispatch(getTemplateByIdAsync(payload.ui.currentTemplate))
-                    } else {
-                        console.log('triggered!')
                     }
                 } catch (error) {
                     console.log(error)
