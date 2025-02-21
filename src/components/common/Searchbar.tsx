@@ -1,13 +1,15 @@
 import { getProductsBySearchWordAsync } from '@/features/products/productsSlice'
 import { AppDispatch } from '@/store/store'
 import { ProductProps, StoreProps } from '@/utils/types'
-import { useState, type ReactNode } from 'react'
+import { useRef, useState, type ReactNode } from 'react'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Fallback from './Fallback'
 import EmptyList from './EmptyList'
 import ErrorComponent from './ErrorComponent'
+import { animatedGradientText } from '@/utils/styles'
+import useOutsideClick from '@/hooks/useClickOutside'
 
 export default function Searchbar(): ReactNode {
     const dispatch: AppDispatch = useDispatch()
@@ -19,8 +21,27 @@ export default function Searchbar(): ReactNode {
     const [isInputFocused, setIsInputFocused] = useState<boolean>(false)
     const [searchList, setSearchList] = useState<ProductProps[] | null>(null)
 
+    const timerRef = useRef<number | null>(null)
+    const modalRef = useRef(null)
+    function onClose() {
+        setSearchList(null)
+        setInputValue('')
+    }
+
+    useOutsideClick(modalRef, onClose)
+
     function handleClearInput() {
         setInputValue('')
+    }
+
+    function debounceSearch() {
+        if (timerRef.current) {
+            clearTimeout(timerRef.current)
+        }
+        timerRef.current = window.setTimeout(async () => {
+            const { payload } = await dispatch(getProductsBySearchWordAsync(inputValue))
+            setSearchList(payload.products)
+        }, 1000)
     }
 
     async function handleSubmitSearch(e: React.KeyboardEvent<HTMLInputElement>): Promise<void> {
@@ -28,7 +49,6 @@ export default function Searchbar(): ReactNode {
             console.log('searching...')
             const { payload } = await dispatch(getProductsBySearchWordAsync(inputValue))
             setSearchList(payload.products)
-            console.log(payload)
         }
     }
 
@@ -62,7 +82,7 @@ export default function Searchbar(): ReactNode {
                 onMouseEnter={() => { setFocusX(true) }}
                 onMouseLeave={() => { !isInputFocused && setFocusX(false) }}
                 value={inputValue}
-                onChange={({ target }) => { setInputValue(target.value) }}
+                onChange={({ target }) => { setInputValue(target.value); debounceSearch() }}
                 onKeyDown={handleSubmitSearch}
                 className='h-full w-full outline-none border-none pl-[50px] pr-2 bg-transparent text-[#ffffff] group-hover:bg-[#ffffff] group-hover:text-[#10100e] focus:bg-[#ffffff] focus:text-[#10100e]' type="text"
             />
@@ -78,17 +98,17 @@ export default function Searchbar(): ReactNode {
             }
             {
                 !searchHasError && searchList && searchList.length > 0 && searchList.map((product: ProductProps) => (
-                    <Link to={`/product/${product.id}`} onClick={handleResetSearchbar} key={product.id} className='absolute top-10 left-0 bg-[#ffffff] glass grid grid-cols-3 gap-x-2'>
-                        <div className="col-span-1">
-                            <img src={product.image} className='w-full h-full object-cover' alt="product" />
+                    <Link ref={modalRef} to={`/product/${product.id}`} onClick={handleResetSearchbar} key={product.id} className='absolute top-10 left-0 bg-[#ffffff] glass grid grid-cols-3 gap-x-2'>
+                        <div className="col-span-1 h-[80px] z-10">
+                            <img src={product.images[0].image} className='w-full h-full object-cover' alt="product" />
                         </div>
-                        <div className="col-span-2 flex flex-col gap-y-2">
-                            <div className="flex flex-col">
+                        <div className="col-span-2 flex flex-col gap-y-2 z-10">
+                            <div className="flex flex-col text-[#fff]">
                                 <p className='text-[1rem]'>{product.title}</p>
-                                <p className='text-[0.8rem]'>{product.brand}</p>
+                                <p className={`text-[0.8rem] ${animatedGradientText}`}>{product.brand}</p>
                             </div>
-                            <p>{product.price}</p>
                         </div>
+                        <div className="absolute z-0 top-0 left-0 w-full h-full bg-[#10100e] opacity-40"></div>
                     </Link>
                 ))
             }
