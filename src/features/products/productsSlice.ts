@@ -17,6 +17,18 @@ export const getAllProductsAsync = createAsyncThunk(
     }
 )
 
+export const getProductsByTagsAsync = createAsyncThunk(
+    'products/getProductsByTags', async (id: string, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.get(`${url}/products/tags/${id}`)
+            return data
+        } catch (error) {
+            console.error((error as AxiosError).message)
+            return rejectWithValue((error as AxiosError).response?.data || (error as AxiosError).message)
+        }
+    }
+)
+
 export const getProductsByRangeAsync = createAsyncThunk(
     'products/getProductsByRange', async ({ page, rangeSize }: { page: number, rangeSize?: number }, { rejectWithValue }) => {
         try {
@@ -222,6 +234,24 @@ export const productsSlice = createSlice({
             )
             .addCase(
                 getAllProductsAsync.rejected, (state, _action) => {
+                    state.productsAreLoading = false
+                    state.productsHasError = true
+                }
+            )
+            .addCase(
+                getProductsByTagsAsync.pending, (state, _action) => {
+                    state.productsAreLoading = true
+                    state.productsHasError = false
+                }
+            )
+            .addCase(
+                getProductsByTagsAsync.fulfilled, (state, _action) => {
+                    state.productsAreLoading = false
+                    state.productsHasError = false
+                }
+            )
+            .addCase(
+                getProductsByTagsAsync.rejected, (state, _action) => {
                     state.productsAreLoading = false
                     state.productsHasError = true
                 }

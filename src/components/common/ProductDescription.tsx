@@ -39,7 +39,7 @@ export default function ProductDescription({ product }: { product: ProductProps 
     const handleAddItemToCart = () => {
         const itemToAdd = {
             title: product.title,
-            image: product.image,
+            image: product.images[0].image,
             price: product.price,
             discount: product.discount
         }
@@ -70,6 +70,8 @@ export default function ProductDescription({ product }: { product: ProductProps 
         }, 150)
     }, [])
 
+    // `${currentTemplate.product.layout ? currentTemplate.product.layout : 'flex gap-x-[100px] bg-[#ffffff] p-10'} ${!isAdmin ? 'h-auto' : ''}
+
     return (
         <>
             {loading && (
@@ -79,16 +81,23 @@ export default function ProductDescription({ product }: { product: ProductProps 
             )}
             {
                 product !== undefined && !loading && (
-                    <section className={`${currentTemplate.product.layout ? currentTemplate.product.layout : 'flex gap-x-5 bg-[#ffffff] p-10'} ${!isAdmin ? 'h-[52rem]' : ''}`}>
+                    <section className={`flex gap-x-20 bg-[#fff] p-10 w-[1250px]`}>
                         <div>
-                            <InnerImageZoom className='max-h-[650px]' height={2} hideHint={true} zoomPreload={true} zoomType='hover' src={product.image as string} zoomSrc={product.image} />
+                            <InnerImageZoom
+                                className='max-h-[650px]'
+                                width={500}        // set a custom width
+                                height={500}
+                                hideHint={true}
+                                zoomPreload={true}
+                                zoomType='hover'
+                                src={product.images[0].image as string} zoomSrc={product.images[0].image} />
                             {
                                 !isAdmin && (
-                                    <div className="flex justify-center gap-x-2 mt-5">
+                                    <div className={`justify-center gap-x-2 mt-5 ${!(product.images.length > 1) ? 'flex' : 'hidden'}`}>
                                         {
-                                            Array.from({ length: 4 }).map((_, i) => (
-                                                <div className='w-20 h-20 border border-sym_gray-200 overflow-hidden'>
-                                                    <img src={product.image} key={i} className='object-cover h-full'></img>
+                                            product.images.map(({ image, image_public_id }, i) => (
+                                                <div key={`id-${image_public_id}-${i}`} className='w-20 h-20 border border-sym_gray-200 overflow-hidden'>
+                                                    <img src={image} className='object-cover h-full'></img>
                                                 </div>
                                             ))
                                         }
@@ -96,7 +105,7 @@ export default function ProductDescription({ product }: { product: ProductProps 
                                 )
                             }
                         </div>
-                        <div className="w-full flex flex-col justify-between pl-10">
+                        <div className="flex flex-col justify-between pl-10">
                             <div className="flex flex-col">
                                 <h2 aria-label={product.title} className={isAdmin ? 'text-[1.5rem] min-[500px]:text-[2rem] font-light text-sym_gray-600 text-balance uppercase' : currentTemplate.product.title ? currentTemplate.product.title : 'text-[1.5rem] min-[500px]:text-[2.5rem] font-light text-sym_gray-600 text-balance'}>{product.title}</h2>
                                 <div className='flex justify-end gap-x-2'>
