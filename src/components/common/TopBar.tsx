@@ -7,7 +7,22 @@ import Hamburger from 'hamburger-react'
 import useScroll from '@/hooks/useSroll'
 import Searchbar from './Searchbar'
 import { StoreProps } from '@/utils/types'
+import { getAllCollectionsTitlesAsync } from '@/features/collections/collectionsSlice'
+import { AppDispatch } from '@/store/store'
+import { useDispatch } from 'react-redux'
 
+const parentVariants = {
+  rest: {},
+  hover: {}
+}
+
+const childVariants = {
+  rest: { opacity: 0, width: 0 },
+  hover: {
+    opacity: 1, width: '100%',
+    transition: { duration: 0.4, type: 'spring', bounce: 0.2 }
+  }
+}
 
 function clamp(number: number, min: number, max: number) {
   return Math.min(Math.max(number, min), max)
@@ -32,12 +47,16 @@ function useBoundedScroll(bounds: number) {
 
 
 const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement => {
+  const dispatch: AppDispatch = useDispatch()
   const user = useSelector((state: StoreProps) => state.userAuth.user)
   const cart = useSelector((state: StoreProps) => state.cart.cart)
+  const collectionTitles = useSelector((state: StoreProps) => state.collections.titles).filter(collection => collection.isLive)
   const readyToPay = useSelector((state: StoreProps) => state.cart.readyToPay)
   const yPosition = useScroll()
   const { pathname } = useLocation()
   const cartItemsLength = Object.keys(cart).length
+
+  console.log(collectionTitles)
 
 
   //* Topbar height state
@@ -58,6 +77,16 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
     window.location.reload()
   }
 
+  useEffect(() => {
+    async function getCollectionTitles() {
+      await dispatch(getAllCollectionsTitlesAsync())
+    }
+
+    if (collectionTitles.length === 0) {
+      getCollectionTitles()
+    }
+  }, [])
+
   return (
     <main className={`${announcementBar ? 'top-9' : 'top-2'} fixed w-full flex justify-center z-50`}>
       <motion.section
@@ -67,7 +96,7 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
         }}
         className={`relative h-[50px] w-full max-w-[1440px] rounded-[6px] p-5`}>
 
-        <div className="h-full w-full flex flex-col justify-center transition-all duration-400">
+        <div className="h-full w-full flex flex-col justify-center gap-y-2 transition-all duration-400">
 
           <nav className={`flex h-full w-full justify-between items-center`}>
             <Link to={'/'} className="block">
@@ -100,10 +129,22 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
             <motion.div
               key={'collection'}
               style={{ opacity, height: heightCollection }}
+              transition={{ delay: 2 }}
               className={`w-full flex justify-center gap-x-10 text-[#fff]`}>
               {
-                Array.from({ length: 3 }).map((_, i) => (
-                  <Link to={'*'} key={`id-${i}`}>{`Collection ${i + 1}`}</Link>
+                collectionTitles.length > 0 && collectionTitles.map((col, i) => (
+                  <motion.div
+                    variants={parentVariants}
+                    initial="rest"
+                    whileHover="hover"
+                    className='relative group px-2'
+                    key={`id-${col.id + i}`}>
+                    <Link className='z-10' to={'*'}>{col.title}</Link>
+                    <motion.div
+                      className='h-full -z-10 absolute top-0 left-0 bg-indigo-500'
+                      variants={childVariants}
+                    ></motion.div>
+                  </motion.div>
                 ))
               }
             </motion.div>

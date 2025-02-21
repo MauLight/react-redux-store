@@ -76,6 +76,14 @@ function Collections(): ReactNode {
     }
 
     useEffect(() => {
+        if (collectionTitles.length > 0) {
+            console.log(inputValue)
+            const currCollectionIsLive = collectionTitles.find(col => col.title === inputValue)?.isLive
+            setClicked(currCollectionIsLive as boolean)
+        }
+    }, [inputValue])
+
+    useEffect(() => {
         async function getCollectionTitles() {
             await dispatch(getAllCollectionsTitlesAsync())
             setIsLoading(false)

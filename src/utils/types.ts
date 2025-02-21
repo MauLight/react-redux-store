@@ -102,7 +102,7 @@ export interface StoreProps {
         collections: CollectionProps[]
         collection: CollectionProps
         nav: string[]
-        titles: { title: string, id: string }[]
+        titles: { title: string, id: string, isLive: boolean }[]
         isLoading: boolean
         hasErrors: boolean
         error: string
