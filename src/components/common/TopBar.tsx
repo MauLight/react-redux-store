@@ -119,7 +119,9 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
                   <p>Your cart</p>
                 </Link>
               </div>
-              <Hamburger toggled={hamburgerIsOpen} toggle={() => { setHamburgerIsOpen(true) }} color={topBarHamburgerColor} size={25} direction='left' />
+              <div className="hidden max-sm:flex">
+                <Hamburger toggled={hamburgerIsOpen} toggle={() => { setHamburgerIsOpen(true) }} color={topBarHamburgerColor} size={25} direction='left' />
+              </div>
             </div>
           </nav>
           <AnimatePresence>
