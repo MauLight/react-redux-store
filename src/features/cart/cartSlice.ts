@@ -85,12 +85,12 @@ export const cartSlice = createSlice({
             state.courierFee = action.payload
         },
         addItem: (state, action) => {
-            const { id, title, image, price, fullPrice, description = '' } = action.payload
+            const { id, title, images, price, discount, description = '' } = action.payload
 
             const wasAdded = state.cart.find((product) => product.id === id)
             if (wasAdded) return
 
-            const newItem = { id, price, description, fullPrice, quantity: 1, image, title }
+            const newItem = { id, price, description, discount, quantity: 1, image: images[0].image, title }
             state.cart.push(newItem)
             toast.success('Item added to cart.')
         },

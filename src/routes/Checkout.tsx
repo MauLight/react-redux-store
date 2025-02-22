@@ -8,14 +8,14 @@ import { CheckSummary } from '@/components/checkout/CheckSummary'
 import { CheckoutCard } from '@/components/checkout/CheckoutCard'
 
 //* Types
-import { ProductProps, StoreProps } from '@/utils/types'
+import { CartItemProps, StoreProps } from '@/utils/types'
 import { fadeIn } from '@/utils/functions'
 import CheckoutToPayment from '@/components/checkout/CheckoutToPayment'
 import { fillCart } from '@/features/cart/cartSlice'
 
 const Checkout = (): ReactElement => {
     const cart = useSelector((state: StoreProps) => state.cart.cart)
-    const localCart: ProductProps[] = JSON.parse(localStorage.getItem('marketplace-cart') || '[]')
+    const localCart: CartItemProps[] = JSON.parse(localStorage.getItem('marketplace-cart') || '[]')
     const dispatch = useDispatch()
 
     //* Cart state
@@ -84,7 +84,7 @@ const Checkout = (): ReactElement => {
                                             ))
                                         }
                                         {
-                                            cart.length === 0 && localCart.map((product: ProductProps, i) => (
+                                            cart.length === 0 && localCart.map((product, i) => (
                                                 <CheckoutCard key={(product.id as string) + i} dispatch={dispatch} product={product} />
                                             ))
                                         }
@@ -98,7 +98,7 @@ const Checkout = (): ReactElement => {
                                                     ))
                                                 }
                                                 {
-                                                    cart.length === 0 && localCart.map((product: ProductProps, i) => (
+                                                    cart.length === 0 && localCart.map((product, i) => (
                                                         <CheckoutCard isConfirmation key={(product.id as string) + i} dispatch={dispatch} product={product} />
                                                     ))
                                                 }

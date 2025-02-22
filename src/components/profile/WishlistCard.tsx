@@ -4,13 +4,16 @@ import { AppDispatch } from '@/store/store'
 import { ProductProps } from '@/utils/types'
 import { deleteFromWishlistAsync } from '@/features/wishList/wishListSlice'
 import { addItem } from '@/features/cart/cartSlice'
+import { Link } from 'react-router-dom'
 
 interface CheckoutCardProps {
     product: ProductProps
     userId: string
+    index: number
+    length: number
 }
 
-const WishlistCard = ({ product, userId }: CheckoutCardProps): ReactElement => {
+const WishlistCard = ({ product, userId, index, length }: CheckoutCardProps): ReactElement => {
     const dispatch: AppDispatch = useDispatch()
 
     async function handleRemoveItemFromWishlist() {
@@ -28,15 +31,19 @@ const WishlistCard = ({ product, userId }: CheckoutCardProps): ReactElement => {
         return (price - discount)
     }
 
+    console.log(index)
+
     return (
-        <section className="grid grid-cols-5 border-b border-[#10100e] pb-3 sm:h-[220px]">
-            <div className="col-span-1 border w-[200px] h-[200px] overflow-hidden">
-                <img src={product.image} alt="mock1" className="w-full h-full object-cover" />
+        <section className={`grid grid-cols-5 pb-3 sm:h-[220px] ${length !== 1 && index + 1 !== length ? 'border-b border-gray-300' : ''}`}>
+            <div className="group col-span-1 w-[200px] h-[200px] overflow-hidden">
+                <img src={product.images[0].image} alt="mock1" className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300" />
             </div>
             <div className="col-span-4 h-full flex flex-col justify-start items-between px-5">
                 <div className="w-full flex justify-between">
                     <div className="flex flex-col">
-                        <h1 className='text-[0.9rem] min-[400px]:text-[1rem] sm:text-[2rem] text-[#10100e] uppercase'>{product.title}</h1>
+                        <Link to={`/product/${product.id}`}>
+                            <h1 className={`text-[0.9rem] min-[400px]:text-[1rem] sm:text-[2rem] text-[#10100e] uppercase`}>{product.title}</h1>
+                        </Link>
                         <div className="flex">
                             <p className='text-[0.9rem] min-[400px]:text-xl font-semiBold text-[#10100e] uppercase'>{`${getPercentage()}$`}</p>
                             {

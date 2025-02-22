@@ -1,5 +1,5 @@
 export interface ProductProps {
-    id?: string
+    id: string
     description: string
     title: string
     brand?: string
@@ -211,7 +211,7 @@ export interface CartItemProps {
     title: string
     image: string
     price: number
-    fullPrice: number
+    discount: number
     quantity: number
     rating?: {
         productId: string

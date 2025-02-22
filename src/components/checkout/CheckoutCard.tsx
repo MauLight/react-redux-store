@@ -1,10 +1,10 @@
 import { changeItemQuantity, removeItem } from '@/features/cart/cartSlice'
-import { ProductProps } from '@/utils/types'
+import { CartItemProps } from '@/utils/types'
 import { type ReactElement } from 'react'
 import { useLocation } from 'react-router-dom'
 
 interface CheckoutCardProps {
-  product: ProductProps
+  product: CartItemProps
   dispatch: any
   isConfirmation?: boolean
 }
