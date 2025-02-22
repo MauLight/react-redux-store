@@ -6,7 +6,6 @@ import { motion } from 'framer-motion'
 
 import ProductDescription from '@/components/common/ProductDescription'
 import { ProductProps, StoreProps } from '@/utils/types'
-import Fallback from '@/components/common/Fallback'
 import ErrorComponent from '@/components/common/ErrorComponent'
 import { useNavigate } from 'react-router-dom'
 
@@ -45,13 +44,6 @@ function IndividualProduct({ id }: { id: string | undefined }): ReactNode {
                 )
             }
             {
-                !uiHasError && uiIsLoading && (
-                    <div className="w-full h-screen flex justify-center items-center">
-                        <Fallback />
-                    </div>
-                )
-            }
-            {
                 !uiHasError && !uiIsLoading && Object.keys(currentTemplate).length > 0 && (
                     <div className='relative w-screen h-screen flex justify-center items-center sm:max-lg:pt-[350px] bg-gray-100'>
                         <div className="w-[1440px] flex justify-center pt-[80px] z-20">
@@ -62,25 +54,19 @@ function IndividualProduct({ id }: { id: string | undefined }): ReactNode {
                                     )
                                 }
                                 {
-                                    !productsHasError && productsAreLoading && (
-                                        <div className='h-[33rem] w-full flex justify-center items-center'>
-                                            <Fallback color='#3f51b5' />
-                                        </div>
-                                    )
-                                }
-                                {
-                                    !productsHasError && !productsAreLoading && product !== undefined && (
+                                    !productsHasError && product !== undefined && (
                                         <div className='h-auto flex'>
-                                            <ProductDescription key={product.id} product={product} />
+                                            <ProductDescription key={product.id} product={product} isLoading={productsAreLoading} />
                                             <div className="h-full flex flex-col bg-[#fff]">
                                                 {
-                                                    similarProducts.length > 0 && similarProducts.map((product, i) => (
+                                                    similarProducts.length > 0 && !productsAreLoading ? similarProducts.map((product, i) => (
                                                         <motion.button
                                                             onClick={() => { navigate(`/product/${product.id}`) }}
-                                                            initial={{ scale: 1 }}
+                                                            initial={{ scale: 1, opacity: 0 }}
+                                                            animate={{ opacity: 1, transition: { duration: 0.8 } }}
                                                             whileHover={{ scale: 1.02 }}
                                                             transition={{ duration: 0.6, type: 'spring', bounce: 0.4 }}
-                                                            key={`id-${product.id}-${i}`} className="relative group w-[180px] h-[180px] glass bg-[#fff] rounded-[6px]">
+                                                            key={`id-${product.id}-${i}`} className="relative group w-[180px] h-[180px] glass bg-[#fff]">
                                                             <img className="h-full object-cover z-0" src={product.images[0].image} alt={product.title} />
                                                             <div className="absolute top-0 left-0 w-full h-full bg-radial from-20% from-transparent to-[#10100e] opacity-20"></div>
                                                             <motion.div
@@ -92,6 +78,10 @@ function IndividualProduct({ id }: { id: string | undefined }): ReactNode {
                                                             </motion.div>
                                                         </motion.button>
                                                     ))
+                                                        :
+                                                        (
+                                                            <div className='w-[180px] h-[180px] glass bg-[#fff] animate-pulse'></div>
+                                                        )
                                                 }
                                             </div>
                                         </div>
@@ -99,12 +89,11 @@ function IndividualProduct({ id }: { id: string | undefined }): ReactNode {
                                 }
                             </div>
                         </div>
-                        {/* {
-                            currentTemplate.product.video && (
-                                <video className='absolute w-full h-full object-cover' src={video} autoPlay loop muted />
-                            )
-                        } */}
-                        <img className='absolute w-full h-full object-cover' src="https://res.cloudinary.com/maulight/image/upload/v1740158140/wkbgeohyeplwr8sjc0tc.jpg" alt="" />
+                        <motion.img
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.8 }}
+                            className='absolute w-full h-full object-cover' src="https://res.cloudinary.com/maulight/image/upload/v1740158140/wkbgeohyeplwr8sjc0tc.jpg" alt="" />
                     </div>
                 )
             }

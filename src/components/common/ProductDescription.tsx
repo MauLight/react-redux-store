@@ -1,16 +1,17 @@
 import { useEffect, useLayoutEffect, useState, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import InnerImageZoom from 'react-inner-image-zoom'
 import 'react-inner-image-zoom/lib/InnerImageZoom/styles.min.css'
+import { motion } from 'framer-motion'
 
 import { addItem } from '@/features/cart/cartSlice'
 import { AppDispatch } from '@/store/store'
-import { useDispatch, useSelector } from 'react-redux'
 
-import Fallback from './Fallback'
 import { ProductProps, StoreProps } from '@/utils/types'
+import Fallback from './Fallback'
 
-export default function ProductDescription({ product }: { product: ProductProps }): ReactNode {
+export default function ProductDescription({ product, isLoading }: { product: ProductProps, isLoading: boolean }): ReactNode {
     const { pathname } = useLocation()
     const [isAdmin, setIsAdmin] = useState<boolean>(false)
 
@@ -73,19 +74,24 @@ export default function ProductDescription({ product }: { product: ProductProps 
     // `${currentTemplate.product.layout ? currentTemplate.product.layout : 'flex gap-x-[100px] bg-[#ffffff] p-10'} ${!isAdmin ? 'h-auto' : ''}
 
     return (
-        <>
-            {loading && (
-                <div className='lg:min-w-[23rem] sm:h-[33rem]'>
+        <div className={`flex gap-x-20 bg-[#fff] p-10 h-[750px] w-[1250px]`}>
+            {loading || isLoading && (
+                <div className={`w-full h-full flex justify-center items-center`}>
                     <Fallback />
                 </div>
             )}
             {
-                product !== undefined && !loading && (
-                    <section className={`flex gap-x-20 bg-[#fff] p-10 w-[1250px]`}>
-                        <div>
+                product !== undefined && !loading && !isLoading && (
+                    <motion.section
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5 }}
+                        className='flex'
+                    >
+                        <div className='flex flex-col justify-center h-full'>
                             <InnerImageZoom
                                 className='max-h-[650px]'
-                                width={500}        // set a custom width
+                                width={500}
                                 height={500}
                                 hideHint={true}
                                 zoomPreload={true}
@@ -125,9 +131,9 @@ export default function ProductDescription({ product }: { product: ProductProps 
                                 <p className='font-light text-[1.2rem] tracking-tighter text-sym_gray-600'>{product.description}</p>
                             </div>
                         </div>
-                    </section>
+                    </motion.section>
                 )
             }
-        </>
+        </div>
     )
 }
