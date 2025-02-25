@@ -189,6 +189,22 @@ function DragAndDropList({ setCurrPanel, topBackground }: { setCurrPanel: Dispat
         }
     }
 
+    useEffect(() => {
+        async function updateHomeOrder() {
+            const newOrder = tasks.map(task => task.id)
+            await dispatch(updateUIConfigurationAsync({
+                id: id as string, newConfiguration: {
+                    ...currConfig,
+                    home: {
+                        ...currConfig.home,
+                        order: newOrder
+                    }
+                }
+            }))
+        }
+        updateHomeOrder()
+    }, [tasks])
+
     return (
         <ul className={`w-full col-span-4 flex flex-col gap-y-1 border p-3 rounded-[5px] shadow-xl ${sortingWasSaved ? 'border-indigo-500 animate-pulse shadow-indigo-400' : 'shadow-sym-gray-50'}`}>
             <button onClick={() => { setCurrPanel(0) }} className={`h-[30px] w-full flex justify-end items-center ${topBackground.toLowerCase() === '#ffffff' ? 'border border-gray-400' : ''} ${topBackground.length > 0 ? `bg-[${topBackground}]` : 'bg-[#10100e]'}`}>
