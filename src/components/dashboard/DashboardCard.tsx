@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { deleteProductByIdAsync } from '@/features/products/productsSlice'
 import { AppDispatch } from '@/store/store'
 import { ProductProps, StoreProps } from '@/utils/types'

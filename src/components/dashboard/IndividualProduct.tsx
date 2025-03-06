@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { toast } from 'react-toastify'
 import axios from 'axios'

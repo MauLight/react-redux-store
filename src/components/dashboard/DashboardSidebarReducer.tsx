@@ -2,7 +2,7 @@ import { type ReactNode } from 'react'
 
 export default function DashboardSidebarReducer({ titles, state, dispatcher }: { titles: string[], state: any, dispatcher: any }): ReactNode {
 
-    const { one, two, three, four, five } = state
+    const { one, two, three } = state
 
     return (
         <div className="fixed top-0 left-0 h-screen w-[220px] z-0 bg-[#ffffff] border-r border-sym_gray-100">
