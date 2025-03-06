@@ -1,7 +1,7 @@
 import SignFooter from '@/components/sign/SignFooter'
 import SignForm from '@/components/sign/SignForm'
 import { type ReactNode } from 'react'
-import video from '@/assets/video/Sign_video.webm'
+import video from '@/assets/video/Sign_video1.webm'
 
 
 function Signup({ isBuilder }: { isBuilder?: boolean }): ReactNode {

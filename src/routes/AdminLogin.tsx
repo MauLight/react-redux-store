@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react'
-import video from '@/assets/video/Sign_video.webm'
+import video from '@/assets/video/Sign_video1.webm'
 import LoginForm from '@/components/login/LoginForm'
 import LoginFooter from '@/components/login/LoginFooter'
 import { useLocation } from 'react-router-dom'
