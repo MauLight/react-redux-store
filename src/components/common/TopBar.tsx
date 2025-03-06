@@ -50,7 +50,8 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
   const dispatch: AppDispatch = useDispatch()
   const user = useSelector((state: StoreProps) => state.userAuth.user)
   const cart = useSelector((state: StoreProps) => state.cart.cart)
-  const collectionTitles = useSelector((state: StoreProps) => state.collections.titles).filter(collection => collection.isLive)
+  const collection = useSelector((state: StoreProps) => state.collections.titles)
+  const collectionTitles = collection ? collection.filter(collection => collection.isLive) : []
   const readyToPay = useSelector((state: StoreProps) => state.cart.readyToPay)
   const yPosition = useScroll()
   const { pathname } = useLocation()

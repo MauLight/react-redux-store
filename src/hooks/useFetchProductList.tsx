@@ -44,6 +44,7 @@ export const infiniteScrollFetch = () => {
         }
         const fetchProducts = async () => {
             const { payload } = await dispatch(getProductsByRangeAsync({ page: currentPage, rangeSize: 9 }))
+            console.log(payload)
             setProducts((prevProducts) => [...prevProducts, ...payload.products])
         }
 
