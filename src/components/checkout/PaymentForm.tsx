@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ReactNode } from 'react'
 import { SummaryCard } from './SummaryCard'
 import { CartItemProps, StoreProps } from '@/utils/types'

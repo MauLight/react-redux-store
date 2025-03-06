@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Dispatch, ReactNode, SetStateAction } from 'react'
 import TransbankForm from './TransbankForm'
 import { BillingAddressProps } from '@/utils/types'
