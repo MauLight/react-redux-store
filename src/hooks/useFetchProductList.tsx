@@ -1,15 +1,10 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { atom, useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { getAllProductsAsync, getProductsByRangeAsync } from '@/features/products/productsSlice'
 import { AppDispatch } from '@/store/store'
-import { ProductProps, StoreProps } from '@/utils/types'
-import { currentPageState } from '@/utils/recoil'
-
-const productsListState = atom<ProductProps[]>({
-    key: 'ProductList',
-    default: []
-})
+import { StoreProps } from '@/utils/types'
+import { currentPageState, productsListState } from '@/utils/recoil'
 
 export const useFetchProducts = (currentPage: number, pageSize: number) => {
     const dispatch: AppDispatch = useDispatch()
@@ -44,7 +39,6 @@ export const infiniteScrollFetch = () => {
         }
         const fetchProducts = async () => {
             const { payload } = await dispatch(getProductsByRangeAsync({ page: currentPage, rangeSize: 9 }))
-            console.log(payload)
             setProducts((prevProducts) => [...prevProducts, ...payload.products])
         }
 
