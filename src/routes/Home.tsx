@@ -22,7 +22,7 @@ import Carousel from "@/components/home/Carousel"
 const pageSize = 7
 
 const paginatedProductsSelector = selector({
-    key: 'paginatedProductsSelector',
+    key: 'paginatedProductsSelector1',
     get: async ({ get }) => {
         const products = get(productsListState)
         const currentPage = get(currentPageState)

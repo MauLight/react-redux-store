@@ -12,7 +12,7 @@ import Tableheader from '../common/Tableheader'
 const pageSize = 10
 
 const paginatedProductsSelector = selector({
-    key: 'paginatedProductsSelector',
+    key: 'paginatedProductsSelector3',
     get: async ({ get }) => {
         const products = get(productsListState)
         const currentPage = get(currentPageState)

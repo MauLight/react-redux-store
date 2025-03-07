@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom'
 const pageSize = 5
 
 const paginatedProductsSelector = selector({
-    key: 'paginatedProductsSelector',
+    key: 'paginatedProductsSelector2',
     get: async ({ get }) => {
         const products = get(productsListState)
         const currentPage = get(currentPageState)
