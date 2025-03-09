@@ -67,7 +67,7 @@ function IndividualProduct({ id }: { id: string | undefined }): ReactNode {
                                                             whileHover={{ scale: 1.02 }}
                                                             transition={{ duration: 0.6, type: 'spring', bounce: 0.4 }}
                                                             key={`id-${product.id}-${i}`} className="relative group w-[180px] h-[180px] glass bg-[#fff]">
-                                                            <img className="h-full object-cover z-0" src={product.images[0].image} alt={product.title} />
+                                                            <img className="h-full object-cover z-0" src={product.images.length ? product.images[0].image : 'https://imageplaceholder.net/600x400'} alt={product.title} />
                                                             <div className="absolute top-0 left-0 w-full h-full bg-radial from-20% from-transparent to-[#10100e] opacity-20"></div>
                                                             <motion.div
                                                                 initial={{ opacity: 0 }}
