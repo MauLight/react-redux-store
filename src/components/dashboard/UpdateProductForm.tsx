@@ -20,7 +20,7 @@ import { toast } from 'react-toastify'
 
 export const productSchema = yup.object().shape({
     title: yup.string().required('Title is required'),
-    brand: yup.string(),
+    brand: yup.string().required(),
     description: yup.string().required('Description is required'),
     image: yup.string().url('Image must be a valid URL'),
     weight: yup.number(),
@@ -28,7 +28,7 @@ export const productSchema = yup.object().shape({
     width: yup.number(),
     length: yup.number(),
     price: yup.number().required('Price is required'),
-    discount: yup.number().required(),
+    discount: yup.number(),
     quantity: yup.number().required(),
 })
 
@@ -168,7 +168,9 @@ function UpdateProductForm({ product, handleOpenUpdateProduct, closeModal }: Ind
     }
 
     useEffect(() => {
-        getPercentage(getValues, setPriceWithDiscount)
+        if (getValues().discount) {
+            getPercentage({ ...getValues(), discount: getValues().discount as number }, setPriceWithDiscount)
+        }
     }, [watchedValues])
 
     useEffect(() => {

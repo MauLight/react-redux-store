@@ -260,7 +260,7 @@ export interface OnSubmitFormValues {
     description: string
     image?: string
     price: number
-    discount: number
+    discount?: number
 }
 
 export interface RegionProps {

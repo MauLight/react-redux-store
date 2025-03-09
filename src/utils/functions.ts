@@ -38,15 +38,15 @@ export function handleCopyToClipboard(text: string, message: string) {
   toast.success(message)
 }
 
-export function getPercentage(getValues: () => {
+export function getPercentage(values: {
   image?: string | undefined;
   discount: number;
   price: number;
   title: string;
   description: string;
 }, setPriceWithDiscount: Dispatch<SetStateAction<number>>) {
-  const percentage = getValues().discount
-  const price = getValues().price
+  const percentage = values.discount
+  const price = values.price
   const discount = (percentage / 100) * price
   setPriceWithDiscount(price - discount)
 }

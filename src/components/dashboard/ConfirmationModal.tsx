@@ -57,7 +57,7 @@ export default function ConfirmationModal({
                         <div className="border-b border-sym_gray-600 mb-10 mt-5"></div>
                         <section className='flex gap-x-20'>
                             <div className='min-w-[30rem] h-[33rem]'>
-                                <img key={product.id} src={imageList.length > 0 ? imageList[0].image : ''} alt="product" className="w-full h-full object-cover" />
+                                <img key={product.id} src={imageList.length > 0 ? imageList[0].image : ''} alt="product" className="w-full h-auto object-cover" />
                             </div>
                             <div className="w-full h-[33rem] flex flex-col justify-between">
                                 <div className="flex flex-col">
