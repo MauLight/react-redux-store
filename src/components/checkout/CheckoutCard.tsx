@@ -36,7 +36,7 @@ export const CheckoutCard = ({ product, dispatch, isConfirmation }: CheckoutCard
 
   return (
     <div key={product.id} className={`grid grid-cols-5 border-b border-[#10100e] pb-3 ${isConfirmation ? 'lg:h-[100px]' : 'lg:h-[220px]'}`}>
-      <div className='col-span-1 border'>
+      <div className='col-span-1'>
         <img src={product.image} alt="product" className='w-full h-full object-cover' />
       </div>
       <div className={`${isConfirmation ? 'col-span-3' : 'col-span-4'} h-full flex flex-col justify-start items-between px-5`}>

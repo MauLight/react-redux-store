@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import { StoreProps } from '@/utils/types'
 import { SummaryCard } from './SummaryCard'
 import TransbankForm from './TransbankForm'
+import { motion } from 'framer-motion'
 
 const paymentSteps = [
     {
@@ -22,13 +23,28 @@ const paymentSteps = [
 function CheckoutToPaymentStep({ title, step, current }: { title: string, step: number, current: boolean }) {
 
     return (
-        <div className={`relative col-span-1 flex justify-center items-center gap-x-2 bg-[#ffffff] border-b-[4px] ${current ? 'border-[#10100e]' : 'border-gray-200'}`}>
-            <div className={`w-[30px] h-[30px] flex justify-center items-center rounded-full text-[#ffffff] ${current ? 'bg-[#10100e]' : 'bg-gray-300'}`}>{step}</div>
-            <p className={`text-[1.2rem] ${current ? 'text-[#10100e]' : 'font-light text-gray-400'}`}>{title}</p>
+        <div
+            className={`relative col-span-1 flex flex-col justify-center items-center gap-x-2 bg-[#ffffff] ${current ? 'border-[#10100e]' : 'border-gray-200'}`}>
+
+            <div className='w-full flex justify-center gap-x-5'>
+                <div className={`w-[30px] h-[30px] flex justify-center items-center rounded-full text-[#ffffff] ${current ? 'bg-[#10100e]' : 'bg-gray-300'}`}>{step}</div>
+                <p className={`text-[1.2rem] ${current ? 'text-[#10100e]' : 'font-light text-gray-400'}`}>{title}</p>
+            </div>
             {
                 current && (
-                    <div className='absolute w-full bottom-0 left-0 flex justify-center items-center'>
-                        <i className="fa-solid fa-xl fa-caret-up text-[#10100e]"></i>
+                    <div className='absolute w-full bottom-0 left-0 flex flex-col justify-center items-center'>
+                        <motion.i
+                            initial={{ scaleY: 0 }}
+                            animate={{ scaleY: 1 }}
+                            transition={{ duration: 0.2, delay: 0.2 }}
+                            className="fa-solid fa-xl fa-caret-up text-[#10100e]"></motion.i>
+                        <motion.div
+                            initial={{ scaleX: 0 }}
+                            animate={{ scaleX: 1 }}
+                            transition={{ duration: 0.2 }}
+                            className='w-full h-1 bg-[#10100e]'
+                        >
+                        </motion.div>
                     </div>
                 )
             }

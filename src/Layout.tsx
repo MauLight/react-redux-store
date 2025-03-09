@@ -42,7 +42,7 @@ function Layout() {
 
     const { pathname } = useLocation()
 
-    const hideTopbar = pathname.includes('sign') || pathname.includes('login') || pathname.includes('admin') || pathname.includes('confirmation') || pathname.includes('landing')
+    const hideTopbar = pathname.includes('sign') || pathname.includes('login') || pathname.includes('admin') || pathname.includes('confirmation') || pathname.includes('landing') || pathname.includes('checkout')
     const hideAdminTopbar = pathname.includes('sign') || pathname.includes('login') || pathname.includes('confirmation') || (pathname.includes('admin') && pathname.length <= 6)
     const isAdmin = pathname.includes('admin')
 

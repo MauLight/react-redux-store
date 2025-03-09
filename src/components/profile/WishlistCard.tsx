@@ -31,12 +31,10 @@ const WishlistCard = ({ product, userId, index, length }: CheckoutCardProps): Re
         return (price - discount)
     }
 
-    console.log(index)
-
     return (
         <section className={`grid grid-cols-5 pb-3 sm:h-[220px] ${length !== 1 && index + 1 !== length ? 'border-b border-gray-300' : ''}`}>
             <div className="group col-span-1 w-[200px] h-[200px] overflow-hidden">
-                <img src={product.images[0].image} alt="mock1" className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300" />
+                <img src={product.images.length ? product.images[0].image : 'https://imageplaceholder.net/600x400'} alt="mock1" className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300" />
             </div>
             <div className="col-span-4 h-full flex flex-col justify-start items-between px-5">
                 <div className="w-full flex justify-between">

@@ -76,7 +76,7 @@ const Checkout = (): ReactElement => {
                         )
                             :
                             (
-                                <div className="relative grid-cols-1 grid md:grid-cols-5 xl:grid-cols-4 gap-x-5 overflow-y-scroll scrollbar-hide max-md:gap-y-20">
+                                <div className="relative grid-cols-1 grid md:grid-cols-5 xl:grid-cols-4 gap-x-10 overflow-y-scroll scrollbar-hide max-md:gap-y-20 mt-10">
                                     <div className="col-span-3">
                                         {
                                             cart.length > 0 && cart.map((product, i) => (
