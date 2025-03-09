@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Dispatch, ReactNode, SetStateAction } from 'react'
 import TransbankForm from './TransbankForm'
 import { BillingAddressProps } from '@/utils/types'
@@ -6,13 +5,13 @@ import { BillingAddressProps } from '@/utils/types'
 //* In this case, selectedPlace (google address value) and placefromUser (boolean, true if fetched address from user) signal if the user address was selected.
 
 interface BillingAddressComponentProps {
-    billingAddress: Record<string, any>
+    billingAddress: BillingAddressProps
     setBillingAddress: Dispatch<SetStateAction<BillingAddressProps | null>>
     placeFromUser: boolean
     selectedPlace: any
 }
 
-export default function BillingAddress({ billingAddress, setBillingAddress, placeFromUser, selectedPlace }: BillingAddressComponentProps): ReactNode {
+export default function BillingAddress({ billingAddress, setBillingAddress }: BillingAddressComponentProps): ReactNode {
 
     return (
         <section className="flex flex-col gap-y-5 pb-20">
@@ -44,7 +43,7 @@ export default function BillingAddress({ billingAddress, setBillingAddress, plac
                     <input onChange={({ target }) => { setBillingAddress({ ...billingAddress, zipcode: target.value }) }} value={billingAddress.zipcode} id="zip" className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`} />
                 </div>
             </div>
-            <TransbankForm placeFromUser={placeFromUser} selectedPlace={selectedPlace} />
+            <TransbankForm readyToPay={true} />
         </section>
     )
 }

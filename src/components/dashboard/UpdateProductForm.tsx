@@ -1,23 +1,22 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { useDispatch } from 'react-redux'
 import { getAllProductsAsync, updateProductByIdAsync } from '@/features/products/productsSlice'
-import { AppDispatch } from '@/store/store'
-import Compressor from 'compressorjs'
-
-import axios from 'axios'
-import { useForm } from 'react-hook-form'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
-
-import IndividualProductImage from './IndividualProductImage'
-import { ProductProps, StoreProps } from '@/utils/types'
-import { generateSignature, getPercentage } from '@/utils/functions'
-import { useSelector } from 'react-redux'
-import IndividualProductForm from './IndividualProductsForm'
-import { Modal } from '../common/Modal'
-import ConfirmationModal from './ConfirmationModal'
+import { AppDispatch } from '@/store/store'
+import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import Compressor from 'compressorjs'
+import * as yup from 'yup'
+import axios from 'axios'
+
+
+import { generateSignature, getPercentage } from '@/utils/functions'
+import IndividualProductImage from './IndividualProductImage'
+import IndividualProductForm from './IndividualProductsForm'
+import { ProductProps, StoreProps } from '@/utils/types'
+import ConfirmationModal from './ConfirmationModal'
 import DashboardButton from './DashboardButton'
+import { Modal } from '../common/Modal'
 
 export const productSchema = yup.object().shape({
     title: yup.string().required('Title is required'),
