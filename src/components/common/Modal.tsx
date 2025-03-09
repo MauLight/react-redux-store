@@ -1,5 +1,6 @@
 import { Fragment, type ReactElement } from 'react'
 import { Transition, TransitionChild, Dialog, DialogPanel } from '@headlessui/react'
+import { motion } from 'framer-motion'
 
 interface ModalProps {
   children: ReactElement
@@ -38,9 +39,15 @@ export const Modal = ({ width, height, children, openModal, handleOpenModal }: M
               leaveTo="opacity-0 scale-95"
             >
               <DialogPanel className={`${width ? width : 'w-1/2'} ${height ? height : ''} flex flex-col py-10 px-5 border border-gray-200 rounded-xl bg-[#ffffff] overflow-hidden`}>
-                {
-                  children
-                }
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  {
+                    children
+                  }
+                </motion.div>
               </DialogPanel>
             </TransitionChild>
           </div>

@@ -2,6 +2,7 @@ import { Dispatch, ReactNode, SetStateAction, useEffect } from 'react'
 import { ProductProps } from '@/utils/types'
 import Fallback from '../common/Fallback'
 import ErrorComponent from '../common/ErrorComponent'
+import DashboardButton from './DashboardButton'
 
 interface ConfirmationModalProps {
     product: ProductProps
@@ -91,8 +92,8 @@ export default function ConfirmationModal({
                                 }
                             </div>
                             <div className="flex gap-x-5">
-                                <button onClick={() => { setConfirmationDialogue(false) }} className='h-10 px-5 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-red-500 active:bg-[#10100e]'>Cancel</button>
-                                <button onClick={handlePostProduct} className='h-10 px-5 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e]'>Confirm</button>
+                                <DashboardButton type='button' label='Cancel' action={() => { setConfirmationDialogue(false) }} actionType='cancel' />
+                                <DashboardButton type='button' label='Confirm' action={handlePostProduct} actionType='confirm' />
                             </div>
                         </div>
                     </>

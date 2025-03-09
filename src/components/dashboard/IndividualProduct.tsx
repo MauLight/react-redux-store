@@ -229,7 +229,7 @@ function IndividualProduct(): ReactNode {
 
     return (
         <>
-            <form onSubmit={(e) => { e.preventDefault() }} className='w-full col-span-1 flex flex-col gap-y-5 px-4 md:px-10 py-10 bg-[#ffffff] rounded-[8px]'>
+            <form onSubmit={(e) => { e.preventDefault() }} className='w-full col-span-1 flex flex-col gap-y-5 px-4 md:px-10 py-10 bg-[#ffffff] rounded-[8px] border border-gray-200'>
                 <h1 className='text-[1rem] sm:text-[1.2rem] text-balance leading-tight'>Add individual products:</h1>
                 <section className="flex gap-x-5">
                     <IndividualProductForm
