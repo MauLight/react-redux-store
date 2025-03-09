@@ -33,7 +33,7 @@ function ProductsTable(): ReactNode {
     }
 
     return (
-        <div className='flex flex-col rounded-[10px] overflow-hidden gap-y-10'>
+        <div className='flex flex-col rounded-[10px] overflow-hidden gap-y-10 bg-[#fff]'>
             <div>
                 <Tableheader />
 
@@ -47,7 +47,7 @@ function ProductsTable(): ReactNode {
                         )
                 }
             </div>
-            <div className="flex justify-center items-center gap-x-2">
+            <div className="flex justify-center items-center gap-x-2 pb-5">
                 {
                     Array.from({ length: totalPages }).map((_, i) => (
                         <button onClick={() => { loadMore(i + 1) }} key={i} className={`w-[30px] h-[30px] rounded-full border hover:bg-indigo-500 hover:text-[#ffffff] transition-color duration-200 ${currentPage === i + 1 ? 'bg-indigo-500 text-[#ffffff]' : 'bg-[#FFFFFF]'}`}>{i + 1}</button>
