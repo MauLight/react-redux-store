@@ -8,33 +8,31 @@ import { animatedGradientText } from '@/utils/styles'
 import { toast } from 'react-toastify'
 interface IndividualProductFormProps {
     register: UseFormRegister<{
-        length?: number | undefined;
-        image?: string | undefined;
-        quantity: number;
-        brand?: string | undefined;
         weight?: number | undefined;
         height?: number | undefined;
         width?: number | undefined;
-        description: string;
+        length?: number | undefined;
+        discount?: number | undefined;
         title: string;
+        brand: string;
+        description: string;
         price: number;
-        discount: number;
+        quantity: number;
     }>
     setValue: UseFormSetValue<{
-        length?: number | undefined;
-        image?: string | undefined;
-        brand?: string | undefined;
         weight?: number | undefined;
         height?: number | undefined;
         width?: number | undefined;
-        quantity: number;
+        length?: number | undefined;
+        discount?: number | undefined;
         title: string;
+        brand: string;
         description: string;
         price: number;
-        discount: number;
+        quantity: number;
     }>
     errors: FieldErrors<{
-        image?: string | undefined
+
         title: string
         brand: string
         description: string

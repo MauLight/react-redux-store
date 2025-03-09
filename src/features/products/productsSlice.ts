@@ -1,4 +1,4 @@
-import { OnSubmitFormValues, ProductProps } from "@/utils/types"
+import { OnSubmitFormValues, PostProductProps, ProductProps } from "@/utils/types"
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import axios, { AxiosError } from "axios"
 import { toast } from "react-toastify"
@@ -128,7 +128,7 @@ export const postProductsAsync = createAsyncThunk(
 )
 
 export const postIndividualProductAsync = createAsyncThunk(
-    'products/postIndividualProduct', async (product: ProductProps, { rejectWithValue }) => {
+    'products/postIndividualProduct', async (product: PostProductProps, { rejectWithValue }) => {
         try {
             const { data } = await axios.post(`${url}/products/one`, product)
             return data

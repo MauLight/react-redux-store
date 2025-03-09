@@ -18,6 +18,25 @@ export interface ProductProps {
     width?: number,
     length?: number
 }
+export interface PostProductProps {
+    description: string
+    title: string
+    brand?: string
+    images: Array<{ image: string, image_public_id: string }>
+    price: number
+    discount?: number
+    rating?: {
+        productId: string
+        ratings: Array<number>
+        averageRating: number
+    }
+    quantity: number
+    tags?: Array<string>
+    weight?: number,
+    height?: number,
+    width?: number,
+    length?: number
+}
 
 export interface wishListProduct { id: string, productId: string }
 export interface SliderProps { name: string, id: string, speed: number, animation: string, imageList: Array<{ image: string, public_id: string }> }

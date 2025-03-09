@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { toast } from 'react-toastify'
 import axios from 'axios'
@@ -33,7 +32,7 @@ const CloudinaryAPIKEY = import.meta.env.VITE_CLOUDINARY_APIKEY
 
 export const productSchema = yup.object().shape({
     title: yup.string().required('Title is required'),
-    brand: yup.string(),
+    brand: yup.string().required(),
     description: yup.string().required('Description is required'),
     weight: yup.number(),
     height: yup.number(),
