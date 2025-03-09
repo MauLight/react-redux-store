@@ -57,17 +57,18 @@ function IndividualProduct({ id }: { id: string | undefined }): ReactNode {
                                     !productsHasError && product !== undefined && (
                                         <div className='h-auto flex'>
                                             <ProductDescription key={product.id} product={product} isLoading={productsAreLoading} />
-                                            <div className="h-full flex flex-col bg-[#fff]">
+                                            <div className="h-auto flex flex-col justify-end">
+                                                <h1 className='py-2 text-center glass text-[#fff] bg-[#fff]'>Similar Products</h1>
                                                 {
                                                     similarProducts.length > 0 && !productsAreLoading ? similarProducts.map((product, i) => (
                                                         <motion.button
                                                             onClick={() => { navigate(`/product/${product.id}`) }}
                                                             initial={{ scale: 1, opacity: 0 }}
                                                             animate={{ opacity: 1, transition: { duration: 0.8 } }}
-                                                            whileHover={{ scale: 1.02 }}
+
                                                             transition={{ duration: 0.6, type: 'spring', bounce: 0.4 }}
-                                                            key={`id-${product.id}-${i}`} className="relative group w-[180px] h-[180px] glass bg-[#fff]">
-                                                            <img className="h-full object-cover z-0" src={product.images.length ? product.images[0].image : 'https://imageplaceholder.net/600x400'} alt={product.title} />
+                                                            key={`id-${product.id}-${i}`} className="relative group w-[180px] h-[180px] glass bg-[#fff] overflow-hidden">
+                                                            <img className="h-full object-cover z-0 group-hover:scale-105 transition-all duration-300 ease-in-out" src={product.images.length ? product.images[0].image : 'https://imageplaceholder.net/600x400'} alt={product.title} />
                                                             <div className="absolute top-0 left-0 w-full h-full bg-radial from-20% from-transparent to-[#10100e] opacity-20"></div>
                                                             <motion.div
                                                                 initial={{ opacity: 0 }}
