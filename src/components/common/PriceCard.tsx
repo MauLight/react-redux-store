@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { type ReactNode } from "react"
 import { useDispatch } from "react-redux"
 import { addItem } from "@/features/cart/cartSlice"
@@ -17,7 +16,7 @@ export const PriceCard = ({ product }: { product: ProductProps }): ReactNode => 
     const handleAddItemToCart = () => {
         const itemToAdd = {
             title: product.title,
-            image: product.image,
+            image: product.images[0].image,
             price: product.price,
         }
         dispatch(addItem(itemToAdd))
