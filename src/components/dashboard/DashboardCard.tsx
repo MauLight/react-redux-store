@@ -16,10 +16,10 @@ interface DashboardCardProps {
     removeProducts?: (productId: string) => Promise<void>
 }
 
-function HoverMessage({ message }: { message: string }) {
+function HoverMessage({ message, width }: { message: string, width: string }) {
     return (
         <div
-            className='absolute top-3 right-5 w-[120px] py-1 px-2 text-[0.8rem] bg-[#fff] rounded-[3px] border border-gray-300 shadow-xl group-hover:flex hidden'
+            className={`absolute top-5 right-6 ${width} py-1 px-2 text-[0.8rem] bg-[#fff] rounded-[3px] border border-gray-300 shadow-xl group-hover:flex hidden`}
         >
             {message}
         </div>
@@ -90,18 +90,27 @@ export default function DashboardCard({ product, isCollection, addProducts, remo
                     :
                     (
                         <div className="flex gap-x-2 justify-center items-center">
+
                             <div className='relative group'>
                                 <button onClick={handleOpenCollectionDialogue} className='h-[30px] w-[30px] bg-[#10100e] text-[#ffffff] hover:bg-indigo-500 transition-color duration-200 rounded-[10px]'>
                                     <i className="fa-solid fa-layer-group"></i>
                                 </button>
-                                <HoverMessage message='Add to collection' />
+                                <HoverMessage width='w-[120px]' message='Add to collection' />
                             </div>
-                            <button onClick={handleOpenUpdateProduct} className='h-[30px] w-[30px] bg-[#10100e] text-[#ffffff] hover:bg-indigo-500 transition-color duration-200 rounded-[10px]'>
-                                <i className="fa-solid fa-pen-to-square"></i>
-                            </button>
-                            <button onClick={handleOpenDeleteProduct} className='h-[30px] w-[30px] bg-[#10100e] text-[#ffffff] hover:bg-red-500 transition-color duration-200 rounded-[10px]'>
-                                <i className="fa-solid fa-trash"></i>
-                            </button>
+
+                            <div className="relative group">
+                                <button onClick={handleOpenUpdateProduct} className='h-[30px] w-[30px] bg-[#10100e] text-[#ffffff] hover:bg-indigo-500 transition-color duration-200 rounded-[10px]'>
+                                    <i className="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <HoverMessage width='w-[95px]' message='Edit product' />
+                            </div>
+                            <div className="relative group">
+                                <button onClick={handleOpenDeleteProduct} className='h-[30px] w-[30px] bg-[#10100e] text-[#ffffff] hover:bg-red-500 transition-color duration-200 rounded-[10px]'>
+                                    <i className="fa-solid fa-trash"></i>
+                                </button>
+                                <HoverMessage width='w-[120px]' message='Delete product' />
+                            </div>
+
                         </div>
                     )
             }
