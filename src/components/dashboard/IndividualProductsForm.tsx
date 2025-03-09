@@ -64,7 +64,7 @@ function IndividualProductForm({
     valuesForDescription,
 }: IndividualProductFormProps): ReactNode {
 
-    const [isTypingDone, setIsTypingDone] = useState(false)
+    const [isTypingDone, setIsTypingDone] = useState(true)
     const [generatedDescription, setGeneratedDescription] = useState<string>('')
     const [generatedTags, setGeneratedTags] = useState<Array<string>>([])
 
@@ -84,6 +84,8 @@ function IndividualProductForm({
     }
 
     async function handleGenerateDescriptionWithGemini(): Promise<string | null> {
+
+        setIsTypingDone(false)
 
         if (valuesForDescription[0].length && valuesForDescription[1] && valuesForDescription[1].length) {
             const prompt = `Use this title for a product (${valuesForDescription[0]}) and this brand name (${valuesForDescription[1]}) to come up with a description for the product with an emphazis in key characteristics suitable for selling the product, answer with only the description and use a maximum of 200 characters.`

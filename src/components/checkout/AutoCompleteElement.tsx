@@ -138,9 +138,7 @@ const PlaceAutocomplete = ({ onPlaceSelect, setStep }: PlaceAutocompleteProps) =
     }, [])
 
     useEffect(() => {
-        console.log('1. before checking user')
         if (user) {
-            console.log('2. checking user', user)
             setValue('country', user.country)
             setValue('state', user.state)
             setValue('city', user.city)

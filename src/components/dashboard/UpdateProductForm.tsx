@@ -17,6 +17,7 @@ import IndividualProductForm from './IndividualProductsForm'
 import { Modal } from '../common/Modal'
 import ConfirmationModal from './ConfirmationModal'
 import { toast } from 'react-toastify'
+import DashboardButton from './DashboardButton'
 
 export const productSchema = yup.object().shape({
     title: yup.string().required('Title is required'),
@@ -162,11 +163,6 @@ function UpdateProductForm({ product, handleOpenUpdateProduct, closeModal }: Ind
         setValue('image', product.images[0].image)
     }
 
-    function handleResetForm() {
-        reset()
-        setWasSubmitted(true)
-    }
-
     useEffect(() => {
         if (getValues().discount) {
             getPercentage({ ...getValues(), discount: getValues().discount as number }, setPriceWithDiscount)
@@ -189,14 +185,8 @@ function UpdateProductForm({ product, handleOpenUpdateProduct, closeModal }: Ind
 
     }, [wasSubmitted])
 
-    useEffect(() => {
-    }, [tags])
-
     return (
         <section className='relative'>
-            <button onClick={closeModal} className='absolute top-0 right-2'>
-                <i className="fa-solid fa-lg fa-xmark text-[#10100e] hover:text-red-500 active:text-[#10100e] transition-color duration-200"></i>
-            </button>
             <form onSubmit={(e) => { e.preventDefault() }} className='w-full col-span-1 flex flex-col gap-y-5 px-4 md:px-10 py-10 bg-[#ffffff] rounded-[8px]'>
                 <h1 className='text-[1rem] sm:text-[1.2rem] text-balance leading-tight'>Update Product:</h1>
                 <div className="flex gap-x-5">
@@ -221,8 +211,9 @@ function UpdateProductForm({ product, handleOpenUpdateProduct, closeModal }: Ind
                     />
                 </div>
                 <div className="flex gap-x-2 justify-end">
-                    <button onClick={handleResetForm} type='button' className='w-[150px] h-10 bg-[#ffffff] border border-gray-400 hover:bg-red-500 text-[#10100e] hover:text-[#ffffff] active:bg-[#ffffff] active:text-[#10100e] transition-color duration-200 mt-2 rounded-[10px]'>Reset</button>
-                    <button onClick={handleSubmit(onSubmit)} className='w-[150px] h-10 bg-[#10100e] text-[#ffffff] hover:bg-green-600 active:bg-[#10100e] transition-color duration-200 mt-2 rounded-[10px]'>Submit</button>
+                    <DashboardButton type='button' label='Cancel' action={closeModal} actionType='cancel' />
+                    <DashboardButton type='button' label='Confirm' action={handleSubmit(onSubmit)} actionType='confirm' />
+                    {/* <button onClick={handleSubmit(onSubmit)} className='w-[150px] h-10 bg-[#10100e] text-[#ffffff] hover:bg-green-600 active:bg-[#10100e] transition-color duration-200 mt-2 rounded-[10px]'>Submit</button> */}
                 </div>
             </form>
             {

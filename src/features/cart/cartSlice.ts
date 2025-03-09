@@ -12,7 +12,6 @@ const initialCart: CartItemProps[] = []
 
 export const createTransbankTransactionAsync = createAsyncThunk(
     'cart/createTransbankTransaction', async (paymentInformation: TransactionProps, { rejectWithValue }) => {
-        console.log(token, 'this is the token')
         try {
             const { data } = await axios.post(`${url}/transbank`, { ...paymentInformation, returnUrl }, {
                 headers: {
