@@ -22,7 +22,7 @@ function App() {
           limit={1}
         />
         {
-          !pathname.includes('admin') && (
+          pathname === '/' && (
             <div className="w-full h-[60px] flex justify-end items-center px-10 bg-[#10100e]">
               <h1 className='text-[#fff]'>Powered by <a href='https://symetria.lat' className={`uppercase ${animatedGradientText}`}>Symetria</a></h1>
             </div>

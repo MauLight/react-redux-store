@@ -86,7 +86,7 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
   }, [])
 
   return (
-    <main className={`${announcementBar ? 'top-9' : 'top-2'} fixed w-full flex justify-center z-50`}>
+    <main className={`${announcementBar ? 'top-12' : 'top-2'} fixed w-full flex justify-center z-50`}>
       <motion.section
         key={0}
         style={{
@@ -159,7 +159,7 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
             height
 
           }}
-          className={`absolute glass top-0 left-0 h-[50px] w-full max-w-[1440px] rounded-[6px] bg-[#10100e] ${yPosition > 180 ? 'opacity-30' : 'opacity-0'} -z-10 transition-all duration-500 ease-out`}>
+          className={`absolute top-0 left-0 h-[50px] w-full max-w-[1440px] rounded-[6px] bg-[#10100e] ${yPosition > 180 ? 'opacity-100' : 'opacity-0'} -z-10 transition-all duration-500 ease-out`}>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
