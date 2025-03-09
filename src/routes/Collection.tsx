@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useEffect, useLayoutEffect, useState, type ReactNode } from 'react'
 import { ProductCard } from '@/components/common/ProductCard'
 import video from '@/assets/video/Alien.webm'
@@ -139,17 +138,17 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
                             }
                             {
                                 isSearching && sortedCollection.length > 0 && sortedCollection.map((product) => (
-                                    <ProductCard key={`${product.image as string + product.id}`} product={product} />
+                                    <ProductCard key={`${product.id}`} product={product} />
                                 ))
                             }
                             {
                                 isSorting && sortedCollection.length > 0 && sortedCollection.map((product) => (
-                                    <ProductCard key={`${product.image as string + product.id}`} product={product} />
+                                    <ProductCard key={`${product.id}`} product={product} />
                                 ))
                             }
                             {
                                 !isSearching && !isSorting && products.map((product) => (
-                                    <ProductCard key={`${product.image as string + product.id}`} product={product} />
+                                    <ProductCard key={`${product.id}`} product={product} />
                                 ))
                             }
                         </section>
