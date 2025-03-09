@@ -6,9 +6,9 @@ import DashboardUploadButton from './DashboardUploadButton'
 interface IndividualProductImageProps {
     cloudinaryFileUpload: string | null
     handleFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => Promise<void>
-    children: ReactNode
-    isLoading: boolean
-    error: string | null
+    children?: ReactNode
+    isLoading?: boolean
+    error?: string | null
     handleFileButtonClick: () => void
     fileInputRef: RefObject<HTMLInputElement>
     handleResetUploadImage: () => void

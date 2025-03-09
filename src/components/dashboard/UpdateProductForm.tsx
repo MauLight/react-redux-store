@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useDispatch } from 'react-redux'
 import { getAllProductsAsync, updateProductByIdAsync } from '@/features/products/productsSlice'
@@ -30,7 +29,7 @@ export const productSchema = yup.object().shape({
     length: yup.number(),
     price: yup.number().required('Price is required'),
     discount: yup.number().required(),
-    quantity: yup.number(),
+    quantity: yup.number().required(),
 })
 
 const CloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME
@@ -59,7 +58,7 @@ function UpdateProductForm({ product, handleOpenUpdateProduct, closeModal }: Ind
             title: product.title || '',
             brand: product.brand || '',
             description: product.description || '',
-            image: product.image || '',
+            image: product.images[0].image || '',
             weight: product.weight || 0,
             height: product.height || 0,
             width: product.width || 0,
@@ -90,9 +89,9 @@ function UpdateProductForm({ product, handleOpenUpdateProduct, closeModal }: Ind
     }
 
     //* Cloudinary state
-    const [cloudinaryFileUpload, setCloudinaryFileUpload] = useState<string | null>(product.image || null)
+    const [cloudinaryFileUpload, setCloudinaryFileUpload] = useState<string | null>(product.images[0].image || null)
     const [cloudinaryPublicId, setCloudinaryPublicId] = useState<string | null>(null)
-    const [compress, setCompress] = useState<number>(1)
+    const [compress] = useState<number>(1)
     const fileInputRef = useRef<HTMLInputElement>(null)
     const handleFileButtonClick = (): void => {
         if (fileInputRef.current) {
@@ -160,7 +159,7 @@ function UpdateProductForm({ product, handleOpenUpdateProduct, closeModal }: Ind
         }
 
         setCloudinaryFileUpload(null)
-        setValue('image', product.image)
+        setValue('image', product.images[0].image)
     }
 
     function handleResetForm() {
@@ -206,12 +205,9 @@ function UpdateProductForm({ product, handleOpenUpdateProduct, closeModal }: Ind
                         setTags={setTags}
                         register={register}
                         setValue={setValue}
-                        compress={compress}
                         wasSubmitted={wasSubmitted}
-                        setCompress={setCompress}
                         descriptionAdded={descriptionAdded}
                         priceWithDiscount={priceWithDiscount}
-                        cloudinaryFileUpload={cloudinaryFileUpload}
                         valuesForDescription={valuesForDescription}
                     />
                     <IndividualProductImage
@@ -231,12 +227,13 @@ function UpdateProductForm({ product, handleOpenUpdateProduct, closeModal }: Ind
                 confirmationDialogue && (
                     <Modal width='w-[1000px]' openModal={confirmationDialogue} handleOpenModal={() => { setConfirmationDialogue(!confirmationDialogue) }}>
                         <ConfirmationModal
-                            product={{ ...getValues() }}
+                            product={{ ...getValues(), id: product.id, images: product.images }}
                             errorMessage={postProductErrorMessage}
                             handlePostProduct={handleUpdateProduct}
                             postProductError={postProductError}
                             postProductIsLoading={postProductIsLoading}
                             setConfirmationDialogue={setConfirmationDialogue}
+                            imageList={product.images}
                         />
                     </Modal>
                 )
