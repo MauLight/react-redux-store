@@ -20,7 +20,7 @@ import CourierOptions from "./CourierOptions"
 //import BillingAddress from "./BillingAddress"
 import Fallback from "../common/Fallback"
 import ErrorComponent from "../common/ErrorComponent"
-import CustomDropdown from "../common/CustomDropdown"
+import CustomDropdownWithCreate from "../common/CustomDropdownWithCreate"
 
 interface PlaceAutocompleteProps {
     onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void
@@ -133,6 +133,33 @@ const PlaceAutocomplete = ({ onPlaceSelect, setStep }: PlaceAutocompleteProps) =
         }
     }
 
+    async function searchPlaceDetails(address: string): Promise<google.maps.places.PlaceResult | null> {
+        return new Promise((resolve) => {
+            if (!address || !window.google || !window.google.maps.places) {
+                return resolve(null)
+            }
+            const autocompleteService = new window.google.maps.places.AutocompleteService()
+            autocompleteService.getPlacePredictions({ input: address }, (predictions, status) => {
+                if (status !== google.maps.places.PlacesServiceStatus.OK || !predictions || predictions.length === 0) {
+                    return resolve(null)
+                }
+
+                const placeId = predictions[0].place_id
+                const placesService = new window.google.maps.places.PlacesService(document.createElement('div'))
+                placesService.getDetails({
+                    placeId,
+                    fields: ['geometry', 'name', 'formatted_address']
+                }, (placeResult, detailStatus) => {
+                    if (detailStatus === google.maps.places.PlacesServiceStatus.OK && placeResult) {
+                        resolve(placeResult)
+                    } else {
+                        resolve(null)
+                    }
+                })
+            })
+        })
+    }
+
     useLayoutEffect(() => {
         dispatch(getUserByIdAsync(id))
     }, [])
@@ -146,6 +173,15 @@ const PlaceAutocomplete = ({ onPlaceSelect, setStep }: PlaceAutocompleteProps) =
             setValue('street_number', user.street_number)
             setValue('house_number', user.house_number)
             setValue('zipcode', user.zipcode)
+
+            async function handleSearch(address: string) {
+                const placeResult = await searchPlaceDetails(address)
+                if (placeResult) {
+                    onPlaceSelect(placeResult)
+                }
+            }
+
+            handleSearch(`${user.street} ${user.street_number} ${user.city} ${user.state} ${user.country}`)
         }
 
         setGotAddress(true)
@@ -245,7 +281,7 @@ const PlaceAutocomplete = ({ onPlaceSelect, setStep }: PlaceAutocompleteProps) =
 
     return (
         <div className="flex flex-col gap-y-10 pt-10 px-5">
-            <div className="autocomplete-container flex flex-col gap-y-1">
+            <div className="autocomplete-container hidden">
                 <label className="text-[#10100e] text-[0.8rem]" htmlFor="placeautocomplete">Search Location</label>
                 <input id="placeautocomplete" className={`w-full h-9 bg-gray-50 rounded-[3px] border border-gray-300 text-[#10100e] ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-500`} ref={inputRef} />
             </div>
@@ -262,7 +298,7 @@ const PlaceAutocomplete = ({ onPlaceSelect, setStep }: PlaceAutocompleteProps) =
                                     </div>
                                     <div className="">
                                         <label className=" text-[0.8rem]" htmlFor="state">State</label>
-                                        <CustomDropdown
+                                        <CustomDropdownWithCreate
                                             value={getValues().state !== '' ? getValues().state : 'state'}
                                             defaultValue={getValues().state}
                                             setValue={setValue}
@@ -276,7 +312,7 @@ const PlaceAutocomplete = ({ onPlaceSelect, setStep }: PlaceAutocompleteProps) =
                                 <div className="w-full grid grid-cols-2 gap-x-5">
                                     <div className="col-span-1">
                                         <label className=" text-[0.8rem]" htmlFor="city">City</label>
-                                        <CustomDropdown
+                                        <CustomDropdownWithCreate
                                             value={getValues().city !== '' ? getValues().city : 'city'}
                                             defaultValue={getValues().city}
                                             setValue={setValue}

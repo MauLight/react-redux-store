@@ -18,11 +18,13 @@ function GoogleMaps({ setStep }: { setStep: Dispatch<SetStateAction<{ one: boole
     }
 
     useEffect(() => {
+        console.log(locationInputValue)
         if (locationInputValue !== null && locationInputValue.geometry !== undefined && locationInputValue.geometry.location !== undefined) {
             const newGeoLocation = {
                 lat: locationInputValue.geometry.location.lat(),
                 lng: locationInputValue.geometry.location.lng()
             }
+            console.log(newGeoLocation)
             setGeocodeResult(newGeoLocation)
             setZoom(18)
         }
@@ -37,7 +39,7 @@ function GoogleMaps({ setStep }: { setStep: Dispatch<SetStateAction<{ one: boole
                         mapId={mapId}
                         defaultZoom={13}
                         center={geocodeResult}
-                        defaultCenter={{ lat: -33.44888970000001, lng: 289.3307345 }}
+                        defaultCenter={{ lat: geocodeResult?.lat || -33.44888970000001, lng: geocodeResult?.lng || 289.3307345 }}
                         onCameraChanged={handleCameraChanged}>
                         {geocodeResult && <AdvancedMarker position={geocodeResult} />}
                     </Map>
