@@ -13,7 +13,6 @@ import { useDispatch } from 'react-redux'
 import { Modal } from './Modal'
 import { animatedGradientText } from '@/utils/styles'
 import useOutsideClick from '@/hooks/useClickOutside'
-import { CheckoutCard } from '../checkout/CheckoutCard'
 import SimpleProductCard from './SimpleProductCard'
 
 const parentVariants = {
