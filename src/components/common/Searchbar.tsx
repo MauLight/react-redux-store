@@ -11,7 +11,7 @@ import ErrorComponent from './ErrorComponent'
 import { animatedGradientText } from '@/utils/styles'
 import useOutsideClick from '@/hooks/useClickOutside'
 
-export default function Searchbar(): ReactNode {
+export default function Searchbar({ closeModal }: { closeModal?: () => void }): ReactNode {
     const dispatch: AppDispatch = useDispatch()
     const searchIsLoading = useSelector((state: StoreProps) => state.inventory.searchIsLoading)
     const searchHasError = useSelector((state: StoreProps) => state.inventory.searchHasError)
@@ -53,12 +53,15 @@ export default function Searchbar(): ReactNode {
     }
 
     function handleResetSearchbar() {
+        if (closeModal) {
+            closeModal()
+        }
         setInputValue('')
         setSearchList(null)
     }
 
     return (
-        <div className='w-[250px] relative h-10 z-20'>
+        <div className='sm:w-[250px] max-sm:border border-gray-300 relative h-10 z-20'>
             {
                 searchIsLoading && (
                     <div className='absolute top-0 left-3 h-10'>
@@ -98,7 +101,7 @@ export default function Searchbar(): ReactNode {
             }
             {
                 !searchHasError && searchList && searchList.length > 0 && searchList.map((product: ProductProps) => (
-                    <Link ref={modalRef} to={`/product/${product.id}`} onClick={handleResetSearchbar} key={product.id} className='absolute top-10 left-0 bg-[#ffffff] glass grid grid-cols-3 gap-x-2'>
+                    <Link ref={modalRef} to={`/product/${product.id}`} onClick={handleResetSearchbar} key={product.id} className='absolute top-10 left-0 bg-[#ffffff] glass grid grid-cols-3 gap-x-2 max-sm:w-full'>
                         <div className="col-span-1 h-[80px] z-10">
                             <img src={product.images[0].image} className='w-full h-full object-cover' alt="product" />
                         </div>

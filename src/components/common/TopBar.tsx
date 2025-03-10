@@ -10,6 +10,7 @@ import { StoreProps } from '@/utils/types'
 import { getAllCollectionsTitlesAsync } from '@/features/collections/collectionsSlice'
 import { AppDispatch } from '@/store/store'
 import { useDispatch } from 'react-redux'
+import { Modal } from './Modal'
 
 const parentVariants = {
   rest: {},
@@ -69,6 +70,7 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
   const topBarHamburgerColor = pathname.includes('checkout') ? '#10100e' : '#ffffff'
 
   const [hamburgerIsOpen, setHamburgerIsOpen] = useState<boolean>(false)
+  const [openModal, setOpenModal] = useState<boolean>(false)
 
   function handleLogOut() {
     localStorage.removeItem('marketplace-user')
@@ -103,7 +105,11 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
                 className={`leading-none text-[18px] ${topBarText} antialiased cursor-pointer`}>eMOTIONs</motion.h1>
             </Link>
             <div className="flex items-center gap-x-8">
-              <Searchbar />
+              <div className='hidden sm:flex'>
+                <Searchbar />
+              </div>
+
+              {/* Sign, User, Cart */}
               <div className="hidden sm:flex items-center gap-x-8 shrink-0">
                 <Link to={user.email ? '/profile' : '/login'} className={`${topBarText} flex items-center gap-x-2 overflow-hidden`}>
                   <i className='fa-solid fa-user'></i>
@@ -120,22 +126,29 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
                   <p>Your cart</p>
                 </Link>
               </div>
-              <div className="hidden max-sm:flex">
+
+              {/* Hamburger */}
+              <div className="hidden max-sm:flex gap-x-5">
+                <button onClick={() => { setOpenModal(!openModal) }} className='sm:hidden flex items-center'>
+                  <i className="fa-lg fa-solid fa-magnifying-glass text-sym_gray-100"></i>
+                </button>
                 <Hamburger toggled={hamburgerIsOpen} toggle={() => { setHamburgerIsOpen(true) }} color={topBarHamburgerColor} size={25} direction='left' />
               </div>
+
             </div>
           </nav>
+
           <motion.div
             initial={{ scaleX: 0 }}
             style={{ opacity }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 0.5, type: 'spring', bounce: 0.2, delay: 0.3 }}
-            className={`w-full border-b border-gray-300`}></motion.div>
+            className={`w-full hidden sm:flex border-b border-gray-300`}></motion.div>
           <AnimatePresence>
             <motion.div
               key={'collection'}
               style={{ opacity, height: heightCollection }}
-              className={`w-full flex justify-center gap-x-10 text-[#fff]`}>
+              className={`w-full hidden sm:flex justify-center gap-x-10 text-[#fff]`}>
               {
                 collectionTitles.length > 0 && collectionTitles.map((col, i) => (
                   <motion.div
@@ -164,7 +177,6 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
           transition={{ duration: 0.5 }}
           style={{
             height
-
           }}
           className={`absolute top-0 left-0 h-[50px] w-full max-w-[1440px] rounded-[6px] ${yPosition > 180 ? 'opacity-100' : 'opacity-0'} -z-10 transition-all duration-500 ease-out`}>
           <motion.div
@@ -172,7 +184,8 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, type: 'tween' }}
-            className="absolute top-0 left-0 h-full w-full max-w-[1440px] rounded-[6px] glass opacity-100 border border-gray-400"></motion.div>
+            className="absolute top-0 left-0 h-full w-full max-w-[1440px] rounded-[6px] glass opacity-100 border border-gray-400">
+          </motion.div>
           <motion.div
             key={2}
             initial={{ opacity: 0 }}
@@ -183,6 +196,7 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
 
       </motion.section>
 
+      {/* Mobile menu */}
       <section className={`absolute -top-2 ${hamburgerIsOpen ? 'right-0' : '-right-[300px]'} h-screen w-[300px] flex flex-col justify-between bg-[#ffffff] z-20 transition-all duration-200 shadow-md`}>
         <div className='flex flex-col gap-y-5'>
           <div className="flex flex-col px-5 gap-y-2">
@@ -207,6 +221,12 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
         </div>
       </section>
 
+      {/* Search button modal up tp sm breakpoint */}
+      <Modal width='w-full' height='h-[500px]' openModal={openModal} handleOpenModal={() => { setOpenModal(!openModal) }}>
+        <div>
+          <Searchbar closeModal={() => { setOpenModal(!openModal) }} />
+        </div>
+      </Modal>
     </main>
   )
 
