@@ -86,6 +86,8 @@ export const cartSlice = createSlice({
         addItem: (state, action) => {
             const { id, title, image, price, discount, description = '' } = action.payload
 
+            console.log(image, 'image in reducer')
+
             const wasAdded = state.cart.find((product) => product.id === id)
             if (wasAdded) return
 

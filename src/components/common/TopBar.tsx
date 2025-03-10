@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactElement } from 'react'
+import { useEffect, useRef, useState, type ReactElement } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { motion, useMotionValue, useScroll as hookScroll, useTransform, AnimatePresence } from 'framer-motion'
@@ -6,11 +6,15 @@ import Hamburger from 'hamburger-react'
 
 import useScroll from '@/hooks/useSroll'
 import Searchbar from './Searchbar'
-import { StoreProps } from '@/utils/types'
+import { CartItemProps, StoreProps } from '@/utils/types'
 import { getAllCollectionsTitlesAsync } from '@/features/collections/collectionsSlice'
 import { AppDispatch } from '@/store/store'
 import { useDispatch } from 'react-redux'
 import { Modal } from './Modal'
+import { animatedGradientText } from '@/utils/styles'
+import useOutsideClick from '@/hooks/useClickOutside'
+import { CheckoutCard } from '../checkout/CheckoutCard'
+import SimpleProductCard from './SimpleProductCard'
 
 const parentVariants = {
   rest: {},
@@ -56,6 +60,8 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
   const readyToPay = useSelector((state: StoreProps) => state.cart.readyToPay)
   const yPosition = useScroll()
   const { pathname } = useLocation()
+
+  const localCart: CartItemProps[] = JSON.parse(localStorage.getItem('marketplace-cart') || '[]')
   const cartItemsLength = Object.keys(cart).length
 
   //* Topbar height state
@@ -71,6 +77,9 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
 
   const [hamburgerIsOpen, setHamburgerIsOpen] = useState<boolean>(false)
   const [openModal, setOpenModal] = useState<boolean>(false)
+  const modalRef = useRef(null)
+
+  useOutsideClick(modalRef, () => { setHamburgerIsOpen(false) })
 
   function handleLogOut() {
     localStorage.removeItem('marketplace-user')
@@ -132,6 +141,17 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
                 <button onClick={() => { setOpenModal(!openModal) }} className='sm:hidden flex items-center'>
                   <i className="fa-lg fa-solid fa-magnifying-glass text-sym_gray-100"></i>
                 </button>
+
+                <Link className='text-[#fff] text-[1.2rem] flex items-center gap-x-2' aria-label='checkout' to={'/checkout'}>
+                  <i className='relative fa-solid fa-cart-shopping cursor-pointer'>
+                    {
+                      cartItemsLength !== null && cartItemsLength > 0 && (
+                        <span className="absolute -top-3 -right-2 w-4 h-4 bg-indigo-500 rounded-full flex justify-center items-center text-[10px] text-[#10100e]">{cartItemsLength}</span>
+                      )
+                    }
+                  </i>
+                </Link>
+
                 <Hamburger toggled={hamburgerIsOpen} toggle={() => { setHamburgerIsOpen(true) }} color={topBarHamburgerColor} size={25} direction='left' />
               </div>
 
@@ -197,23 +217,65 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
       </motion.section>
 
       {/* Mobile menu */}
-      <section className={`absolute -top-2 ${hamburgerIsOpen ? 'right-0' : '-right-[300px]'} h-screen w-[300px] flex flex-col justify-between bg-[#ffffff] z-20 transition-all duration-200 shadow-md`}>
+      <section ref={modalRef} className={`absolute -top-3 ${hamburgerIsOpen ? 'right-0' : '-right-[300px]'} h-screen w-[300px] flex flex-col justify-between pt-10 bg-[#ffffff] z-20 transition-all duration-200 shadow-md`}>
         <div className='flex flex-col gap-y-5'>
-          <div className="flex flex-col px-5 gap-y-2">
-            <Link onClick={() => { setHamburgerIsOpen(false) }} to={user.email ? '/profile' : '/sign'} className='text-[#10100e] hover:text-indigo-500 text-[1.5rem] transition-color duration-200 flex items-center gap-x-2'>
-              <i className='fa-solid fa-user'></i>
-              <p>{user.email ? `${user.email}` : 'Sign in'}</p>
+          <div className="flex flex-col px-5 gap-y-10">
+
+            <Link onClick={() => { setHamburgerIsOpen(false) }} to={user.email ? '/profile' : '/sign'} className='flex flex-col items-start justify-center gap-y-2'>
+              <h1 className={`${animatedGradientText} uppercase`}>Profile</h1>
+
+              <div className='w-full flex flex-col items-center gap-y-2'>
+                <div
+                  className="w-[50px] h-[50px] flex justify-center items-center border border-gray-200 rounded-full">
+                  <i className='fa-sm fa-solid fa-user'></i>
+                </div>
+                <p className='truncate text-gray-800 font-light antialiased'>{user.email ? `${user.email}` : 'Sign in'}</p>
+              </div>
+
             </Link>
-            <Link onClick={() => { setHamburgerIsOpen(false) }} className='text-[#10100e] hover:text-indigo-500 text-[1.5rem] transition-color duration-200 flex items-center gap-x-2' aria-label='checkout' to={'/checkout'}>
-              <i className='relative fa-solid fa-cart-shopping cursor-pointer'>
+
+            <div className="w-full border-b border-gray-300"></div>
+
+            <div
+              className={`w-full flex flex-col justify-center gap-y-4 text-[#10100e]`}>
+              <h1 className={`${animatedGradientText} uppercase`}>Collections</h1>
+              <div className='flex flex-col gap-y-2'>
                 {
-                  cartItemsLength !== null && cartItemsLength > 0 && (
-                    <span className="absolute -top-4 -right-2 w-4 h-4 bg-indigo-500 rounded-full flex justify-center items-center text-[10px] text-[#10100e]">{cartItemsLength}</span>
-                  )
+                  collectionTitles.length > 0 && collectionTitles.map((col, i) => (
+                    <div
+                      className='relative group px-2 z-10'
+                      key={`id-${col.id + i}`}>
+                      <Link className='flex gap-x-2 items-center' to={'*'}>
+                        <i className="fa-solid fa-chevron-right fa-sm text-gray-400"></i>
+                        <p className='z-20 text-[0.9rem]'>{col.title}</p>
+                      </Link>
+                    </div>
+                  ))
                 }
-              </i>
-              <p>Your cart</p>
-            </Link>
+              </div>
+            </div>
+
+            <div className="w-full border-b border-gray-300"></div>
+
+            <div className="flex flex-col gap-y-4">
+              <h1 className={`${animatedGradientText} uppercase`}>Cart</h1>
+              <div className='flex flex-col gap-y-2'>
+                {
+                  cart.length > 0 && cart.map((product) => (
+                    <SimpleProductCard key={product.id} product={product} />
+                  ))
+                }
+                {
+                  cart.length === 0 && localCart.map((product) => (
+                    <SimpleProductCard key={product.id} product={product} />
+                  ))
+                }
+              </div>
+              <div className='flex justify-center'>
+                <Link to={'/checkout'} className='h-8 w-[150px] flex justify-center items-center mt-5 bg-[#10100e] hover:bg-indigo-500 transition-color duration-200 text-[#ffffff]'>Go to Cart</Link>
+              </div>
+            </div>
+
           </div>
         </div>
         <div>

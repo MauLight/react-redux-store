@@ -8,6 +8,7 @@ import UpdateProductForm from './UpdateProductForm'
 import Fallback from '../common/Fallback'
 import UpdateCollectionModal from './collections/UpdateCollectionModal'
 import { resetErrorState } from '@/features/collections/collectionsSlice'
+import SimpleProductCard from '../common/SimpleProductCard'
 
 interface DashboardCardProps {
     product: ProductProps
@@ -125,15 +126,7 @@ export default function DashboardCard({ product, isCollection, addProducts, remo
                         (
                             <section className='flex flex-col gap-y-5'>
                                 <h1 className='text-[1.5rem] text-balance uppercase'>Are you sure you want to delete this product?</h1>
-                                <div className="grid grid-cols-3 gap-10">
-                                    <div className='col-span-1'>
-                                        <img src={product.images[0].image} alt="product" />
-                                    </div>
-                                    <div className="col-span-2 flex flex-col">
-                                        <h1 className='text-[2rem]'>{product.title}</h1>
-                                        <p className='text-gray-700'>{product.description}</p>
-                                    </div>
-                                </div>
+                                <SimpleProductCard product={product} />
                                 <div className="flex justify-end gap-x-5">
                                     <button onClick={handleOpenDeleteProduct} className='h-10 px-5 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-red-500 active:bg-[#10100e] rounded-[10px]'>Cancel</button>
                                     <button onClick={handleDeleteProduct} className='h-10 px-5 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e] rounded-[10px]'>Confirm</button>

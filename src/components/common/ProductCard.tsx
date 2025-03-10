@@ -18,7 +18,7 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
 
   const handleAddItemToCart = () => {
 
-    dispatch(addItem(product))
+    dispatch(addItem({ ...product, image: product.images[0].image }))
   }
 
   const handleWishList = async (id: string) => {
