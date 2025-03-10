@@ -138,8 +138,9 @@ export const updateCollectionByIdInBulkAsync = createAsyncThunk(
 )
 
 export const deleteCollectionByIdAsync = createAsyncThunk(
-    'products/deleteCollectionById', async (id, { rejectWithValue }) => {
+    'products/deleteCollectionById', async (id: string, { rejectWithValue }) => {
         try {
+            console.log(id, 'the ID')
             const { data } = await axios.delete(`${url}/products/col/collections/${id}`)
             return data
         } catch (error) {
@@ -153,7 +154,7 @@ export const collectionsSlice = createSlice({
     name: 'collections',
     initialState: {
         collections: [] as CollectionProps[],
-        collection: {} as CollectionProps,
+        collection: {},
         nav: [] as string[],
         titles: [] as Array<{ title: string, id: string }>,
         isLoading: false,
@@ -166,6 +167,9 @@ export const collectionsSlice = createSlice({
         },
         resetErrorState: (state) => {
             state.hasErrors = false
+        },
+        resetCollection: (state) => {
+            state.collection = {}
         }
     },
     extraReducers: (builder) => {
@@ -355,12 +359,12 @@ export const collectionsSlice = createSlice({
                     state.collection = {} as CollectionProps
                     state.collections = state.collections.filter(collection => collection.id !== action.payload.deletedCollection.id)
                     state.titles = state.titles.filter(title => title !== action.payload.deletedCollection.title)
-                    toast.success('Collection posted succesfully.')
+                    toast.success('Collection deleted succesfully.')
                 }
             )
     }
 })
 
-export const { addCollectionToNav, resetErrorState } = collectionsSlice.actions
+export const { addCollectionToNav, resetErrorState, resetCollection } = collectionsSlice.actions
 const collectionsReducer = collectionsSlice.reducer
 export default collectionsReducer

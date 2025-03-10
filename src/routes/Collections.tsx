@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch } from '@/store/store'
-import { getAllCollectionsTitlesAsync, getCollectionByTitleAsync, publishCollectionByIdAsync, resetErrorState, updateCollectionByIdAsync, updateCollectionDeleteProductByIdAsync } from '@/features/collections/collectionsSlice'
+import { deleteCollectionByIdAsync, getAllCollectionsTitlesAsync, getCollectionByTitleAsync, publishCollectionByIdAsync, resetCollection, resetErrorState, updateCollectionByIdAsync, updateCollectionDeleteProductByIdAsync } from '@/features/collections/collectionsSlice'
 
 import CustomDropdownWithCreate from '@/components/common/CustomDropdownWithCreate'
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar'
@@ -15,6 +15,8 @@ import ErrorComponent from '@/components/common/ErrorComponent'
 import AddNewCollection from '@/components/dashboard/collections/AddNewCollection'
 import { motion } from 'framer-motion'
 import { Switch } from '@/components/common/Switch'
+import { toast } from 'react-toastify'
+import DashboardButton from '@/components/dashboard/DashboardButton'
 
 function Collections(): ReactNode {
     const dispatch: AppDispatch = useDispatch()
@@ -28,6 +30,7 @@ function Collections(): ReactNode {
     const [inputValue, setInputValue] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [openModal, setOpenModal] = useState<boolean>(false)
+    const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
     const [openModalCreateCollection, setOpenModalCreateCollection] = useState<boolean>(false)
     const [navState, setNavState] = useState<Record<string, boolean>>({
         one: true,
@@ -36,6 +39,10 @@ function Collections(): ReactNode {
     })
 
     async function handleClick() {
+        if (currCollection.products.length === 0) {
+            toast.error('Cannot publish an empty collection.')
+            return
+        }
         await dispatch(publishCollectionByIdAsync(currCollection.id))
         setClicked(!clicked)
     }
@@ -75,9 +82,20 @@ function Collections(): ReactNode {
         getProductsFromCollection()
     }
 
+    function handleOpenDeleteModal() {
+        setOpenDeleteModal(!openDeleteModal)
+    }
+
+    async function handleDeleteCollection() {
+        await dispatch(deleteCollectionByIdAsync(currCollection.id))
+        dispatch(resetCollection())
+        setInputValue('')
+        setTitles(titles.filter(title => title !== currCollection.title))
+        setOpenDeleteModal(false)
+    }
+
     useEffect(() => {
         if (collectionTitles.length > 0) {
-            console.log(inputValue)
             const currCollectionIsLive = collectionTitles.find(col => col.title === inputValue)?.isLive
             setClicked(currCollectionIsLive as boolean)
         }
@@ -154,7 +172,7 @@ function Collections(): ReactNode {
                                 </div>
                                 {
                                     inputValue !== '' && (
-                                        <div className="flex flex-col gap-y-5 justify-end">
+                                        <div className="flex gap-x-5 justify-end">
 
                                             <motion.button
                                                 transition={{ duration: 0.05 }}
@@ -164,6 +182,15 @@ function Collections(): ReactNode {
                                                 className='z-10 px-3 h-10 bg-green-600 hover:bg-green-500 active:bg-green-600 transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
                                                 <i className="fa-solid fa-plus"></i>
                                                 Add products
+                                            </motion.button>
+                                            <motion.button
+                                                transition={{ duration: 0.05 }}
+                                                whileHover={{ scale: 1.03 }}
+                                                whileTap={{ scale: 0.95 }}
+                                                onClick={handleOpenDeleteModal}
+                                                className='z-10 px-3 h-10 bg-red-600 hover:bg-red-500 active:bg-green-600 transition-color duration-200 text-[#ffffff] flex items-center justify-center gap-x-2 rounded-[10px]'>
+                                                <i className="fa-solid fa-trash fa-sm"></i>
+                                                Delete Collection
                                             </motion.button>
                                         </div>
                                     )
@@ -217,6 +244,15 @@ function Collections(): ReactNode {
             </Modal>
             <Modal openModal={openModalCreateCollection} handleOpenModal={handleOpenModalCreateCollection}>
                 <AddNewCollection hasError={collectionHasError} closeModal={handleOpenModalCreateCollection} />
+            </Modal>
+            <Modal openModal={openDeleteModal} handleOpenModal={handleOpenDeleteModal}>
+                <div className="flex flex-col gap-y-5">
+                    <h1 className='text-[1.1rem]'>Are you sure you want to delete this collection?</h1>
+                    <div className='w-full flex gap-x-5 justify-end'>
+                        <DashboardButton label='Cancel' type='button' actionType='cancel' action={handleOpenDeleteModal} />
+                        <DashboardButton label='Confirm' type='button' actionType='confirm' action={handleDeleteCollection} />
+                    </div>
+                </div>
             </Modal>
         </div>
     )
