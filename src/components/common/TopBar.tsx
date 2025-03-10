@@ -85,10 +85,6 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
     }
   }, [])
 
-  useEffect(() => {
-    console.log(opacity, 'the opacity')
-  }, [opacity])
-
   return (
     <main className={`${announcementBar ? 'top-12' : 'top-2'} fixed w-full flex justify-center z-50`}>
       <motion.section

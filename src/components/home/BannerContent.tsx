@@ -11,10 +11,10 @@ export const BannerContent = ({ children, heroConfig }: { children: ReactNode, h
                     variants={fadeIn('top', 0.2)}
                     initial={'hidden'}
                     whileInView={'show'}
-                    className='text-[4rem] min-[400px]:text-[5rem] sm:text-[8.5rem] leading-none uppercase animated-background bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 inline-block text-transparent font-semibold tracking-tight bg-clip-text z-10'>{heroConfig.header}</motion.h1>
+                    className='text-[2rem] min-[400px]:text-[3rem] sm:text-[5rem] lg:text-[8.5rem] leading-none uppercase animated-background bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 inline-block text-transparent font-semibold tracking-tight bg-clip-text z-10'>{heroConfig.header}</motion.h1>
                 <div
                     className="w-full flex justify-between mt-2 px-5 z-20">
-                    <p className='text-[16px] neue text-[#ffffff] z-10 uppercase'>{heroConfig.subHeader}</p>
+                    <p className='w-full text-[0.9rem] max-sm:text-center sm:text-[16px] text-[#fff] z-10 uppercase'>{heroConfig.subHeader}</p>
                 </div>
             </div>
             <div className="h-[30%]"></div>
