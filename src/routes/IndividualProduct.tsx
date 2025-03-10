@@ -55,7 +55,7 @@ function IndividualProduct({ id }: { id: string | undefined }): ReactNode {
                                 }
                                 {
                                     !productsHasError && product !== undefined && (
-                                        <div className='h-auto flex'>
+                                        <div className='h-auto flex pt-12'>
                                             <ProductDescription key={product.id} product={product} isLoading={productsAreLoading} />
                                             <div className="h-auto flex flex-col justify-end">
                                                 <h1 className='py-2 text-center glass text-[#fff] bg-[#fff]'>Similar Products</h1>
@@ -90,9 +90,17 @@ function IndividualProduct({ id }: { id: string | undefined }): ReactNode {
                                 }
                             </div>
                         </div>
-                        <motion.img
+                        <motion.div
+                            key={1}
+                            className='bg-[#10100e] fixed top-0 left-0 w-full h-screen'
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
+                            transition={{ duration: 0.8 }}
+                        ></motion.div>
+                        <motion.img
+                            key={2}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 0.6 }}
                             transition={{ duration: 0.8 }}
                             className='absolute w-full h-full object-cover' src="https://res.cloudinary.com/maulight/image/upload/v1740158140/wkbgeohyeplwr8sjc0tc.jpg" alt="" />
                     </div>

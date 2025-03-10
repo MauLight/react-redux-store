@@ -124,10 +124,14 @@ export default function ProductDescription({ product, isLoading }: { product: Pr
                                 </div>
                                 {
                                     !isAdmin && (
-                                        <button onClick={handleAddItemToCart} className={currentTemplate.product.button ? currentTemplate.product.button : 'h-10 px-2 mt-5 uppercase text-[#ffffff] transition-all duration-200 bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e]'}>Add to cart</button>
+                                        <button onClick={handleAddItemToCart} className={'h-10 px-2 mt-5 uppercase text-[#ffffff] transition-color duration-500 ease-in-out bg-[#10100e] hover:bg-indigo-500 active:bg-[#10100e]'}>Add to cart</button>
                                     )
                                 }
-                                <div className="border-b border-sym_gray-600 mt-10 mb-5"></div>
+                                <motion.div
+                                    initial={{ scaleX: 0 }}
+                                    animate={{ scaleX: 1 }}
+                                    transition={{ duration: 0.5 }}
+                                    className="border-b border-sym_gray-600 mt-10 mb-5"></motion.div>
                                 <p className='font-light text-[1.2rem] tracking-tighter text-sym_gray-600'>{product.description}</p>
                             </div>
                         </div>

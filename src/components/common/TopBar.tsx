@@ -85,6 +85,10 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
     }
   }, [])
 
+  useEffect(() => {
+    console.log(opacity, 'the opacity')
+  }, [opacity])
+
   return (
     <main className={`${announcementBar ? 'top-12' : 'top-2'} fixed w-full flex justify-center z-50`}>
       <motion.section
@@ -96,7 +100,7 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
 
         <div className="h-full w-full flex flex-col justify-center gap-y-2 transition-all duration-400">
 
-          <nav className={`flex h-full w-full justify-between items-center`}>
+          <nav className={`flex h-full w-full justify-between items-center pt-3`}>
             <Link to={'/'} className="block">
               <motion.h1
                 style={{ scale }}
@@ -125,11 +129,16 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
               </div>
             </div>
           </nav>
+          <motion.div
+            initial={{ scaleX: 0 }}
+            style={{ opacity }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 0.5, type: 'spring', bounce: 0.2, delay: 0.3 }}
+            className={`w-full border-b border-gray-300`}></motion.div>
           <AnimatePresence>
             <motion.div
               key={'collection'}
               style={{ opacity, height: heightCollection }}
-              transition={{ delay: 2 }}
               className={`w-full flex justify-center gap-x-10 text-[#fff]`}>
               {
                 collectionTitles.length > 0 && collectionTitles.map((col, i) => (
@@ -137,9 +146,11 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
                     variants={parentVariants}
                     initial="rest"
                     whileHover="hover"
-                    className='relative group px-2'
+                    className='relative group px-2 z-10'
                     key={`id-${col.id + i}`}>
-                    <Link className='z-10' to={'*'}>{col.title}</Link>
+                    <Link to={'*'}>
+                      <p className='z-20 text-[0.9rem]'>{col.title}</p>
+                    </Link>
                     <motion.div
                       className='h-full -z-10 absolute top-0 left-0 bg-indigo-500'
                       variants={childVariants}
@@ -159,12 +170,19 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
             height
 
           }}
-          className={`absolute top-0 left-0 h-[50px] w-full max-w-[1440px] rounded-[6px] bg-[#10100e] ${yPosition > 180 ? 'opacity-100' : 'opacity-0'} -z-10 transition-all duration-500 ease-out`}>
+          className={`absolute top-0 left-0 h-[50px] w-full max-w-[1440px] rounded-[6px] ${yPosition > 180 ? 'opacity-100' : 'opacity-0'} -z-10 transition-all duration-500 ease-out`}>
           <motion.div
+            key={1}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, type: 'tween' }}
-            className="absolute top-0 left-0 h-full w-full max-w-[1440px] rounded-[6px] bg-[#10100e]"></motion.div>
+            className="absolute top-0 left-0 h-full w-full max-w-[1440px] rounded-[6px] glass opacity-100 border border-gray-400"></motion.div>
+          <motion.div
+            key={2}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.5 }}
+            transition={{ duration: 0.8, type: 'tween' }}
+            className="absolute top-0 left-0 h-full w-full max-w-[1440px] rounded-[6px] bg-[#10100e] -z-10"></motion.div>
         </motion.div>
 
       </motion.section>

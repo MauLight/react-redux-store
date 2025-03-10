@@ -68,12 +68,12 @@ export default function Searchbar(): ReactNode {
             }
             {
                 !searchIsLoading && (
-                    <i className="absolute top-5 left-3 fa-lg fa-solid fa-magnifying-glass text-sym_gray-300"></i>
+                    <i className="absolute top-5 left-3 fa-lg fa-solid fa-magnifying-glass text-sym_gray-100"></i>
                 )
             }
             {
                 inputValue.length > 0 && (
-                    <i onClick={handleClearInput} className={`absolute top-3 right-2 fa-regular fa-circle-xmark cursor-pointer ${focusX ? 'text-[#10100e]' : 'text-[#ffffff]'}`}></i>
+                    <i onClick={handleClearInput} className={`absolute top-3 right-2 fa-regular fa-circle-xmark cursor-pointer ${focusX ? 'text-[#10100e]' : 'text-[#fff]'}`}></i>
                 )
             }
             <input
