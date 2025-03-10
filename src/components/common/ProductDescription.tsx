@@ -70,10 +70,8 @@ export default function ProductDescription({ product, isLoading }: { product: Pr
         }, 150)
     }, [])
 
-    // `${currentTemplate.product.layout ? currentTemplate.product.layout : 'flex gap-x-[100px] bg-[#ffffff] p-10'} ${!isAdmin ? 'h-auto' : ''}
-
     return (
-        <div className={`flex gap-x-20 bg-[#fff] p-5 sm:p-10 w-full max-sm:min-w-screen min-h-[700px] lg:w-auto max-sm:mt-[180px]`}>
+        <div className={`flex gap-x-20 bg-[#fff] p-5 sm:p-10 w-full min-w-[1260px] max-sm:min-w-screen min-h-[650px] lg:w-auto max-sm:mt-[180px]`}>
             {loading || isLoading && (
                 <div className={`w-full h-auto flex justify-center items-center`}>
                     <Fallback />
@@ -87,7 +85,7 @@ export default function ProductDescription({ product, isLoading }: { product: Pr
                         transition={{ duration: 0.5 }}
                         className='flex max-lg:flex-col'
                     >
-                        <div className='hidden lg:flex flex-col justify-center h-full'>
+                        <div className='hidden lg:flex flex-col gap-y-10 justify-center h-full'>
                             <InnerImageZoom
                                 className='max-h-[500px]'
                                 width={500}
@@ -111,11 +109,11 @@ export default function ProductDescription({ product, isLoading }: { product: Pr
                             }
                         </div>
 
-                        <div className='w-full flex justify-center items-center py-5'>
-                            <img className='max-h-[250px] max-lg:block hidden' src={product.images[0].image} alt="product" />
+                        <div className='w-full max-lg:flex hidden justify-center items-center py-5'>
+                            <img className='max-h-[250px]' src={product.images[0].image} alt="product" />
                         </div>
 
-                        <div className="flex flex-col justify-between lg:pl-10">
+                        <div className="flex flex-col justify-between lg:pl-20">
                             <div className="flex flex-col">
                                 <h2 aria-label={product.title} className='text-[1.1rem] sm:text-[1.5rem] lg:text-[2rem] font-light text-sym_gray-600 text-balance uppercase'>{product.title}</h2>
                                 <div className='flex justify-end gap-x-2'>

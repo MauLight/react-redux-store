@@ -102,7 +102,7 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
         style={{
           height
         }}
-        className={`relative h-[50px] w-full max-w-[1440px] rounded-[6px] px-5 sm:py-5`}>
+        className='relative h-[50px] w-full max-w-[1440px] rounded-[6px] px-5 sm:py-5'>
 
         <div className="h-full w-full flex flex-col justify-center gap-y-2 transition-all duration-400">
 
@@ -176,7 +176,7 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
                     whileHover="hover"
                     className='relative group px-2 z-10'
                     key={`id-${col.id + i}`}>
-                    <Link to={'*'}>
+                    <Link to={`/collection/${col.title}`}>
                       <p className='z-20 text-[0.9rem]'>{col.title}</p>
                     </Link>
                     <motion.div

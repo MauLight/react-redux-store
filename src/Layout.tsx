@@ -50,6 +50,8 @@ function Layout() {
 
     const matchId = useMatch('/product/:id')
     const productId = matchId?.params.id
+    const matchTitle = useMatch('/collection/:title')
+    const collectionTitle = matchTitle?.params.title
     const [showScrollButton, setShowScrollButton] = useState<boolean>(false)
 
     function scrollToTop() {
@@ -146,7 +148,7 @@ function Layout() {
                                         <Route path='/sign' element={<Sign />} />
                                         <Route path='/login' element={<Login />} />
                                         <Route path='/profile' element={<Profile />} />
-                                        <Route path='/collection' element={<Collection title='Surreal Collection' />} />
+                                        <Route path='/collection/:title' element={<Collection title={collectionTitle as string} />} />
                                         <Route path='/product/:id' element={<IndividualProduct id={productId ? productId : undefined} />} />
                                         <Route path='/admin/login' element={<AdminLogin />} />
                                         <Route path='/admin' element={<Wizard />} />

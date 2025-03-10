@@ -36,15 +36,15 @@ export const ProductCard = ({ product }: { product: ProductProps }): ReactElemen
   }
 
   return (
-    <section className={`group relative ${pathname === '/collection' ? 'h-[460px]' : currentTemplate.card ? currentTemplate.card.card : 'h-[700px] col-span-1 overflow-hidden'}`}>
+    <section className={`group relative ${pathname.includes('collection') ? 'h-auto' : currentTemplate.card ? currentTemplate.card.card : 'h-[700px] col-span-1 overflow-hidden'}`}>
 
-      <div className={currentTemplate.card ? currentTemplate.card.image : 'h-[550px]'}>
+      <div className='h-full w-full overflow-hidden'>
         <img key={product.id} src={product.images ? product.images[0].image : ''} alt="product" className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300 ease-out" />
       </div>
 
       {
         isCollection && (
-          <div className={currentTemplate.card ? currentTemplate.card.textLayout : "w-full absolute bottom-5 flex justify-between px-5 z-10 transition-all duration-300 text-[1rem] min-[400px]:text-[22px] uppercase antialiazed text-[#ffffff] leading-tight"}>
+          <div className={"w-full absolute bottom-5 flex justify-between px-5 z-10 transition-all duration-300 text-[1rem] min-[400px]:text-[22px] uppercase antialiazed text-[#ffffff] leading-tight"}>
             <Link to={`/product/${product.id}`} className="flex flex-col">
               <h1 aria-label={product.title} className=''>{product.title}</h1>
               <div className="flex gap-x-2">

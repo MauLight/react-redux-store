@@ -1,11 +1,12 @@
 import { useEffect, useLayoutEffect, useState, type ReactNode } from 'react'
 import { ProductCard } from '@/components/common/ProductCard'
-import video from '@/assets/video/Alien.webm'
 import { useDispatch, useSelector } from 'react-redux'
 import { StoreProps } from '@/utils/types'
 import { AppDispatch } from '@/store/store'
-import { clearSortedProducts, getAllProductsAsync, getProductsBySearchWordAsync, getProductSortedByAlphabetAsync, getProductSortedByPriceAsync } from '@/features/products/productsSlice'
+import { clearSortedProducts, getProductsBySearchWordAsync, getProductSortedByAlphabetAsync, getProductSortedByPriceAsync } from '@/features/products/productsSlice'
 import EmptyList from '@/components/common/EmptyList'
+import { getCollectionByTitleAsync } from '@/features/collections/collectionsSlice'
+import { useLocation } from 'react-router-dom'
 
 interface CollectionProps {
     title: string
@@ -13,9 +14,12 @@ interface CollectionProps {
 
 export default function Collection({ title = 'Collection' }: CollectionProps): ReactNode {
     const dispatch: AppDispatch = useDispatch()
+    const currCollection = useSelector((state: StoreProps) => state.collections.collection)
     const products = useSelector((state: StoreProps) => state.inventory.products)
     const sortedCollection = useSelector((state: StoreProps) => state.inventory.sortedProducts)
     const searchingIsLoading = useSelector((state: StoreProps) => state.inventory.productsAreLoading)
+
+    const { pathname } = useLocation()
 
     const [inputValue, setInputValue] = useState<string>('')
     const [loading, setLoading] = useState<boolean>(true)
@@ -26,8 +30,9 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
     const [isSearching, setIsSearching] = useState<boolean>(false)
     const [isSorting, setIsSorting] = useState<boolean>(false)
 
-    async function getCollection() {
-        await dispatch(getAllProductsAsync())
+    async function getCurrentCollection() {
+        await dispatch(getCollectionByTitleAsync(title))
+        setLoading(false)
     }
 
     function handleOpenSortMenu() {
@@ -63,10 +68,8 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
 
 
     useLayoutEffect(() => {
-        if (products.length === 0) {
-            getCollection()
-        }
-    }, [])
+        getCurrentCollection()
+    }, [pathname])
 
     useEffect(() => {
         if (products.length > 0) {
@@ -85,20 +88,21 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
 
     return (
         <main className='relative w-screen min-h-screen flex flex-col justify-center items-center pb-20'>
-            <div className='z-20 min-[1440px]:w-web'>
-                <header className='h-[30rem] flex justify-start items-center max-[1440px]:px-10'>
-                    <h1 className='text-[2rem] min-[350px]:text-[3rem] md:text-[5rem] animated-background bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 inline-block text-transparent bg-clip-text'>{title}</h1>
+            <div className='z-20 min-[1440px]:w-[1440px] pt-[160px]'>
+                <header className='relative h-[8rem] w-auto glass flex justify-start items-center px-5 bg-[#fff]'>
+                    <h1 className='z-10 text-[2rem] min-[350px]:text-[3rem] md:text-[5rem] text-[#fff] uppercase'>{title}</h1>
+                    <div className='absolute top-0 left-0 w-full h-full opacity-20 bg-[#10100e]'></div>
                 </header>
                 <section className="w-full min-web:w-[1440px] h-full grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3 gap-5">
                     <div className='col-span-1'></div>
                     <div className='col-span-1'></div>
                     <div className='col-span-1 hidden sm:max-[1440px]:flex'></div>
-                    <nav className='col-span-1 flex justify-end items-center h-[60px]'>
-                        <div className='group w-full relative h-full'>
+                    <nav className='col-span-1 flex justify-between pr-[23px] items-center h-[60px]'>
+                        <div className='group relative h-full'>
                             <i className="absolute top-8 left-3 fa-xl fa-solid fa-magnifying-glass text-sym_gray-300"></i>
                             {
                                 inputValue.length > 0 && (
-                                    <i onClick={handleClearInput} className={`absolute top-[23px] right-2 fa-regular fa-circle-xmark cursor-pointer ${focusX ? 'text-[#10100e]' : 'text-[#ffffff]'}`}></i>
+                                    <i onClick={handleClearInput} className={`absolute top-[23px] right-2 fa-regular fa-circle-xmark cursor-pointer ${focusX ? 'text-[#10100e]' : 'text-[#fff]'}`}></i>
                                 )
                             }
                             <input
@@ -109,13 +113,13 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
                                 value={inputValue}
                                 onChange={({ target }) => { setInputValue(target.value) }}
                                 onKeyDown={handleSubmitSearch}
-                                className='h-full w-full min-[1440px]:w-[267px] outline-none border-none pl-[50px] pr-2 bg-transparent text-[#ffffff] group-hover:bg-[#ffffff] group-hover:text-[#10100e] focus:bg-[#ffffff] focus:text-[#10100e]' type="text" />
+                                className='h-full w-full min-[1440px]:w-[247px] outline-none border-none pl-[50px] pr-2 bg-transparent text-[#fff] group-hover:bg-[#fff] group-hover:text-[#10100e] focus:bg-[#fff] focus:text-[#10100e]' type="text" />
                         </div>
                         <div className='group relative h-full'>
-                            <button onClick={handleOpenSortMenu} className='h-full w-[200px] px-2 uppercase text-[#ffffff] transition-all duration-200 bg-transparent border border-transparent group-hover:bg-indigo-500 group-hover:border-indigo-500'>Sort by price</button>
+                            <button onClick={handleOpenSortMenu} className='h-full w-[200px] uppercase text-[#fff] transition-all duration-200 bg-transparent border border-transparent group-hover:bg-indigo-500 group-hover:border-indigo-500'>Sort</button>
                             {
                                 openSortMenu &&
-                                <div className="absolute top-[60px] left-0 w-full flex flex-col bg-[#ffffff] z-20">
+                                <div className="absolute top-[60px] left-0 w-full flex flex-col bg-[#fff] z-20">
                                     <button onClick={() => { setIsSorting(false) }} className='h-[60px] hover:text-indigo-500 transition-color duration-200'>Recommended</button>
                                     <button onClick={() => { handleSortProductsByPrice('asc') }} className='h-[60px] hover:text-indigo-500 transition-color duration-200'>Low to Hight</button>
                                     <button onClick={() => { handleSortProductsByPrice('des') }} className='h-[60px] hover:text-indigo-500 transition-color duration-200'>Hight to Low</button>
@@ -128,7 +132,7 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
                 </section>
                 {
                     !loading && !searchingIsLoading ? (
-                        <section className="w-full min-web:w-[1440px] h-full grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3 gap-5">
+                        <section className="w-full min-web:w-[1440px] h-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
                             {
                                 isSearching && sortedCollection.length === 0 && (
                                     <section className="border col-span-3">
@@ -147,7 +151,7 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
                                 ))
                             }
                             {
-                                !isSearching && !isSorting && products.map((product) => (
+                                !isSearching && !isSorting && currCollection.products.map((product) => (
                                     <ProductCard key={`${product.id}`} product={product} />
                                 ))
                             }
@@ -155,7 +159,7 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
                     )
                         :
                         (
-                            <section className="w-full min-web:w-[1440px] h-full grid grid-cols-1 sm:grid-cols-2 min-[1440px]:grid-cols-3 gap-5">
+                            <section className="w-full min-web:w-[1440px] h-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
                                 {
                                     Array.from({ length: 6 }).map((_, i) => (
                                         <div key={i} className='sm:h-full sm:min-h-[450px] col-span-1 animate-pulse bg-sym_gray-50 opacity-20'></div>
@@ -165,8 +169,8 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
                         )
                 }
             </div>
-            <video autoPlay muted loop src={video} className='absolute top-0 left-0 w-screen h-screen object-cover opacity-80'></video>
-            <div className='absolute top-0 left-0 w-screen h-screen bg-[#10100e] opacity-80'></div>
+            <img src='https://res.cloudinary.com/maulight/image/upload/v1741613314/Collectionwall.jpg' className='absolute top-0 left-0 w-screen h-full object-cover opacity-80'></img>
+            <div className='absolute top-0 left-0 w-screen h-full bg-[#10100e] opacity-40'></div>
         </main>
     )
 }
