@@ -131,7 +131,7 @@ export default function Collection({ title = 'Collection' }: CollectionProps): R
                     </nav>
                 </section>
                 {
-                    !loading && !searchingIsLoading ? (
+                    !loading && !searchingIsLoading && currCollection ? (
                         <section className="w-full min-web:w-[1440px] h-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
                             {
                                 isSearching && sortedCollection.length === 0 && (
