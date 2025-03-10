@@ -109,12 +109,12 @@ function Layout() {
                     <AnnouncementBar>
                         <>
                             <div className="flex gap-x-2">
-                                <p className='text-[1rem] font-light'>Summer Sale up to</p>
-                                <p className='text-[1rem] font-semibold'>50% off</p>
+                                <p className='text-[0.7rem] sm:text-[1rem] font-light'>Summer Sale up to</p>
+                                <p className='text-[0.7rem] sm:text-[1rem] font-semibold'>50% off</p>
                             </div>
                             <div className='h-5 border border-[#10100e]'></div>
                             <div className="flex gap-x-2">
-                                <p className='text-[1rem] font-light'>Free shipping from US$ 45</p>
+                                <p className='text-[0.7rem] sm:text-[1rem] font-light'>Free shipping from US$ 45</p>
                             </div>
                         </>
                     </AnnouncementBar>

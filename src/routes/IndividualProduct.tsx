@@ -45,8 +45,8 @@ function IndividualProduct({ id }: { id: string | undefined }): ReactNode {
             }
             {
                 !uiHasError && !uiIsLoading && Object.keys(currentTemplate).length > 0 && (
-                    <div className='relative w-screen h-screen flex justify-center items-center sm:max-lg:pt-[350px] bg-gray-100'>
-                        <div className="w-[1440px] flex justify-center pt-[80px] z-20">
+                    <div className='relative w-screen h-auto min-h-screen pb-5 flex justify-center items-end bg-gray-100'>
+                        <div className="w-full lg:w-[1440px] flex justify-center z-10 sm:z-20 overflow-hidden">
                             <div>
                                 {
                                     productsHasError && (
@@ -55,9 +55,9 @@ function IndividualProduct({ id }: { id: string | undefined }): ReactNode {
                                 }
                                 {
                                     !productsHasError && product !== undefined && (
-                                        <div className='h-auto flex pt-12'>
+                                        <div className='h-auto flex max-sm:flex-col'>
                                             <ProductDescription key={product.id} product={product} isLoading={productsAreLoading} />
-                                            <div className="h-auto flex flex-col justify-end">
+                                            <div className="h-auto flex flex-col max-sm:flex-wrap justify-end">
                                                 <h1 className='py-2 text-center glass text-[#fff] bg-[#fff]'>Similar Products</h1>
                                                 {
                                                     similarProducts.length > 0 && !productsAreLoading ? similarProducts.map((product, i) => (
@@ -102,7 +102,7 @@ function IndividualProduct({ id }: { id: string | undefined }): ReactNode {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 0.6 }}
                             transition={{ duration: 0.8 }}
-                            className='absolute w-full h-full object-cover' src="https://res.cloudinary.com/maulight/image/upload/v1740158140/wkbgeohyeplwr8sjc0tc.jpg" alt="" />
+                            className='absolute top-0 left-0 w-screen h-full object-cover' src="https://res.cloudinary.com/maulight/image/upload/v1740158140/wkbgeohyeplwr8sjc0tc.jpg" alt="" />
                     </div>
                 )
             }

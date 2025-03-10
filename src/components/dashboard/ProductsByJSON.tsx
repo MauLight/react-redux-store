@@ -32,7 +32,7 @@ export default function ProductsByJSON(): ReactNode {
     }
 
     return (
-        <form onSubmit={handleSubmitJSON} className="col-span-1 h-[700px] flex flex-col gap-y-5 bg-[#ffffff] py-10 px-4 md:px-10 overflow-y-scroll rounded-[10px]">
+        <form onSubmit={handleSubmitJSON} className="col-span-1 h-[700px] flex flex-col gap-y-5 bg-[#ffffff] py-10 px-4 md:px-10 overflow-y-scroll rounded-[10px] border border-gray-200">
             <h1 className='text-[1rem] sm:text-[1.2rem] text-balance leading-tight'>Add JSON file here:</h1>
             <CodeMirror className='w-full h-[500px] border rounded-[10px] p-2 outline-0 bg-[#282c34] overflow-y-scroll' value={data} theme='dark' extensions={[javascript({ jsx: true })]} onChange={(value) => setData(value)} />
             <div className="flex justify-end">

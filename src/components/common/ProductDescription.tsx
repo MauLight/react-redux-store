@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useState, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import InnerImageZoom from 'react-inner-image-zoom'
 import 'react-inner-image-zoom/lib/InnerImageZoom/styles.min.css'
 import { motion } from 'framer-motion'
@@ -8,7 +8,7 @@ import { motion } from 'framer-motion'
 import { addItem } from '@/features/cart/cartSlice'
 import { AppDispatch } from '@/store/store'
 
-import { ProductProps, StoreProps } from '@/utils/types'
+import { ProductProps } from '@/utils/types'
 import Fallback from './Fallback'
 
 export default function ProductDescription({ product, isLoading }: { product: ProductProps, isLoading: boolean }): ReactNode {
@@ -16,7 +16,6 @@ export default function ProductDescription({ product, isLoading }: { product: Pr
     const [isAdmin, setIsAdmin] = useState<boolean>(false)
 
     const dispatch: AppDispatch = useDispatch()
-    const { currentTemplate } = useSelector((state: StoreProps) => state.ui)
 
     const [loading, setLoading] = useState<boolean>(true)
     const [_stars, setStars] = useState<ReactNode[]>([])
@@ -74,9 +73,9 @@ export default function ProductDescription({ product, isLoading }: { product: Pr
     // `${currentTemplate.product.layout ? currentTemplate.product.layout : 'flex gap-x-[100px] bg-[#ffffff] p-10'} ${!isAdmin ? 'h-auto' : ''}
 
     return (
-        <div className={`flex gap-x-20 bg-[#fff] p-10 h-[750px] w-[1250px]`}>
+        <div className={`flex gap-x-20 bg-[#fff] p-5 sm:p-10 w-full max-sm:min-w-screen min-h-[700px] lg:w-auto max-sm:mt-[180px]`}>
             {loading || isLoading && (
-                <div className={`w-full h-full flex justify-center items-center`}>
+                <div className={`w-full h-auto flex justify-center items-center`}>
                     <Fallback />
                 </div>
             )}
@@ -86,11 +85,11 @@ export default function ProductDescription({ product, isLoading }: { product: Pr
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.5 }}
-                        className='flex'
+                        className='flex max-lg:flex-col'
                     >
-                        <div className='flex flex-col justify-center h-full'>
+                        <div className='hidden lg:flex flex-col justify-center h-full'>
                             <InnerImageZoom
-                                className='max-h-[650px]'
+                                className='max-h-[500px]'
                                 width={500}
                                 height={500}
                                 hideHint={true}
@@ -111,14 +110,19 @@ export default function ProductDescription({ product, isLoading }: { product: Pr
                                 )
                             }
                         </div>
-                        <div className="flex flex-col justify-between pl-10">
+
+                        <div className='w-full flex justify-center items-center py-5'>
+                            <img className='max-h-[250px] max-lg:block hidden' src={product.images[0].image} alt="product" />
+                        </div>
+
+                        <div className="flex flex-col justify-between lg:pl-10">
                             <div className="flex flex-col">
-                                <h2 aria-label={product.title} className={isAdmin ? 'text-[1.5rem] min-[500px]:text-[2rem] font-light text-sym_gray-600 text-balance uppercase' : currentTemplate.product.title ? currentTemplate.product.title : 'text-[1.5rem] min-[500px]:text-[2.5rem] font-light text-sym_gray-600 text-balance'}>{product.title}</h2>
+                                <h2 aria-label={product.title} className='text-[1.1rem] sm:text-[1.5rem] lg:text-[2rem] font-light text-sym_gray-600 text-balance uppercase'>{product.title}</h2>
                                 <div className='flex justify-end gap-x-2'>
-                                    <p className='text-[1.5rem] min-[500px]:text-[3rem] text-end'>{`$${getPercentage()}`}</p>
+                                    <p className='text-[1.5rem] lg:text-[3rem] text-end'>{`$${getPercentage()}`}</p>
                                     {
                                         product.discount !== undefined && product.discount > 0 && (
-                                            <p className='text-[1rem] min-[500px]:text-[1.5rem] str font-light text-sym_gray-200 text-end uppercase line-through'>{product.price}</p>
+                                            <p className='text-[1rem] lg:text-[1.5rem] str font-light text-sym_gray-200 text-end uppercase line-through'>{product.price}</p>
                                         )
                                     }
                                 </div>
@@ -132,7 +136,7 @@ export default function ProductDescription({ product, isLoading }: { product: Pr
                                     animate={{ scaleX: 1 }}
                                     transition={{ duration: 0.5 }}
                                     className="border-b border-sym_gray-600 mt-10 mb-5"></motion.div>
-                                <p className='font-light text-[1.2rem] tracking-tighter text-sym_gray-600'>{product.description}</p>
+                                <p className='font-light text-[1rem] sm:text-[1.2rem] tracking-tighter text-sym_gray-600'>{product.description}</p>
                             </div>
                         </div>
                     </motion.section>

@@ -126,7 +126,7 @@ function Collections(): ReactNode {
 
     return (
         <div className='w-full h-screen flex justify-start pl-[265px] items-center'>
-            <div className="w-[1400px] min-h-[715px] flex flex-col gap-y-10 rounded-[10px] bg-[#ffffff] p-10">
+            <div className="w-[1400px] min-h-[715px] flex flex-col gap-y-10 rounded-[10px] bg-[#fff] border border-gray-200 p-10">
                 {
                     collectionHasError && (
                         <ErrorComponent />

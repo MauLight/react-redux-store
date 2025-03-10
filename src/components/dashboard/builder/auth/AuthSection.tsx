@@ -14,7 +14,7 @@ export default function AuthSection(): ReactNode {
     }
 
     return (
-        <main className='grid grid-cols-7 gap-x-10 w-[1100px] gap-y-1 py-5 px-10 bg-[#ffffff] rounded-[5px]'>
+        <main className='grid grid-cols-7 gap-x-10 w-[1100px] gap-y-1 py-5 px-10 bg-[#fff] border border-gray-200 rounded-[5px]'>
             <div className="col-span-3">
                 <AuthBuilderPanel />
             </div>

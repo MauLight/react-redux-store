@@ -96,13 +96,13 @@ const TopBar = ({ announcementBar }: { announcementBar: boolean }): ReactElement
   }, [])
 
   return (
-    <main className={`${announcementBar ? 'top-12' : 'top-2'} fixed w-full flex justify-center z-50`}>
+    <main className={`${announcementBar ? 'sm:top-12' : 'top-2'} fixed w-full flex justify-center z-50`}>
       <motion.section
         key={0}
         style={{
           height
         }}
-        className={`relative h-[50px] w-full max-w-[1440px] rounded-[6px] p-5`}>
+        className={`relative h-[50px] w-full max-w-[1440px] rounded-[6px] px-5 sm:py-5`}>
 
         <div className="h-full w-full flex flex-col justify-center gap-y-2 transition-all duration-400">
 
