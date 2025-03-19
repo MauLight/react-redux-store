@@ -16,8 +16,8 @@ import { Modal } from '@/components/common/Modal'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import { getCoverageFromCourierAsync, getRegionsFromCourierAsync } from '@/features/courier/courierSlice'
-import CustomDropdown from '@/components/common/CustomDropdown'
 import ErrorComponent from '@/components/common/ErrorComponent'
+import CustomDropdownWithCreate from '@/components/common/CustomDropdownWithCreate'
 
 interface OpenConfirmationProps {
     firstname: string
@@ -211,7 +211,7 @@ function Profile(): ReactNode {
 
                                                     <div className="flex gap-x-2 gap-y-2">
                                                         <input {...register('country')} type='text' className={`mt-2 w-full h-9 bg-transparent rounded-[3px] border border-gray-300 ring-0 focus:ring-0 focus:outline-none px-2 placeholder-sym_gray-300 ${errors.country !== undefined ? 'ring-1 ring-red-500' : ''}`} placeholder='Country' />
-                                                        <CustomDropdown
+                                                        <CustomDropdownWithCreate
                                                             value='state'
                                                             defaultValue={getValues().state}
                                                             setValue={setValue}
@@ -221,7 +221,7 @@ function Profile(): ReactNode {
                                                         />
                                                     </div>
                                                     <div className="flex gap-x-2 gap-y-2">
-                                                        <CustomDropdown
+                                                        <CustomDropdownWithCreate
                                                             value='city'
                                                             defaultValue={getValues().city}
                                                             setValue={setValue}

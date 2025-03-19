@@ -30,6 +30,7 @@ export const CheckSummary = ({ numberOfProducts, total, taxes, totalWithTaxes, c
     const { payload } = await dispatch(createTransbankTransactionAsync(paymentInformation))
     localStorage.setItem('marketplace-order', payload.buyOrder)
   }
+
   const handleCheckout = async () => {
     if (!user.token) {
       navigate('/login?checkout=true')

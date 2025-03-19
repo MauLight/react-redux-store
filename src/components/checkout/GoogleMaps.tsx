@@ -18,7 +18,6 @@ function GoogleMaps({ setStep }: { setStep: Dispatch<SetStateAction<{ one: boole
     }
 
     useEffect(() => {
-        console.log(locationInputValue)
         if (locationInputValue !== null && locationInputValue.geometry !== undefined && locationInputValue.geometry.location !== undefined) {
             const newGeoLocation = {
                 lat: locationInputValue.geometry.location.lat(),

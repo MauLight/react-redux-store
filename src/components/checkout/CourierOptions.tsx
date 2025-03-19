@@ -42,7 +42,8 @@ function CourierOptions({ quote, setWasChosen }: CourierOptionsProps): ReactNode
                                 <input
                                     value={quo.serviceValue}
                                     checked={selectedCourier === quo.serviceValue}
-                                    onChange={(e) => { handleSelectCourier(e, quo) }} className='accent-indigo-500 w-5 h-5'
+                                    onChange={(e) => { handleSelectCourier(e, quo) }}
+                                    className='accent-indigo-500 w-5 h-5'
                                     name="courier"
                                     type="radio"
                                 />
